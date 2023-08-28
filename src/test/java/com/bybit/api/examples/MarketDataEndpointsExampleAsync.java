@@ -5,7 +5,7 @@ import com.bybit.api.client.impl.BybitApiClientFactory;
 import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.domain.market.MarketKlineInterval;
 import com.bybit.api.client.domain.market.MarketKlineResult;
-import com.bybit.api.client.extension.BybitApiAsyncRestClient;
+import com.bybit.api.client.impl.BybitApiAsyncRestClient;
 
 public class MarketDataEndpointsExampleAsync {
     public static void main(String[] args) {

@@ -1,7 +1,8 @@
-package com.bybit.api.client.domain.trade;
+package com.bybit.api.client.domain.trade.requests;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.trade.OrderStatus;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class OrderHistoryRequest extends OrderRequest {

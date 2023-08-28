@@ -1,4 +1,4 @@
-package com.bybit.api.client.extension;
+package com.bybit.api.client.impl;
 
 /**
  * BybitApiCallback is a functional interface used together with the BybitApiAsyncClient to provide a non-blocking REST client.

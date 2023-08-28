@@ -1,4 +1,4 @@
-package com.bybit.api.client.domain.trade;
+package com.bybit.api.client.domain.trade.requests;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.ProductType;

@@ -1,8 +1,8 @@
 package com.bybit.api.domain.trade;
 
 import com.bybit.api.client.domain.GenericResponse;
-import com.bybit.api.client.domain.trade.OrderEntry;
-import com.bybit.api.client.domain.trade.OrderResult;
+import com.bybit.api.client.domain.trade.response.OrderEntry;
+import com.bybit.api.client.domain.trade.response.OrderResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 

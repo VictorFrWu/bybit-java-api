@@ -1,4 +1,4 @@
-package com.bybit.api.client.extension;
+package com.bybit.api.client.impl;
 
 import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.domain.market.MarketKlineResult;

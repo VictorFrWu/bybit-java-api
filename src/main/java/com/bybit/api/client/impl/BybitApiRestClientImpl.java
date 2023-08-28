@@ -4,9 +4,9 @@ import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.domain.market.MarketKlineResult;
 import com.bybit.api.client.domain.market.MarketKlineInterval;
 import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.domain.trade.OrderHistoryRequest;
-import com.bybit.api.client.domain.trade.OrderResult;
-import com.bybit.api.client.extension.BybitApiRestClient;
+import com.bybit.api.client.domain.trade.requests.*;
+import com.bybit.api.client.domain.trade.response.OrderResponse;
+import com.bybit.api.client.domain.trade.response.OrderResult;
 import com.bybit.api.client.service.BybitApiService;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -50,5 +50,87 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 orderHistoryRequest.getEndTime(),
                 orderHistoryRequest.getLimit(),
                 orderHistoryRequest.getCursor()));
+    }
+
+    @Override
+    public GenericResponse<OrderResponse> newOrder(NewOrderRequest order) {
+        return executeSync(bybitApiService.newOrder(
+                order.getCategory(),
+                order.getSymbol(),
+                order.getIsLeverage(),
+                order.getSide(),
+                order.getOrderType(),
+                order.getQty(),
+                order.getPrice(),
+                order.getTriggerDirection(),
+                order.getOrderFilter(),
+                order.getTriggerPrice(),
+                order.getTriggerBy(),
+                order.getOrderIv(),
+                order.getTimeInForce(),
+                order.getPositionIdx(),
+                order.getOrderLinkId(),
+                order.getTakeProfit(),
+                order.getStopLoss(),
+                order.getTpTriggerBy(),
+                order.getSlTriggerBy(),
+                order.getReduceOnly(),
+                order.getCloseOnTrigger(),
+                order.getSmpType(),
+                order.getMmp(),
+                order.getTpslMode(),
+                order.getTpLimitPrice(),
+                order.getSlLimitPrice(),
+                order.getTpOrderType(),
+                order.getSlOrderType()
+        ));
+    }
+
+    @Override
+    public GenericResponse<OrderResponse> amendOrder(AmendOrderRequest order) {
+        return executeSync(bybitApiService.amendOrder(
+                order.getCategory(),
+                order.getSymbol(),
+                order.getOrderId(),
+                order.getOrderLinkId(),
+                order.getOrderIv(),
+                order.getTriggerPrice(),
+                order.getQty(),
+                order.getPrice(),
+                order.getTakeProfit(),
+                order.getStopLoss(),
+                order.getTpTriggerBy(),
+                order.getSlTriggerBy(),
+                order.getTriggerBy(),
+                order.getTpLimitPrice(),
+                order.getSlLimitPrice()
+        ));
+    }
+
+    @Override
+    public GenericResponse<OrderResponse> cancelOrder(CancelOrderRequest order) {
+        return executeSync(bybitApiService.cancelOrder(
+                order.getCategory(),
+                order.getSymbol(),
+                order.getOrderId(),
+                order.getOrderLinkId(),
+                order.getOrderFilter()
+        ));
+    }
+
+    @Override
+    public GenericResponse<OrderResult> getOpenOrders(OpenOrderRequest order) {
+        return executeSync(bybitApiService.getOpenOrders(
+                order.getCategory(),
+                order.getSymbol(),
+                order.getBaseCoin(),
+                order.getSettleCoin(),
+                order.getOrderId(),
+                order.getOrderLinkId(),
+                order.getOpenOnly(),
+                order.getOrderFilter(),
+                order.getLimit(),
+                order.getCursor()
+        ));
     }
 }

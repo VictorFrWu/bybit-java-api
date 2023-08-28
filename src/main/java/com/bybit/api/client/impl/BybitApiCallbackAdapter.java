@@ -2,7 +2,6 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.exception.BybitApiException;
-import com.bybit.api.client.extension.BybitApiCallback;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

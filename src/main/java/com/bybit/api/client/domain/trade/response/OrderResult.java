@@ -1,11 +1,8 @@
-package com.bybit.api.client.domain.trade;
+package com.bybit.api.client.domain.trade.response;
 
-import com.bybit.api.client.constant.BybitApiConstants;
-import com.bybit.api.client.domain.market.MarketKlineEntry;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 

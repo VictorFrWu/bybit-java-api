@@ -4,8 +4,6 @@ import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.domain.market.MarketKlineResult;
 import com.bybit.api.client.domain.market.MarketKlineInterval;
 import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.extension.BybitApiAsyncRestClient;
-import com.bybit.api.client.extension.BybitApiCallback;
 import com.bybit.api.client.service.BybitApiService;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;

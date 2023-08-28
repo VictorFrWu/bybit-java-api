@@ -1,8 +1,6 @@
 package com.bybit.api.client.impl;
 
 
-import com.bybit.api.client.extension.BybitApiAsyncRestClient;
-import com.bybit.api.client.extension.BybitApiRestClient;
 import com.bybit.api.client.config.BybitApiConfig;
 
 /**

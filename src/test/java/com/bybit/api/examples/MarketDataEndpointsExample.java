@@ -5,7 +5,7 @@ import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.domain.market.MarketKlineResult;
 import com.bybit.api.client.domain.market.MarketKlineInterval;
 import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.extension.BybitApiRestClient;
+import com.bybit.api.client.impl.BybitApiRestClient;
 
 /**
  * Examples on how to get market data information such as the latest price of a symbol, etc.

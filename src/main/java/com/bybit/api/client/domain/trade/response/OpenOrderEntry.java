@@ -1,126 +1,55 @@
-package com.bybit.api.client.domain.trade;
+package com.bybit.api.client.domain.trade.response;
 
 import com.bybit.api.client.constant.BybitApiConstants;
+import com.bybit.api.client.domain.trade.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonPropertyOrder()
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderEntry {
+public class OpenOrderEntry {
+
     private String orderId;
-
     private String orderLinkId;
-
-
     private String blockTradeId;
-
-
     private String symbol;
-
-
     private String price;
-
-
     private String qty;
-
     private String side;
-
     private String isLeverage;
-
     private PositionIdx positionIdx;
-
-
     private OrderStatus orderStatus;
-
-
     private CancelType cancelType;
-
-
     private RejectReason rejectReason;
-
-
     private String avgPrice;
-
     private String leavesQty;
-
-
     private String leavesValue;
-
-
     private String cumExecQty;
-
-
     private String cumExecValue;
-
-
     private String cumExecFee;
-
-
     private TimeInForce timeInForce;
-
-
     private String orderType;
-
-
     private StopOrderType stopOrderType;
-
-
     private String orderIv;
-
-
     private String triggerPrice;
-
-
     private String takeProfit;
-
-
     private String stopLoss;
-
-
     private String tpslMode;
-
-
     private String tpLimitPrice;
-
-
     private String slLimitPrice;
-
-
     private TriggerBy tpTriggerBy;
-
-
     private TriggerBy slTriggerBy;
-
-
     private Integer triggerDirection;
-
-
     private TriggerBy triggerBy;
-
     private String lastPriceOnCreated;
-
-
     private Boolean reduceOnly;
-
     private Boolean closeOnTrigger;
-
-
     private String placeType;
-
     private SmpType smpType;
-
-
     private Integer smpGroup;
-
-
     private String smpOrderId;
-
-
     private String createdTime;
-
     private String updatedTime;
 
     public String getOrderId() {
@@ -454,47 +383,47 @@ public class OrderEntry {
     @Override
     public String toString() {
         return new ToStringBuilder(this, BybitApiConstants.TO_STRING_BUILDER_STYLE)
-                .append("symbol", symbol)
-                .append("orderType", orderType)
-                .append("orderLinkId", orderLinkId)
-                .append("slLimitPrice", slLimitPrice)
                 .append("orderId", orderId)
-                .append("cancelType", cancelType)
-                .append("avgPrice", avgPrice)
-                .append("stopOrderType", stopOrderType)
-                .append("lastPriceOnCreated", lastPriceOnCreated)
-                .append("orderStatus", orderStatus)
-                .append("takeProfit", takeProfit)
-                .append("cumExecValue", cumExecValue)
-                .append("tpslMode", tpslMode)
-                .append("smpType", smpType)
-                .append("triggerDirection", triggerDirection)
+                .append("orderLinkId", orderLinkId)
                 .append("blockTradeId", blockTradeId)
-                .append("rejectReason", rejectReason)
-                .append("isLeverage", isLeverage)
+                .append("symbol", symbol)
                 .append("price", price)
-                .append("orderIv", orderIv)
-                .append("createdTime", createdTime)
-                .append("tpTriggerBy", tpTriggerBy)
-                .append("positionIdx", positionIdx)
-                .append("timeInForce", timeInForce)
-                .append("leavesValue", leavesValue)
-                .append("updatedTime", updatedTime)
+                .append("qty", qty)
                 .append("side", side)
-                .append("smpGroup", smpGroup)
-                .append("triggerPrice", triggerPrice)
-                .append("tpLimitPrice", tpLimitPrice)
-                .append("cumExecFee", cumExecFee)
-                .append("slTriggerBy", slTriggerBy)
+                .append("isLeverage", isLeverage)
+                .append("positionIdx", positionIdx)
+                .append("orderStatus", orderStatus)
+                .append("cancelType", cancelType)
+                .append("rejectReason", rejectReason)
+                .append("avgPrice", avgPrice)
                 .append("leavesQty", leavesQty)
+                .append("leavesValue", leavesValue)
+                .append("cumExecQty", cumExecQty)
+                .append("cumExecValue", cumExecValue)
+                .append("cumExecFee", cumExecFee)
+                .append("timeInForce", timeInForce)
+                .append("orderType", orderType)
+                .append("stopOrderType", stopOrderType)
+                .append("orderIv", orderIv)
+                .append("triggerPrice", triggerPrice)
+                .append("takeProfit", takeProfit)
+                .append("stopLoss", stopLoss)
+                .append("tpslMode", tpslMode)
+                .append("tpLimitPrice", tpLimitPrice)
+                .append("slLimitPrice", slLimitPrice)
+                .append("tpTriggerBy", tpTriggerBy)
+                .append("slTriggerBy", slTriggerBy)
+                .append("triggerDirection", triggerDirection)
+                .append("triggerBy", triggerBy)
+                .append("lastPriceOnCreated", lastPriceOnCreated)
+                .append("reduceOnly", reduceOnly)
                 .append("closeOnTrigger", closeOnTrigger)
                 .append("placeType", placeType)
-                .append("cumExecQty", cumExecQty)
-                .append("reduceOnly", reduceOnly)
-                .append("qty", qty)
-                .append("stopLoss", stopLoss)
+                .append("smpType", smpType)
+                .append("smpGroup", smpGroup)
                 .append("smpOrderId", smpOrderId)
-                .append("triggerBy", triggerBy)
+                .append("createdTime", createdTime)
+                .append("updatedTime", updatedTime)
                 .toString();
     }
 }

@@ -1,17 +1,10 @@
 package com.bybit.api.examples;
 
 import com.bybit.api.client.domain.*;
-import com.bybit.api.client.domain.market.MarketKlineInterval;
-import com.bybit.api.client.domain.market.MarketKlineResult;
-import com.bybit.api.client.domain.trade.OrderHistoryRequest;
-import com.bybit.api.client.domain.trade.OrderResult;
-import com.bybit.api.client.extension.BybitApiRestClient;
+import com.bybit.api.client.domain.trade.requests.OrderHistoryRequest;
+import com.bybit.api.client.domain.trade.response.OrderResult;
+import com.bybit.api.client.impl.BybitApiRestClient;
 import com.bybit.api.client.impl.BybitApiClientFactory;
-import retrofit2.Call;
-
-import java.util.List;
-
-import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
 
 /**
