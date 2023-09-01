@@ -14,10 +14,15 @@ import retrofit2.http.*;
  * Bybit's REST API URL mappings and endpoint security configuration.
  */
 public interface BybitApiService {
+    // Market data endpoints
+    @GET("/v5/market/kline")
+    Call<Object> getMarketLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
+                                                                @Query("startTime") Long startTime, @Query("endTime") Long endTime);
+
     // Trade
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/order/history")
-    Call<GenericResponse<OrderResult>> getHistoryOrderResult(@Query("category") String category,
+    Call<Object> getHistoryOrderResult(@Query("category") String category,
                                                         @Query("symbol") String symbol,
                                                         @Query("baseCoin") String baseCoin,
                                                         @Query("settleCoin") String settleCoin,
@@ -30,9 +35,10 @@ public interface BybitApiService {
                                                         @Query("limit") Integer limit,
                                                         @Query("cursor") String cursor);
 
+
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create")
-    Call<GenericResponse<OrderResponse>> newOrder(@Query("category") ProductType category,
+    Call<Object> newOrder(@Query("category") String category,
                                                   @Query("symbol") String symbol,
                                                   @Query("isLeverage") Integer isLeverage,
                                                   @Query("side") String side,
@@ -63,7 +69,7 @@ public interface BybitApiService {
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel")
-    Call<GenericResponse<OrderResponse>> cancelOrder(@Query("category") ProductType category,
+    Call<Object> cancelOrder(@Query("category") String category,
                                                      @Query("symbol") String symbol,
                                                      @Query("orderId") String orderId,
                                                      @Query("orderLinkId") String orderLinkId,
@@ -71,7 +77,7 @@ public interface BybitApiService {
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/amend")
-    Call<GenericResponse<OrderResponse>> amendOrder(@Query("category") ProductType category,
+    Call<Object> amendOrder(@Query("category") String category,
                                                     @Query("symbol") String symbol,
                                                     @Query("orderId") String orderId,
                                                     @Query("orderLinkId") String orderLinkId,
@@ -89,7 +95,7 @@ public interface BybitApiService {
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/order/realtime")
-    Call<GenericResponse<OrderResult>> getOpenOrders(@Query("category") ProductType category,
+    Call<Object> getOpenOrders(@Query("category") String category,
                                                      @Query("symbol") String symbol,
                                                      @Query("baseCoin") String baseCoin,
                                                      @Query("settleCoin") String settleCoin,
@@ -100,9 +106,4 @@ public interface BybitApiService {
                                                      @Query("limit") Integer limit,
                                                      @Query("cursor") String cursor);
 
-
-    // Market data endpoints
-    @GET("/v5/market/kline")
-    Call<GenericResponse<MarketKlineResult>> getMarketLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                                                      @Query("startTime") Long startTime, @Query("endTime") Long endTime);
  }

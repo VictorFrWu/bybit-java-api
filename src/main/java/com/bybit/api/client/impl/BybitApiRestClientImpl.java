@@ -8,6 +8,7 @@ import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.trade.response.OrderResponse;
 import com.bybit.api.client.domain.trade.response.OrderResult;
 import com.bybit.api.client.service.BybitApiService;
+import retrofit2.Call;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
@@ -25,18 +26,18 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
 
     // Market Data endpoints
     @Override
-    public GenericResponse<MarketKlineResult> getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, Integer limit, Long startTime, Long endTime) {
+    public Object getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, Integer limit, Long startTime, Long endTime) {
         return executeSync(
                 bybitApiService.getMarketLinesData(category.getProductTypeId(), symbol, interval.getIntervalId(), limit, startTime, endTime));
     }
 
     @Override
-    public GenericResponse<MarketKlineResult>  getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval) {
+    public Object  getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval) {
         return getMarketLinesData(category, symbol, interval, null, null, null);
     }
 
     @Override
-    public GenericResponse<OrderResult> getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest) {
+    public Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest) {
         return executeSync(bybitApiService.getHistoryOrderResult(
                 orderHistoryRequest.getCategory().getProductTypeId(),
                 orderHistoryRequest.getSymbol(),
@@ -53,9 +54,9 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public GenericResponse<OrderResponse> newOrder(NewOrderRequest order) {
+    public Object newOrder(NewOrderRequest order) {
         return executeSync(bybitApiService.newOrder(
-                order.getCategory(),
+                order.getCategory().getProductTypeId(),
                 order.getSymbol(),
                 order.getIsLeverage(),
                 order.getSide(),
@@ -87,9 +88,9 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public GenericResponse<OrderResponse> amendOrder(AmendOrderRequest order) {
+    public Object amendOrder(AmendOrderRequest order) {
         return executeSync(bybitApiService.amendOrder(
-                order.getCategory(),
+                order.getCategory().getProductTypeId(),
                 order.getSymbol(),
                 order.getOrderId(),
                 order.getOrderLinkId(),
@@ -108,9 +109,9 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public GenericResponse<OrderResponse> cancelOrder(CancelOrderRequest order) {
+    public Object cancelOrder(CancelOrderRequest order) {
         return executeSync(bybitApiService.cancelOrder(
-                order.getCategory(),
+                order.getCategory().getProductTypeId(),
                 order.getSymbol(),
                 order.getOrderId(),
                 order.getOrderLinkId(),
@@ -119,9 +120,9 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public GenericResponse<OrderResult> getOpenOrders(OpenOrderRequest order) {
+    public Object getOpenOrders(OpenOrderRequest order) {
         return executeSync(bybitApiService.getOpenOrders(
-                order.getCategory(),
+                order.getCategory().getProductTypeId(),
                 order.getSymbol(),
                 order.getBaseCoin(),
                 order.getSettleCoin(),

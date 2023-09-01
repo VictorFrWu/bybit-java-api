@@ -16,7 +16,7 @@ public class MarketDataEndpointsExample {
         BybitApiRestClient client = factory.newRestClient();
 
         // Weekly candlestick bars for a symbol
-        GenericResponse<MarketKlineResult> marketKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketKlineInterval.WEEKLY);
-        System.out.println(marketKlineResult.getResult());
+        var marketKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketKlineInterval.WEEKLY);
+        System.out.println(marketKlineResult);
     }
 }

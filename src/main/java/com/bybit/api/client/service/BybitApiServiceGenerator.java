@@ -4,7 +4,6 @@ import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.exception.BybitApiException;
-import com.bybit.api.client.service.BybitApiService;
 import com.bybit.api.client.security.AuthenticationInterceptor;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
@@ -84,9 +83,9 @@ public class BybitApiServiceGenerator {
     /**
      * Execute a REST call and block until the response is received.
      */
-    public static <T> GenericResponse<T> executeSync(Call<GenericResponse<T>> call) {
+    public static <T> Object executeSync(Call<T> call) {
         try {
-            Response<GenericResponse<T>> response = call.execute();
+            var response = call.execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {

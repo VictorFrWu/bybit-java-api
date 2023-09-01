@@ -1,7 +1,9 @@
 package com.bybit.api.client.domain;
 
+import com.bybit.api.client.constant.BybitApiConstants;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GenericResponse<T> {
@@ -39,8 +41,9 @@ public class GenericResponse<T> {
     }
 
     public T getResult() {
-        return result;
+        return result != null ? result : (T) "";
     }
+
 
     public void setResult(T result) {
         this.result = result;
@@ -60,5 +63,16 @@ public class GenericResponse<T> {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return  new ToStringBuilder(this, BybitApiConstants.TO_STRING_BUILDER_STYLE)
+                .append("retCode",retCode)
+                .append("retMsg",retMsg)
+                .append("result",result)
+                .append("retExtInfo",retExtInfo)
+                .append("time",time)
+                .toString();
     }
 }

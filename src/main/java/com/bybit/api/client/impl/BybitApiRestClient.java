@@ -23,26 +23,24 @@ public interface BybitApiRestClient {
      * @param endTime Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
      * @return a candlestick bar for the given symbol and interval
      */
-    GenericResponse<MarketKlineResult> getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, Integer limit, Long startTime, Long endTime);
+    Object getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, Integer limit, Long startTime, Long endTime);
 
     /**
      * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
      *
      * @see #getMarketLinesData(ProductType, String, MarketKlineInterval, Integer, Long, Long)
      */
-    GenericResponse<MarketKlineResult> getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval);
+    Object getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval);
+
 
     // Trade
-
-
-
     /**
      * Get all account orders; active, canceled, or filled.
      *
      * @param orderHistoryRequest order request parameters
      * @return a list of all history orders 2 years
      */
-    GenericResponse<OrderResult> getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest);
+    Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest);
 
     /**
      * This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.
@@ -86,7 +84,7 @@ public interface BybitApiRestClient {
      * @param order the new order to submit.
      * @return a response containing details about the newly placed order.
      */
-    GenericResponse<OrderResponse> newOrder(NewOrderRequest order);
+    Object newOrder(NewOrderRequest order);
 
     /**
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract / Option
@@ -98,7 +96,7 @@ public interface BybitApiRestClient {
      * @param order the existed order to amend.
      * @return a response containing details about the newly placed order.
      */
-    GenericResponse<OrderResponse> amendOrder(AmendOrderRequest order);
+    Object amendOrder(AmendOrderRequest order);
 
     /**
      * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
@@ -112,7 +110,7 @@ public interface BybitApiRestClient {
      * @param order the existed order to cancel.
      * @return a response containing details about the newly placed order.
      */
-    GenericResponse<OrderResponse> cancelOrder(CancelOrderRequest order);
+    Object cancelOrder(CancelOrderRequest order);
 
 
     /**
@@ -129,5 +127,5 @@ public interface BybitApiRestClient {
      * @param order get all real time open orders
      * @return
      */
-    GenericResponse<OrderResult> getOpenOrders(OpenOrderRequest order);
+    Object getOpenOrders(OpenOrderRequest order);
 }

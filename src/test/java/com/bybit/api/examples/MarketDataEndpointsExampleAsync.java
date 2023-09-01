@@ -14,6 +14,6 @@ public class MarketDataEndpointsExampleAsync {
 
         // Weekly candlestick bars for a symbol
         client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketKlineInterval.WEEKLY,
-                (GenericResponse<MarketKlineResult> response) -> System.out.println(response.getResult()));
+                System.out::println);
     }
 }

@@ -2,15 +2,12 @@ package com.bybit.api.client.security;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.constant.Util;
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.*;
 import okio.Buffer;
 import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.bybit.api.client.security.HmacSHA256Signer.sign;
@@ -40,31 +37,39 @@ public class AuthenticationInterceptor implements Interceptor {
                 .removeHeader(BybitApiConstants.SIGN_HEADER);
 
         // Endpoint requires signing the payload
-        if (isApiKeyRequired || isSignatureRequired) {
-            String payload = "";
-            if ("GET".equals(original.method())) {
-                payload = original.url().query();
-            } else if ("POST".equals(original.method())) {
-                if (original.body() != null) {
-                    Buffer buffer = new Buffer();
-                    original.body().writeTo(buffer);
-                    payload = buffer.readUtf8();
-                }
-            }
+        String payload = "";
+        if ("GET".equals(original.method())) {
+            payload = original.url().query(); // extract query params
+            newRequestBuilder.get();
+        }else if ("POST".equals(original.method()) && original.body() != null) {
+            // Extract JSON payload from POST request
+            payload = original.url().query();
 
-            if (!StringUtils.isEmpty(payload)) {
-                long timestamp = Util.generateTimestamp();
-                String signature = sign(apiKey, secret, payload, timestamp, BybitApiConstants.DEFAULT_RECEIVING_WINDOW);
-                newRequestBuilder.addHeader(BybitApiConstants.API_KEY_HEADER, apiKey);
-                newRequestBuilder.addHeader(BybitApiConstants.SIGN_HEADER, signature);
-                newRequestBuilder.addHeader(BybitApiConstants.SIGN_TYPE_HEADER, BybitApiConstants.DEFAULT_SIGNATURE_TYPE);
-                newRequestBuilder.addHeader(BybitApiConstants.TIMESTAMP_HEADER, String.valueOf(timestamp));
-                newRequestBuilder.addHeader(BybitApiConstants.RECV_WINDOW_HEADER, String.valueOf(BybitApiConstants.DEFAULT_RECEIVING_WINDOW));
-                newRequestBuilder.addHeader(BybitApiConstants.API_CONTENT_TYPE, BybitApiConstants.DEFAULT_CONTENT_TYPE);
-            }
+            // Convert query parameters into a JSON payload
+            Map<String, Object> paramsMap = Util.convertQueryToMap(payload);
+            ObjectMapper objectMapper = new ObjectMapper();
+            payload = objectMapper.writeValueAsString(paramsMap);
+
+            // Remove query parameters from URL
+            HttpUrl newUrl = original.url().newBuilder()
+                    .query(null)
+                    .build();
+            newRequestBuilder.url(newUrl);
+
+            MediaType mediaType = MediaType.parse("application/json");
+            newRequestBuilder.post(RequestBody.create(mediaType, payload)); // set new POST body
         }
 
-        // Build new request after adding the necessary authentication information
+        if ((isApiKeyRequired || isSignatureRequired) && !StringUtils.isEmpty(payload)) {
+            long timestamp = Util.generateTimestamp();
+            String signature = sign(apiKey, secret, payload, timestamp, BybitApiConstants.DEFAULT_RECEIVING_WINDOW);
+            newRequestBuilder.addHeader(BybitApiConstants.API_KEY_HEADER, apiKey);
+            newRequestBuilder.addHeader(BybitApiConstants.SIGN_HEADER, signature);
+            newRequestBuilder.addHeader(BybitApiConstants.SIGN_TYPE_HEADER, BybitApiConstants.DEFAULT_SIGNATURE_TYPE);
+            newRequestBuilder.addHeader(BybitApiConstants.TIMESTAMP_HEADER, String.valueOf(timestamp));
+            newRequestBuilder.addHeader(BybitApiConstants.RECV_WINDOW_HEADER, String.valueOf(BybitApiConstants.DEFAULT_RECEIVING_WINDOW));
+            newRequestBuilder.addHeader(BybitApiConstants.API_CONTENT_TYPE, BybitApiConstants.DEFAULT_CONTENT_TYPE);
+        }
         Request newRequest = newRequestBuilder.build();
         return chain.proceed(newRequest);
     }

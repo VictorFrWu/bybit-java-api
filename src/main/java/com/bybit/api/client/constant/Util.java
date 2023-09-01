@@ -1,7 +1,9 @@
 package com.bybit.api.client.constant;
 
+import java.util.HashMap;
 import java.util.List;
 import java.time.Instant;
+import java.util.Map;
 
 /**
  * Utility class
@@ -31,5 +33,21 @@ public final class Util {
             if (symbol.equals(fiat)) return true;
         }
         return false;
+    }
+
+    public static Map<String, Object> convertQueryToMap(String query) {
+        Map<String, Object> result = new HashMap<>();
+        if (query == null || query.isEmpty()) {
+            return result;
+        }
+
+        for (String param : query.split("&")) {
+            String[] entry = param.split("=");
+            if (entry.length > 1) {
+                result.put(entry[0], entry[1]);
+            }
+        }
+
+        return result;
     }
 }

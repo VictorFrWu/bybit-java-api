@@ -2,14 +2,19 @@ package com.bybit.api.client.domain.trade.response;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonPropertyOrder()
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderResponse {
+    @JsonProperty("orderId")
     private String orderId;
+    @JsonProperty("orderLinkId")
     private String orderLinkId;
+
+    public OrderResponse() {}
 
     public OrderResponse(String orderId, String orderLinkId) {
         this.orderId = orderId;

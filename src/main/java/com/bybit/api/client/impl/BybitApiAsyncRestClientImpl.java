@@ -22,12 +22,12 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     // Market Data endpoints
 
     @Override
-    public void getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, Integer limit, Long startTime, Long endTime, BybitApiCallback<GenericResponse<MarketKlineResult>> callback) {
-        bybitApiService.getMarketLinesData(category.getProductTypeId(), symbol, interval.getIntervalId(), limit, startTime, endTime).enqueue(new BybitApiCallbackAdapter<>(callback));
+    public void getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, Integer limit, Long startTime, Long endTime, BybitApiCallback<Object> callback) {
+        bybitApiService.getMarketLinesData(category.getProductTypeId(), symbol, interval.getIntervalId(), limit, startTime, endTime).enqueue(new BybitApiCallbackAdapter<Object>(callback));
     }
 
     @Override
-    public void getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, BybitApiCallback<GenericResponse<MarketKlineResult>> callback) {
+    public void getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, BybitApiCallback<Object> callback) {
         getMarketLinesData(category, symbol, interval, null, null, null, callback);
     }
 }
