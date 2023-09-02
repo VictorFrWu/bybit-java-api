@@ -2,9 +2,7 @@ package com.bybit.api.examples;
 
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.impl.BybitApiClientFactory;
-import com.bybit.api.client.domain.GenericResponse;
-import com.bybit.api.client.domain.market.MarketKlineInterval;
-import com.bybit.api.client.domain.market.MarketKlineResult;
+import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.impl.BybitApiAsyncRestClient;
 
 public class MarketDataEndpointsExampleAsync {
@@ -13,7 +11,7 @@ public class MarketDataEndpointsExampleAsync {
         BybitApiAsyncRestClient client = factory.newAsyncRestClient();
 
         // Weekly candlestick bars for a symbol
-        client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketKlineInterval.WEEKLY,
+        client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY,
                 System.out::println);
     }
 }

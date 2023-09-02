@@ -1,8 +1,6 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.domain.GenericResponse;
-import com.bybit.api.client.domain.market.MarketKlineResult;
-import com.bybit.api.client.domain.market.MarketKlineInterval;
+import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 
 /**
@@ -21,12 +19,12 @@ public interface BybitApiAsyncRestClient {
      * @param endTime Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
      * @param callback the callback that handles the response containing a candlestick bar for the given symbol and interval
      */
-    void getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, Integer limit, Long startTime, Long endTime, BybitApiCallback<Object> callback);
+    void getMarketLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime, BybitApiCallback<Object> callback);
 
     /**
      * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
      *
-     * @see #getMarketLinesData(ProductType, String, MarketKlineInterval, BybitApiCallback)
+     * @see #getMarketLinesData(ProductType, String, MarketInterval, BybitApiCallback)
      */
-    void getMarketLinesData(ProductType category, String symbol, MarketKlineInterval interval, BybitApiCallback<Object> callback);
+    void getMarketLinesData(ProductType category, String symbol, MarketInterval interval, BybitApiCallback<Object> callback);
 }

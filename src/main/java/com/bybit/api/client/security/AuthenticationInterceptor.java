@@ -42,14 +42,19 @@ public class AuthenticationInterceptor implements Interceptor {
             payload = original.url().query(); // extract query params
             newRequestBuilder.get();
         }else if ("POST".equals(original.method()) && original.body() != null) {
-            // Extract JSON payload from POST request
-            payload = original.url().query();
+            Buffer buffer = new Buffer();
+            original.body().writeTo(buffer);
+            payload = buffer.readUtf8();
+            if(StringUtils.isEmpty(payload))
+            {
+                // Extract JSON payload from POST request
+                payload = original.url().query();
 
-            // Convert query parameters into a JSON payload
-            Map<String, Object> paramsMap = Util.convertQueryToMap(payload);
-            ObjectMapper objectMapper = new ObjectMapper();
-            payload = objectMapper.writeValueAsString(paramsMap);
-
+                // Convert query parameters into a JSON payload
+                Map<String, Object> paramsMap = Util.convertQueryToMap(payload);
+                ObjectMapper objectMapper = new ObjectMapper();
+                payload = objectMapper.writeValueAsString(paramsMap);
+            }
             // Remove query parameters from URL
             HttpUrl newUrl = original.url().newBuilder()
                     .query(null)
@@ -60,9 +65,9 @@ public class AuthenticationInterceptor implements Interceptor {
             newRequestBuilder.post(RequestBody.create(mediaType, payload)); // set new POST body
         }
 
-        if ((isApiKeyRequired || isSignatureRequired) && !StringUtils.isEmpty(payload)) {
+        if (isApiKeyRequired || isSignatureRequired) {
             long timestamp = Util.generateTimestamp();
-            String signature = sign(apiKey, secret, payload, timestamp, BybitApiConstants.DEFAULT_RECEIVING_WINDOW);
+            String signature = sign(apiKey, secret, StringUtils.isEmpty(payload) ? ""  : payload, timestamp, BybitApiConstants.DEFAULT_RECEIVING_WINDOW);
             newRequestBuilder.addHeader(BybitApiConstants.API_KEY_HEADER, apiKey);
             newRequestBuilder.addHeader(BybitApiConstants.SIGN_HEADER, signature);
             newRequestBuilder.addHeader(BybitApiConstants.SIGN_TYPE_HEADER, BybitApiConstants.DEFAULT_SIGNATURE_TYPE);

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Kline/Candlestick intervals.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public enum MarketKlineInterval {
+public enum MarketInterval {
     ONE_MINUTE("1"),
     THREE_MINUTES("3"),
     FIVE_MINUTES("5"),
@@ -23,7 +23,7 @@ public enum MarketKlineInterval {
 
     private final String intervalId;
 
-    MarketKlineInterval(String intervalId) {
+    MarketInterval(String intervalId) {
         this.intervalId = intervalId;
     }
 

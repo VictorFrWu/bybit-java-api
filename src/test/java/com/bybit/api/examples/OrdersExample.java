@@ -1,9 +1,7 @@
 package com.bybit.api.examples;
 
 import com.bybit.api.client.domain.*;
-import com.bybit.api.client.domain.trade.requests.NewOrderRequest;
-import com.bybit.api.client.domain.trade.requests.OpenOrderRequest;
-import com.bybit.api.client.domain.trade.requests.OrderHistoryRequest;
+import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.trade.response.OrderResponse;
 import com.bybit.api.client.domain.trade.response.OrderResult;
 import com.bybit.api.client.impl.BybitApiRestClient;
@@ -28,6 +26,19 @@ public class OrdersExample {
         NewOrderRequest newOrderRequest = new NewOrderRequest.Builder(ProductType.SPOT, "XRPUSDT", "Buy", "Market", "10").build();
         var newOrder = client.newOrder(newOrderRequest);
         System.out.println(newOrder);
+
+        // Create an AmendOrderRequest
+        AmendOrderRequest amendOrderRequest = new AmendOrderRequest.Builder(ProductType.LINEAR, "XRPUSDT")
+                .price("0.5")  // setting a new price, for example
+                .qty("15")  // and a new quantity
+                .build();
+        var amendedOrder = client.amendOrder(amendOrderRequest);
+        System.out.println(amendedOrder);
+
+        // Create a CancelOrderRequest
+        CancelOrderRequest cancelOrderRequest = new CancelOrderRequest.Builder(ProductType.SPOT, "XRPUSDT").build();
+        var canceledOrder = client.cancelOrder(cancelOrderRequest);
+        System.out.println(canceledOrder);
 
         // Get all real time orders
         OpenOrderRequest openOrderRequest = new OpenOrderRequest.Builder(ProductType.SPOT).build();

@@ -6,7 +6,8 @@ package com.bybit.api.client.domain;
 public enum ProductType {
     SPOT("spot"),
     LINEAR("linear"),
-    INVERSE("inverse");
+    INVERSE("inverse"),
+    OPTION("option");
     private final String productTypeId;
 
     ProductType(String productTypeId) {
