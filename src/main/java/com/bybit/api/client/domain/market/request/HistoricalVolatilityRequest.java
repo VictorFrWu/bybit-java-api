@@ -10,10 +10,11 @@
  import com.bybit.api.client.domain.ProductType;
  import lombok.Getter;
  import lombok.Setter;
- import org.apache.commons.lang3.builder.ToStringBuilder;
+ import lombok.ToString;
 
  @Getter
  @Setter
+ @ToString
  public class HistoricalVolatilityRequest {
      private ProductType category;
      private String baseCoin;
@@ -63,16 +64,5 @@
          public HistoricalVolatilityRequest build() {
              return new HistoricalVolatilityRequest(this);
          }
-     }
-
-     @Override
-     public String toString() {
-         return new ToStringBuilder(this)
-                 .append("category", category.getProductTypeId())
-                 .append("baseCoin", baseCoin)
-                 .append("period", period)
-                 .append("startTime", startTime)
-                 .append("endTime", endTime)
-                 .toString();
      }
  }

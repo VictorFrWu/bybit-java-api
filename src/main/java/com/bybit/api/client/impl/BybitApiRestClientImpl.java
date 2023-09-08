@@ -161,8 +161,6 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
         );
     }
 
-
-    // Trade endpoints
     @Override
     public Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest) {
         return executeSync(bybitApiService.getHistoryOrderResult(
@@ -180,6 +178,37 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 orderHistoryRequest.getCursor()));
     }
 
+    @Override
+    public Object getInsurance(String coin) {
+        return executeSync(bybitApiService.getInsurance(coin));
+    }
+
+    @Override
+    public Object getInsurance() {
+        return executeSync(bybitApiService.getInsurance());
+    }
+
+    @Override
+    public Object getRiskLimit(ProductType category) {
+        return executeSync(bybitApiService.getRiskLimit(category.getProductTypeId()));
+    }
+
+    @Override
+    public Object getRiskLimit(ProductType category, String symbol) {
+        return executeSync(bybitApiService.getRiskLimit(category.getProductTypeId(), symbol));
+    }
+
+    @Override
+    public Object getDeliveryPrice(DeliveryPriceRequest deliveryPriceRequest) {
+        return executeSync(bybitApiService.getDeliveryPrice(deliveryPriceRequest.getCategory().getProductTypeId(),
+                deliveryPriceRequest.getSymbol(),
+                deliveryPriceRequest.getBaseCoin(),
+                deliveryPriceRequest.getLimit(),
+                deliveryPriceRequest.getCursor()
+        ));
+    }
+
+    // Trade Data endpoints
     @Override
     public Object newOrder(NewOrderRequest order) {
         return executeSync(bybitApiService.newOrder(
@@ -280,7 +309,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 subUserRequest.getPassword(),
                 subUserRequest.getMemberType(),
                 subUserRequest.getSwitchOption(),
-                subUserRequest.getUta(),
+                subUserRequest.getIsUta(),
                 subUserRequest.getNote()
         ));
     }

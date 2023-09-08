@@ -10,13 +10,13 @@
 package com.bybit.api.client.domain.market.request;
 
 import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.domain.market.MarketInterval;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class OpenInterestRequest {
     private final ProductType category;
     private final String symbol;
@@ -74,18 +74,5 @@ public class OpenInterestRequest {
         public OpenInterestRequest build() {
             return new OpenInterestRequest(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("category", category.getProductTypeId())
-                .append("symbol", symbol)
-                .append("intervalTime", intervalTime)
-                .append("startTime", startTime)
-                .append("endTime", endTime)
-                .append("limit", limit)
-                .append("cursor", cursor)
-                .toString();
     }
 }

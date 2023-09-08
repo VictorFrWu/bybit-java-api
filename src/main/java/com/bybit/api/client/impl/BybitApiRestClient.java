@@ -221,6 +221,37 @@ public interface BybitApiRestClient {
     Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest);
 
     /**
+     * Get Insurance
+     * Query for Bybit insurance pool data (BTC/USDT/USDC etc). The data is updated every 24 hours.
+     * @param coin
+     * @return
+     */
+    Object getInsurance(String coin);
+    Object getInsurance();
+
+    /**
+     * Get Risk Limit
+     * Query for the risk limit.
+     *
+     * Covers: USDT perpetual / USDC contract / Inverse contract
+     * @param category
+     * @param symbol
+     * @return
+     */
+    Object getRiskLimit(ProductType category, String symbol);
+    Object getRiskLimit(ProductType category);
+
+    /**
+     * Get Delivery Price
+     * Get the delivery price.
+     *
+     * Covers: USDC futures / Inverse futures / Option
+     * @param deliveryPriceRequest
+     * @return
+     */
+    Object getDeliveryPrice(DeliveryPriceRequest deliveryPriceRequest);
+
+    /**
      * This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.
      * <p>
      * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
@@ -289,7 +320,6 @@ public interface BybitApiRestClient {
      * @return a response containing details about the newly placed order.
      */
     Object cancelOrder(CancelOrderRequest order);
-
 
     /**
      * Query unfilled or partially filled orders in real-time. To query older order records, please use the order history interface.

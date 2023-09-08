@@ -10,10 +10,11 @@ package com.bybit.api.client.domain.market.request;
 import com.bybit.api.client.domain.ProductType;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class FundingHistoryRequest {
     private final ProductType category;
     private final String symbol;
@@ -61,15 +62,5 @@ public class FundingHistoryRequest {
         }
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("category", category)
-                .append("symbol", symbol)
-                .append("startTime", startTime)
-                .append("endTime", endTime)
-                .append("limit", limit)
-                .toString();
-    }
 }
 

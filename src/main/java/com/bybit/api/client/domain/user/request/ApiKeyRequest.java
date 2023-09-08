@@ -97,29 +97,6 @@ public class ApiKeyRequest {
     @Getter
     @Setter
     public static class Permissions {
-        /*
-        private List<String> contractTrade;
-        private List<String> spot;
-        private List<String> wallet;
-        private List<String> options;
-        private List<String> derivatives;
-        private List<String> exchange;
-        private List<String> copyTrading;
-        private List<String> blockTrade;
-        private List<String> nft;
-
-        public Permissions(Map<String, List<String>> permissionMap) {
-            this.contractTrade = permissionMap.getOrDefault("ContractTrade", List.of());
-            this.spot = permissionMap.getOrDefault("Spot", List.of());
-            this.wallet = permissionMap.getOrDefault("Wallet", List.of());
-            this.options = permissionMap.getOrDefault("Options", List.of());
-            this.derivatives = permissionMap.getOrDefault("Derivatives", List.of());
-            this.exchange = permissionMap.getOrDefault("Exchange", List.of());
-            this.copyTrading = permissionMap.getOrDefault("CopyTrading", List.of());
-            this.blockTrade = permissionMap.getOrDefault("BlockTrade", List.of());
-            this.nft = permissionMap.getOrDefault("NFT", List.of());
-        }
-        */
         private final Map<String, List<String>> permissionMap;
 
         public Permissions(Map<String, List<String>> permissionMap) {

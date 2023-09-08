@@ -2,9 +2,9 @@ package com.bybit.api.client.service;
 
 import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.config.BybitApiConfig;
-import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.exception.BybitApiException;
 import com.bybit.api.client.security.AuthenticationInterceptor;
+import lombok.Getter;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -24,6 +24,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class BybitApiServiceGenerator {
 
+    /**
+     * -- GETTER --
+     *  Returns the shared OkHttpClient instance.
+     */
+    @Getter
     private static final OkHttpClient sharedClient;
     private static final Converter.Factory converterFactory = JacksonConverterFactory.create();
 
@@ -105,12 +110,5 @@ public class BybitApiServiceGenerator {
             return errorBodyConverter.convert(response.errorBody());
         }
             return new BybitApiError();
-    }
-
-    /**
-     * Returns the shared OkHttpClient instance.
-     */
-    public static OkHttpClient getSharedClient() {
-        return sharedClient;
     }
 }

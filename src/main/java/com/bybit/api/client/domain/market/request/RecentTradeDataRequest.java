@@ -12,10 +12,11 @@ package com.bybit.api.client.domain.market.request;
 import com.bybit.api.client.domain.ProductType;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class RecentTradeDataRequest {
     private ProductType category;
     private String symbol;
@@ -65,16 +66,5 @@ public class RecentTradeDataRequest {
         public RecentTradeDataRequest build() {
             return new RecentTradeDataRequest(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("category", category.getProductTypeId())
-                .append("symbol", symbol)
-                .append("baseCoin", baseCoin)
-                .append("optionType", optionType)
-                .append("limit", limit)
-                .toString();
     }
 }

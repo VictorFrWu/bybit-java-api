@@ -1,13 +1,3 @@
-/**
- * category	true	string	Product type. spot,linear,inverse,option
- * symbol	false	string	Symbol name
- * status	false	string	Symbol status filter
- * spot/linear/inverse has Trading only
- * baseCoin	false	string	Base coin. linear,inverse,option only
- * For option, it returns BTC by default
- * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 500
- * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
- */
 package com.bybit.api.client.domain.market.request;
 
 import com.bybit.api.client.domain.ProductType;
@@ -18,19 +8,16 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class InstrumentInfoRequest {
-
-    private final ProductType category;  // Required
+public class DeliveryPriceRequest {
+    private final ProductType category;
     private final String symbol;
-    private final String status;
     private final String baseCoin;
     private final Integer limit;
     private final String cursor;
 
-    private InstrumentInfoRequest(Builder builder) {
+    private DeliveryPriceRequest(Builder builder) {
         this.category = builder.category;
         this.symbol = builder.symbol;
-        this.status = builder.status;
         this.baseCoin = builder.baseCoin;
         this.limit = builder.limit;
         this.cursor = builder.cursor;
@@ -39,9 +26,8 @@ public class InstrumentInfoRequest {
     public static class Builder {
         private final ProductType category;
         private String symbol;
-        private String status;
-        private String baseCoin;
-        private Integer limit;
+        private String baseCoin;  // Defaulting to BTC
+        private Integer limit;  // Defaulting to 50
         private String cursor;
 
         public Builder(ProductType category) {
@@ -50,11 +36,6 @@ public class InstrumentInfoRequest {
 
         public Builder symbol(String symbol) {
             this.symbol = symbol;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status;
             return this;
         }
 
@@ -73,8 +54,8 @@ public class InstrumentInfoRequest {
             return this;
         }
 
-        public InstrumentInfoRequest build() {
-            return new InstrumentInfoRequest(this);
+        public DeliveryPriceRequest build() {
+            return new DeliveryPriceRequest(this);
         }
     }
 }

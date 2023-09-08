@@ -16,19 +16,19 @@ import java.util.List;
 public interface BybitApiService {
     // Market data endpoints
     /*
-    * to do : insurance ; risk limit and delivery price
-    * */
+     * to do : insurance ; risk limit and delivery price
+     * */
     @GET("/v5/market/kline")
     Call<Object> getMarketLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
                                     @Query("startTime") Long startTime, @Query("endTime") Long endTime);
 
     @GET("/v5/market/mark-price-kline")
     Call<Object> getMarketPriceLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                    @Query("startTime") Long startTime, @Query("endTime") Long endTime);
+                                         @Query("startTime") Long startTime, @Query("endTime") Long endTime);
 
     @GET("/v5/market/index-price-kline")
     Call<Object> getIndexPriceLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                    @Query("startTime") Long startTime, @Query("endTime") Long endTime);
+                                        @Query("startTime") Long startTime, @Query("endTime") Long endTime);
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/market/time")
@@ -36,18 +36,21 @@ public interface BybitApiService {
 
     @GET("/v5/market/premium-index-price-kline")
     Call<Object> getPremiumIndexPriceLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                        @Query("startTime") Long startTime, @Query("endTime") Long endTime);
+                                               @Query("startTime") Long startTime, @Query("endTime") Long endTime);
 
     @GET("/v5/market/instruments-info")
     Call<Object> getInstrumentsInfo(@Query("category") String category, @Query("symbol") String symbol, @Query("status") String status, @Query("baseCoin") String baseCoin,
-                                               @Query("limit") Integer limit, @Query("cursor") String cursor);
+                                    @Query("limit") Integer limit, @Query("cursor") String cursor);
 
     @GET("/v5/market/orderbook")
     Call<Object> getMarketOrderbook(@Query("category") String category, @Query("symbol") String symbol, @Query("limit") Integer limit);
+
     @GET("/v5/market/orderbook")
     Call<Object> getMarketOrderbook(@Query("category") String category, @Query("symbol") String symbol);
+
     @GET("/v5/market/tickers")
     Call<Object> getMarketTickers(@Query("category") String category, @Query("symbol") String symbol);
+
     @GET("/v5/market/tickers")
     Call<Object> getMarketTickers(@Query("category") String category, @Query("symbol") String symbol, @Query("baseCoin") String baseCoin, @Query("expDate") String expDate);
 
@@ -84,6 +87,26 @@ public interface BybitApiService {
             @Query("period") Integer period,
             @Query("startTime") Long startTime,
             @Query("endTime") Long endTime);
+
+    @GET("/v5/market/insurance")
+    Call<Object> getInsurance(@Query("coin") String coin);
+
+    @GET("/v5/market/insurance")
+    Call<Object> getInsurance();
+
+    @GET("/v5/market/risk-limit")
+    Call<Object> getRiskLimit(@Query("category") String category);
+
+    @GET("/v5/market/risk-limit")
+    Call<Object> getRiskLimit(@Query("category") String category,
+                              @Query("symbol") String symbol);
+
+    @GET("/v5/market/delivery-price")
+    Call<Object> getDeliveryPrice(@Query("category") String category,
+                                  @Query("symbol") String symbol,
+                                  @Query("symbol") String baseCoin,
+                                  @Query("symbol") Integer limit,
+                                  @Query("symbol") String cursor);
 
     // Trade
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)

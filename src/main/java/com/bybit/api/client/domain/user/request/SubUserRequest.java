@@ -1,8 +1,12 @@
 package com.bybit.api.client.domain.user.request;
 
 import com.bybit.api.client.constant.BybitApiConstants;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Getter
+@Setter
 public class SubUserRequest {
 
     private final String username; // required
@@ -69,30 +73,6 @@ public class SubUserRequest {
                 .append("isUta", isUta)
                 .append("note", note)
                 .toString();
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getMemberType() {
-        return memberType;
-    }
-
-    public Integer getSwitchOption() {
-        return switchOption;
-    }
-
-    public Boolean getUta() {
-        return isUta;
-    }
-
-    public String getNote() {
-        return note;
     }
 }
 

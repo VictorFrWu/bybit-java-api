@@ -14,6 +14,7 @@ public class MarketDataEndpointsExample {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
         BybitApiRestClient client = factory.newRestClient();
 
+/*
         // Weekly candlestick bars for a symbol
         var marketKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
         System.out.println(marketKlineResult);
@@ -74,5 +75,26 @@ public class MarketDataEndpointsExample {
         var historicalVolatilityRequest = new HistoricalVolatilityRequest.Builder(ProductType.OPTION).period(7).build();
         var historicalVolatilityResponse = client.getHistoricalVolatility(historicalVolatilityRequest);
         System.out.println(historicalVolatilityResponse);
+
+        // Get Insurance data
+        var insuranceData = client.getInsurance("BTC"); // BTC Insurance
+        System.out.println(insuranceData);
+        var instanceAllData = client.getInsurance();
+        System.out.println(instanceAllData);
+
+        // Get Risk Limit
+        var riskLimitData = client.getRiskLimit(ProductType.INVERSE, "ADAUSD");
+        System.out.println(riskLimitData);
+        var riskLimitALLData = client.getRiskLimit(ProductType.INVERSE);
+        System.out.println(riskLimitALLData);
+*/
+
+        // Get delivery price
+        var deliveryPriceRequest = new DeliveryPriceRequest.Builder(ProductType.OPTION)
+                .baseCoin("BTC")
+                .limit(10)
+                .build();
+        var deliveryPriceData = client.getDeliveryPrice(deliveryPriceRequest);
+        System.out.println(deliveryPriceData);
     }
 }
