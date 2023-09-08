@@ -3,6 +3,8 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
+import com.bybit.api.client.domain.position.request.PositionListRequest;
+import com.bybit.api.client.domain.position.request.SetLeverageRequest;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
@@ -420,4 +422,28 @@ public interface BybitApiRestClient {
      * Any transaction volume data related to commission settlement is subject to the Affiliate Portal.
      */
     Object getAffiliateUserInfo(String uid);
+
+    // Position Data
+
+    /**
+     * Get Position Info
+     * Query real-time position data, such as position size, cumulative realizedPNL.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract / Options
+     * Normal account covers: USDT perpetual / Inverse contract
+     * @param positionListRequest
+     * @return
+     */
+    Object getPositionInfo(PositionListRequest positionListRequest);
+
+    /**
+     * Set Leverage
+     * Set the leverage
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     * @param setLeverageRequest
+     * @return
+     */
+    Object setPositionLeverage(SetLeverageRequest setLeverageRequest);
 }

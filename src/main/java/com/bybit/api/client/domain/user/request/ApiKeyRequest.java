@@ -1,16 +1,16 @@
 package com.bybit.api.client.domain.user.request;
 
-import com.bybit.api.client.constant.BybitApiConstants;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
+@ToString
 public class ApiKeyRequest {
 
     private final Integer subuid; // required
@@ -18,26 +18,6 @@ public class ApiKeyRequest {
     private final Integer readOnly; // required
     private final List<String> ips;
     private final Permissions permissions; // required
-
-    public Integer getSubuid() {
-        return subuid;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public Integer getReadOnly() {
-        return readOnly;
-    }
-
-    public List<String> getIps() {
-        return ips;
-    }
-
-    public Permissions getPermissions() {
-        return permissions;
-    }
 
     private ApiKeyRequest(Builder builder) {
         this.subuid = builder.subuid;
@@ -47,20 +27,7 @@ public class ApiKeyRequest {
         this.permissions = builder.permissions;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, BybitApiConstants.TO_STRING_BUILDER_STYLE)
-                .append("subuid", subuid)
-                .append("note", note)
-                .append("readOnly", readOnly)
-                .append("ips", ips)
-                .append("permissions", permissions)
-                .toString();
 
-    }
-
-    @Getter
-    @Setter
     public static class Builder {
         private Integer subuid;
         private String note;
@@ -94,8 +61,6 @@ public class ApiKeyRequest {
         }
     }
 
-    @Getter
-    @Setter
     public static class Permissions {
         private final Map<String, List<String>> permissionMap;
 
@@ -108,7 +73,6 @@ public class ApiKeyRequest {
             return permissionMap;
         }
     }
-
 }
 
 

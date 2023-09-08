@@ -3,6 +3,8 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
+import com.bybit.api.client.domain.position.request.PositionListRequest;
+import com.bybit.api.client.domain.position.request.SetLeverageRequest;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
@@ -338,4 +340,26 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     public Object getAffiliateUserInfo(String uid) {
         return executeSync(bybitApiService.getAffiliateUserInfo(uid));
     }
+
+
+    // Position endpoints
+
+    @Override
+    public Object getPositionInfo(PositionListRequest positionListRequest) {
+        return executeSync(bybitApiService.getPositionInfo(
+                positionListRequest.getCategory().getProductTypeId(),
+                positionListRequest.getSymbol(),
+                positionListRequest.getBaseCoin(),
+                positionListRequest.getSettleCoin(),
+                positionListRequest.getLimit(),
+                positionListRequest.getCursor()
+        ));
+    }
+
+    @Override
+    public Object setPositionLeverage(SetLeverageRequest setLeverageRequest) {
+        return executeSync(bybitApiService.setPositionLeverage(setLeverageRequest));
+    }
+
+
 }

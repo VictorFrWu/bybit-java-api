@@ -1,6 +1,7 @@
 package com.bybit.api.client.service;
 
 import com.bybit.api.client.constant.BybitApiConstants;
+import com.bybit.api.client.domain.position.request.SetLeverageRequest;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
@@ -8,16 +9,11 @@ import com.bybit.api.client.domain.user.request.SubUserRequest;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-import java.util.List;
-
 /**
  * Bybit's REST API URL mappings and endpoint security configuration.
  */
 public interface BybitApiService {
     // Market data endpoints
-    /*
-     * to do : insurance ; risk limit and delivery price
-     * */
     @GET("/v5/market/kline")
     Call<Object> getMarketLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
                                     @Query("startTime") Long startTime, @Query("endTime") Long endTime);
@@ -239,4 +235,18 @@ public interface BybitApiService {
     Call<Object> freezeSubMember(
             @Body FreezeSubUIDRquest freezeSubUIDRquest);
 
+    // Position Data endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/position/list")
+    Call<Object> getPositionInfo(@Query("category") String category,
+                                 @Query("symbol") String symbol,
+                                 @Query("baseCoin") String baseCoin,
+                                 @Query("settleCoin") String settleCoin,
+                                 @Query("limit") Integer limit,
+                                 @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/set-leverage")
+    Call<Object> setPositionLeverage(
+            @Body SetLeverageRequest setLeverageRequest);
 }
