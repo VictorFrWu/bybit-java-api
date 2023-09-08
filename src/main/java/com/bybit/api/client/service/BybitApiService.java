@@ -1,11 +1,10 @@
 package com.bybit.api.client.service;
 
 import com.bybit.api.client.constant.BybitApiConstants;
-import com.bybit.api.client.domain.position.request.SetLeverageRequest;
+import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
-import com.bybit.api.client.domain.user.request.SubUserRequest;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -249,4 +248,61 @@ public interface BybitApiService {
     @POST("/v5/position/set-leverage")
     Call<Object> setPositionLeverage(
             @Body SetLeverageRequest setLeverageRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/switch-isolated")
+    Call<Object> swithMarginRequest(
+            @Body SwitchMarginRequest switchMarginRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/switch-mode")
+    Call<Object> switchPositionMode(
+            @Body SwitchPositionModeRequest switchPositionModeRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/set-tpsl-mode")
+    Call<Object> setTpslMode(
+            @Body SetTpSlModeRequest setTpSlModeRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/set-risk-limit")
+    Call<Object> setRiskLimit(
+            @Body SetRiskLimitRequest setRiskLimitRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/trading-stop")
+    Call<Object> setTradingStop(
+            @Body TradingStopRequest tradingStopRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/set-auto-add-margin")
+    Call<Object> setAutoAddMargin(
+            @Body SetAutoAddMarginRequest setAutoAddMarginRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/add-margin")
+    Call<Object> modifyPositionMargin(
+            @Body ModifyMarginRequest modifyMarginRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/execution/list")
+    Call<Object> getExecutionList(@Query("category") String category,
+                                  @Query("symbol") String symbol,
+                                  @Query("orderId") String orderId,
+                                  @Query("orderLinkId") String orderLinkId,
+                                  @Query("baseCoin") String baseCoin,
+                                  @Query("startTime") Long startTime,
+                                  @Query("endTime") Long endTime,
+                                  @Query("execType") String execType,
+                                  @Query("limit") Integer limit,
+                                  @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/position/closed-pnl")
+    Call<Object> getClosePnlList(@Query("category") String category,
+                                 @Query("symbol") String symbol,
+                                 @Query("startTime") Long startTime,
+                                 @Query("endTime") Long endTime,
+                                 @Query("limit") Integer limit,
+                                 @Query("cursor") String cursor);
 }

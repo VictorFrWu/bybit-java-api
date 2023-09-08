@@ -3,8 +3,7 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
-import com.bybit.api.client.domain.position.request.PositionListRequest;
-import com.bybit.api.client.domain.position.request.SetLeverageRequest;
+import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
@@ -446,4 +445,134 @@ public interface BybitApiRestClient {
      * @return
      */
     Object setPositionLeverage(SetLeverageRequest setLeverageRequest);
+
+    /**
+     * Switch Cross/Isolated Margin
+     * Select cross margin mode or isolated margin mode per symbol level
+     *
+     * Unified account covers: Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     *
+     * @param switchMarginRequest
+     * @return
+     */
+    Object swithMarginRequest(SwitchMarginRequest switchMarginRequest);
+
+    /**
+     * Switch Position Mode
+     * It supports to switch the position mode for USDT perpetual and Inverse futures. If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
+     *
+     * Unified account covers: USDT perpetual / Inverse Futures
+     * Normal account covers: USDT perpetual / Inverse Futures
+     *
+     * TIP
+     * Priority for configuration to take effect: symbol > coin > system default     * : one-way mode
+     * If the request is by coin (settleCoin), then all symbols based on this setteCoin that do not have position and open order will be batch switched, and new listed symbol based on this settleCoin will be the same mode you set.
+     * @param switchPositionModeRequest
+     * @return
+     */
+    Object switchPositionMode(SwitchPositionModeRequest switchPositionModeRequest);
+
+    /**
+     * Set TP/SL Mode
+     * TIP
+     * To some extent, this endpoint is depreciated because now tpsl is based on order level. This API was used for position level change before.
+     *
+     * However, you still can use it to set an implicit tpsl mode for a certain symbol because when you don't pass "tpslMode" in the place order or trading stop request, system will get the tpslMode by the default setting.
+     *
+     * Set TP/SL mode to Full or Partial
+     *
+     * Unified account covers: USDT perpetual / Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     *
+     * INFO
+     * For partial TP/SL mode, you can set the TP/SL size smaller than position size.
+     * @param setTpSlModeRequest
+     * @return
+     */
+    Object setTpslMode(SetTpSlModeRequest setTpSlModeRequest);
+
+    /**
+     * Set Risk Limit
+     * The risk limit will limit the maximum position value you can hold under different margin requirements. If you want to hold a bigger position size, you need more margin. This interface can set the risk limit of a single position. If the order exceeds the current risk limit when placing an order, it will be rejected. Click here to learn more about risk limit.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     *
+     * TIP
+     * Set the risk limit of the position. You can get risk limit information for each symbol here.
+     * @param setRiskLimitRequest
+     * @return
+     */
+    Object setRiskLimit(SetRiskLimitRequest setRiskLimitRequest);
+
+    /**
+     * Set Trading Stop
+     * Set the take profit, stop loss or trailing stop for the position.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     *
+     * TIP
+     * Passing these parameters will create conditional orders by the system internally. The system will cancel these orders if the position is closed, and adjust the qty according to the size of the open position.
+     *
+     * INFO
+     * New version of TP/SL function supports both holding entire position TP/SL orders and holding partial position TP/SL orders.
+     *
+     * Full position TP/SL orders: This API can be used to modify the parameters of existing TP/SL orders.
+     * Partial position TP/SL orders: This API can only add partial position TP/SL orders.
+     * NOTE
+     * Under the new version of Tp/SL function, when calling this API to perform one-sided take profit or stop loss modification on existing TP/SL orders on the holding position, it will cause the paired tp/sl orders to lose binding relationship. This means that when calling the cancel API through the tp/sl order ID, it will only cancel the corresponding one-sided take profit or stop loss order ID.
+     * @param tradingStopRequest
+     * @return
+     */
+    Object setTradingStop(TradingStopRequest tradingStopRequest);
+
+    /**
+     * Set Auto Add Margin
+     * Turn on/off auto-add-margin for isolated margin position
+     *
+     * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     * @param setAutoAddMarginRequest
+     * @return
+     */
+    Object setAutoAddMargin(SetAutoAddMarginRequest setAutoAddMarginRequest);
+
+    /**
+     * Add Or Reduce Margin
+     * Manually add or reduce margin for isolated margin position
+     *
+     * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     * @param modifyMarginRequest
+     * @return
+     */
+    Object modifyPositionMargin(ModifyMarginRequest modifyMarginRequest);
+
+    /**
+     * Get Execution
+     * Query users' execution records, sorted by execTime in descending order. However, for Normal spot, they are sorted by execId in descending order.
+     *
+     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
+     * Normal account covers: Spot / USDT perpetual / Inverse contract
+     *
+     * TIP
+     * You may have multiple executions in a single order.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * @param executionHistoryRequest
+     * @return
+     */
+    Object getExecutionList(ExecutionHistoryRequest executionHistoryRequest);
+
+    /**
+     * Get Closed PnL
+     * Query user's closed profit and loss records. The results are sorted by createdTime in descending order.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Normal account covers: USDT perpetual / Inverse contract
+     * @param closePnlHistoryRequest
+     * @return
+     */
+    Object getClosePnlList(ClosePnlHistoryRequest closePnlHistoryRequest);
 }

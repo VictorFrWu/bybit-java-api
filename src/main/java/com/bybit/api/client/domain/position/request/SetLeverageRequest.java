@@ -1,6 +1,5 @@
 package com.bybit.api.client.domain.position.request;
 
-import com.bybit.api.client.domain.ProductType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

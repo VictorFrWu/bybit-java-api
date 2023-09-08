@@ -3,13 +3,13 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
-import com.bybit.api.client.domain.position.request.PositionListRequest;
-import com.bybit.api.client.domain.position.request.SetLeverageRequest;
+import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
 import com.bybit.api.client.service.BybitApiService;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
@@ -361,5 +361,68 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
         return executeSync(bybitApiService.setPositionLeverage(setLeverageRequest));
     }
 
+    @Override
+    public Object swithMarginRequest(SwitchMarginRequest switchMarginRequest) {
+        return executeSync(bybitApiService.swithMarginRequest(switchMarginRequest));
+    }
+
+    @Override
+    public Object switchPositionMode(SwitchPositionModeRequest switchPositionModeRequest) {
+        return executeSync(bybitApiService.switchPositionMode(switchPositionModeRequest));
+    }
+
+    @Override
+    public Object setTpslMode(SetTpSlModeRequest setTpSlModeRequest) {
+        return executeSync(bybitApiService.setTpslMode(setTpSlModeRequest));
+    }
+
+    @Override
+    public Object setRiskLimit(SetRiskLimitRequest setRiskLimitRequest) {
+        return executeSync(bybitApiService.setRiskLimit(setRiskLimitRequest));
+    }
+
+    @Override
+    public Object setTradingStop(TradingStopRequest tradingStopRequest) {
+        return executeSync(bybitApiService.setTradingStop(tradingStopRequest));
+    }
+
+    @Override
+    public Object setAutoAddMargin(SetAutoAddMarginRequest setAutoAddMarginRequest) {
+        return executeSync(bybitApiService.setAutoAddMargin(setAutoAddMarginRequest));
+    }
+
+    @Override
+    public Object modifyPositionMargin(ModifyMarginRequest modifyMarginRequest) {
+        return executeSync(bybitApiService.modifyPositionMargin(modifyMarginRequest));
+    }
+
+    @Override
+    public Object getExecutionList(ExecutionHistoryRequest executionHistoryRequest) {
+        return executeSync(bybitApiService.getExecutionList(
+                executionHistoryRequest.getCategory().getProductTypeId(),
+                executionHistoryRequest.getSymbol(),
+                executionHistoryRequest.getOrderId(),
+                executionHistoryRequest.getOrderLinkId(),
+                executionHistoryRequest.getBaseCoin(),
+                executionHistoryRequest.getStartTime(),
+                executionHistoryRequest.getEndTime(),
+                executionHistoryRequest.getExecType() == null ? "" : executionHistoryRequest.getExecType().getExecTypeId(),
+                executionHistoryRequest.getLimit(),
+                executionHistoryRequest.getCursor()
+        ));
+    }
+
+
+    @Override
+    public Object getClosePnlList(ClosePnlHistoryRequest closePnlHistoryRequest) {
+        return executeSync(bybitApiService.getClosePnlList(
+                closePnlHistoryRequest.getCategory().getProductTypeId(),
+                closePnlHistoryRequest.getSymbol(),
+                closePnlHistoryRequest.getStartTime(),
+                closePnlHistoryRequest.getEndTime(),
+                closePnlHistoryRequest.getLimit(),
+                closePnlHistoryRequest.getCursor()
+        ));
+    }
 
 }
