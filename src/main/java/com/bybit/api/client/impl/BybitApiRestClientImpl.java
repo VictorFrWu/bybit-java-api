@@ -1,5 +1,6 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
@@ -503,6 +504,106 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 request.getLimit(),
                 request.getCursor()
         ));
+    }
+
+    // Account endpoints
+    @Override
+    public Object getWalletBalance(WalletBalanceRequest walletBalanceRequest) {
+        return executeSync(bybitApiService.getWalletBalance(
+                walletBalanceRequest.getAccountType().getAccountTypeValue(),
+                walletBalanceRequest.getCoins()
+        ));
+    }
+
+    @Override
+    public Object upgradeAccountToUTA() {
+        return executeSync(bybitApiService.upgradeAccountToUTA());
+    }
+
+    @Override
+    public Object getAccountBorrowHistory(BorrowHistoryRequest borrowHistoryRequest) {
+        return executeSync(bybitApiService.getAccountBorrowHistory(
+                borrowHistoryRequest.getCurrency(),
+                borrowHistoryRequest.getStartTime(),
+                borrowHistoryRequest.getEndTime(),
+                borrowHistoryRequest.getLimit(),
+                borrowHistoryRequest.getCursor()
+        ));
+    }
+
+    @Override
+    public Object setAccountCollateralCoin(SetCollateralCoinRequest setCollateralCoinRequest) {
+        return executeSync(bybitApiService.setAccountCollateralCoin(setCollateralCoinRequest));
+    }
+
+    @Override
+    public Object getAccountCollateralInfo(String currency) {
+        return executeSync((bybitApiService.getAccountCollateralInfo(currency)));
+    }
+    @Override
+    public Object getAccountCollateralInfo() {
+        return executeSync((bybitApiService.getAccountCollateralInfo()));
+    }
+
+    @Override
+    public Object getAccountCoinGeeks(String baseCoin) {
+        return executeSync((bybitApiService.getAccountCoinGeeks(baseCoin)));
+    }
+
+    @Override
+    public Object getAccountCoinGeeks() {
+        return executeSync((bybitApiService.getAccountCoinGeeks()));
+    }
+
+    @Override
+    public Object getAccountFreeRate(GetFeeRateRequest getFeeRateRequest) {
+        return executeSync(bybitApiService.getAccountFreeRate(
+                getFeeRateRequest.getCategory().getProductTypeId(),
+                getFeeRateRequest.getSymbol(),
+                getFeeRateRequest.getBaseCoin()
+        ));
+    }
+
+
+    @Override
+    public Object getAccountInfo() {
+        return executeSync(bybitApiService.getAccountInfo());
+    }
+
+    @Override
+    public Object getTransactionLog(GetTransactionLogRequest getTransactionLogRequest) {
+        return executeSync(bybitApiService.getTransactionLog(
+                getTransactionLogRequest.getAccountType() == null ? "" : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
+                getTransactionLogRequest.getCategory() == null ? "" : getTransactionLogRequest.getCategory().getProductTypeId(),
+                getTransactionLogRequest.getCurrency(),
+                getTransactionLogRequest.getBaseCoin(),
+                getTransactionLogRequest.getTransactionType() == null ? "" : getTransactionLogRequest.getTransactionType().getTransactionTypeId(),
+                getTransactionLogRequest.getStartTime(),
+                getTransactionLogRequest.getEndTime(),
+                getTransactionLogRequest.getLimit(),
+                getTransactionLogRequest.getCursor()
+        ));
+    }
+
+
+    @Override
+    public Object setAccountMarginMode(String setMarginMode) {
+        return executeSync(bybitApiService.setAccountMarginMode(setMarginMode));
+    }
+
+    @Override
+    public Object modifyAccountMMP(SetMMPRequest setMMPRequest) {
+        return executeSync(bybitApiService.modifyAccountMMP(setMMPRequest));
+    }
+
+    @Override
+    public Object resetAccountMMP(String baseCoin) {
+        return executeSync(bybitApiService.resetAccountMMP(baseCoin));
+    }
+
+    @Override
+    public Object getAccountMMPState(String baseCoin) {
+        return executeSync(bybitApiService.getAccountMMPState(baseCoin));
     }
 
 

@@ -1,6 +1,8 @@
 package com.bybit.api.client.service;
 
 import com.bybit.api.client.constant.BybitApiConstants;
+import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
+import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.preupgrade.*;
 import com.bybit.api.client.domain.trade.*;
@@ -368,4 +370,80 @@ public interface BybitApiService {
                                              @Query("symbol") String symbol,
                                              @Query("limit") Integer limit,
                                              @Query("cursor") String cursor);
+
+    // Account Data endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/wallet-balance")
+    Call<Object> getWalletBalance(@Query("accountType") String accountType,
+                                  @Query("coin") String coin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/account/upgrade-to-uta")
+    Call<Object> upgradeAccountToUTA();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/borrow-history")
+    Call<Object> getAccountBorrowHistory(@Query("currency") String currency,
+                                         @Query("startTime") Long startTime,
+                                         @Query("endTime") Long endTime,
+                                         @Query("limit") Integer limit,
+                                         @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/account/set-collateral-switch")
+    Call<Object> setAccountCollateralCoin(@Body SetCollateralCoinRequest setCollateralCoinRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/collateral-info")
+    Call<Object> getAccountCollateralInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/collateral-info")
+    Call<Object> getAccountCollateralInfo(@Query("currency") String currency);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/coin-greeks")
+    Call<Object> getAccountCoinGeeks();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/coin-greeks")
+    Call<Object> getAccountCoinGeeks(@Query("baseCoin") String baseCoin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/fee-rate")
+    Call<Object> getAccountFreeRate(@Query("category") String category,
+                                    @Query("symbol") String symbol,
+                                    @Query("baseCoin") String baseCoin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/info")
+    Call<Object> getAccountInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/transaction-log")
+    Call<Object> getTransactionLog(@Query("accountType") String accountType,
+                                   @Query("category") String category,
+                                   @Query("currency") String currency,
+                                   @Query("baseCoin") String baseCoin,
+                                   @Query("type") String type,
+                                   @Query("startTime") Long startTime,
+                                   @Query("endTime") Long endTime,
+                                   @Query("limit") Integer limit,
+                                   @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/account/set-margin-mode")
+    Call<Object> setAccountMarginMode(@Query("setMarginMode") String setMarginMode); // ISOLATED_MARGIN, REGULAR_MARGIN(i.e. Cross margin), PORTFOLIO_MARGIN
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/account/mmp-modify")
+    Call<Object> modifyAccountMMP(@Body SetMMPRequest setMMPRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/account/mmp-reset")
+    Call<Object> resetAccountMMP(@Query("baseCoin") String baseCoin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/account/mmp-state")
+    Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
 }

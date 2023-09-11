@@ -1,5 +1,6 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
@@ -640,4 +641,163 @@ public interface BybitApiRestClient {
      * @return
      */
     Object getPreUpgradeUsdcSettlement(PreUpgradeUsdcSettlementRequest preUpgradeUsdcSettlementRequest);
+
+    // Account endpoints
+
+    /**
+     * Get Wallet Balance
+     * Obtain wallet balance, query asset information of each currency, and account risk rate information. By default, currency information with assets or liabilities of 0 is not returned.
+     *
+     * TIP
+     * The trading of UTA inverse contracts is conducted through the CONTRACT wallet.
+     * To get Funding wallet balance, please go to this endpoint
+     * @param walletBalanceRequest
+     * @return
+     */
+    Object getWalletBalance(WalletBalanceRequest walletBalanceRequest);
+
+    /**
+     * Upgrade Unified Account
+     *
+     * UPGRADE GUIDANCE
+     * Check your current account status by calling this Get Account Info
+     *
+     * if unifiedMarginStatus=1, then it is classic account, you can call below upgrade endpoint to UTA Pro. Check Get Account Info after a while and if unifiedMarginStatus=4, then it is successfully upgraded to UTA Pro.
+     *
+     * if unifiedMarginStatus=2, then it is UMA, you need to call below upgrade endpoint twice. The first call, your account will be upgraded to UTA, please make sure you call this Get Account Info and unifiedMarginStatus=3, then you can start the 2nd call, if you see unifiedMarginStatus=4, then it is UTA Pro.
+     *
+     * if unifiedMarginStatus=3, then it is UTA, you need to call below upgrade endpoint to UTA Pro. Check Get Account Info after a while and if unifiedMarginStatus=4, then it is successfully upgraded to UTA Pro.
+     *
+     * IMPORTANT
+     * Banned / Express path users cannot upgrade the account to Unified Account for now.
+     *
+     * INFO
+     * You can upgrade the normal acct to unified acct without closing positions now, but please note belows:
+     *
+     * Please avoid upgrading during these period:
+     * every hour	50th minute to 5th minute of next hour
+     * Please ensure:
+     * No open order and debt in the Spot account
+     * No open order and hedge-mode USDT position or isolated margin USDT position in the Derivatives account
+     * No open order in the USDC Derivatives account
+     * Cannot have TPSL order either
+     * When the unifiedUpgradeProcess = PROCESS, it means that the system needs asynchronous verification processing, and the upgrade result cannot be returned in real time. You can check API Get Account Info after 3-5 minutes, check whether the upgrade is successful according to the "unifiedMarginStatus" field in the return.
+     *
+     * During the account upgrade process, the data of Rest API/Websocket stream may be inaccurate due to the fact that the account-related asset data is in the processing state. It is recommended to query and use it after the upgrade is completed.
+     * @return
+     */
+    Object upgradeAccountToUTA();
+
+    /**
+     * Get Borrow History
+     * Get interest records, sorted in reverse order of creation time.
+     *
+     * Unified account
+     * @param borrowHistoryRequest
+     * @return
+     */
+    Object getAccountBorrowHistory(BorrowHistoryRequest borrowHistoryRequest);
+
+    /**
+     * Set Collateral Coin
+     * You can decide whether the assets in the Unified account needs to be collateral coins.
+     * @param setCollateralCoinRequest
+     * @return
+     */
+    Object setAccountCollateralCoin(SetCollateralCoinRequest setCollateralCoinRequest);
+
+    /**
+     * Get Collateral Info
+     * Get the collateral information of the current unified margin account, including loan interest rate, loanable amount, collateral conversion rate, whether it can be mortgaged as margin, etc.
+     * @return
+     */
+    Object getAccountCollateralInfo(String currency);
+    Object getAccountCollateralInfo();
+
+    /**
+     * Get Coin Greeks
+     * Get current account Greeks information
+     * @param baseCoin
+     * @return
+     */
+    Object getAccountCoinGeeks(String baseCoin);
+    Object getAccountCoinGeeks();
+
+    /**
+     * Get Fee Rate
+     * Get the trading fee rate.
+     *
+     * Covers: Spot / USDT perpetual / USDC perpetual / USDC futures / Inverse perpetual / Inverse futures / Options
+     *
+     * HTTP Request
+     * @param getFeeRateRequest
+     * @return
+     */
+    Object getAccountFreeRate(GetFeeRateRequest getFeeRateRequest);
+
+    /**
+     * Get Account Info
+     * Query the margin mode configuration of the account.
+     * @return
+     */
+    Object getAccountInfo();
+
+    /**
+     * Get Transaction Log
+     * Query transaction logs in Unified account.
+     * @param getTransactionLogRequest
+     * @return
+     */
+    Object getTransactionLog(GetTransactionLogRequest getTransactionLogRequest);
+
+    /**
+     * Set Margin Mode
+     * Default is regular margin mode
+     *
+     * INFO
+     * UTA account can be switched between these 3 kinds of margin modes, which is across UID level, working for USDT Perp, USDC Perp, USDC Futures and Options (Option does not support ISOLATED_MARGIN)
+     * Normal account can be switched between REGULAR_MARGIN and PORTFOLIO_MARGIN, only work for USDC Perp and Options trading.
+     * @param setMarginMode
+     * @return
+     */
+    Object setAccountMarginMode(String setMarginMode);
+
+    /**
+     * Set MMP
+     * INFO
+     * What is MMP?
+     * Market Maker Protection (MMP) is an automated mechanism designed to protect market makers (MM) against liquidity risks and over-exposure in the market. It prevents simultaneous trade executions on quotes provided by the MM within a short time span. The MM can automatically pull their quotes if the number of contracts traded for an underlying asset exceeds the configured threshold within a certain time frame. Once MMP is triggered, any pre-existing MMP orders will be automatically canceled, and new orders tagged as MMP will be rejected for a specific duration — known as the frozen period — so that MM can reassess the market and modify the quotes.
+     *
+     * How to enable MMP
+     * Send an email to Bybit (financial.inst@bybit.com) or contact your business development (BD) manager to apply for MMP. After processed, the default settings are as below table:
+     *
+     * Parameter	Type	Comments	Default value
+     * baseCoin	string	Base coin	BTC
+     * window	string	Time window (millisecond)	5000
+     * frozenPeriod	string	Frozen period (millisecond)	100
+     * qtyLimit	string	Quantity limit	100
+     * deltaLimit	string	Delta limit	100
+     * Applicable
+     * Effective for options only. When you place an option order, set mmp=true, which means you mark this order as a mmp order.
+     * @param setMMPRequest
+     * @return
+     */
+    Object modifyAccountMMP(SetMMPRequest setMMPRequest);
+
+    /**
+     * Reset MMP
+     * INFO
+     * Once the mmp triggered, you can unfreeze the account by this endpoint, then qtyLimit and deltaLimit will be reset to 0.
+     * If the account is not frozen, reset action can also remove previous accumulation, i.e., qtyLimit and deltaLimit will be reset to 0.
+     * @param baseCoin
+     * @return
+     */
+    Object resetAccountMMP(String baseCoin);
+
+    /**
+     * Get MMP State
+     * @param baseCoin
+     * @return
+     */
+    Object getAccountMMPState(String baseCoin);
 }
