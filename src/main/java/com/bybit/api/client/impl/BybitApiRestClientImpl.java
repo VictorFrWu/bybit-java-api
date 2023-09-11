@@ -4,12 +4,12 @@ import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.domain.position.request.*;
+import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
 import com.bybit.api.client.service.BybitApiService;
-import org.apache.commons.lang3.StringUtils;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
@@ -424,5 +424,86 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 closePnlHistoryRequest.getCursor()
         ));
     }
+
+    // Pre upgrade endpoints
+    @Override
+    public Object getPreUpgradeClosePnl(PreUpgradeClosePnlRequest request) {
+        return executeSync(bybitApiService.getPreUpgradeClosePnl(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getLimit(),
+                request.getCursor()
+        ));
+    }
+
+    @Override
+    public Object getPreUpgradeOrderHistory(PreUpgradeOrderHistoryRequest request) {
+        return executeSync(bybitApiService.getPreUpgradeOrderHistory(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getBaseCoin(),
+                request.getOrderId(),
+                request.getOrderLinkId(),
+                request.getOrderFilter(),
+                request.getOrderStatus(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getLimit(),
+                request.getCursor()
+        ));
+    }
+
+    @Override
+    public Object getPreUpgradeTradeHistory(PreUpgradeTradeHistoryRequest request) {
+        return executeSync(bybitApiService.getPreUpgradeTradeHistory(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getOrderId(),
+                request.getOrderLinkId(),
+                request.getBaseCoin(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getExecType() == null ? "" : request.getExecType().getExecTypeId(),
+                request.getLimit(),
+                request.getCursor()
+        ));
+    }
+
+    @Override
+    public Object getPreUpgradeTransaction(PreUpgradeTransactionRequest request) {
+        return executeSync(bybitApiService.getPreUpgradeTransaction(
+                request.getCategory().getProductTypeId(),
+                request.getBaseCoin(),
+                request.getTransactionType() == null ? "" : request.getTransactionType().getTransactionTypeId(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getLimit(),
+                request.getCursor()
+        ));
+    }
+
+    @Override
+    public Object getPreUpgradeOptionDelivery(PreUpgradeOptionDeliveryRequest request) {
+        return executeSync(bybitApiService.getPreUpgradeOptionDelivery(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getExpDate(),
+                request.getLimit(),
+                request.getCursor()
+        ));
+    }
+
+    @Override
+    public Object getPreUpgradeUsdcSettlement(PreUpgradeUsdcSettlementRequest request) {
+        return executeSync(bybitApiService.getPreUpgradeUsdcSettlement(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getLimit(),
+                request.getCursor()
+        ));
+    }
+
 
 }

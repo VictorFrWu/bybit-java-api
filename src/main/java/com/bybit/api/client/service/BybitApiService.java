@@ -2,6 +2,7 @@ package com.bybit.api.client.service;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.position.request.*;
+import com.bybit.api.client.domain.preupgrade.*;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
@@ -305,4 +306,66 @@ public interface BybitApiService {
                                  @Query("endTime") Long endTime,
                                  @Query("limit") Integer limit,
                                  @Query("cursor") String cursor);
+
+    // Pre upgrade data endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/pre-upgrade/position/closed-pnl")
+    Call<Object> getPreUpgradeClosePnl(@Query("category") String category,
+                                       @Query("symbol") String symbol,
+                                       @Query("startTime") Long startTime,
+                                       @Query("endTime") Long endTime,
+                                       @Query("limit") Integer limit,
+                                       @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/pre-upgrade/asset/delivery-record")
+    Call<Object> getPreUpgradeOptionDelivery(@Query("category") String category,
+                                             @Query("symbol") String symbol,
+                                             @Query("expDate") String expDate,
+                                             @Query("limit") Integer limit,
+                                             @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/pre-upgrade/order/history")
+    Call<Object> getPreUpgradeOrderHistory(@Query("category") String category,
+                                           @Query("symbol") String symbol,
+                                           @Query("baseCoin") String baseCoin,
+                                           @Query("orderId") String orderId,
+                                           @Query("orderLinkId") String orderLinkId,
+                                           @Query("orderFilter") String orderFilter,
+                                           @Query("orderStatus") String orderStatus,
+                                           @Query("startTime") Long startTime,
+                                           @Query("endTime") Long endTime,
+                                           @Query("limit") Integer limit,
+                                           @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/pre-upgrade/execution/list")
+    Call<Object> getPreUpgradeTradeHistory(@Query("category") String category,
+                                           @Query("symbol") String symbol,
+                                           @Query("orderId") String orderId,
+                                           @Query("orderLinkId") String orderLinkId,
+                                           @Query("baseCoin") String baseCoin,
+                                           @Query("startTime") Long startTime,
+                                           @Query("endTime") Long endTime,
+                                           @Query("execType") String execType,
+                                           @Query("limit") Integer limit,
+                                           @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/pre-upgrade/account/transaction-log")
+    Call<Object> getPreUpgradeTransaction(@Query("category") String category,
+                                          @Query("baseCoin") String baseCoin,
+                                          @Query("type") String type,
+                                          @Query("startTime") Long startTime,
+                                          @Query("endTime") Long endTime,
+                                          @Query("limit") Integer limit,
+                                          @Query("cursor") String cursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/pre-upgrade/asset/settlement-record")
+    Call<Object> getPreUpgradeUsdcSettlement(@Query("category") String category,
+                                             @Query("symbol") String symbol,
+                                             @Query("limit") Integer limit,
+                                             @Query("cursor") String cursor);
 }

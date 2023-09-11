@@ -4,6 +4,7 @@ import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.domain.position.request.*;
+import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
@@ -575,4 +576,68 @@ public interface BybitApiRestClient {
      * @return
      */
     Object getClosePnlList(ClosePnlHistoryRequest closePnlHistoryRequest);
+
+    // Pre Upgrade
+
+    /**
+     * Get Pre-upgrade Order History
+     * After the account is upgraded to a Unified account, you can get the orders which occurred before the upgrade.
+     *
+     * INFO
+     * can get all status in 7 days
+     * can only get filled orders beyond 7 days
+     * @param preupgradeOderHistoryRequest
+     * @return
+     */
+    Object getPreUpgradeOrderHistory(PreUpgradeOrderHistoryRequest preupgradeOderHistoryRequest);
+
+    /**
+     * Get Pre-upgrade Trade History
+     * Get users' execution records which occurred before you upgraded the account to a Unified account, sorted by execTime in descending order
+     *
+     * For now, it supports to query USDT perpetual, USDC perpetual, Inverse perpetual and futures, Option.
+     *
+     * TIP
+     * You may have multiple executions in a single order.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * @param preUpgradeTradeHistoryRequest
+     * @return
+     */
+    Object getPreUpgradeTradeHistory(PreUpgradeTradeHistoryRequest preUpgradeTradeHistoryRequest);
+
+    /**
+     * Get Pre-upgrade Closed PnL
+     * Query user's closed profit and loss records from before you upgraded the account to a Unified account. The results are sorted by createdTime in descending order.
+     *
+     * For now, it only supports to query USDT perpetual, Inverse perpetual and futures.
+     * @param preUpgradeClosePnlRequest
+     * @return
+     */
+    Object getPreUpgradeClosePnl(PreUpgradeClosePnlRequest preUpgradeClosePnlRequest);
+
+    /**
+     * Get Pre-upgrade Transaction Log
+     * Query transaction logs which occurred in the USDC Derivatives wallet before the account was upgraded to a Unified account.
+     *
+     * You can get USDC Perpetual, Option records.
+     * @param preUpgradeTransactionRequest
+     * @return
+     */
+    Object getPreUpgradeTransaction(PreUpgradeTransactionRequest preUpgradeTransactionRequest);
+
+    /**
+     * Get Pre-upgrade Option Delivery Record
+     * Query delivery records of Option before you upgraded the account to a Unified account, sorted by deliveryTime in descending order
+     * @param preUpgradeOptionDeliveryRequest
+     * @return
+     */
+    Object getPreUpgradeOptionDelivery(PreUpgradeOptionDeliveryRequest preUpgradeOptionDeliveryRequest);
+
+    /**
+     * Get Pre-upgrade USDC Session Settlement
+     * Query session settlement records of USDC perpetual before you upgrade the account to Unified account.
+     * @param preUpgradeUsdcSettlementRequest
+     * @return
+     */
+    Object getPreUpgradeUsdcSettlement(PreUpgradeUsdcSettlementRequest preUpgradeUsdcSettlementRequest);
 }
