@@ -14,7 +14,6 @@ public class MarketDataEndpointsExample {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
         BybitApiRestClient client = factory.newRestClient();
 
-/*
         // Weekly candlestick bars for a symbol
         var marketKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
         System.out.println(marketKlineResult);
@@ -87,7 +86,6 @@ public class MarketDataEndpointsExample {
         System.out.println(riskLimitData);
         var riskLimitALLData = client.getRiskLimit(ProductType.INVERSE);
         System.out.println(riskLimitALLData);
-*/
 
         // Get delivery price
         var deliveryPriceRequest = new DeliveryPriceRequest.Builder(ProductType.OPTION)

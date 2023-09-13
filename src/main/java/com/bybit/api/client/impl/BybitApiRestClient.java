@@ -1,5 +1,8 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.constant.BybitApiConstants;
+import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
+import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
@@ -10,6 +13,10 @@ import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.Query;
 
 public interface BybitApiRestClient {
     // Market Data
@@ -800,4 +807,56 @@ public interface BybitApiRestClient {
      * @return
      */
     Object getAccountMMPState(String baseCoin);
+
+    // Institution Endpoints
+
+    /**
+     * Get Product Info
+     * TIP
+     * This is a public endpoint, so it does not need to authenticate.
+     * @param productId
+     * @return
+     */
+    Object getInsProductInfo(@Query("productId") String productId);
+    Object getInsProductInfo();
+
+    /**
+     * Get Margin Coin Info
+     * TIP
+     * This is a public endpoint, so it does not need to authenticate.
+     * @param productId
+     * @return
+     */
+    Object getInsMarginCoinInfo(@Query("productId") String productId);
+    Object getInsMarginCoinInfo();
+
+    /**
+     * Get Loan Orders
+     * Get loan orders information
+     *
+     * TIP
+     * Get the past 2 years data by default
+     * Get up to the past 2 years of data
+     * @param institutionLoanOrdersRequest
+     * @return
+     */
+    Object getInsLoanOrders(InstitutionLoanOrdersRequest institutionLoanOrdersRequest);
+
+    /**
+     * Get Repay Orders
+     * Get repaid order information
+     *
+     * TIP
+     * Get the past 2 years data by default
+     * Get up to the past 2 years of data
+     * @param institutionRepayOrdersRequest
+     * @return
+     */
+    Object getInsRepayOrders(InstitutionRepayOrdersRequest institutionRepayOrdersRequest);
+
+    /**
+     * Get LTV
+     * @return
+     */
+    Object getInsLoanToValue();
 }

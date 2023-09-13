@@ -446,4 +446,38 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/mmp-state")
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
+
+    // Institution Endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/product-infos")
+    Call<Object> getInsProductInfo(@Query("productId") String productId);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/product-infos")
+    Call<Object> getInsProductInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/ensure-tokens-convert")
+    Call<Object> getInsMarginCoinInfo(@Query("productId") String productId);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/ensure-tokens-convert")
+    Call<Object> getInsMarginCoinInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/loan-order")
+    Call<Object> getInsLoanOrders(@Query("productId") String productId,
+                                  @Query("startTime") Long startTime,
+                                  @Query("endTime") Long endTime,
+                                  @Query("limit") Integer limit);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/repaid-history")
+    Call<Object> getInsRepayOrders( @Query("startTime") Long startTime,
+                                    @Query("endTime") Long endTime,
+                                    @Query("limit") Integer limit);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/ltv-convert")
+    Call<Object> getInsLoanToValue();
 }
