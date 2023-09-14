@@ -1,8 +1,11 @@
 package com.bybit.api.client.domain;
 
+import lombok.Getter;
+
 /**
  *  Product type. Spot,linear, inverse
  */
+@Getter
 public enum ProductType {
     SPOT("spot"),
     LINEAR("linear"),
@@ -14,7 +17,4 @@ public enum ProductType {
         this.productTypeId = productTypeId;
     }
 
-    public String getProductTypeId() {
-        return productTypeId;
-    }
 }

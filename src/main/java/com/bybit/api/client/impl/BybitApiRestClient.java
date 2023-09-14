@@ -1,6 +1,5 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
@@ -9,14 +8,13 @@ import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.preupgrade.request.*;
+import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
+import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
+import com.bybit.api.client.domain.spot.marginTrade.*;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Headers;
-import retrofit2.http.Query;
 
 public interface BybitApiRestClient {
     // Market Data
@@ -108,9 +106,9 @@ public interface BybitApiRestClient {
 
     /**
      * Query for the instrument specification of online trading pairs.
-     *
+     * <p>
      * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     *
+     * <p>
      * CAUTION
      * Spot does not support pagination, so limit, cursor are invalid.
      * When query by baseCoin, regardless of category=linear or inverse, the result will have USDT perpetual, USDC contract and Inverse contract symbols.
@@ -121,12 +119,13 @@ public interface BybitApiRestClient {
 
     /**
      * Query for the instrument specification of online trading pairs.
-     *
+     * <p>
      * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     *
+     * <p>
      * CAUTION
      * Spot does not support pagination, so limit, cursor are invalid.
      * When query by baseCoin, regardless of category=linear or inverse, the result will have USDT perpetual, USDC contract and Inverse contract symbols.
+     *
      * @param instrumentInfoRequest
      * @return
      */
@@ -134,46 +133,51 @@ public interface BybitApiRestClient {
 
     /**
      * Query for orderbook depth data.
-     *
+     * <p>
      * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     *
+     * <p>
      * future: 200-level of orderbook data
      * spot: 50-level of orderbook data
      * option: 25-level of orderbook data
      * TIP
      * The response is in the snapshot format.
+     *
      * @param category
      * @param symbol
      * @return
      */
     Object getMarketOrderbook(ProductType category, String symbol);
+
     Object getMarketOrderbook(ProductType category, String symbol, Integer limit);
 
     /**
      * Query for the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours.
-     *
+     * <p>
      * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     *
+     * <p>
      * TIP
      * If category=option, symbol or baseCoin must be passed.
+     *
      * @param category
      * @param symbol
      * @return
      */
     Object getMarketTickers(ProductType category, String symbol);
+
     Object getMarketTickers(ProductType category, String symbol, String baseCoin, String expDate);
 
     /**
      * Query for historical funding rates. Each symbol has a different funding interval. For example, if the interval is 8 hours and the current time is UTC 12, then it returns the last funding rate, which settled at UTC 8.
-     *
+     * <p>
      * To query the funding rate interval, please refer to the instruments-info endpoint.
-     *
+     * <p>
      * Covers: USDT and USDC perpetual / Inverse perpetual
-     *
+     * <p>
      * TIP
      * Passing only startTime returns an error.
      * Passing only endTime returns 200 records up till endTime.
      * Passing neither returns 200 records up till the current time.
+     *
      * @param fundingHistoryRequest
      * @return
      */
@@ -181,13 +185,14 @@ public interface BybitApiRestClient {
 
     /**
      * Query recent public trading data in Bybit.
-     *
+     * <p>
      * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     *
+     * <p>
      * You can download archived historical trades here:
-     *
+     * <p>
      * USDT Perpetual, Inverse Perpetual & Inverse Futures
      * Spot
+     *
      * @param recentTradeRequest
      * @return
      */
@@ -195,12 +200,13 @@ public interface BybitApiRestClient {
 
     /**
      * Get the open interest of each symbol.
-     *
+     * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
-     *
+     * <p>
      * INFO
      * Returns single side data
      * The upper limit time you can query is the launch time of the symbol.
+     *
      * @param openInterestRequest
      * @return
      */
@@ -208,14 +214,15 @@ public interface BybitApiRestClient {
 
     /**
      * Query option historical volatility
-     *
+     * <p>
      * Covers: Option
-     *
+     * <p>
      * INFO
      * The data is hourly.
      * If both startTime and endTime are not specified, it will return the most recent 1 hours worth of data.
      * startTime and endTime are a pair of params. Either both are passed or they are not passed at all.
      * This endpoint can query the last 2 years worth of data, but make sure [endTime - startTime] <= 30 days.
+     *
      * @param HistoricalVolatilityRequest
      * @return
      */
@@ -233,29 +240,34 @@ public interface BybitApiRestClient {
     /**
      * Get Insurance
      * Query for Bybit insurance pool data (BTC/USDT/USDC etc). The data is updated every 24 hours.
+     *
      * @param coin
      * @return
      */
     Object getInsurance(String coin);
+
     Object getInsurance();
 
     /**
      * Get Risk Limit
      * Query for the risk limit.
-     *
+     * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
+     *
      * @param category
      * @param symbol
      * @return
      */
     Object getRiskLimit(ProductType category, String symbol);
+
     Object getRiskLimit(ProductType category);
 
     /**
      * Get Delivery Price
      * Get the delivery price.
-     *
+     * <p>
      * Covers: USDC futures / Inverse futures / Option
+     *
      * @param deliveryPriceRequest
      * @return
      */
@@ -436,9 +448,10 @@ public interface BybitApiRestClient {
     /**
      * Get Position Info
      * Query real-time position data, such as position size, cumulative realizedPNL.
-     *
+     * <p>
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract / Options
      * Normal account covers: USDT perpetual / Inverse contract
+     *
      * @param positionListRequest
      * @return
      */
@@ -447,9 +460,10 @@ public interface BybitApiRestClient {
     /**
      * Set Leverage
      * Set the leverage
-     *
+     * <p>
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
+     *
      * @param setLeverageRequest
      * @return
      */
@@ -458,7 +472,7 @@ public interface BybitApiRestClient {
     /**
      * Switch Cross/Isolated Margin
      * Select cross margin mode or isolated margin mode per symbol level
-     *
+     * <p>
      * Unified account covers: Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
      *
@@ -470,13 +484,14 @@ public interface BybitApiRestClient {
     /**
      * Switch Position Mode
      * It supports to switch the position mode for USDT perpetual and Inverse futures. If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
-     *
+     * <p>
      * Unified account covers: USDT perpetual / Inverse Futures
      * Normal account covers: USDT perpetual / Inverse Futures
-     *
+     * <p>
      * TIP
      * Priority for configuration to take effect: symbol > coin > system default     * : one-way mode
      * If the request is by coin (settleCoin), then all symbols based on this setteCoin that do not have position and open order will be batch switched, and new listed symbol based on this settleCoin will be the same mode you set.
+     *
      * @param switchPositionModeRequest
      * @return
      */
@@ -486,16 +501,17 @@ public interface BybitApiRestClient {
      * Set TP/SL Mode
      * TIP
      * To some extent, this endpoint is depreciated because now tpsl is based on order level. This API was used for position level change before.
-     *
+     * <p>
      * However, you still can use it to set an implicit tpsl mode for a certain symbol because when you don't pass "tpslMode" in the place order or trading stop request, system will get the tpslMode by the default setting.
-     *
+     * <p>
      * Set TP/SL mode to Full or Partial
-     *
+     * <p>
      * Unified account covers: USDT perpetual / Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
-     *
+     * <p>
      * INFO
      * For partial TP/SL mode, you can set the TP/SL size smaller than position size.
+     *
      * @param setTpSlModeRequest
      * @return
      */
@@ -504,12 +520,13 @@ public interface BybitApiRestClient {
     /**
      * Set Risk Limit
      * The risk limit will limit the maximum position value you can hold under different margin requirements. If you want to hold a bigger position size, you need more margin. This interface can set the risk limit of a single position. If the order exceeds the current risk limit when placing an order, it will be rejected. Click here to learn more about risk limit.
-     *
+     * <p>
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
-     *
+     * <p>
      * TIP
      * Set the risk limit of the position. You can get risk limit information for each symbol here.
+     *
      * @param setRiskLimitRequest
      * @return
      */
@@ -518,20 +535,21 @@ public interface BybitApiRestClient {
     /**
      * Set Trading Stop
      * Set the take profit, stop loss or trailing stop for the position.
-     *
+     * <p>
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
-     *
+     * <p>
      * TIP
      * Passing these parameters will create conditional orders by the system internally. The system will cancel these orders if the position is closed, and adjust the qty according to the size of the open position.
-     *
+     * <p>
      * INFO
      * New version of TP/SL function supports both holding entire position TP/SL orders and holding partial position TP/SL orders.
-     *
+     * <p>
      * Full position TP/SL orders: This API can be used to modify the parameters of existing TP/SL orders.
      * Partial position TP/SL orders: This API can only add partial position TP/SL orders.
      * NOTE
      * Under the new version of Tp/SL function, when calling this API to perform one-sided take profit or stop loss modification on existing TP/SL orders on the holding position, it will cause the paired tp/sl orders to lose binding relationship. This means that when calling the cancel API through the tp/sl order ID, it will only cancel the corresponding one-sided take profit or stop loss order ID.
+     *
      * @param tradingStopRequest
      * @return
      */
@@ -540,9 +558,10 @@ public interface BybitApiRestClient {
     /**
      * Set Auto Add Margin
      * Turn on/off auto-add-margin for isolated margin position
-     *
+     * <p>
      * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
+     *
      * @param setAutoAddMarginRequest
      * @return
      */
@@ -551,9 +570,10 @@ public interface BybitApiRestClient {
     /**
      * Add Or Reduce Margin
      * Manually add or reduce margin for isolated margin position
-     *
+     * <p>
      * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
+     *
      * @param modifyMarginRequest
      * @return
      */
@@ -562,13 +582,14 @@ public interface BybitApiRestClient {
     /**
      * Get Execution
      * Query users' execution records, sorted by execTime in descending order. However, for Normal spot, they are sorted by execId in descending order.
-     *
+     * <p>
      * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
      * Normal account covers: Spot / USDT perpetual / Inverse contract
-     *
+     * <p>
      * TIP
      * You may have multiple executions in a single order.
      * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     *
      * @param executionHistoryRequest
      * @return
      */
@@ -577,9 +598,10 @@ public interface BybitApiRestClient {
     /**
      * Get Closed PnL
      * Query user's closed profit and loss records. The results are sorted by createdTime in descending order.
-     *
+     * <p>
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract
      * Normal account covers: USDT perpetual / Inverse contract
+     *
      * @param closePnlHistoryRequest
      * @return
      */
@@ -590,10 +612,11 @@ public interface BybitApiRestClient {
     /**
      * Get Pre-upgrade Order History
      * After the account is upgraded to a Unified account, you can get the orders which occurred before the upgrade.
-     *
+     * <p>
      * INFO
      * can get all status in 7 days
      * can only get filled orders beyond 7 days
+     *
      * @param preupgradeOderHistoryRequest
      * @return
      */
@@ -602,12 +625,13 @@ public interface BybitApiRestClient {
     /**
      * Get Pre-upgrade Trade History
      * Get users' execution records which occurred before you upgraded the account to a Unified account, sorted by execTime in descending order
-     *
+     * <p>
      * For now, it supports to query USDT perpetual, USDC perpetual, Inverse perpetual and futures, Option.
-     *
+     * <p>
      * TIP
      * You may have multiple executions in a single order.
      * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     *
      * @param preUpgradeTradeHistoryRequest
      * @return
      */
@@ -616,8 +640,9 @@ public interface BybitApiRestClient {
     /**
      * Get Pre-upgrade Closed PnL
      * Query user's closed profit and loss records from before you upgraded the account to a Unified account. The results are sorted by createdTime in descending order.
-     *
+     * <p>
      * For now, it only supports to query USDT perpetual, Inverse perpetual and futures.
+     *
      * @param preUpgradeClosePnlRequest
      * @return
      */
@@ -626,8 +651,9 @@ public interface BybitApiRestClient {
     /**
      * Get Pre-upgrade Transaction Log
      * Query transaction logs which occurred in the USDC Derivatives wallet before the account was upgraded to a Unified account.
-     *
+     * <p>
      * You can get USDC Perpetual, Option records.
+     *
      * @param preUpgradeTransactionRequest
      * @return
      */
@@ -636,6 +662,7 @@ public interface BybitApiRestClient {
     /**
      * Get Pre-upgrade Option Delivery Record
      * Query delivery records of Option before you upgraded the account to a Unified account, sorted by deliveryTime in descending order
+     *
      * @param preUpgradeOptionDeliveryRequest
      * @return
      */
@@ -644,6 +671,7 @@ public interface BybitApiRestClient {
     /**
      * Get Pre-upgrade USDC Session Settlement
      * Query session settlement records of USDC perpetual before you upgrade the account to Unified account.
+     *
      * @param preUpgradeUsdcSettlementRequest
      * @return
      */
@@ -654,10 +682,11 @@ public interface BybitApiRestClient {
     /**
      * Get Wallet Balance
      * Obtain wallet balance, query asset information of each currency, and account risk rate information. By default, currency information with assets or liabilities of 0 is not returned.
-     *
+     * <p>
      * TIP
      * The trading of UTA inverse contracts is conducted through the CONTRACT wallet.
      * To get Funding wallet balance, please go to this endpoint
+     *
      * @param walletBalanceRequest
      * @return
      */
@@ -665,22 +694,22 @@ public interface BybitApiRestClient {
 
     /**
      * Upgrade Unified Account
-     *
+     * <p>
      * UPGRADE GUIDANCE
      * Check your current account status by calling this Get Account Info
-     *
+     * <p>
      * if unifiedMarginStatus=1, then it is classic account, you can call below upgrade endpoint to UTA Pro. Check Get Account Info after a while and if unifiedMarginStatus=4, then it is successfully upgraded to UTA Pro.
-     *
+     * <p>
      * if unifiedMarginStatus=2, then it is UMA, you need to call below upgrade endpoint twice. The first call, your account will be upgraded to UTA, please make sure you call this Get Account Info and unifiedMarginStatus=3, then you can start the 2nd call, if you see unifiedMarginStatus=4, then it is UTA Pro.
-     *
+     * <p>
      * if unifiedMarginStatus=3, then it is UTA, you need to call below upgrade endpoint to UTA Pro. Check Get Account Info after a while and if unifiedMarginStatus=4, then it is successfully upgraded to UTA Pro.
-     *
+     * <p>
      * IMPORTANT
      * Banned / Express path users cannot upgrade the account to Unified Account for now.
-     *
+     * <p>
      * INFO
      * You can upgrade the normal acct to unified acct without closing positions now, but please note belows:
-     *
+     * <p>
      * Please avoid upgrading during these period:
      * every hour	50th minute to 5th minute of next hour
      * Please ensure:
@@ -689,8 +718,9 @@ public interface BybitApiRestClient {
      * No open order in the USDC Derivatives account
      * Cannot have TPSL order either
      * When the unifiedUpgradeProcess = PROCESS, it means that the system needs asynchronous verification processing, and the upgrade result cannot be returned in real time. You can check API Get Account Info after 3-5 minutes, check whether the upgrade is successful according to the "unifiedMarginStatus" field in the return.
-     *
+     * <p>
      * During the account upgrade process, the data of Rest API/Websocket stream may be inaccurate due to the fact that the account-related asset data is in the processing state. It is recommended to query and use it after the upgrade is completed.
+     *
      * @return
      */
     Object upgradeAccountToUTA();
@@ -698,8 +728,9 @@ public interface BybitApiRestClient {
     /**
      * Get Borrow History
      * Get interest records, sorted in reverse order of creation time.
-     *
+     * <p>
      * Unified account
+     *
      * @param borrowHistoryRequest
      * @return
      */
@@ -708,6 +739,7 @@ public interface BybitApiRestClient {
     /**
      * Set Collateral Coin
      * You can decide whether the assets in the Unified account needs to be collateral coins.
+     *
      * @param setCollateralCoinRequest
      * @return
      */
@@ -716,27 +748,32 @@ public interface BybitApiRestClient {
     /**
      * Get Collateral Info
      * Get the collateral information of the current unified margin account, including loan interest rate, loanable amount, collateral conversion rate, whether it can be mortgaged as margin, etc.
+     *
      * @return
      */
     Object getAccountCollateralInfo(String currency);
+
     Object getAccountCollateralInfo();
 
     /**
      * Get Coin Greeks
      * Get current account Greeks information
+     *
      * @param baseCoin
      * @return
      */
     Object getAccountCoinGeeks(String baseCoin);
+
     Object getAccountCoinGeeks();
 
     /**
      * Get Fee Rate
      * Get the trading fee rate.
-     *
+     * <p>
      * Covers: Spot / USDT perpetual / USDC perpetual / USDC futures / Inverse perpetual / Inverse futures / Options
-     *
+     * <p>
      * HTTP Request
+     *
      * @param getFeeRateRequest
      * @return
      */
@@ -745,6 +782,7 @@ public interface BybitApiRestClient {
     /**
      * Get Account Info
      * Query the margin mode configuration of the account.
+     *
      * @return
      */
     Object getAccountInfo();
@@ -752,6 +790,7 @@ public interface BybitApiRestClient {
     /**
      * Get Transaction Log
      * Query transaction logs in Unified account.
+     *
      * @param getTransactionLogRequest
      * @return
      */
@@ -760,10 +799,11 @@ public interface BybitApiRestClient {
     /**
      * Set Margin Mode
      * Default is regular margin mode
-     *
+     * <p>
      * INFO
      * UTA account can be switched between these 3 kinds of margin modes, which is across UID level, working for USDT Perp, USDC Perp, USDC Futures and Options (Option does not support ISOLATED_MARGIN)
      * Normal account can be switched between REGULAR_MARGIN and PORTFOLIO_MARGIN, only work for USDC Perp and Options trading.
+     *
      * @param setMarginMode
      * @return
      */
@@ -774,10 +814,10 @@ public interface BybitApiRestClient {
      * INFO
      * What is MMP?
      * Market Maker Protection (MMP) is an automated mechanism designed to protect market makers (MM) against liquidity risks and over-exposure in the market. It prevents simultaneous trade executions on quotes provided by the MM within a short time span. The MM can automatically pull their quotes if the number of contracts traded for an underlying asset exceeds the configured threshold within a certain time frame. Once MMP is triggered, any pre-existing MMP orders will be automatically canceled, and new orders tagged as MMP will be rejected for a specific duration — known as the frozen period — so that MM can reassess the market and modify the quotes.
-     *
+     * <p>
      * How to enable MMP
      * Send an email to Bybit (financial.inst@bybit.com) or contact your business development (BD) manager to apply for MMP. After processed, the default settings are as below table:
-     *
+     * <p>
      * Parameter	Type	Comments	Default value
      * baseCoin	string	Base coin	BTC
      * window	string	Time window (millisecond)	5000
@@ -786,6 +826,7 @@ public interface BybitApiRestClient {
      * deltaLimit	string	Delta limit	100
      * Applicable
      * Effective for options only. When you place an option order, set mmp=true, which means you mark this order as a mmp order.
+     *
      * @param setMMPRequest
      * @return
      */
@@ -796,6 +837,7 @@ public interface BybitApiRestClient {
      * INFO
      * Once the mmp triggered, you can unfreeze the account by this endpoint, then qtyLimit and deltaLimit will be reset to 0.
      * If the account is not frozen, reset action can also remove previous accumulation, i.e., qtyLimit and deltaLimit will be reset to 0.
+     *
      * @param baseCoin
      * @return
      */
@@ -803,6 +845,7 @@ public interface BybitApiRestClient {
 
     /**
      * Get MMP State
+     *
      * @param baseCoin
      * @return
      */
@@ -814,29 +857,34 @@ public interface BybitApiRestClient {
      * Get Product Info
      * TIP
      * This is a public endpoint, so it does not need to authenticate.
+     *
      * @param productId
      * @return
      */
-    Object getInsProductInfo(@Query("productId") String productId);
+    Object getInsProductInfo(String productId);
+
     Object getInsProductInfo();
 
     /**
      * Get Margin Coin Info
      * TIP
      * This is a public endpoint, so it does not need to authenticate.
+     *
      * @param productId
      * @return
      */
-    Object getInsMarginCoinInfo(@Query("productId") String productId);
+    Object getInsMarginCoinInfo(String productId);
+
     Object getInsMarginCoinInfo();
 
     /**
      * Get Loan Orders
      * Get loan orders information
-     *
+     * <p>
      * TIP
      * Get the past 2 years data by default
      * Get up to the past 2 years of data
+     *
      * @param institutionLoanOrdersRequest
      * @return
      */
@@ -845,10 +893,11 @@ public interface BybitApiRestClient {
     /**
      * Get Repay Orders
      * Get repaid order information
-     *
+     * <p>
      * TIP
      * Get the past 2 years data by default
      * Get up to the past 2 years of data
+     *
      * @param institutionRepayOrdersRequest
      * @return
      */
@@ -856,7 +905,225 @@ public interface BybitApiRestClient {
 
     /**
      * Get LTV
+     *
      * @return
      */
     Object getInsLoanToValue();
+
+    // Spot Endpoints
+    // Spot Leverage Token
+
+    /**
+     * Get Leverage Token Info
+     * Query leverage token information
+     *
+     * @param ltCoin
+     * @return
+     */
+    Object getSpotLeverageTokenInfo(String ltCoin);
+
+    Object getSpotLeverageTokenInfo();
+
+    /**
+     * Get Leveraged Token Market
+     * Get leverage token market information
+     *
+     * @param ltCoin
+     * @return
+     */
+    Object getSpotLeverageTokenMarket(String ltCoin);
+
+    Object getSpotLeverageTokenMarket();
+
+    /**
+     * Purchase
+     * Purchase levearge token
+     *
+     * @param spotLeverageTokenRequest
+     * @return
+     */
+    Object purchaseSpotLeverageToken(SpotLeverageTokenRequest spotLeverageTokenRequest);
+
+    /**
+     * Redeem
+     * Redeem leverage token
+     *
+     * @param spotLeverageTokenRequest
+     * @return
+     */
+    Object redeemSpotLeverageToken(SpotLeverageTokenRequest spotLeverageTokenRequest);
+
+    /**
+     * Get Purchase/Redemption Records
+     * Get purchase or redeem history
+     *
+     * @param spotLeverageOrdersRecordRequest
+     * @return
+     */
+    Object getSpotLeverageRecords(SpotLeverageOrdersRecordRequest spotLeverageOrdersRecordRequest);
+
+    // Spot Margin UTA
+
+    /**
+     * Get VIP Margin Data
+     * This margin data is for Unified account in particular.
+     *
+     * @param utaMarginDataRequest
+     * @return
+     */
+    Object getUtaVipSpotMarginTradeData(VIPMarginDataRequest utaMarginDataRequest);
+
+    /**
+     * Toggle Margin Trade
+     * Turn on / off spot margin trade
+     * <p>
+     * Covers: Margin trade (Unified Account)
+     * <p>
+     * CAUTION
+     * Your account needs to activate spot margin first; i.e., you must have finished the quiz on web / app.
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * spotMarginMode	true	string	1: on, 0: off
+     * Response Parameters
+     * Parameter	Type	Comments
+     * spotMarginMode	string	Spot margin status. 1: on, 0: off
+     *
+     * @param spotMarginMode
+     * @return
+     */
+    Object setUTASpotMarginTrade(String spotMarginMode);
+
+    /**
+     * et Leverage
+     * Set the user's maximum leverage in spot cross margin
+     * <p>
+     * Covers: Margin trade (Unified Account)
+     * <p>
+     * CAUTION
+     * Your account needs to activate spot margin first; i.e., you must have finished the quiz on web / app.
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * leverage	true	string	Leverage. [2, 10].
+     *
+     * @param leverage
+     * @return
+     */
+    Object setUTASpotMarginTradeLeverage(String leverage);
+
+    /**
+     * Get Status And Leverage
+     * Query the Spot margin status and leverage of Unified account
+     * <p>
+     * Covers: Margin trade (Unified Account)
+     * <p>
+     * Response Parameters
+     * Parameter	Type	Comments
+     * spotLeverage	string	Spot margin leverage. Returns "" if the margin trade is turned off
+     * spotMarginMode	string	Spot margin status. 1: on, 0: off
+     *
+     * @return
+     */
+    Object getUTASpotMarginTradeLeverageState();
+
+    // Spot Margin Normal
+
+    /**
+     * Get VIP Margin Data
+     * This margin data is for Classic account in particular.
+     * <p>
+     * INFO
+     * Do not need authentication
+     *
+     * @param normalMarginDataRequest
+     * @return
+     */
+    Object getNormalVipSpotMarginTradeData(VIPMarginDataRequest normalMarginDataRequest);
+
+
+    /**
+     * Get Margin Coin Info
+     * INFO
+     * Do not need authentication
+     *
+     * @param coin
+     * @return
+     */
+    Object getNormalSpotMarginTradeCoinInfo(String coin);
+
+    Object getNormalSpotMarginTradeCoinInfo();
+
+    /**
+     * Get Borrowable Coin Info
+     * INFO
+     * Do not need authentication
+     *
+     * @param coin
+     * @return
+     */
+    Object getNormalSpotMarginTradeBorrowCoinInfo(String coin);
+
+    Object getNormalSpotMarginTradeBorrowCoinInfo();
+
+    /**
+     * Get Interest & Quota
+     * Covers: Margin trade (Normal Account)
+     *
+     * @param coin
+     * @return
+     */
+    Object getNormalSpotMarginTradeInterestQuota(String coin);
+
+    /**
+     * Get Loan Account Info
+     * Covers: Margin trade (Normal Account)
+     *
+     * @return
+     */
+    Object getNormalSpotMarginTradeAccountInfo();
+
+    /**
+     * Toggle Margin Trade
+     * Turn on / off spot margin trade
+     *
+     * Covers: Margin trade (Normal Account)
+     *
+     * @param switchStatus
+     * @return
+     */
+    Object getNormalSpotToggleMarginTrade(int switchStatus);
+
+    /**
+     * Borrow
+     * Covers: Margin trade (Normal Account)
+     *
+     * @param spotMarginTradeBorrowRequest
+     * @return
+     */
+    Object loanNormalSpotMarginTrade(SpotMarginTradeBorrowRequest spotMarginTradeBorrowRequest);
+
+    /**
+     * Repay
+     * Covers: Margin trade (Normal Account)
+     * @param spotMarginTradeRePayRequest
+     * @return
+     */
+    Object repayNormalSpotMarginTrade(SpotMarginTradeRePayRequest spotMarginTradeRePayRequest);
+
+    /**
+     *Get Borrow Order Detail
+     * Covers: Margin trade (Normal Account)
+     * @param spotMarginTradeBorrowOrdersRequest
+     * @return
+     */
+    Object getNormalSpotMarginTradeBorrowOrders(SpotMarginTradeBorrowOrdersRequest spotMarginTradeBorrowOrdersRequest);
+
+    /**
+     * Get Repayment Order Detail
+     * Covers: Margin trade (Normal Account)
+     * @param spotMarginTradeRepayOrdersRequest
+     * @return
+     */
+    Object getNormalSpotMarginTradeRepayOrders(SpotMarginTradeRepayOrdersRequest spotMarginTradeRepayOrdersRequest);
 }

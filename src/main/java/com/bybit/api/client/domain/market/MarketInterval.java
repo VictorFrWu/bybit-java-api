@@ -1,10 +1,12 @@
 package com.bybit.api.client.domain.market;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
 
 /**
  * Kline/Candlestick intervals.
  */
+@Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public enum MarketInterval {
     ONE_MINUTE("1"),
@@ -27,7 +29,4 @@ public enum MarketInterval {
         this.intervalId = intervalId;
     }
 
-    public String getIntervalId() {
-        return intervalId;
-    }
 }

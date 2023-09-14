@@ -8,6 +8,9 @@ import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.preupgrade.request.*;
+import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
+import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
+import com.bybit.api.client.domain.spot.marginTrade.*;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
@@ -648,5 +651,149 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     @Override
     public Object getInsLoanToValue() {
         return executeSync(bybitApiService.getInsLoanToValue());
+    }
+
+    // Spots
+    // Spot Leverage endpoints
+    @Override
+    public Object getSpotLeverageTokenInfo(String ltCoin) {
+        return executeSync(bybitApiService.getSpotLeverageTokenInfo(ltCoin));
+    }
+
+    @Override
+    public Object getSpotLeverageTokenInfo() {
+        return executeSync(bybitApiService.getSpotLeverageTokenInfo());
+    }
+
+    @Override
+    public Object getSpotLeverageTokenMarket(String ltCoin) {
+        return executeSync(bybitApiService.getSpotLeverageTokenMarket(ltCoin));
+    }
+
+    @Override
+    public Object getSpotLeverageTokenMarket() {
+        return executeSync(bybitApiService.getSpotLeverageTokenMarket());
+    }
+
+    @Override
+    public Object purchaseSpotLeverageToken(SpotLeverageTokenRequest spotLeverageTokenRequest) {
+        return executeSync(bybitApiService.purchaseSpotLeverageToken(spotLeverageTokenRequest));
+    }
+
+    @Override
+    public Object redeemSpotLeverageToken(SpotLeverageTokenRequest spotLeverageTokenRequest) {
+        return executeSync(bybitApiService.redeemSpotLeverageToken(spotLeverageTokenRequest));
+    }
+
+    @Override
+    public Object getSpotLeverageRecords(SpotLeverageOrdersRecordRequest spotLeverageOrdersRecordRequest) {
+        return executeSync(bybitApiService.getSpotLeverageRecords(
+                spotLeverageOrdersRecordRequest.getLtCoin(),
+                spotLeverageOrdersRecordRequest.getOrderId(),
+                spotLeverageOrdersRecordRequest.getStartTime(),
+                spotLeverageOrdersRecordRequest.getEndTime(),
+                spotLeverageOrdersRecordRequest.getLimit(),
+                spotLeverageOrdersRecordRequest.getLtOrderType(),
+                spotLeverageOrdersRecordRequest.getSerialNo()));
+    }
+
+
+    // Spot Margin UTA
+    @Override
+    public Object getUtaVipSpotMarginTradeData(VIPMarginDataRequest utaMarginDataRequest) {
+        return executeSync(bybitApiService.getUtaVipSpotMarginTradeData(
+                utaMarginDataRequest.getVipLevel() == null ? "" : utaMarginDataRequest.getVipLevel().getLevel(),
+                utaMarginDataRequest.getCurrency())
+        );
+    }
+
+    @Override
+    public Object setUTASpotMarginTrade(String spotMarginMode) {
+        return executeSync(bybitApiService.setUTASpotMarginTrade(spotMarginMode));
+    }
+
+    @Override
+    public Object setUTASpotMarginTradeLeverage(String leverage) {
+        return executeSync(bybitApiService.setUTASpotMarginTradeLeverage(leverage));
+    }
+
+    @Override
+    public Object getUTASpotMarginTradeLeverageState() {
+        return executeSync(bybitApiService.getUTASpotMarginTradeLeverageState());
+    }
+
+    // Spot Margin Normal
+    @Override
+    public Object getNormalVipSpotMarginTradeData(VIPMarginDataRequest normalMarginDataRequest) {
+        return executeSync(bybitApiService.getNormalVipSpotMarginTradeData(
+                normalMarginDataRequest.getVipLevel() == null ? "" : normalMarginDataRequest.getVipLevel().getLevel(),
+                normalMarginDataRequest.getCurrency())
+        );
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeCoinInfo(String coin) {
+        return executeSync(bybitApiService.getNormalSpotMarginTradeCoinInfo(coin));
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeCoinInfo() {
+        return executeSync(bybitApiService.getNormalSpotMarginTradeCoinInfo());
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeBorrowCoinInfo(String coin) {
+        return executeSync(bybitApiService.getNormalSpotMarginTradeBorrowCoinInfo(coin));
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeBorrowCoinInfo() {
+        return executeSync(bybitApiService.getNormalSpotMarginTradeBorrowCoinInfo());
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeInterestQuota(String coin) {
+        return executeSync(bybitApiService.getNormalSpotMarginTradeInterestQuota(coin));
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeAccountInfo() {
+        return executeSync(bybitApiService.getNormalSpotMarginTradeAccountInfo());
+    }
+
+    @Override
+    public Object getNormalSpotToggleMarginTrade(int switchStatus) {
+        return executeSync(bybitApiService.getNormalSpotToggleMarginTrade(switchStatus));
+    }
+
+    @Override
+    public Object loanNormalSpotMarginTrade(SpotMarginTradeBorrowRequest spotMarginTradeBorrowRequest) {
+        return executeSync(bybitApiService.loanNormalSpotMarginTrade(spotMarginTradeBorrowRequest));
+    }
+
+    @Override
+    public Object repayNormalSpotMarginTrade(SpotMarginTradeRePayRequest spotMarginTradeRePayRequest) {
+        return executeSync(bybitApiService.repayNormalSpotMarginTrade(spotMarginTradeRePayRequest));
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeBorrowOrders(SpotMarginTradeBorrowOrdersRequest spotMarginTradeBorrowOrdersRequest) {
+        return executeSync(bybitApiService.getNormalMarginTradeBorrowOrders(
+                spotMarginTradeBorrowOrdersRequest.getStartTime(),
+                spotMarginTradeBorrowOrdersRequest.getEndTime(),
+                spotMarginTradeBorrowOrdersRequest.getCoin(),
+                spotMarginTradeBorrowOrdersRequest.getStatus(),
+                spotMarginTradeBorrowOrdersRequest.getLimit()
+        ));
+    }
+
+    @Override
+    public Object getNormalSpotMarginTradeRepayOrders(SpotMarginTradeRepayOrdersRequest spotMarginTradeRepayOrdersRequest) {
+        return executeSync(bybitApiService.getNormalMarginTradeRepayOrders(
+                spotMarginTradeRepayOrdersRequest.getStartTime(),
+                spotMarginTradeRepayOrdersRequest.getEndTime(),
+                spotMarginTradeRepayOrdersRequest.getCoin(),
+                spotMarginTradeRepayOrdersRequest.getLimit()
+        ));
     }
 }

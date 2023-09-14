@@ -2,8 +2,10 @@ package com.bybit.api.client.domain.market;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Getter
 @JsonFormat(shape = JsonFormat.Shape.ARRAY)
 public class MarketKlineEntry {
     private long startTime;
@@ -13,34 +15,6 @@ public class MarketKlineEntry {
     private String closePrice;
     private String volume;
     private String turnover;
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public String getOpenPrice() {
-        return openPrice;
-    }
-
-    public String getHighPrice() {
-        return highPrice;
-    }
-
-    public String getLowPrice() {
-        return lowPrice;
-    }
-
-    public String getClosePrice() {
-        return closePrice;
-    }
-
-    public String getVolume() {
-        return volume;
-    }
-
-    public String getTurnover() {
-        return turnover;
-    }
 
     @Override
     public String toString() {

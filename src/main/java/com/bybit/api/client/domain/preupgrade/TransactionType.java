@@ -1,5 +1,8 @@
 package com.bybit.api.client.domain.preupgrade;
 
+import lombok.Getter;
+
+@Getter
 public enum TransactionType {
     TRANSFER_IN("TRANSFER_IN"),
     TRANSFER_OUT("TRANSFER_OUT"),
@@ -26,8 +29,5 @@ public enum TransactionType {
         this.transactionTypeId = transactionTypeId;
     }
 
-    public String getTransactionTypeId() {
-        return transactionTypeId;
-    }
 }
 

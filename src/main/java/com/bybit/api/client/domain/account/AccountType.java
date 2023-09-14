@@ -1,5 +1,8 @@
 package com.bybit.api.client.domain.account;
 
+import lombok.Getter;
+
+@Getter
 public enum AccountType {
     CONTRACT("CONTRACT"),
     SPOT("SPOT"),
@@ -14,7 +17,4 @@ public enum AccountType {
         this.accountTypeValue = accountTypeValue;
     }
 
-    public String getAccountTypeValue() {
-        return accountTypeValue;
-    }
 }
