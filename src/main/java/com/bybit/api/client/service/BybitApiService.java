@@ -3,9 +3,11 @@ package com.bybit.api.client.service;
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
+import com.bybit.api.client.domain.asset.request.AssetInternalTransferRequest;
+import com.bybit.api.client.domain.asset.request.AssetUniversalTransferRequest;
+import com.bybit.api.client.domain.asset.request.AssetWithdrawRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.position.request.*;
-import com.bybit.api.client.domain.preupgrade.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
@@ -635,4 +637,514 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/lending/account")
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
+
+    // Asset Endpoints
+
+    /**
+     * Get Coin Exchange Records
+     * Query the coin exchange records.
+     * <p>
+     * INFO
+     * This endpoint currently is not available to get data after 12 Mar 2023. We will make it fully available later.
+     * <p>
+     * CAUTION
+     * You may have a long delay of this endpoint.
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/exchange">...</a>
+     *
+     * @param fromCoin
+     * @param toCoin
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/exchange/order-record")
+    Call<Object> getAssetCoinExchangeRecords(@Query("fromCoin") String fromCoin,
+                                             @Query("toCoin") String toCoin,
+                                             @Query("limit") Integer limit,
+                                             @Query("cursor") String cursor);
+
+    /**
+     * Get Delivery Record
+     * Query delivery records of USDC futures and Options, sorted by deliveryTime in descending order
+     * <p>
+     * Unified account covers: USDC futures / Option
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/delivery">...</a>
+     *
+     * @param category
+     * @param symbol
+     * @param expDate
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/delivery-record")
+    Call<Object> getAssetDeliveryRecords(@Query("category") String category,
+                                         @Query("symbol") String symbol,
+                                         @Query("expDate") String expDate,
+                                         @Query("limit") Integer limit,
+                                         @Query("cursor") String cursor);
+
+    /**
+     * Get USDC Session Settlement
+     * Query session settlement records of USDC perpetual and futures
+     * <p>
+     * Unified account covers: USDC perpetual / USDC futures
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/settle">...</a>">...</a>
+     *
+     * @param category
+     * @param symbol
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/settlement-record")
+    Call<Object> getAssetUSDCSettlementRecords(@Query("category") String category,
+                                               @Query("symbol") String symbol,
+                                               @Query("limit") Integer limit,
+                                               @Query("cursor") String cursor);
+
+    /**
+     * Get Asset Info
+     * Query asset information
+     * <p>
+     * INFO
+     * For now, it can query SPOT only.
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/asset-info">...</a>
+     *
+     * @param accountType
+     * @param coin
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/transfer/query-asset-info")
+    Call<Object> getAssetInfo(@Query("accountType") String accountType,
+                              @Query("coin") String coin);
+
+
+    /**
+     * Get All Coins Balance
+     * You could get all coin balance of all account types under the master account, and sub account.
+     * <p>
+     * IMPORTANT
+     * It is not allowed to get master account coin balance via sub account api key.
+     * <p>
+     * <a href="  * https://bybit-exchange.github.io/docs/v5/asset/all-bal">...</a>ance
+     *
+     * @param accountType
+     * @param memberId
+     * @param coin
+     * @param withBonus
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/transfer/query-account-coins-balance")
+    Call<Object> getAssetAllCoinsBalance(@Query("accountType") String accountType,
+                                         @Query("memberId") String memberId,
+                                         @Query("coin") String coin,
+                                         @Query("withBonus") String withBonus);
+
+    /**
+     * Get Single Coin Balance
+     * Query the balance of a specific coin in a specific account type. Supports querying sub UID's balance. Also, you can check the transferable amount from master to sub account, sub to master account or sub to sub account, especially for user who has INS loan.
+     * <p>
+     * INFO
+     * Sub account cannot query master account balance
+     * Sub account can only check its own balance
+     * Master account can check its own and its sub uids balance
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/account-coin-balance">...</a>
+     *
+     * @param accountType
+     * @param toAccountType
+     * @param memberId
+     * @param toMemberId
+     * @param coin
+     * @param withBonus
+     * @param withTransferSafeAmount
+     * @param withLtvTransferSafeAmount
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/transfer/query-account-coin-balance")
+    Call<Object> getAssetSingleCoinBalance(@Query("accountType") String accountType,
+                                           @Query("toAccountType") String toAccountType,
+                                           @Query("memberId") String memberId,
+                                           @Query("toMemberId") String toMemberId,
+                                           @Query("coin") String coin,
+                                           @Query("withBonus") Integer withBonus,
+                                           @Query("withTransferSafeAmount") Integer withTransferSafeAmount,
+                                           @Query("withLtvTransferSafeAmount") Integer withLtvTransferSafeAmount);
+
+    /**
+     * Get Transferable Coins
+     * Query the transferable coin list between each account type
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/transferable-coin">...</a>
+     *
+     * @param fromAccountType
+     * @param toAccountType
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/transfer/query-transfer-coin-list")
+    Call<Object> getAssetTransferableCoins(@Query("fromAccountType") String fromAccountType, @Query("toAccountType") String toAccountType);
+
+    /**
+     * Get Internal Transfer Records
+     * Query the internal transfer records between different account types under the same UID.
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/inter-transfer-list">...</a>
+     * HTTP Request
+     *
+     * @param assetInternalTransferRequest
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/transfer/inter-transfer")
+    Call<Object> createAssetInternalTransfer(@Body AssetInternalTransferRequest assetInternalTransferRequest);
+
+    /**
+     * Get Sub UID
+     * Query the sub UIDs under a main UID
+     * <p>
+     * CAUTION
+     * Can query by the master UID's api key only
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/sub-uid-list">...</a>
+     *
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/transfer/query-sub-member-list")
+    Call<Object> getAssetTransferSubUidList();
+
+    /**
+     * Create Universal Transfer
+     * Transfer between sub-sub or main-sub.
+     * <p>
+     * CAUTION
+     * Can use master or sub acct api key to request
+     * To use sub acct api key, it must have "SubMemberTransferList" permission
+     * When use sub acct api key, it can only transfer to main account
+     * If you encounter errorCode: 131228 and msg: your balance is not enough, please go to Get Single Coin Balance to check transfer safe amount.
+     * You can not transfer between the same UID
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/unitransfer">...</a>
+     *
+     * @param assetUniversalTransferRequest
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/transfer/universal-transfer")
+    Call<Object> createAssetUniversalTransfer(@Body AssetUniversalTransferRequest assetUniversalTransferRequest);
+
+    /**
+     * Get Internal Transfer Records
+     * Query the internal transfer records between different account types under the same UID.
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/inter-transfer-list">...</a>
+     *
+     * @param transferId
+     * @param coin
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/transfer/query-inter-transfer-list")
+    Call<Object> getAssetInternalTransferRecords(@Query("transferId") String transferId,
+                                                 @Query("coin") String coin,
+                                                 @Query("status") String status,
+                                                 @Query("startTime") Long startTime,
+                                                 @Query("endTime") Long endTime,
+                                                 @Query("limit") Integer limit,
+                                                 @Query("cursor") String cursor);
+
+    /**
+     * Get Universal Transfer Records
+     * Query universal transfer records
+     * <p>
+     * TIP
+     * Main acct api key or Sub acct api key are both supported
+     * Main acct api key needs "SubMemberTransfer" permission
+     * Sub acct api key needs "SubMemberTransferList" permission
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/unitransfer-list">...</a>
+     *
+     * @param transferId
+     * @param coin
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/transfer/query-universal-transfer-list")
+    Call<Object> getAssetUniversalTransferRecords(@Query("transferId") String transferId,
+                                                  @Query("coin") String coin,
+                                                  @Query("status") String status,
+                                                  @Query("startTime") Long startTime,
+                                                  @Query("endTime") Long endTime,
+                                                  @Query("limit") Integer limit,
+                                                  @Query("cursor") String cursor);
+
+    /**
+     * Get Allowed Deposit Coin Info
+     * Query allowed deposit coin information. To find out paired chain of coin, please refer coin info api.
+     * <p>
+     * TIP
+     * This is an endpoint that does not need authentication
+     * <p>
+     * <a href="  * https://bybit-exchange.github.io/docs/v5/asset/deposit-coin-">...</a>
+     *
+     * @param coin
+     * @param chain
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/deposit/query-allowed-list")
+    Call<Object> getAssetAllowedDepositCoinInfo(
+            @Query("coin") String coin,
+            @Query("chain") String chain,
+            @Query("limit") Integer limit,
+            @Query("cursor") String cursor);
+
+
+    /**
+     * Set Deposit Account
+     * Set auto transfer account after deposit. The same function as the setting for Deposit on web GUI
+     * <p>
+     * INFO
+     * Your funds will be deposited into FUND wallet by default. You can set the wallet for auto-transfer after deposit by this API.
+     * Only main UID can access.
+     * TIP
+     * Unified trading account has FUND, UNIFIED, CONTRACT(for inverse derivatives)
+     * Unified margin account has FUND, UNIFIED, CONTRACT(for inverse derivatives), SPOT
+     * Normal account has FUND, OPTION(USDC account), CONTRACT(for inverse derivatives and derivatives), SPOT
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/set-deposit-acct">...</a>
+     *
+     * @param accountType
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/deposit/deposit-to-account")
+    Call<Object> setAssetDepositAccount(@Query("accountType") String accountType);
+
+    /**
+     * Get Deposit Records (on-chain)
+     * Query deposit records.
+     * <p>
+     * TIP
+     * endTime - startTime should be less than 30 days. Query last 30 days records by default.
+     * Can use main or sub UID api key to query deposit records respectively.
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/deposit-record">...</a>
+     *
+     * @param coin
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/deposit/query-record")
+    Call<Object> getAssetDepositRecords(
+            @Query("coin") String coin,
+            @Query("startTime") Long startTime,
+            @Query("endTime") Long endTime,
+            @Query("limit") Integer limit,
+            @Query("cursor") String cursor);
+
+    /**
+     * Get Sub Deposit Records (on-chain)
+     * Query subaccount's deposit records by main UID's API key.
+     * <p>
+     * TIP
+     * endTime - startTime should be less than 30 days. Queries for the last 30 days worth of records by default.
+     * <p> <a href="
+     ">* https://bybit-exchange.github.io/docs/v5/asset/sub-deposit-record</a>
+     * @param subMemberId
+     * @param coin
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/deposit/query-sub-member-record")
+    Call<Object> getAssetSubMembersDepositRecords(@Query("subMemberId") String subMemberId,
+                                                  @Query("coin") String coin,
+                                                  @Query("startTime") Long startTime,
+                                                  @Query("endTime") Long endTime,
+                                                  @Query("limit") Integer limit,
+                                                  @Query("cursor") String cursor);
+
+    /**
+     * Get Internal Deposit Records (off-chain)
+     * Query deposit records within the Bybit platform. These transactions are not on the blockchain.
+     * <p>
+     * RULES
+     * The maximum difference between the start time and the end time is 30 days.
+     * Support to get deposit records by Master or Sub Member Api Key
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/internal-deposit-record">...</a>
+     * @param coin
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/deposit/query-internal-record")
+    Call<Object> getAssetInternalDepositRecords(@Query("coin") String coin,
+                                                @Query("startTime") Long startTime,
+                                                @Query("endTime") Long endTime,
+                                                @Query("limit") Integer limit,
+                                                @Query("cursor") String cursor);
+
+    /**
+     * Get Master Deposit Address
+     * Query the deposit address information of MASTER account.
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/master-deposit-addr">...</a>
+     * @param coin
+     * @param chainType
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/deposit/query-address")
+    Call<Object> getAssetMasterDepositAddress(@Query("coin") String coin, @Query("chainType") String chainType);
+
+
+    /**
+     * Get Sub Deposit Address
+     * Query the deposit address information of SUB account.
+     *
+     * CAUTION
+     * Can use master UID's api key only
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/sub-deposit-addr">...</a>
+     * @param coin
+     * @param chainType
+     * @param subMemberId
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/deposit/query-sub-member-address")
+    Call<Object> getAssetSubMemberDepositAddress(@Query("coin") String coin,
+                                                 @Query("chainType") String chainType,
+                                                 @Query("subMemberId") String subMemberId);
+
+    /**
+     * Get Coin Info
+     * Query coin information, including chain information, withdraw and deposit status.
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/coin-info">...</a>
+     * @param coin
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/coin/query-info")
+    Call<Object> getAssetCoinInfo(@Query("coin") String coin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/coin/query-info")
+    Call<Object> getAssetCoinInfo();
+
+    /**
+     * Get Withdrawable Amount
+     * INFO
+     * How can partial funds be subject to delayed withdrawal requests?
+     *
+     * On-chain deposit: If the number of on-chain confirmations has not reached a risk-controlled level, a portion of the funds will be frozen for a period of time until they are unfrozen.
+     * Buying crypto: If there is a risk, the funds will be frozen for a certain period of time and cannot be withdrawn.
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/delay-amount">...</a>
+     * @param coin
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/withdraw/withdrawable-amount")
+    Call<Object> getAssetWithdrawalAmount(@Query("coin") String coin);
+
+
+    /**
+     * Get Withdrawal Records
+     * Query withdrawal records.
+     * <p>
+     * TIP
+     * endTime - startTime should be less than 30 days. Query last 30 days records by default.
+     * Can query by the master UID's api key only
+     * <a href="https://bybit-exchange.github.io/docs/v5/asset/withdraw-record">...</a>
+     * @param withdrawID
+     * @param coin
+     * @param withdrawType
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/asset/withdraw/query-record")
+    Call<Object> getAssetWithdrawalRecords(
+                                           @Query("withdrawID") String withdrawID,
+                                           @Query("coin") String coin,
+                                           @Query("withdrawType") Integer withdrawType,
+                                           @Query("startTime") Long startTime,
+                                           @Query("endTime") Long endTime,
+                                           @Query("limit") Integer limit,
+                                           @Query("cursor") String cursor);
+
+    /**
+     * Cancel Withdrawal
+     * Cancel the withdrawal
+     *
+     * CAUTION
+     * Can query by the master UID's api key only
+     * @param withdrawId
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/withdraw/cancel")
+    Call<Object> cancelAssetWithdraw(@Body String withdrawId);
+
+    /**
+     * Withdraw
+     * Withdraw assets from your Bybit account. You can make an off-chain transfer if the target wallet address is from Bybit. This means that no blockchain fee will be charged.
+     *
+     * DANGER
+     * UTA does not have SPOT account
+     * How do I know if my account is a UTA account? Call this endpoint, and if uta=1, then it is a UTA account.
+     * CAUTION
+     * Make sure you have whitelisted your wallet address here
+     * Can query by the master UID's api key only
+     * FORMULA
+     * feeType=0:
+     *
+     * withdrawPercentageFee != 0: handlingFee = inputAmount / (1 - withdrawPercentageFee) * withdrawPercentageFee + withdrawFee
+     * withdrawPercentageFee = 0: handlingFee = withdrawFee
+     * feeType=1:
+     *
+     * withdrawPercentageFee != 0: handlingFee = withdrawFee + (inputAmount - withdrawFee) * withdrawPercentageFee
+     * withdrawPercentageFee = 0: handlingFee = withdrawFee
+     * @param assetWithdrawRequest
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/withdraw/create")
+    Call<Object> createAssetWithdraw(@Body AssetWithdrawRequest assetWithdrawRequest);
 }

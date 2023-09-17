@@ -1,8 +1,10 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
+import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
@@ -1208,4 +1210,227 @@ public interface BybitApiRestClient {
      * @return
      */
     Object getC2CLendingAccountInfo(String coin);
+
+    // Asset Endpoints
+
+    /**
+     * Get Coin Exchange Records
+     * Query the coin exchange records.
+     *
+     * INFO
+     * This endpoint currently is not available to get data after 12 Mar 2023. We will make it fully available later.
+     *
+     * CAUTION
+     * You may have a long delay of this endpoint.
+     * @param coinExchangeRecordsRequest
+     * @return
+     */
+    Object getAssetCoinExchangeRecords(CoinExchangeRecordsRequest coinExchangeRecordsRequest);
+
+    /**
+     * Get Delivery Record
+     * Query delivery records of USDC futures and Options, sorted by deliveryTime in descending order
+     *
+     * Unified account covers: USDC futures / Option
+     * @param deliveryRecordsRequest
+     * @return
+     */
+    Object getAssetDeliveryRecords(AssetDeliveryRecordsRequest deliveryRecordsRequest);
+
+    /**
+     * Get USDC Session Settlement
+     * Query session settlement records of USDC perpetual and futures
+     *
+     * Unified account covers: USDC perpetual / USDC futures
+     * @param usdcSettlementRequest
+     * @return
+     */
+    Object getAssetUSDCSettlementRecords(USDCSessionSettlementRequest usdcSettlementRequest);
+
+    /**
+     * Get Asset Info
+     * Query asset information
+     *
+     * INFO
+     * For now, it can query SPOT only.
+     * @param assetInfoRequest
+     * @return
+     */
+    Object getAssetInfo(AssetInfoRequest assetInfoRequest);
+
+    /**
+     * Get All Coins Balance
+     * You could get all coin balance of all account types under the master account, and sub account.
+     *
+     * IMPORTANT
+     * It is not allowed to get master account coin balance via sub account api key.
+     * @param allCoinsBalanceRequest
+     * @return
+     */
+    Object getAssetAllCoinsBalance(AssetCoinsBalanceRequest allCoinsBalanceRequest);
+
+    /**
+     * Get Transferable Coin
+     * Query the transferable coin list between each account type
+     * @param fromAccountType
+     * @param toAccountType
+     * @return
+     */
+    Object getAssetTransferableCoins(AccountType fromAccountType, AccountType toAccountType);
+
+    /**
+     * Get Single Coin Balance
+     * Query the balance of a specific coin in a specific account type. Supports querying sub UID's balance. Also, you can check the transferable amount from master to sub account, sub to master account or sub to sub account, especially for user who has INS loan.
+     *
+     * INFO
+     * Sub account cannot query master account balance
+     * Sub account can only check its own balance
+     * Master account can check its own and its sub uids balance
+     * @param singleCoinBalanceRequest
+     * @return
+     */
+    Object getAssetSingleCoinBalance(AssetSingleCoinBalanceRequest singleCoinBalanceRequest);
+
+    /**
+     * Create Internal Transfer
+     * Create the internal transfer between different account types under the same UID.
+     *
+     * TIP
+     * Each account type has its own acceptable coins, e.g, you cannot transfer USDC from SPOT to CONTRACT. Please refer to transferable coin list API to find out more.
+     *
+     * HTTP Request
+     * POST /v5/asset/transfer/inter-transfer
+     * @param assetInternalTransferRequest
+     * @return
+     */
+    Object createAssetInternalTransfer(AssetInternalTransferRequest assetInternalTransferRequest);
+
+    /**
+     * Get Sub UID
+     * Query the sub UIDs under a main UID
+     *
+     * CAUTION
+     * Can query by the master UID's api key only
+     * @return
+     */
+    Object getAssetTransferSubUidList();
+
+    /**
+     * Create Universal Transfer
+     * Transfer between sub-sub or main-sub.
+     *
+     * CAUTION
+     * Can use master or sub acct api key to request
+     * To use sub acct api key, it must have "SubMemberTransferList" permission
+     * When use sub acct api key, it can only transfer to main account
+     * If you encounter errorCode: 131228 and msg: your balance is not enough, please go to Get Single Coin Balance to check transfer safe amount.
+     * You can not transfer between the same UID
+     * @param assetUniversalTransferRequest
+     * @return
+     */
+    Object createAssetUniversalTransfer(AssetUniversalTransferRequest assetUniversalTransferRequest);
+
+    /**
+     * Get Internal Transfer Records
+     * Query the internal transfer records between different account types under the same UID.
+     * @param internalTransferRequest
+     * @return
+     */
+    Object getAssetInternalTransferRecords(AssetTransferRecordsRequest internalTransferRequest);
+
+    /**
+     * Get Universal Transfer Records
+     * Query universal transfer records
+     *
+     * TIP
+     * Main acct api key or Sub acct api key are both supported
+     * Main acct api key needs "SubMemberTransfer" permission
+     * Sub acct api key needs "SubMemberTransferList" permission
+     * @param universalTransferRequest
+     * @return
+     */
+    Object getAssetUniversalTransferRecords(AssetTransferRecordsRequest universalTransferRequest);
+
+    /**
+     * Get Allowed Deposit Coin Info
+     * Query allowed deposit coin information. To find out paired chain of coin, please refer coin info api.
+     *
+     * TIP
+     * This is an endpoint that does not need authentication
+     * @param allowedDepositCoinRequest
+     * @return
+     */
+    Object getAssetAllowedDepositCoinInfo(AssetAllowedDepositCoinRequest allowedDepositCoinRequest);
+
+    /**
+     * HTTP Request
+     * POST /v5/asset/deposit/deposit-to-account
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * accountType	true	string	Account type
+     * UNIFIED
+     * SPOT
+     * OPTION
+     * CONTRACT
+     * FUND
+     * Response Parameters
+     * Parameter	Type	Comments
+     * status	integer	Request result:
+     * 1: SUCCESS
+     * 0: FAIL
+     * @param accountType
+     * @return
+     */
+    Object setAssetDepositAccount(AccountType accountType);
+
+    /**
+     * Get Deposit Records (on-chain)
+     * Query deposit records.
+     *
+     * TIP
+     * endTime - startTime should be less than 30 days. Query last 30 days records by default.
+     * Can use main or sub UID api key to query deposit records respectively.
+     * @param assetDepositRecordsRequest
+     * @return
+     */
+    Object getAssetDepositRecords(AssetDepositRecordsRequest assetDepositRecordsRequest);
+
+    /**
+     * Get Sub Deposit Records (on-chain)
+     * Query subaccount's deposit records by main UID's API key.
+     *
+     * TIP
+     * endTime - startTime should be less than 30 days. Queries for the last 30 days worth of records by default.
+     * @param assetDepositRecordsRequest
+     * @return
+     */
+    Object getAssetSubMembersDepositRecords(AssetDepositRecordsRequest assetDepositRecordsRequest);
+
+    /**
+     * Get Internal Deposit Records (off-chain)
+     * Query deposit records within the Bybit platform. These transactions are not on the blockchain.
+     *
+     * RULES
+     * The maximum difference between the start time and the end time is 30 days.
+     * Support to get deposit records by Master or Sub Member Api Key
+     * @param assetDepositRecordsRequest
+     * @return
+     */
+    Object getAssetInternalDepositRecords(AssetDepositRecordsRequest assetDepositRecordsRequest);
+
+    Object getAssetMasterDepositAddress(AssetDepositRequest masterDepositRequest);
+
+    Object getAssetSubMemberDepositAddress(AssetDepositRequest subDepositRequest);
+
+    Object getAssetCoinInfo();
+    Object getAssetCoinInfo(String coin);
+
+    Object getAssetWithdrawalAmount(String coin);
+
+    Object getAssetWithdrawalRecords(AssetWithdrawRecordsRequest assetWithdrawRecordsRequest);
+
+    Object cancelAssetWithdraw(String withdrawId);
+
+    Object createAssetWithdraw(AssetWithdrawRequest assetWithdrawRequest);
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Utility class
@@ -49,5 +50,11 @@ public final class Util {
         }
 
         return result;
+    }
+
+    public static String generateTransferID()
+    {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 }

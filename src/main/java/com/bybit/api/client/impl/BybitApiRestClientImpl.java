@@ -1,8 +1,10 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
+import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
@@ -415,7 +417,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 executionHistoryRequest.getBaseCoin(),
                 executionHistoryRequest.getStartTime(),
                 executionHistoryRequest.getEndTime(),
-                executionHistoryRequest.getExecType() == null ? "" : executionHistoryRequest.getExecType().getExecTypeId(),
+                executionHistoryRequest.getExecType() == null ? null : executionHistoryRequest.getExecType().getExecTypeId(),
                 executionHistoryRequest.getLimit(),
                 executionHistoryRequest.getCursor()
         ));
@@ -474,7 +476,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 request.getBaseCoin(),
                 request.getStartTime(),
                 request.getEndTime(),
-                request.getExecType() == null ? "" : request.getExecType().getExecTypeId(),
+                request.getExecType() == null ? null : request.getExecType().getExecTypeId(),
                 request.getLimit(),
                 request.getCursor()
         ));
@@ -485,7 +487,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
         return executeSync(bybitApiService.getPreUpgradeTransaction(
                 request.getCategory().getProductTypeId(),
                 request.getBaseCoin(),
-                request.getTransactionType() == null ? "" : request.getTransactionType().getTransactionTypeId(),
+                request.getTransactionType() == null ? null : request.getTransactionType().getTransactionTypeId(),
                 request.getStartTime(),
                 request.getEndTime(),
                 request.getLimit(),
@@ -582,11 +584,11 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     @Override
     public Object getTransactionLog(GetTransactionLogRequest getTransactionLogRequest) {
         return executeSync(bybitApiService.getTransactionLog(
-                getTransactionLogRequest.getAccountType() == null ? "" : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
-                getTransactionLogRequest.getCategory() == null ? "" : getTransactionLogRequest.getCategory().getProductTypeId(),
+                getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
+                getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getProductTypeId(),
                 getTransactionLogRequest.getCurrency(),
                 getTransactionLogRequest.getBaseCoin(),
-                getTransactionLogRequest.getTransactionType() == null ? "" : getTransactionLogRequest.getTransactionType().getTransactionTypeId(),
+                getTransactionLogRequest.getTransactionType() == null ? null : getTransactionLogRequest.getTransactionType().getTransactionTypeId(),
                 getTransactionLogRequest.getStartTime(),
                 getTransactionLogRequest.getEndTime(),
                 getTransactionLogRequest.getLimit(),
@@ -705,7 +707,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     @Override
     public Object getUtaVipSpotMarginTradeData(VIPMarginDataRequest utaMarginDataRequest) {
         return executeSync(bybitApiService.getUtaVipSpotMarginTradeData(
-                utaMarginDataRequest.getVipLevel() == null ? "" : utaMarginDataRequest.getVipLevel().getLevel(),
+                utaMarginDataRequest.getVipLevel() == null ? null : utaMarginDataRequest.getVipLevel().getLevel(),
                 utaMarginDataRequest.getCurrency())
         );
     }
@@ -729,7 +731,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     @Override
     public Object getNormalVipSpotMarginTradeData(VIPMarginDataRequest normalMarginDataRequest) {
         return executeSync(bybitApiService.getNormalVipSpotMarginTradeData(
-                normalMarginDataRequest.getVipLevel() == null ? "" : normalMarginDataRequest.getVipLevel().getLevel(),
+                normalMarginDataRequest.getVipLevel() == null ? null : normalMarginDataRequest.getVipLevel().getLevel(),
                 normalMarginDataRequest.getCurrency())
         );
     }
@@ -805,7 +807,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     @Override
     public Object getBrokerEarningData(BrokerEarningRequest brokerEarningRequest) {
         return executeSync(bybitApiService.getBrokerEarningData(
-                brokerEarningRequest.getBizType() == null ? "" : brokerEarningRequest.getBizType().getType(),
+                brokerEarningRequest.getBizType() == null ? null : brokerEarningRequest.getBizType().getType(),
                 brokerEarningRequest.getStartTime(),
                 brokerEarningRequest.getEndTime(),
                 brokerEarningRequest.getLimit(),
@@ -849,4 +851,222 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     public Object getC2CLendingAccountInfo(String coin) {
         return executeSync(bybitApiService.getC2CLendingAccountInfo(coin));
     }
+
+    // Asset Endpoints
+    @Override
+    public Object getAssetCoinExchangeRecords(CoinExchangeRecordsRequest coinExchangeRecordsRequest) {
+        return executeSync(bybitApiService.getAssetCoinExchangeRecords(
+                coinExchangeRecordsRequest.getFromCoin(),
+                coinExchangeRecordsRequest.getToCoin(),
+                coinExchangeRecordsRequest.getLimit(),
+                coinExchangeRecordsRequest.getCursor()
+        ));
+    }
+
+    @Override
+    public Object getAssetDeliveryRecords(AssetDeliveryRecordsRequest deliveryRecordsRequest) {
+        return executeSync(bybitApiService.getAssetDeliveryRecords(
+                deliveryRecordsRequest.getCategory() == null ? null : deliveryRecordsRequest.getCategory().getProductTypeId(),
+                deliveryRecordsRequest.getSymbol(),
+                deliveryRecordsRequest.getExpDate(),
+                deliveryRecordsRequest.getLimit(),
+                deliveryRecordsRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object getAssetUSDCSettlementRecords(USDCSessionSettlementRequest usdcSettlementRequest) {
+        return executeSync(bybitApiService.getAssetUSDCSettlementRecords(
+                usdcSettlementRequest.getCategory() == null ? null : usdcSettlementRequest.getCategory().getProductTypeId(),
+                usdcSettlementRequest.getSymbol(),
+                usdcSettlementRequest.getLimit(),
+                usdcSettlementRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object getAssetInfo(AssetInfoRequest assetInfoRequest) {
+        return executeSync(bybitApiService.getAssetInfo(
+                assetInfoRequest.getAccountType() == null ? null : assetInfoRequest.getAccountType().getAccountTypeValue(),
+                assetInfoRequest.getCoin())
+        );
+    }
+
+    @Override
+    public Object getAssetAllCoinsBalance(AssetCoinsBalanceRequest allCoinsBalanceRequest) {
+        return executeSync(bybitApiService.getAssetAllCoinsBalance(
+                allCoinsBalanceRequest.getAccountType() == null ? null : allCoinsBalanceRequest.getAccountType().getAccountTypeValue(),
+                allCoinsBalanceRequest.getMemberId(),
+                allCoinsBalanceRequest.getCoin(),
+                allCoinsBalanceRequest.getWithBonus())
+        );
+    }
+
+    @Override
+    public Object getAssetTransferableCoins(AccountType fromAccountType, AccountType toAccountType) {
+        return executeSync(bybitApiService.getAssetTransferableCoins(
+                fromAccountType == null ? null : fromAccountType.getAccountTypeValue(),
+                toAccountType == null ? null : toAccountType.getAccountTypeValue()));
+    }
+
+    @Override
+    public Object getAssetSingleCoinBalance(AssetSingleCoinBalanceRequest singleCoinBalanceRequest) {
+        return executeSync(bybitApiService.getAssetSingleCoinBalance(
+                singleCoinBalanceRequest.getAccountType() == null ? null : singleCoinBalanceRequest.getAccountType().getAccountTypeValue(),
+                singleCoinBalanceRequest.getToAccountType() == null ? null : singleCoinBalanceRequest.getToAccountType().getAccountTypeValue(),
+                singleCoinBalanceRequest.getMemberId(),
+                singleCoinBalanceRequest.getToMemberId(),
+                singleCoinBalanceRequest.getCoin(),
+                singleCoinBalanceRequest.getWithBonus(),
+                singleCoinBalanceRequest.getWithTransferSafeAmount(),
+                singleCoinBalanceRequest.getWithLtvTransferSafeAmount())
+        );
+    }
+
+    @Override
+    public Object createAssetInternalTransfer(AssetInternalTransferRequest assetInternalTransferRequest) {
+        return executeSync(bybitApiService.createAssetInternalTransfer(assetInternalTransferRequest));
+    }
+
+    @Override
+    public Object getAssetTransferSubUidList() {
+        return executeSync(bybitApiService.getAssetTransferSubUidList());
+    }
+
+    @Override
+    public Object createAssetUniversalTransfer(AssetUniversalTransferRequest assetUniversalTransferRequest) {
+        return executeSync(bybitApiService.createAssetUniversalTransfer(assetUniversalTransferRequest));
+    }
+
+    @Override
+    public Object getAssetInternalTransferRecords(AssetTransferRecordsRequest internalTransferRequest) {
+        return executeSync(bybitApiService.getAssetInternalTransferRecords(
+                internalTransferRequest.getTransferId(),
+                internalTransferRequest.getCoin(),
+                internalTransferRequest.getTransferStatus() == null ? null : internalTransferRequest.getTransferStatus().getStatus(),
+                internalTransferRequest.getStartTime(),
+                internalTransferRequest.getEndTime(),
+                internalTransferRequest.getLimit(),
+                internalTransferRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object getAssetUniversalTransferRecords(AssetTransferRecordsRequest universalTransferRequest) {
+        return executeSync(bybitApiService.getAssetUniversalTransferRecords(
+                universalTransferRequest.getTransferId(),
+                universalTransferRequest.getCoin(),
+                universalTransferRequest.getTransferStatus() == null ? null : universalTransferRequest.getTransferStatus().getStatus(),
+                universalTransferRequest.getStartTime(),
+                universalTransferRequest.getEndTime(),
+                universalTransferRequest.getLimit(),
+                universalTransferRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object getAssetAllowedDepositCoinInfo(AssetAllowedDepositCoinRequest allowedDepositCoinRequest) {
+        return executeSync(bybitApiService.getAssetAllowedDepositCoinInfo(
+                allowedDepositCoinRequest.getCoin(),
+                allowedDepositCoinRequest.getChain(),
+                allowedDepositCoinRequest.getLimit(),
+                allowedDepositCoinRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object setAssetDepositAccount(AccountType accountType) {
+        return executeSync(bybitApiService.setAssetDepositAccount(accountType == null ? null : accountType.getAccountTypeValue()));
+    }
+
+    @Override
+    public Object getAssetDepositRecords(AssetDepositRecordsRequest assetDepositRecordsRequest) {
+        return executeSync(bybitApiService.getAssetDepositRecords(
+                assetDepositRecordsRequest.getCoin(),
+                assetDepositRecordsRequest.getStartTime(),
+                assetDepositRecordsRequest.getEndTime(),
+                assetDepositRecordsRequest.getLimit(),
+                assetDepositRecordsRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object getAssetSubMembersDepositRecords(AssetDepositRecordsRequest assetDepositRecordsRequest) {
+        return executeSync(bybitApiService.getAssetSubMembersDepositRecords(
+                assetDepositRecordsRequest.getSubMemberId(),
+                assetDepositRecordsRequest.getCoin(),
+                assetDepositRecordsRequest.getStartTime(),
+                assetDepositRecordsRequest.getEndTime(),
+                assetDepositRecordsRequest.getLimit(),
+                assetDepositRecordsRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object getAssetInternalDepositRecords(AssetDepositRecordsRequest assetDepositRecordsRequest) {
+        return executeSync(bybitApiService.getAssetInternalDepositRecords(
+                assetDepositRecordsRequest.getCoin(),
+                assetDepositRecordsRequest.getStartTime(),
+                assetDepositRecordsRequest.getEndTime(),
+                assetDepositRecordsRequest.getLimit(),
+                assetDepositRecordsRequest.getCursor())
+        );
+    }
+
+    @Override
+    public Object getAssetMasterDepositAddress(AssetDepositRequest masterDepositRequest) {
+        return executeSync(bybitApiService.getAssetMasterDepositAddress(
+                masterDepositRequest.getCoin(),
+                masterDepositRequest.getChainType()
+        ));
+    }
+
+    @Override
+    public Object getAssetSubMemberDepositAddress(AssetDepositRequest subDepositRequest) {
+        return executeSync(bybitApiService.getAssetSubMemberDepositAddress(
+                subDepositRequest.getCoin(),
+                subDepositRequest.getChainType(),
+                subDepositRequest.getSubMemberId()
+        ));
+    }
+
+    @Override
+    public Object getAssetCoinInfo() {
+        return executeSync(bybitApiService.getAssetCoinInfo());
+    }
+
+    @Override
+    public Object getAssetCoinInfo(String coin) {
+        return executeSync(bybitApiService.getAssetCoinInfo(coin));
+    }
+
+    @Override
+    public Object getAssetWithdrawalAmount(String coin) {
+        return executeSync(bybitApiService.getAssetWithdrawalAmount(coin));
+    }
+
+    @Override
+    public Object getAssetWithdrawalRecords(AssetWithdrawRecordsRequest assetWithdrawRecordsRequest) {
+        return executeSync(bybitApiService.getAssetWithdrawalRecords(
+                assetWithdrawRecordsRequest.getWithdrawID(),
+                assetWithdrawRecordsRequest.getCoin(),
+                assetWithdrawRecordsRequest.getWithdrawType() == null ? null : assetWithdrawRecordsRequest.getWithdrawType().getValue(),
+                assetWithdrawRecordsRequest.getStartTime(),
+                assetWithdrawRecordsRequest.getEndTime(),
+                assetWithdrawRecordsRequest.getLimit(),
+                assetWithdrawRecordsRequest.getCursor()
+        ));
+    }
+
+    @Override
+    public Object cancelAssetWithdraw(String withdrawId) {
+        return executeSync(bybitApiService.cancelAssetWithdraw(withdrawId));
+    }
+
+    @Override
+    public Object createAssetWithdraw(AssetWithdrawRequest assetWithdrawRequest) {
+        return executeSync(bybitApiService.createAssetWithdraw(assetWithdrawRequest));
+    }
+
+
 }
