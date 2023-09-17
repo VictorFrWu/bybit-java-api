@@ -3,6 +3,9 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
+import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
+import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
+import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
@@ -1126,4 +1129,83 @@ public interface BybitApiRestClient {
      * @return
      */
     Object getNormalSpotMarginTradeRepayOrders(SpotMarginTradeRepayOrdersRequest spotMarginTradeRepayOrdersRequest);
+
+    // Broker endpoints
+
+    /**
+     * Get Broker Earning
+     * INFO
+     * Use exchange broker master account to query
+     * The data can support up to past 6 months until T-1
+     * startTime & endTime are either entered at the same time or not entered
+     * @param brokerEarningRequest
+     * @return
+     */
+    Object getBrokerEarningData(BrokerEarningRequest brokerEarningRequest);
+
+    // C2C Endpoints
+
+    /**
+     * Get Lending Coin Info
+     * Get the basic information of lending coins
+     *
+     * INFO
+     * All v5/lending APIs need SPOT permission.
+     * @param coin
+     * @return
+     */
+    Object getC2CLendingCoinInfo(String coin);
+    Object getC2CLendingCoinInfo();
+
+    /**
+     * Deposit Funds
+     * Lending funds to Bybit asset pool
+     *
+     * INFO
+     * normal & UMA account: deduct funds from Spot wallet
+     * UTA account: deduct funds from Unified wallet
+     * @param despoitFundRequest
+     * @return
+     */
+    Object C2cLendingDepositFunds(ClientLendingFundsRequest despoitFundRequest);
+
+    /**
+     * Redeem Funds
+     * Withdraw funds from the Bybit asset pool.
+     *
+     * TIP
+     * There will be two redemption records: one for the redeemed quantity, and the other one is for the total interest occurred.
+     * @param despoitFundRequest
+     * @return
+     */
+    Object C2cLendingRedeemFunds(ClientLendingFundsRequest despoitFundRequest);
+
+    /**
+     * Get Order Records
+     * Get lending or redeem history
+     *
+     * @param c2cOrdersRecordsRequest
+     * @return
+     */
+    Object getC2cOrdersRecords(ClientLendingOrderRecordsRequest c2cOrdersRecordsRequest);
+
+    /**
+     * Get Lending Account Info
+     * HTTP Request
+     * GET /v5/lending/account
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * coin	true	string	Coin name
+     * Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin name
+     * principalInterest	string	User Redeemable interest
+     * principalQty	string	Leftover quantity you can redeem for today (measured from 0 - 24 UTC)
+     * principalTotal	string	Total amount redeemable by user
+     * quantity	string	Current deposit quantity
+     * @param coin
+     * @return
+     */
+    Object getC2CLendingAccountInfo(String coin);
 }

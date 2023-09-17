@@ -3,6 +3,9 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
+import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
+import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
+import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
@@ -795,5 +798,55 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 spotMarginTradeRepayOrdersRequest.getCoin(),
                 spotMarginTradeRepayOrdersRequest.getLimit()
         ));
+    }
+
+    // Broker
+
+    @Override
+    public Object getBrokerEarningData(BrokerEarningRequest brokerEarningRequest) {
+        return executeSync(bybitApiService.getBrokerEarningData(
+                brokerEarningRequest.getBizType() == null ? "" : brokerEarningRequest.getBizType().getType(),
+                brokerEarningRequest.getStartTime(),
+                brokerEarningRequest.getEndTime(),
+                brokerEarningRequest.getLimit(),
+                brokerEarningRequest.getCursor()
+        ));
+    }
+
+    // C2C Endpoints
+    @Override
+    public Object getC2CLendingCoinInfo(String coin) {
+        return executeSync(bybitApiService.getC2CLendingCoinInfo(coin));
+    }
+
+    @Override
+    public Object getC2CLendingCoinInfo() {
+        return executeSync(bybitApiService.getC2CLendingCoinInfo());
+    }
+
+    @Override
+    public Object C2cLendingDepositFunds(ClientLendingFundsRequest depsoitFundRequest) {
+        return executeSync(bybitApiService.C2cLendingDepositFunds(depsoitFundRequest));
+    }
+
+    @Override
+    public Object C2cLendingRedeemFunds(ClientLendingFundsRequest depsoitFundRequest) {
+        return executeSync(bybitApiService.C2cLendingRedeemFunds(depsoitFundRequest));
+    }
+
+    @Override
+    public Object getC2cOrdersRecords(ClientLendingOrderRecordsRequest c2cOrdersRecordsRequest) {
+        return executeSync(bybitApiService.getC2cOrdersRecords(
+                c2cOrdersRecordsRequest.getCoin(),
+                c2cOrdersRecordsRequest.getOrderId(),
+                c2cOrdersRecordsRequest.getStartTime(),
+                c2cOrdersRecordsRequest.getEndTime(),
+                c2cOrdersRecordsRequest.getLimit(),
+                c2cOrdersRecordsRequest.getOrderType()));
+    }
+
+    @Override
+    public Object getC2CLendingAccountInfo(String coin) {
+        return executeSync(bybitApiService.getC2CLendingAccountInfo(coin));
     }
 }

@@ -3,6 +3,7 @@ package com.bybit.api.client.service;
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
+import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.preupgrade.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
@@ -525,7 +526,7 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-margin-trade/data")
     Call<Object> getUtaVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
-                                         @Query("currency") String currency);
+                                              @Query("currency") String currency);
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-margin-trade/switch-mode")
@@ -543,7 +544,7 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/data")
     Call<Object> getNormalVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
-                                            @Query("currency") String currency);
+                                                 @Query("currency") String currency);
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/pledge-token")
@@ -595,4 +596,43 @@ public interface BybitApiService {
                                                  @Query("endTime") Long endTime,
                                                  @Query("coin") String coin,
                                                  @Query("limit") Integer limit);
+
+    // Broker Endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/broker/earning-record")
+    Call<Object> getBrokerEarningData(@Query("bizType") String bizType,
+                                      @Query("startTime") Long startTime,
+                                      @Query("endTime") Long endTime,
+                                      @Query("limit") Integer limit,
+                                      @Query("cursor") String cursor);
+
+    // C2C Endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/info")
+    Call<Object> getC2CLendingCoinInfo(@Query("coin") String coin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/info")
+    Call<Object> getC2CLendingCoinInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/lending/purchase")
+    Call<Object> C2cLendingDepositFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/lending/redeem")
+    Call<Object> C2cLendingRedeemFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/history-order")
+    Call<Object> getC2cOrdersRecords(@Query("coin") String coin,
+                                     @Query("orderId") String orderId,
+                                     @Query("startTime") Long startTime,
+                                     @Query("endTime") Long endTime,
+                                     @Query("limit") Integer limit,
+                                     @Query("orderType") String orderType);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/account")
+    Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 }
