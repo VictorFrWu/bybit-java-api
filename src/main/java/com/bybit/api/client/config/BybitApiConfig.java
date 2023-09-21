@@ -5,66 +5,42 @@ package com.bybit.api.client.config;
  */
 public class BybitApiConfig {
     /**
-     * Base domain for URLs.
+     * Mainnet domain for URLs.
      */
-    private static String BASE_DOMAIN = "bybit.com";
-
+    private static final String MAINNET_DOMAIN = "api.bybit.com";
     /**
-     * Spot Test Network URL.
+     * Testnet Network URL.
      */
     private static final String TESTNET_DOMAIN = "api-testnet.bybit.com";
+    /**
+     * Testnet websocket url
+     */
+    private static final String STREAM_TESTNET_DOMAIN = "wss://stream-testnet.bybit.com";
+    /**
+     * Mainnet websocket url
+     */
+    private static final String STREAM_MAINNET_DOMAIN = "wss://stream.bybit.com";
 
     /**
      * bybit Spot Test Network option:
      * true if endpoint is spot test network URL; false if endpoint is production spot API URL.
      */
     public static boolean useTestnet;
-
-    /**
-     * bybit Spot Test Network option:
-     * true for websocket streaming; false for no streaming.
-     */
-    public static boolean useTestnetStreaming;
-
-    /**
-     * Set the URL base domain name (e.g., bybit.com).
-     *
-     * @param baseDomain Base domain name
-     */
-    public static void setBaseDomain(final String baseDomain) {
-        BASE_DOMAIN = baseDomain;
-    }
-
     /**
      * Get the URL base domain name (e.g., bybit.com).
      *
      * @return The base domain for URLs
      */
     public static String getBaseDomain() {
-        return BASE_DOMAIN;
+        return MAINNET_DOMAIN;
     }
 
     /**
      * REST API base URL.
      */
     public static String getApiBaseUrl() {
-        return String.format("https://api.%s", getBaseDomain());
+        return String.format("https://%s", getBaseDomain());
     }
-
-    /**
-     * Streaming API base URL.
-     */
-    public static String getStreamApiBaseUrl() {
-        return String.format("wss://stream.%s:9443/ws", getBaseDomain());
-    }
-
-    /**
-     * Asset info base URL.
-     */
-    public static String getAssetInfoApiBaseUrl() {
-        return String.format("https://%s/", getBaseDomain());
-    }
-
     /**
      * Spot Test Network API base URL.
      */
@@ -73,9 +49,22 @@ public class BybitApiConfig {
     }
 
     /**
-     * Streaming Spot Test Network base URL.
+     * Streaming Testnet Network base URL.
      */
     public static String getStreamTestNetBaseUrl() {
-        return String.format("wss://%s/ws", TESTNET_DOMAIN);
+        return String.format("wss://%s", STREAM_TESTNET_DOMAIN);
     }
+
+    /**
+     * Streaming Mainnet Network base URL.
+     */
+    public static String getStreamMainnetNetBaseUrl() {
+        return String.format("wss://%s", STREAM_MAINNET_DOMAIN);
+    }
+
+    public static final String V5_PUBLIC_SPOT = "/v5/public/spot";
+    public static final String V5_PUBLIC_LINEAR = "/v5/public/linear";
+    public static final String V5_PUBLIC_INVERSE = "/v5/public/inverse";
+    public static final String V5_PUBLIC_OPTION = "/v5/public/option";
+    public static final String V5_PRIVATE = "/v5/private";
 }

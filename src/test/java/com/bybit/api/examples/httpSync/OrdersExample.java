@@ -1,13 +1,9 @@
-package com.bybit.api.examples;
+package com.bybit.api.examples.httpSync;
 
 import com.bybit.api.client.domain.*;
 import com.bybit.api.client.domain.trade.requests.*;
-import com.bybit.api.client.domain.trade.response.OrderResponse;
-import com.bybit.api.client.domain.trade.response.OrderResult;
-import com.bybit.api.client.impl.BybitApiRestClient;
+import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.impl.BybitApiClientFactory;
-
-import java.util.Optional;
 
 
 /**

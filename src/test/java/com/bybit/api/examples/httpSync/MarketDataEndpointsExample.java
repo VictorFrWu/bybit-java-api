@@ -1,10 +1,10 @@
-package com.bybit.api.examples;
+package com.bybit.api.examples.httpSync;
 
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.impl.BybitApiClientFactory;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.impl.BybitApiRestClient;
+import com.bybit.api.client.BybitApiRestClient;
 
 /**
  * Examples on how to get market data information such as the latest price of a symbol, etc.

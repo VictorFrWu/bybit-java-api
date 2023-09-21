@@ -1,5 +1,7 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.BybitApiAsyncRestClient;
+import com.bybit.api.client.BybitApiCallback;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.service.BybitApiService;

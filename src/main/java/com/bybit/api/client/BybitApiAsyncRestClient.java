@@ -1,4 +1,4 @@
-package com.bybit.api.client.impl;
+package com.bybit.api.client;
 
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;

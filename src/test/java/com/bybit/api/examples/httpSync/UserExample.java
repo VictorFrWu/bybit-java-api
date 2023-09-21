@@ -1,12 +1,10 @@
-package com.bybit.api.examples;
+package com.bybit.api.examples.httpSync;
 
-import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.domain.trade.requests.OpenOrderRequest;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
 import com.bybit.api.client.impl.BybitApiClientFactory;
-import com.bybit.api.client.impl.BybitApiRestClient;
+import com.bybit.api.client.BybitApiRestClient;
 
 import java.util.Map;
 import java.util.List;

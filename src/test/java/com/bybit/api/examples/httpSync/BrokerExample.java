@@ -1,9 +1,9 @@
-package com.bybit.api.examples;
+package com.bybit.api.examples.httpSync;
 
 import com.bybit.api.client.domain.broker.BusinessType;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
 import com.bybit.api.client.impl.BybitApiClientFactory;
-import com.bybit.api.client.impl.BybitApiRestClient;
+import com.bybit.api.client.BybitApiRestClient;
 
 public class BrokerExample {
     public static void main(String[] args) {

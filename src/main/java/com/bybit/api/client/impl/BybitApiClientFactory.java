@@ -1,7 +1,12 @@
 package com.bybit.api.client.impl;
 
 
+import com.bybit.api.client.BybitAnnouncementRestClient;
+import com.bybit.api.client.BybitApiAsyncRestClient;
+import com.bybit.api.client.BybitApiRestClient;
+import com.bybit.api.client.BybitApiWebSocketClient;
 import com.bybit.api.client.config.BybitApiConfig;
+import com.bybit.api.client.service.BybitApiServiceGenerator;
 
 /**
  * A factory for creating BybitApi client objects.
@@ -28,7 +33,6 @@ public class BybitApiClientFactory {
         this.apiKey = apiKey;
         this.secret = secret;
         BybitApiConfig.useTestnet = true;
-        BybitApiConfig.useTestnetStreaming = false;
     }
 
     /**
@@ -36,14 +40,12 @@ public class BybitApiClientFactory {
      *
      * @param apiKey the API key
      * @param secret the Secret
-     * @param useTestnet true if endpoint is spot test network URL; false if endpoint is production spot API URL.
-     * @param useTestnetStreaming true for spot test network websocket streaming; false for no streaming.
+     * @param useTestnet true if endpoint is test network URL; false if endpoint is production API URL.
      */
-    private BybitApiClientFactory(String apiKey, String secret, boolean useTestnet, boolean useTestnetStreaming) {
+    private BybitApiClientFactory(String apiKey, String secret, boolean useTestnet) {
         this(apiKey, secret);
-        if (useTestnet) {
+        if (useTestnet)
             BybitApiConfig.useTestnet = true;
-            BybitApiConfig.useTestnetStreaming = useTestnetStreaming; }
     }
 
     /**
@@ -63,13 +65,12 @@ public class BybitApiClientFactory {
      *
      * @param apiKey the API key
      * @param secret the Secret
-     * @param useTestnet true if endpoint is spot test network URL; false if endpoint is production spot API URL.
-     * @param useTestnetStreaming true for spot test network websocket streaming; false for no streaming.
+     * @param useTestnet true if endpoint is test network URL; false if endpoint is production spot API URL.
      *
      * @return the Bybit api client factory.
      */
-    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean useTestnet, boolean useTestnetStreaming) {
-        return new BybitApiClientFactory(apiKey, secret, useTestnet, useTestnetStreaming);
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean useTestnet) {
+        return new BybitApiClientFactory(apiKey, secret, useTestnet);
     }
 
     /**
@@ -84,13 +85,12 @@ public class BybitApiClientFactory {
     /**
      * New instance without authentication and with optional Spot Test Network endpoint.
      *
-     * @param useTestnet true if endpoint is spot test network URL; false if endpoint is production spot API URL.
-     * @param useTestnetStreaming true for spot test network websocket streaming; false for no streaming.
+     * @param useTestnet true if endpoint is test network URL; false if endpoint is production API URL.
      *
      * @return the Bybit api client factory.
      */
-    public static BybitApiClientFactory newInstance(boolean useTestnet, boolean useTestnetStreaming) {
-        return new BybitApiClientFactory(null, null, useTestnet, useTestnetStreaming);
+    public static BybitApiClientFactory newInstance(boolean useTestnet) {
+        return new BybitApiClientFactory(null, null, useTestnet);
     }
 
     /**
@@ -101,9 +101,23 @@ public class BybitApiClientFactory {
     }
 
     /**
+     * Creates a new synchronous/blocking REST client.
+     */
+    public BybitAnnouncementRestClient newAnnouncementRestClient() {
+        return new BybitAnnouncementRestClientImpl();
+    }
+
+    /**
      * Creates a new asynchronous/non-blocking REST client.
      */
     public BybitApiAsyncRestClient newAsyncRestClient() {
         return new BybitApiAsyncRestClientImpl(apiKey, secret);
+    }
+
+    /**
+     * Creates a new web socket client used for handling data streams.
+     */
+    public BybitApiWebSocketClient newWebSocketClient(boolean useTestnetStreaming, String websocketChannel) {
+        return new BybitApiWebSocketClientImpl(BybitApiServiceGenerator.getSharedClient(), useTestnetStreaming, websocketChannel);
     }
 }

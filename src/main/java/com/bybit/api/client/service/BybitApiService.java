@@ -1147,4 +1147,23 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/withdraw/create")
     Call<Object> createAssetWithdraw(@Body AssetWithdrawRequest assetWithdrawRequest);
+
+    // Announcement
+
+    /**
+     * Get Announcement
+     * @param locale
+     * @param type
+     * @param tag
+     * @param page
+     * @param limit
+     * @return
+     */
+    @GET("/v5/announcements/index")
+    Call<Object> getAnouncementInfo(
+            @Query("locale") String locale,
+            @Query("type") String type,
+            @Query("tag") String tag,
+            @Query("page") Integer page,
+            @Query("limit") Integer limit);
 }

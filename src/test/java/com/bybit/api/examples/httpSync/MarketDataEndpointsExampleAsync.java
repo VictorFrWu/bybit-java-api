@@ -1,9 +1,9 @@
-package com.bybit.api.examples;
+package com.bybit.api.examples.httpSync;
 
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.impl.BybitApiClientFactory;
 import com.bybit.api.client.domain.market.MarketInterval;
-import com.bybit.api.client.impl.BybitApiAsyncRestClient;
+import com.bybit.api.client.BybitApiAsyncRestClient;
 
 public class MarketDataEndpointsExampleAsync {
     public static void main(String[] args) {

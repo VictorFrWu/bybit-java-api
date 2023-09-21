@@ -1,10 +1,10 @@
-package com.bybit.api.examples;
+package com.bybit.api.examples.httpSync;
 
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.spot.marginTrade.VIPMarginDataRequest;
 import com.bybit.api.client.impl.BybitApiClientFactory;
-import com.bybit.api.client.impl.BybitApiRestClient;
+import com.bybit.api.client.BybitApiRestClient;
 
 public class NormalSpotMarginExample {
     public static void main(String[] args) {

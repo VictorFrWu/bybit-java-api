@@ -1,5 +1,6 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
