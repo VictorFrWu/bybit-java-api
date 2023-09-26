@@ -454,22 +454,67 @@ public interface BybitApiService {
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
 
     // Institution Endpoints
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    /**
+     Get Product Info
+     TIP
+     This endpoint can be queried without api key and secret, then it returns public product data
+     If your uid is bound with OTC loan product, then you can get your private product data by calling the endpoint with api key and secret
+     If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
+     HTTP Request
+     GET /v5/ins-loan/product-infos
+
+     Request Parameters
+     Parameter	Required	Type	Comments
+     productId	false	string	Product Id. If not passed, then return all products info
+     <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-product-info">...</a>
+     * @param productId
+     * @return
+     */
     @GET("/v5/ins-loan/product-infos")
     Call<Object> getInsProductInfo(@Query("productId") String productId);
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/product-infos")
     Call<Object> getInsProductInfo();
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    /**
+     * Get Margin Coin Info
+     * TIP
+     * This endpoint can be queried without api key and secret, then it returns public margin data
+     * If your uid is bound with OTC loan product, then you can get your private margin data by calling the endpoint with api key and secret
+     * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * productId	false	string	ProductId. If not passed, then return all product margin coin. For spot, it returns coin that convertRation greater than 0.
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-coin-convert-info">...</a>
+     * @param productId
+     * @return
+     */
     @GET("/v5/ins-loan/ensure-tokens-convert")
     Call<Object> getInsMarginCoinInfo(@Query("productId") String productId);
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/ensure-tokens-convert")
     Call<Object> getInsMarginCoinInfo();
 
+    /**
+     * Get Loan Orders
+     * Get loan orders information
+     *
+     * TIP
+     * Get the past 2 years data by default
+     * Get up to the past 2 years of data
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * orderId	false	string	Loan order id. If not passed, then return all orders, sort by loanTime in descend
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size. [1, 100], Default: 10
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/loan-info">...</a>
+     * @param productId
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/loan-order")
     Call<Object> getInsLoanOrders(@Query("productId") String productId,
@@ -477,12 +522,41 @@ public interface BybitApiService {
                                   @Query("endTime") Long endTime,
                                   @Query("limit") Integer limit);
 
+    /**
+     * Get Repay Orders
+     * Get repaid order information
+     *
+     * TIP
+     * Get the past 2 years data by default
+     * Get up to the past 2 years of data
+     * HTTP Request
+     * GET /v5/ins-loan/repaid-history
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size. [1, 100]. Default: 100
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/repay-info">...</a>
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/repaid-history")
     Call<Object> getInsRepayOrders(@Query("startTime") Long startTime,
                                    @Query("endTime") Long endTime,
                                    @Query("limit") Integer limit);
 
+    /**
+     * Get LTV
+     *
+     * HTTP Request
+     * GET /v5/ins-loan/ltv-convert
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/ltv-convert">...</a>
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/ltv-convert")
     Call<Object> getInsLoanToValue();

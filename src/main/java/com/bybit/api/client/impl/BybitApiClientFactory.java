@@ -1,10 +1,7 @@
 package com.bybit.api.client.impl;
 
 
-import com.bybit.api.client.BybitAnnouncementRestClient;
-import com.bybit.api.client.BybitApiAsyncRestClient;
-import com.bybit.api.client.BybitApiRestClient;
-import com.bybit.api.client.BybitApiWebSocketClient;
+import com.bybit.api.client.*;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.service.BybitApiServiceGenerator;
 
@@ -101,7 +98,7 @@ public class BybitApiClientFactory {
     }
 
     /**
-     * Creates a new synchronous/blocking REST client.
+     * Creates a new synchronous/blocking REST client to Announcement Endpoints
      */
     public BybitAnnouncementRestClient newAnnouncementRestClient() {
         return new BybitAnnouncementRestClientImpl();
@@ -119,5 +116,12 @@ public class BybitApiClientFactory {
      */
     public BybitApiWebSocketClient newWebSocketClient(boolean useTestnetStreaming, String websocketChannel) {
         return new BybitApiWebSocketClientImpl(BybitApiServiceGenerator.getSharedClient(), useTestnetStreaming, websocketChannel);
+    }
+
+    /**
+     * Creates a new synchronous/blocking REST client to Institution Lending Endpoints
+     */
+    public BybitApiInsLendingRestClient newInsLendingRestClient() {
+        return new BybitInsLendingRestClientImpl();
     }
 }

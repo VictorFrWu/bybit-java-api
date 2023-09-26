@@ -1,8 +1,8 @@
 package com.bybit.api.client;
 
 import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
-import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
+import com.bybit.api.client.domain.institution.InstitutionLoanOrdersRequest;
+import com.bybit.api.client.domain.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
@@ -855,65 +855,6 @@ public interface BybitApiRestClient {
      * @return
      */
     Object getAccountMMPState(String baseCoin);
-
-    // Institution Endpoints
-
-    /**
-     * Get Product Info
-     * TIP
-     * This is a public endpoint, so it does not need to authenticate.
-     *
-     * @param productId
-     * @return
-     */
-    Object getInsProductInfo(String productId);
-
-    Object getInsProductInfo();
-
-    /**
-     * Get Margin Coin Info
-     * TIP
-     * This is a public endpoint, so it does not need to authenticate.
-     *
-     * @param productId
-     * @return
-     */
-    Object getInsMarginCoinInfo(String productId);
-
-    Object getInsMarginCoinInfo();
-
-    /**
-     * Get Loan Orders
-     * Get loan orders information
-     * <p>
-     * TIP
-     * Get the past 2 years data by default
-     * Get up to the past 2 years of data
-     *
-     * @param institutionLoanOrdersRequest
-     * @return
-     */
-    Object getInsLoanOrders(InstitutionLoanOrdersRequest institutionLoanOrdersRequest);
-
-    /**
-     * Get Repay Orders
-     * Get repaid order information
-     * <p>
-     * TIP
-     * Get the past 2 years data by default
-     * Get up to the past 2 years of data
-     *
-     * @param institutionRepayOrdersRequest
-     * @return
-     */
-    Object getInsRepayOrders(InstitutionRepayOrdersRequest institutionRepayOrdersRequest);
-
-    /**
-     * Get LTV
-     *
-     * @return
-     */
-    Object getInsLoanToValue();
 
     // Spot Endpoints
     // Spot Leverage Token

@@ -1,14 +1,15 @@
 package com.bybit.api.examples.httpSync;
 
-import com.bybit.api.client.domain.account.institution.InstitutionLoanOrdersRequest;
-import com.bybit.api.client.domain.account.institution.InstitutionRepayOrdersRequest;
+import com.bybit.api.client.BybitApiInsLendingRestClient;
+import com.bybit.api.client.domain.institution.InstitutionLoanOrdersRequest;
+import com.bybit.api.client.domain.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.impl.BybitApiClientFactory;
 import com.bybit.api.client.BybitApiRestClient;
 
 public class InstituionLendingExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
-        BybitApiRestClient client = factory.newRestClient();
+        BybitApiInsLendingRestClient client = factory.newInsLendingRestClient();
 
         // Get Product info
         var insProductInfo = client.getInsProductInfo();
@@ -19,12 +20,12 @@ public class InstituionLendingExample {
         System.out.println(insMarginCoinInfo);
 
         // Get Loan Orders
-        var insLoanOrderRequest = new InstitutionLoanOrdersRequest.Builder().build();
+        var insLoanOrderRequest = InstitutionLoanOrdersRequest.builder().build();
         var insLoanOrders = client.getInsLoanOrders(insLoanOrderRequest);
         System.out.println(insLoanOrders);
 
         // Get Repay Orders
-        var insRepayOrderRequest = new InstitutionRepayOrdersRequest.Builder().build();
+        var insRepayOrderRequest = InstitutionRepayOrdersRequest.builder().build();
         var insRepayOrders = client.getInsRepayOrders(insRepayOrderRequest);
         System.out.println(insRepayOrders);
 
