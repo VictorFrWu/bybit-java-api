@@ -4,7 +4,7 @@ import com.bybit.api.client.constant.BybitApiConstants;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * Binance API error object.
+ * Bybit API error object.
  */
 public class BybitApiError {
 

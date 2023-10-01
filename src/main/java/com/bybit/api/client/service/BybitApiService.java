@@ -105,12 +105,43 @@ public interface BybitApiService {
     Call<Object> getRiskLimit(@Query("category") String category,
                               @Query("symbol") String symbol);
 
+    /**
+     * Get Delivery Price
+     * Get the delivery price.
+     * <p>
+     * Covers: USDC futures / Inverse futures / Option
+     * <p>
+     * HTTP Request
+     * GET /v5/market/delivery-price
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/delivery-price">...</a>
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @GET("/v5/market/delivery-price")
     Call<Object> getDeliveryPrice(@Query("category") String category,
                                   @Query("symbol") String symbol,
-                                  @Query("symbol") String baseCoin,
-                                  @Query("symbol") Integer limit,
-                                  @Query("symbol") String cursor);
+                                  @Query("baseCoin") String baseCoin,
+                                  @Query("limit") Integer limit,
+                                  @Query("cursor") String cursor);
+
+    /**
+     * Get Long Short Ratio
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/long-short-ratio">...</a>
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param limit
+     * @return
+     */
+    @GET("/v5/market/account-ratio")
+    Call<Object> getMarketAccountRatio(@Query("category") String category,
+                                  @Query("symbol") String symbol,
+                                  @Query("period") String baseCoin,
+                                  @Query("limit") Integer limit);
 
     // Trade
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)

@@ -253,30 +253,13 @@ public interface BybitApiRestClient {
 
     Object getInsurance();
 
-    /**
-     * Get Risk Limit
-     * Query for the risk limit.
-     * <p>
-     * Covers: USDT perpetual / USDC contract / Inverse contract
-     *
-     * @param category
-     * @param symbol
-     * @return
-     */
     Object getRiskLimit(ProductType category, String symbol);
 
     Object getRiskLimit(ProductType category);
 
-    /**
-     * Get Delivery Price
-     * Get the delivery price.
-     * <p>
-     * Covers: USDC futures / Inverse futures / Option
-     *
-     * @param deliveryPriceRequest
-     * @return
-     */
     Object getDeliveryPrice(DeliveryPriceRequest deliveryPriceRequest);
+    Object getMarketAccountRatio(MarketAccountRatioRequest marketAccountRatioRequest);
+    // Trade
 
     /**
      * This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.

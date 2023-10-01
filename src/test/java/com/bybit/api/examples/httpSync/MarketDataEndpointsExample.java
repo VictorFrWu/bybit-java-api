@@ -88,11 +88,20 @@ public class MarketDataEndpointsExample {
         System.out.println(riskLimitALLData);
 
         // Get delivery price
-        var deliveryPriceRequest = new DeliveryPriceRequest.Builder(ProductType.OPTION)
+        var deliveryPriceRequest = DeliveryPriceRequest.builder().category(ProductType.OPTION)
                 .baseCoin("BTC")
                 .limit(10)
                 .build();
         var deliveryPriceData = client.getDeliveryPrice(deliveryPriceRequest);
         System.out.println(deliveryPriceData);
+
+        // Get Long Short Ratio
+        var marketAccountRatioRequest = MarketAccountRatioRequest.builder().category(ProductType.LINEAR)
+                .symbol("BTCUSDT")
+                .period("15min")
+                .limit(10)
+                .build();
+        var accountRatio = client.getMarketAccountRatio(marketAccountRatioRequest);
+        System.out.println(accountRatio);
     }
 }

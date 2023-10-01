@@ -175,6 +175,8 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
         );
     }
 
+
+    // Trade
     @Override
     public Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest) {
         return executeSync(bybitApiService.getHistoryOrderResult(
@@ -219,6 +221,15 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 deliveryPriceRequest.getBaseCoin(),
                 deliveryPriceRequest.getLimit(),
                 deliveryPriceRequest.getCursor()
+        ));
+    }
+
+    @Override
+    public Object getMarketAccountRatio(MarketAccountRatioRequest marketAccountRatioRequest) {
+        return executeSync(bybitApiService.getMarketAccountRatio(marketAccountRatioRequest.getCategory().getProductTypeId(),
+                marketAccountRatioRequest.getSymbol(),
+                marketAccountRatioRequest.getPeriod(),
+                marketAccountRatioRequest.getLimit()
         ));
     }
 
