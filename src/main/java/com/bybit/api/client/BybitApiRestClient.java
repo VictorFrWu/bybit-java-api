@@ -23,215 +23,40 @@ import com.bybit.api.client.domain.user.request.SubUserRequest;
 
 public interface BybitApiRestClient {
     // Market Data
-
-    /**
-     * Get Bybit Server Time
-     */
     Object getServerTime();
 
-    /**
-     * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
-     *
-     * @param category  product type. spot,linear, inverse (mandatory)
-     * @param symbol    symbol to aggregate (mandatory)
-     * @param interval  candlestick interval (mandatory)
-     * @param limit     Default 500; max 1000 (optional)
-     * @param startTime Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
-     * @param endTime   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
-     * @return a candlestick bar for the given symbol and interval
-     */
-    Object getMarketLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime);
+    Object getMarketLinesData(MarketKlineRequest marketKlineRequest);
 
-    /**
-     * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
-     *
-     * @see #getMarketLinesData(ProductType, String, MarketInterval, Integer, Long, Long)
-     */
-    Object getMarketLinesData(ProductType category, String symbol, MarketInterval interval);
+    Object getMarketPriceLinesData(MarketKlineRequest marketKlineRequest);
 
-    /**
-     * Query for historical mark price klines. Charts are returned in groups based on the requested interval.
-     * <p>
-     * Covers: USDT perpetual / USDC contract / Inverse contract
-     *
-     * @param category  product type. spot,linear, inverse (mandatory)
-     * @param symbol    symbol to aggregate (mandatory)
-     * @param interval  candlestick interval (mandatory)
-     * @param limit     Default 500; max 1000 (optional)
-     * @param startTime Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
-     * @param endTime   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
-     * @return a candlestick bar for the given symbol and interval
-     */
-    Object getMarketPriceLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime);
+    Object getIndexPriceLinesData(MarketKlineRequest marketKlineRequest);
 
-    /**
-     * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
-     *
-     * @see #getMarketLinesData(ProductType, String, MarketInterval, Integer, Long, Long)
-     */
-    Object getMarketPriceLinesData(ProductType category, String symbol, MarketInterval interval);
+    Object getPremiumIndexPriceLinesData(MarketKlineRequest marketKlineRequest);
 
-
-    /**
-     * Query for historical index price klines. Charts are returned in groups based on the requested interval.
-     * <p>
-     * Covers: USDT perpetual / USDC contract / Inverse contract
-     *
-     * @param category  product type. spot,linear, inverse (mandatory)
-     * @param symbol    symbol to aggregate (mandatory)
-     * @param interval  candlestick interval (mandatory)
-     * @param limit     Default 500; max 1000 (optional)
-     * @param startTime Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
-     * @param endTime   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
-     * @return a candlestick bar for the given symbol and interval
-     */
-    Object getIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime);
-
-    /**
-     * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
-     *
-     * @see #getMarketLinesData(ProductType, String, MarketInterval, Integer, Long, Long)
-     */
-    Object getIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval);
-
-    /**
-     * Query for historical index price klines. Charts are returned in groups based on the requested interval.
-     * <p>
-     * Covers: USDT perpetual / USDC contract / Inverse contract
-     *
-     * @param category  product type. spot,linear, inverse (mandatory)
-     * @param symbol    symbol to aggregate (mandatory)
-     * @param interval  candlestick interval (mandatory)
-     * @param limit     Default 500; max 1000 (optional)
-     * @param startTime Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
-     * @param endTime   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
-     * @return a candlestick bar for the given symbol and interval
-     */
-    Object getPremiumIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime);
-
-    /**
-     * Query for the instrument specification of online trading pairs.
-     * <p>
-     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     * <p>
-     * CAUTION
-     * Spot does not support pagination, so limit, cursor are invalid.
-     * When query by baseCoin, regardless of category=linear or inverse, the result will have USDT perpetual, USDC contract and Inverse contract symbols.
-     *
-     * @see #getMarketLinesData(ProductType, String, MarketInterval, Integer, Long, Long)
-     */
-    Object getPremiumIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval);
-
-    /**
-     * Query for the instrument specification of online trading pairs.
-     * <p>
-     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     * <p>
-     * CAUTION
-     * Spot does not support pagination, so limit, cursor are invalid.
-     * When query by baseCoin, regardless of category=linear or inverse, the result will have USDT perpetual, USDC contract and Inverse contract symbols.
-     *
-     * @param instrumentInfoRequest
-     * @return
-     */
     Object getInstrumentsInfo(InstrumentInfoRequest instrumentInfoRequest);
 
-    /**
-     * Query for orderbook depth data.
-     * <p>
-     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     * <p>
-     * future: 200-level of orderbook data
-     * spot: 50-level of orderbook data
-     * option: 25-level of orderbook data
-     * TIP
-     * The response is in the snapshot format.
-     *
-     * @param category
-     * @param symbol
-     * @return
-     */
-    Object getMarketOrderbook(ProductType category, String symbol);
+    Object getMarketOrderbook(MarketOrderBookRequest marketOrderBookRequest);
 
-    Object getMarketOrderbook(ProductType category, String symbol, Integer limit);
+    Object getMarketTickers(MarketDataTickerRequest marketDataTickerRequest);
 
-    /**
-     * Query for the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours.
-     * <p>
-     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     * <p>
-     * TIP
-     * If category=option, symbol or baseCoin must be passed.
-     *
-     * @param category
-     * @param symbol
-     * @return
-     */
-    Object getMarketTickers(ProductType category, String symbol);
-
-    Object getMarketTickers(ProductType category, String symbol, String baseCoin, String expDate);
-
-    /**
-     * Query for historical funding rates. Each symbol has a different funding interval. For example, if the interval is 8 hours and the current time is UTC 12, then it returns the last funding rate, which settled at UTC 8.
-     * <p>
-     * To query the funding rate interval, please refer to the instruments-info endpoint.
-     * <p>
-     * Covers: USDT and USDC perpetual / Inverse perpetual
-     * <p>
-     * TIP
-     * Passing only startTime returns an error.
-     * Passing only endTime returns 200 records up till endTime.
-     * Passing neither returns 200 records up till the current time.
-     *
-     * @param fundingHistoryRequest
-     * @return
-     */
     Object getFundingHistory(FundingHistoryRequest fundingHistoryRequest);
 
-    /**
-     * Query recent public trading data in Bybit.
-     * <p>
-     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     * <p>
-     * You can download archived historical trades here:
-     * <p>
-     * USDT Perpetual, Inverse Perpetual & Inverse Futures
-     * Spot
-     *
-     * @param recentTradeRequest
-     * @return
-     */
     Object getRecentTradeData(RecentTradeDataRequest recentTradeRequest);
 
-    /**
-     * Get the open interest of each symbol.
-     * <p>
-     * Covers: USDT perpetual / USDC contract / Inverse contract
-     * <p>
-     * INFO
-     * Returns single side data
-     * The upper limit time you can query is the launch time of the symbol.
-     *
-     * @param openInterestRequest
-     * @return
-     */
     Object getOpenInterest(OpenInterestRequest openInterestRequest);
 
-    /**
-     * Query option historical volatility
-     * <p>
-     * Covers: Option
-     * <p>
-     * INFO
-     * The data is hourly.
-     * If both startTime and endTime are not specified, it will return the most recent 1 hours worth of data.
-     * startTime and endTime are a pair of params. Either both are passed or they are not passed at all.
-     * This endpoint can query the last 2 years worth of data, but make sure [endTime - startTime] <= 30 days.
-     *
-     * @param HistoricalVolatilityRequest
-     * @return
-     */
     Object getHistoricalVolatility(HistoricalVolatilityRequest HistoricalVolatilityRequest);
+
+    Object getInsurance(String coin);
+
+    Object getInsurance();
+
+    Object getRiskLimit(MarketRiskLimitRequest marketRiskLimitRequest);
+
+    Object getDeliveryPrice(DeliveryPriceRequest deliveryPriceRequest);
+
+    Object getMarketAccountRatio(MarketAccountRatioRequest marketAccountRatioRequest);
+
     // Trade
 
     /**
@@ -241,25 +66,6 @@ public interface BybitApiRestClient {
      * @return a list of all history orders 2 years
      */
     Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest);
-
-    /**
-     * Get Insurance
-     * Query for Bybit insurance pool data (BTC/USDT/USDC etc). The data is updated every 24 hours.
-     *
-     * @param coin
-     * @return
-     */
-    Object getInsurance(String coin);
-
-    Object getInsurance();
-
-    Object getRiskLimit(ProductType category, String symbol);
-
-    Object getRiskLimit(ProductType category);
-
-    Object getDeliveryPrice(DeliveryPriceRequest deliveryPriceRequest);
-    Object getMarketAccountRatio(MarketAccountRatioRequest marketAccountRatioRequest);
-    // Trade
 
     /**
      * This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.

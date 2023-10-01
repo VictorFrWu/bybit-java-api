@@ -11,6 +11,7 @@
 package com.bybit.api.client.domain.market.request;
 
 import com.bybit.api.client.domain.ProductType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,63 +19,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class InstrumentInfoRequest {
-
     private final ProductType category;  // Required
     private final String symbol;
     private final String status;
     private final String baseCoin;
     private final Integer limit;
     private final String cursor;
-
-    private InstrumentInfoRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.status = builder.status;
-        this.baseCoin = builder.baseCoin;
-        this.limit = builder.limit;
-        this.cursor = builder.cursor;
-    }
-
-    public static class Builder {
-        private final ProductType category;
-        private String symbol;
-        private String status;
-        private String baseCoin;
-        private Integer limit;
-        private String cursor;
-
-        public Builder(ProductType category) {
-            this.category = category;
-        }
-
-        public Builder symbol(String symbol) {
-            this.symbol = symbol;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public Builder baseCoin(String baseCoin) {
-            this.baseCoin = baseCoin;
-            return this;
-        }
-
-        public Builder limit(Integer limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder cursor(String cursor) {
-            this.cursor = cursor;
-            return this;
-        }
-
-        public InstrumentInfoRequest build() {
-            return new InstrumentInfoRequest(this);
-        }
-    }
 }

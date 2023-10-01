@@ -1,4 +1,4 @@
-package com.bybit.api.examples.httpSync;
+package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;

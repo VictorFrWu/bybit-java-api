@@ -45,48 +45,59 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getMarketLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime) {
+    public Object getMarketLinesData(MarketKlineRequest marketKlineRequest) {
         return executeSync(
-                bybitApiService.getMarketLinesData(category.getProductTypeId(), symbol, interval.getIntervalId(), limit, startTime, endTime));
+                bybitApiService.getMarketLinesData(
+                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getSymbol(),
+                        marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
+                        marketKlineRequest.getStart(),
+                        marketKlineRequest.getEnd(),
+                        marketKlineRequest.getLimit()
+                )
+        );
     }
 
     @Override
-    public Object getMarketLinesData(ProductType category, String symbol, MarketInterval interval) {
-        return getMarketLinesData(category, symbol, interval, null, null, null);
-    }
-
-    @Override
-    public Object getMarketPriceLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime) {
+    public Object getMarketPriceLinesData(MarketKlineRequest marketKlineRequest) {
         return executeSync(
-                bybitApiService.getMarketPriceLinesData(category.getProductTypeId(), symbol, interval.getIntervalId(), limit, startTime, endTime));
+                bybitApiService.getMarketPriceLinesData(
+                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getSymbol(),
+                        marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
+                        marketKlineRequest.getStart(),
+                        marketKlineRequest.getEnd(),
+                        marketKlineRequest.getLimit()
+                )
+        );
     }
 
     @Override
-    public Object getMarketPriceLinesData(ProductType category, String symbol, MarketInterval interval) {
-        return getMarketPriceLinesData(category, symbol, interval, null, null, null);
-    }
-
-    @Override
-    public Object getIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime) {
+    public Object getIndexPriceLinesData(MarketKlineRequest marketKlineRequest) {
         return executeSync(
-                bybitApiService.getIndexPriceLinesData(category.getProductTypeId(), symbol, interval.getIntervalId(), limit, startTime, endTime));
+                bybitApiService.getIndexPriceLinesData(
+                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getSymbol(),
+                        marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
+                        marketKlineRequest.getStart(),
+                        marketKlineRequest.getEnd(),
+                        marketKlineRequest.getLimit()
+                )
+        );
     }
 
     @Override
-    public Object getIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval) {
-        return getIndexPriceLinesData(category, symbol, interval, null, null, null);
-    }
-
-    @Override
-    public Object getPremiumIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval, Integer limit, Long startTime, Long endTime) {
+    public Object getPremiumIndexPriceLinesData(MarketKlineRequest marketKlineRequest) {
         return executeSync(
-                bybitApiService.getPremiumIndexPriceLinesData(category.getProductTypeId(), symbol, interval.getIntervalId(), limit, startTime, endTime));
-    }
-
-
-    @Override
-    public Object getPremiumIndexPriceLinesData(ProductType category, String symbol, MarketInterval interval) {
-        return getPremiumIndexPriceLinesData(category, symbol, interval, null, null, null);
+                bybitApiService.getPremiumIndexPriceLinesData(
+                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getSymbol(),
+                        marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
+                        marketKlineRequest.getStart(),
+                        marketKlineRequest.getEnd(),
+                        marketKlineRequest.getLimit()
+                )
+        );
     }
 
     @Override
@@ -102,30 +113,21 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getMarketOrderbook(ProductType category, String symbol) {
+    public Object getMarketOrderbook(MarketOrderBookRequest marketOrderBookRequest) {
         return executeSync(bybitApiService.getMarketOrderbook(
-                category.getProductTypeId(), symbol
+                marketOrderBookRequest.getCategory().getProductTypeId(),
+                marketOrderBookRequest.getSymbol(),
+                marketOrderBookRequest.getLimit()
         ));
     }
 
     @Override
-    public Object getMarketOrderbook(ProductType category, String symbol, Integer limit) {
-        return executeSync(bybitApiService.getMarketOrderbook(
-                category.getProductTypeId(), symbol, limit
-        ));
-    }
-
-    @Override
-    public Object getMarketTickers(ProductType category, String symbol) {
+    public Object getMarketTickers(MarketDataTickerRequest marketDataTickerRequest) {
         return executeSync(bybitApiService.getMarketTickers(
-                category.getProductTypeId(), symbol
-        ));
-    }
-
-    @Override
-    public Object getMarketTickers(ProductType category, String symbol, String baseCoin, String expDate) {
-        return executeSync(bybitApiService.getMarketTickers(
-                category.getProductTypeId(), symbol, baseCoin, expDate
+                marketDataTickerRequest.getCategory().getProductTypeId(),
+                marketDataTickerRequest.getSymbol(),
+                marketDataTickerRequest.getBaseCoin(),
+                marketDataTickerRequest.getExpDate()
         ));
     }
 
@@ -175,23 +177,11 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
         );
     }
 
-
-    // Trade
     @Override
-    public Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest) {
-        return executeSync(bybitApiService.getHistoryOrderResult(
-                orderHistoryRequest.getCategory().getProductTypeId(),
-                orderHistoryRequest.getSymbol(),
-                orderHistoryRequest.getBaseCoin(),
-                orderHistoryRequest.getSettleCoin(),
-                orderHistoryRequest.getOrderId(),
-                orderHistoryRequest.getOrderLinkId(),
-                orderHistoryRequest.getOrderFilter(),
-                orderHistoryRequest.getOrderStatus(),
-                orderHistoryRequest.getStartTime(),
-                orderHistoryRequest.getEndTime(),
-                orderHistoryRequest.getLimit(),
-                orderHistoryRequest.getCursor()));
+    public Object getRiskLimit(MarketRiskLimitRequest marketRiskLimitRequest) {
+        return executeSync(bybitApiService.getRiskLimit(
+                marketRiskLimitRequest.getCategory().getProductTypeId(),
+                marketRiskLimitRequest.getSymbol()));
     }
 
     @Override
@@ -202,16 +192,6 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     @Override
     public Object getInsurance() {
         return executeSync(bybitApiService.getInsurance());
-    }
-
-    @Override
-    public Object getRiskLimit(ProductType category) {
-        return executeSync(bybitApiService.getRiskLimit(category.getProductTypeId()));
-    }
-
-    @Override
-    public Object getRiskLimit(ProductType category, String symbol) {
-        return executeSync(bybitApiService.getRiskLimit(category.getProductTypeId(), symbol));
     }
 
     @Override
@@ -234,6 +214,23 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     // Trade Data endpoints
+    @Override
+    public Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest) {
+        return executeSync(bybitApiService.getHistoryOrderResult(
+                orderHistoryRequest.getCategory().getProductTypeId(),
+                orderHistoryRequest.getSymbol(),
+                orderHistoryRequest.getBaseCoin(),
+                orderHistoryRequest.getSettleCoin(),
+                orderHistoryRequest.getOrderId(),
+                orderHistoryRequest.getOrderLinkId(),
+                orderHistoryRequest.getOrderFilter(),
+                orderHistoryRequest.getOrderStatus(),
+                orderHistoryRequest.getStartTime(),
+                orderHistoryRequest.getEndTime(),
+                orderHistoryRequest.getLimit(),
+                orderHistoryRequest.getCursor()));
+    }
+
     @Override
     public Object newOrder(NewOrderRequest order) {
         return executeSync(bybitApiService.newOrder(

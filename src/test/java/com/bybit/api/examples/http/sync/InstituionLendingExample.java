@@ -1,10 +1,9 @@
-package com.bybit.api.examples.httpSync;
+package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.BybitApiInsLendingRestClient;
 import com.bybit.api.client.domain.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.impl.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
 public class InstituionLendingExample {
     public static void main(String[] args) {

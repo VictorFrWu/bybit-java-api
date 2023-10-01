@@ -22,42 +22,179 @@ import retrofit2.http.*;
  */
 public interface BybitApiService {
     // Market data endpoints
-    @GET("/v5/market/kline")
-    Call<Object> getMarketLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                    @Query("startTime") Long startTime, @Query("endTime") Long endTime);
 
-    @GET("/v5/market/mark-price-kline")
-    Call<Object> getMarketPriceLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                         @Query("startTime") Long startTime, @Query("endTime") Long endTime);
-
-    @GET("/v5/market/index-price-kline")
-    Call<Object> getIndexPriceLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                        @Query("startTime") Long startTime, @Query("endTime") Long endTime);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    /**
+     * Get Bybit Server Time
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/time">...</a>
+     */
     @GET("/v5/market/time")
     Call<Object> getServerTime();
 
-    @GET("/v5/market/premium-index-price-kline")
-    Call<Object> getPremiumIndexPriceLinesData(@Query("category") String category, @Query("symbol") String symbol, @Query("interval") String interval, @Query("limit") Integer limit,
-                                               @Query("startTime") Long startTime, @Query("endTime") Long endTime);
+    /**
+     *
+     /**
+     *Query for historical mark price klines. Charts are returned in groups based on the requested interval.
+     * <p>
+     * Covers: USDT perpetual / USDC contract / Inverse contract
+     *<a href="https://bybit-exchange.github.io/docs/v5/market/kline">...</a>
+     * @param category
+     * @param symbol
+     * @param interval
+     * @param limit
+     * @param start
+     * @param end
+     * @return a candlestick bar for the given symbol and interval
+     */
+    @GET("/v5/market/kline")
+    Call<Object> getMarketLinesData(@Query("category") String category,
+                                    @Query("symbol") String symbol,
+                                    @Query("interval") String interval,
+                                    @Query("start") Long start,
+                                    @Query("end") Long end,
+                                    @Query("limit") Integer limit);
 
+    /**
+     * Query for historical mark price klines. Charts are returned in groups based on the requested interval.
+     * <p>
+     * Covers: USDT perpetual / USDC contract / Inverse contract
+     *<a href="https://bybit-exchange.github.io/docs/v5/market/mark-kline">...</a>
+     * @param category  product type. spot,linear, inverse (mandatory)
+     * @param symbol    symbol to aggregate (mandatory)
+     * @param interval  candlestick interval (mandatory)
+     * @param limit     Default 500; max 1000 (optional)
+     * @param start Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
+     * @param end   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
+     * @return a candlestick bar for the given symbol and interval
+     */
+    @GET("/v5/market/mark-price-kline")
+    Call<Object> getMarketPriceLinesData(@Query("category") String category,
+                                         @Query("symbol") String symbol,
+                                         @Query("interval") String interval,
+                                         @Query("start") Long start,
+                                         @Query("end") Long end,
+                                         @Query("limit") Integer limit);
+    /**
+     * Query for historical index price klines. Charts are returned in groups based on the requested interval.
+     * <p>
+     * Covers: USDT perpetual / USDC contract / Inverse contract
+     *<a href="https://bybit-exchange.github.io/docs/v5/market/index-kline">...</a>
+     * @param category  product type. spot,linear, inverse (mandatory)
+     * @param symbol    symbol to aggregate (mandatory)
+     * @param interval  candlestick interval (mandatory)
+     * @param limit     Default 500; max 1000 (optional)
+     * @param start Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
+     * @param end   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
+     * @return a candlestick bar for the given symbol and interval
+     */
+    @GET("/v5/market/index-price-kline")
+    Call<Object> getIndexPriceLinesData(@Query("category") String category,
+                                        @Query("symbol") String symbol,
+                                        @Query("interval") String interval,
+                                        @Query("start") Long start,
+                                        @Query("end") Long end,
+                                        @Query("limit") Integer limit);
+
+
+    /**
+     * Query for historical index price klines. Charts are returned in groups based on the requested interval.
+     * <p>
+     * Covers: USDT perpetual / USDC contract / Inverse contract
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/preimum-index-kline">...</a>
+     * @param category  product type. spot,linear, inverse (mandatory)
+     * @param symbol    symbol to aggregate (mandatory)
+     * @param interval  candlestick interval (mandatory)
+     * @param limit     Default 500; max 1000 (optional)
+     * @param start Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
+     * @param end   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
+     * @return a candlestick bar for the given symbol and interval
+     */
+    @GET("/v5/market/premium-index-price-kline")
+    Call<Object> getPremiumIndexPriceLinesData(@Query("category") String category,
+                                               @Query("symbol") String symbol,
+                                               @Query("interval") String interval,
+                                               @Query("start") Long start,
+                                               @Query("end") Long end,
+                                               @Query("limit") Integer limit);
+
+    /**
+     * Get Instruments Info
+     * Query for the instrument specification of online trading pairs.
+     *
+     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
+     *
+     * CAUTION
+     * Spot does not support pagination, so limit, cursor are invalid.
+     * When query by baseCoin, regardless of category=linear or inverse, the result will have USDT perpetual, USDC contract and Inverse contract symbols.
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/instrument">...</a>
+     * @param category
+     * @param symbol
+     * @param status
+     * @param baseCoin
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @GET("/v5/market/instruments-info")
     Call<Object> getInstrumentsInfo(@Query("category") String category, @Query("symbol") String symbol, @Query("status") String status, @Query("baseCoin") String baseCoin,
                                     @Query("limit") Integer limit, @Query("cursor") String cursor);
 
+    /**
+     * Query for orderbook depth data.
+     * <p>
+     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
+     * <p>
+     * future: 200-level of orderbook data
+     * spot: 50-level of orderbook data
+     * option: 25-level of orderbook data
+     * TIP
+     * The response is in the snapshot format.
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/orderbook">...</a>
+     * @param category
+     * @param symbol
+     * @return
+     */
     @GET("/v5/market/orderbook")
     Call<Object> getMarketOrderbook(@Query("category") String category, @Query("symbol") String symbol, @Query("limit") Integer limit);
 
-    @GET("/v5/market/orderbook")
-    Call<Object> getMarketOrderbook(@Query("category") String category, @Query("symbol") String symbol);
-
-    @GET("/v5/market/tickers")
-    Call<Object> getMarketTickers(@Query("category") String category, @Query("symbol") String symbol);
-
+    /**
+     * Get Tickers
+     * Query for the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours.
+     * <p>
+     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
+     * <p>
+     * TIP
+     * If category=option, symbol or baseCoin must be passed.
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/tickers">...</a>
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param expDate
+     * @return
+     */
     @GET("/v5/market/tickers")
     Call<Object> getMarketTickers(@Query("category") String category, @Query("symbol") String symbol, @Query("baseCoin") String baseCoin, @Query("expDate") String expDate);
 
+    /**
+     * Get Funding Rate History
+     * Query for historical funding rates. Each symbol has a different funding interval. For example, if the interval is 8 hours and the current time is UTC 12, then it returns the last funding rate, which settled at UTC 8.
+     * <p>
+     * To query the funding rate interval, please refer to the instruments-info endpoint.
+     * <p>
+     * Covers: USDT and USDC perpetual / Inverse perpetual
+     * <p>
+     * TIP
+     * Passing only startTime returns an error.
+     * Passing only endTime returns 200 records up till endTime.
+     * Passing neither returns 200 records up till the current time.
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/history-fund-rate">...</a>
+     * @param category
+     * @param symbol
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @return
+     */
     @GET("/v5/market/funding/history")
     Call<Object> getFundingHistory(
             @Query("category") String category,
@@ -66,6 +203,23 @@ public interface BybitApiService {
             @Query("endTime") Long endTime,
             @Query("limit") Integer limit);
 
+    /**
+     *Get Public Recent Trading History
+     * Query recent public trading data in Bybit.
+     * <p>
+     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
+     * <p>
+     * You can download archived historical trades here:
+     * <p>
+     * USDT Perpetual, Inverse Perpetual & Inverse Futures
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/recent-trade">...</a>
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param optionType
+     * @param limit
+     * @return
+     */
     @GET("/v5/market/recent-trade")
     Call<Object> getRecentTradeData(
             @Query("category") String category,
@@ -74,6 +228,25 @@ public interface BybitApiService {
             @Query("optionType") String optionType,
             @Query("limit") Integer limit);
 
+    /**
+     * Get Open Interest
+     * Get the open interest of each symbol.
+     * <p>
+     * Covers: USDT perpetual / USDC contract / Inverse contract
+     * <p>
+     * INFO
+     * Returns single side data
+     * The upper limit time you can query is the launch time of the symbol.
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/open-interest">...</a>
+     * @param category
+     * @param symbol
+     * @param intervalTime
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @GET("/v5/market/kline")
     Call<Object> getOpenInterest(
             @Query("category") String category,
@@ -84,6 +257,25 @@ public interface BybitApiService {
             @Query("limit") Integer limit,
             @Query("cursor") String cursor);
 
+    /**
+     * Get Historical Volatility
+     * Query option historical volatility
+     * <p>
+     * Covers: Option
+     * <p>
+     * INFO
+     * The data is hourly.
+     * If both startTime and endTime are not specified, it will return the most recent 1 hours worth of data.
+     * startTime and endTime are a pair of params. Either both are passed or they are not passed at all.
+     * This endpoint can query the last 2 years worth of data, but make sure [endTime - startTime] <= 30 days.
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/iv">...</a>
+     * @param category
+     * @param baseCoin
+     * @param period
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     @GET("/v5/market/historical-volatility")
     Call<Object> getHistoricalVolatility(
             @Query("category") String category,
@@ -92,15 +284,28 @@ public interface BybitApiService {
             @Query("startTime") Long startTime,
             @Query("endTime") Long endTime);
 
+    /**
+     * Get Insurance
+     * Query for Bybit insurance pool data (BTC/USDT/USDC etc). The data is updated every 24 hours.
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/insurance">...</a>
+     * @param coin
+     * @return
+     */
     @GET("/v5/market/insurance")
     Call<Object> getInsurance(@Query("coin") String coin);
 
     @GET("/v5/market/insurance")
     Call<Object> getInsurance();
-
-    @GET("/v5/market/risk-limit")
-    Call<Object> getRiskLimit(@Query("category") String category);
-
+    /**
+     * Get Risk Limit
+     * Query for the risk limit.
+     *
+     * Covers: USDT perpetual / USDC contract / Inverse contract
+     *<a href="https://bybit-exchange.github.io/docs/v5/market/risk-limit">...</a>
+     * @param category
+     * @param symbol
+     * @return
+     */
     @GET("/v5/market/risk-limit")
     Call<Object> getRiskLimit(@Query("category") String category,
                               @Query("symbol") String symbol);

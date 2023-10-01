@@ -10,6 +10,7 @@
 package com.bybit.api.client.domain.market.request;
 
 import com.bybit.api.client.domain.ProductType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,54 +18,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class RecentTradeDataRequest {
     private ProductType category;
     private String symbol;
     private String baseCoin;
     private String optionType;
     private Integer limit;
-
-    private RecentTradeDataRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.baseCoin = builder.baseCoin;
-        this.optionType = builder.optionType;
-        this.limit = builder.limit;
-    }
-
-    public static class Builder {
-        private final ProductType category;
-        private String symbol;
-        private String baseCoin;
-        private String optionType;
-        private Integer limit;
-
-        public Builder(ProductType category) {
-            this.category = category;
-        }
-
-        public Builder symbol(String symbol) {
-            this.symbol = symbol;
-            return this;
-        }
-
-        public Builder baseCoin(String baseCoin) {
-            this.baseCoin = baseCoin;
-            return this;
-        }
-
-        public Builder optionType(String optionType) {
-            this.optionType = optionType;
-            return this;
-        }
-
-        public Builder limit(Integer limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public RecentTradeDataRequest build() {
-            return new RecentTradeDataRequest(this);
-        }
-    }
 }

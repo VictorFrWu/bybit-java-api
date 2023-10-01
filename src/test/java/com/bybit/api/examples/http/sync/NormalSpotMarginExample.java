@@ -1,4 +1,4 @@
-package com.bybit.api.examples.httpSync;
+package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;

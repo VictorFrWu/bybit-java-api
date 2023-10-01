@@ -1,4 +1,4 @@
-package com.bybit.api.examples.httpSync;
+package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.impl.BybitApiClientFactory;
@@ -14,20 +14,21 @@ public class MarketDataEndpointsExample {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
         BybitApiRestClient client = factory.newRestClient();
 
-        // Weekly candlestick bars for a symbol
-        var marketKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
+        var marketKLineRequest = MarketKlineRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
+        // Weekly market Kline
+        var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
         System.out.println(marketKlineResult);
 
-        // Weekly market price for a symbol
-        var marketPriceKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
+        // Weekly market price Kline for a symbol
+        var marketPriceKlineResult = client.getMarketPriceLinesData(marketKLineRequest);
         System.out.println(marketPriceKlineResult);
 
-        // Weekly index price for a symbol
-        var indexPriceKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
+        // Weekly index price Kline for a symbol
+        var indexPriceKlineResult = client.getIndexPriceLinesData(marketKLineRequest);
         System.out.println(indexPriceKlineResult);
 
-        // Weekly premium index price for a symbol
-        var indexPremiumPriceKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
+        // Weekly premium index price Kline for a symbol
+        var indexPremiumPriceKlineResult = client.getPremiumIndexPriceLinesData(marketKLineRequest);
         System.out.println(indexPremiumPriceKlineResult);
 
         // Get server time
@@ -35,7 +36,7 @@ public class MarketDataEndpointsExample {
         System.out.println(serverTime);
 
         // Get Instrument info
-        var instrumentInfoRequest = new InstrumentInfoRequest.Builder(ProductType.SPOT)
+        var instrumentInfoRequest = InstrumentInfoRequest.builder().category(ProductType.SPOT)
                 .symbol("BTCUSDT")
                 .status("Trading")
                 .limit(500)
@@ -44,15 +45,17 @@ public class MarketDataEndpointsExample {
         System.out.println(instrumentInfoResponse);
 
         // Get orderbook
-        var orderBook = client.getMarketOrderbook(ProductType.SPOT, "BTCUSDT");
+        var orderbookRequest = MarketOrderBookRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
+        var orderBook = client.getMarketOrderbook(orderbookRequest);
         System.out.println(orderBook);
 
         // Get market tickers
-        var tickers = client.getMarketTickers(ProductType.SPOT, "BTCUSDT");
+        var tickerReueqt = MarketDataTickerRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
+        var tickers = client.getMarketTickers(tickerReueqt);
         System.out.println(tickers);
 
         // Get funding history
-        var fundingHistoryRequest = new FundingHistoryRequest.Builder(ProductType.LINEAR, "BTCUSD")
+        var fundingHistoryRequest = FundingHistoryRequest.builder().category(ProductType.LINEAR).symbol("BTCUSD")
                 .startTime(1632046800000L) // Example start time
                 .endTime(1632133200000L)   // Example end time
                 .limit(150)
@@ -61,17 +64,17 @@ public class MarketDataEndpointsExample {
         System.out.println(fundingResponse);
 
         // Get Open Interest data
-        var openInterest = new OpenInterestRequest.Builder(ProductType.LINEAR, "BTCUSDT", "5min") .build();
+        var openInterest = OpenInterestRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").intervalTime("5min").build();
         var openInterestResponse = client.getOpenInterest(openInterest);
         System.out.println(openInterestResponse);
 
         // Get Recent Trade Data
-        var recentTrade = new RecentTradeDataRequest.Builder(ProductType.OPTION).symbol("ETH-30JUN23-2050-C").build();
+        var recentTrade = RecentTradeDataRequest.builder().category(ProductType.OPTION).symbol("ETH-30JUN23-2050-C").build();
         var recentTradeResponse = client.getRecentTradeData(recentTrade);
         System.out.println(recentTradeResponse);
 
         // Get Historical Volatility
-        var historicalVolatilityRequest = new HistoricalVolatilityRequest.Builder(ProductType.OPTION).period(7).build();
+        var historicalVolatilityRequest = HistoricalVolatilityRequest.builder().category(ProductType.OPTION).period(7).build();
         var historicalVolatilityResponse = client.getHistoricalVolatility(historicalVolatilityRequest);
         System.out.println(historicalVolatilityResponse);
 
@@ -82,10 +85,9 @@ public class MarketDataEndpointsExample {
         System.out.println(instanceAllData);
 
         // Get Risk Limit
-        var riskLimitData = client.getRiskLimit(ProductType.INVERSE, "ADAUSD");
+        var riskMimitRequest = MarketRiskLimitRequest.builder().category(ProductType.INVERSE).symbol("ADAUSD").build();
+        var riskLimitData = client.getRiskLimit(riskMimitRequest);
         System.out.println(riskLimitData);
-        var riskLimitALLData = client.getRiskLimit(ProductType.INVERSE);
-        System.out.println(riskLimitALLData);
 
         // Get delivery price
         var deliveryPriceRequest = DeliveryPriceRequest.builder().category(ProductType.OPTION)

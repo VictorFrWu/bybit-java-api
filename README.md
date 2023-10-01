@@ -34,108 +34,209 @@ Maven Example
 ```
 
 ## Usage
+Http Sync Examples
 ```java
+package com.bybit.api.examples.http.sync;
+
+import com.bybit.api.client.domain.market.request.*;
+import com.bybit.api.client.impl.BybitApiClientFactory;
+import com.bybit.api.client.domain.market.MarketInterval;
+import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.BybitApiRestClient;
+
 /**
-* Examples on how to get market data information such as the latest price of a symbol, etc.
-  */
-  public class MarketDataEndpointsExample {
+ * Examples on how to get market data information such as the latest price of a symbol, etc.
+ */
+public class MarketDataEndpointsExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
         BybitApiRestClient client = factory.newRestClient();
 
-       // Weekly candlestick bars for a symbol
-       var marketKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
-       System.out.println(marketKlineResult);
+        var marketKLineRequest = MarketKlineRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
+        // Weekly market Kline
+        var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
+        System.out.println(marketKlineResult);
 
-       // Weekly market price for a symbol
-       var marketPriceKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
-       System.out.println(marketPriceKlineResult);
+        // Weekly market price Kline for a symbol
+        var marketPriceKlineResult = client.getMarketPriceLinesData(marketKLineRequest);
+        System.out.println(marketPriceKlineResult);
 
-       // Weekly index price for a symbol
-       var indexPriceKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
-       System.out.println(indexPriceKlineResult);
+        // Weekly index price Kline for a symbol
+        var indexPriceKlineResult = client.getIndexPriceLinesData(marketKLineRequest);
+        System.out.println(indexPriceKlineResult);
 
-       // Weekly premium index price for a symbol
-       var indexPremiumPriceKlineResult = client.getMarketLinesData(ProductType.SPOT,"BTCUSDT", MarketInterval.WEEKLY);
-       System.out.println(indexPremiumPriceKlineResult);
+        // Weekly premium index price Kline for a symbol
+        var indexPremiumPriceKlineResult = client.getPremiumIndexPriceLinesData(marketKLineRequest);
+        System.out.println(indexPremiumPriceKlineResult);
 
-       // Get server time
-       var serverTime = client.getServerTime();
-       System.out.println(serverTime);
+        // Get server time
+        var serverTime = client.getServerTime();
+        System.out.println(serverTime);
 
-       // Get Instrument info
-       var instrumentInfoRequest = new InstrumentInfoRequest.Builder(ProductType.SPOT)
-               .symbol("BTCUSDT")
-               .status("Trading")
-               .limit(500)
-               .build();
-       var instrumentInfoResponse = client.getInstrumentsInfo(instrumentInfoRequest);
-       System.out.println(instrumentInfoResponse);
+        // Get Instrument info
+        var instrumentInfoRequest = InstrumentInfoRequest.builder().category(ProductType.SPOT)
+                .symbol("BTCUSDT")
+                .status("Trading")
+                .limit(500)
+                .build();
+        var instrumentInfoResponse = client.getInstrumentsInfo(instrumentInfoRequest);
+        System.out.println(instrumentInfoResponse);
 
-       // Get orderbook
-       var orderBook = client.getMarketOrderbook(ProductType.SPOT, "BTCUSDT");
-       System.out.println(orderBook);
+        // Get orderbook
+        var orderbookRequest = MarketOrderBookRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
+        var orderBook = client.getMarketOrderbook(orderbookRequest);
+        System.out.println(orderBook);
 
-       // Get market tickers
-       var tickers = client.getMarketTickers(ProductType.SPOT, "BTCUSDT");
-       System.out.println(tickers);
+        // Get market tickers
+        var tickerReueqt = MarketDataTickerRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
+        var tickers = client.getMarketTickers(tickerReueqt);
+        System.out.println(tickers);
 
-       // Get funding history
-       var fundingHistoryRequest = new FundingHistoryRequest.Builder(ProductType.LINEAR, "BTCUSD")
-               .startTime(1632046800000L) // Example start time
-               .endTime(1632133200000L)   // Example end time
-               .limit(150)
-               .build();
-       var fundingResponse = client.getFundingHistory(fundingHistoryRequest);
-       System.out.println(fundingResponse);
+        // Get funding history
+        var fundingHistoryRequest = FundingHistoryRequest.builder().category(ProductType.LINEAR).symbol("BTCUSD")
+                .startTime(1632046800000L) // Example start time
+                .endTime(1632133200000L)   // Example end time
+                .limit(150)
+                .build();
+        var fundingResponse = client.getFundingHistory(fundingHistoryRequest);
+        System.out.println(fundingResponse);
 
-       // Get Open Interest data
-       var openInterest = new OpenInterestRequest.Builder(ProductType.LINEAR, "BTCUSDT", "5min") .build();
-       var openInterestResponse = client.getOpenInterest(openInterest);
-       System.out.println(openInterestResponse);
+        // Get Open Interest data
+        var openInterest = OpenInterestRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").intervalTime("5min").build();
+        var openInterestResponse = client.getOpenInterest(openInterest);
+        System.out.println(openInterestResponse);
 
-       // Get Recent Trade Data
-       var recentTrade = new RecentTradeDataRequest.Builder(ProductType.OPTION).symbol("ETH-30JUN23-2050-C").build();
-       var recentTradeResponse = client.getRecentTradeData(recentTrade);
-       System.out.println(recentTradeResponse);
+        // Get Recent Trade Data
+        var recentTrade = RecentTradeDataRequest.builder().category(ProductType.OPTION).symbol("ETH-30JUN23-2050-C").build();
+        var recentTradeResponse = client.getRecentTradeData(recentTrade);
+        System.out.println(recentTradeResponse);
 
-       // Get Historical Volatility
-       var historicalVolatilityRequest = new HistoricalVolatilityRequest.Builder(ProductType.OPTION).period(7).build();
-       var historicalVolatilityResponse = client.getHistoricalVolatility(historicalVolatilityRequest);
-       System.out.println(historicalVolatilityResponse);
+        // Get Historical Volatility
+        var historicalVolatilityRequest = HistoricalVolatilityRequest.builder().category(ProductType.OPTION).period(7).build();
+        var historicalVolatilityResponse = client.getHistoricalVolatility(historicalVolatilityRequest);
+        System.out.println(historicalVolatilityResponse);
 
-       // Get Insurance data
-       var insuranceData = client.getInsurance("BTC"); // BTC Insurance
-       System.out.println(insuranceData);
-       var instanceAllData = client.getInsurance();
-       System.out.println(instanceAllData);
+        // Get Insurance data
+        var insuranceData = client.getInsurance("BTC"); // BTC Insurance
+        System.out.println(insuranceData);
+        var instanceAllData = client.getInsurance();
+        System.out.println(instanceAllData);
 
-       // Get Risk Limit
-       var riskLimitData = client.getRiskLimit(ProductType.INVERSE, "ADAUSD");
-       System.out.println(riskLimitData);
-       var riskLimitALLData = client.getRiskLimit(ProductType.INVERSE);
-       System.out.println(riskLimitALLData);
+        // Get Risk Limit
+        var riskMimitRequest = MarketRiskLimitRequest.builder().category(ProductType.INVERSE).symbol("ADAUSD").build();
+        var riskLimitData = client.getRiskLimit(riskMimitRequest);
+        System.out.println(riskLimitData);
 
-       // Get delivery price
-       var deliveryPriceRequest = DeliveryPriceRequest.builder().category(ProductType.OPTION)
-               .baseCoin("BTC")
-               .limit(10)
-               .build();
-       var deliveryPriceData = client.getDeliveryPrice(deliveryPriceRequest);
-       System.out.println(deliveryPriceData);
+        // Get delivery price
+        var deliveryPriceRequest = DeliveryPriceRequest.builder().category(ProductType.OPTION)
+                .baseCoin("BTC")
+                .limit(10)
+                .build();
+        var deliveryPriceData = client.getDeliveryPrice(deliveryPriceRequest);
+        System.out.println(deliveryPriceData);
 
-       // Get Long Short Ratio
-       var marketAccountRatioRequest = MarketAccountRatioRequest.builder().category(ProductType.LINEAR)
-               .symbol("BTCUSDT")
-               .period("15min")
-               .limit(10)
-               .build();
-       var accountRatio = client.getMarketAccountRatio(marketAccountRatioRequest);
-       System.out.println(accountRatio);
+        // Get Long Short Ratio
+        var marketAccountRatioRequest = MarketAccountRatioRequest.builder().category(ProductType.LINEAR)
+                .symbol("BTCUSDT")
+                .period("15min")
+                .limit(10)
+                .build();
+        var accountRatio = client.getMarketAccountRatio(marketAccountRatioRequest);
+        System.out.println(accountRatio);
     }
-  }
+}
 ```
+Http Async Examples
+```
+package com.bybit.api.examples.http.async;
 
+import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.market.request.*;
+import com.bybit.api.client.impl.BybitApiClientFactory;
+import com.bybit.api.client.domain.market.MarketInterval;
+import com.bybit.api.client.BybitApiAsyncRestClient;
+
+public class MarketDataEndpointsExampleAsync {
+    public static void main(String[] args) {
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
+        BybitApiAsyncRestClient client = factory.newAsyncRestClient();
+
+        var marketKLineRequest = MarketKlineRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
+        // Weekly Marketklin for a symbol
+        client.getMarketLinesData(marketKLineRequest, System.out::println);
+
+        // Weekly market price Kline for a symbol
+        client.getMarketPriceLinesData(marketKLineRequest, System.out::println);
+
+        // Weekly index price Kline for a symbol
+        client.getIndexPriceLinesData(marketKLineRequest, System.out::println);
+
+        // Weekly premium index price Kline for a symbol
+        client.getPremiumIndexPriceLinesData(marketKLineRequest, System.out::println);
+
+        // Get server time
+        client.getServerTime(System.out::println);
+
+        // Get Instrument info
+        var instrumentInfoRequest = InstrumentInfoRequest.builder().category(ProductType.SPOT)
+                .symbol("BTCUSDT")
+                .status("Trading")
+                .limit(500)
+                .build();
+        client.getInstrumentsInfo(instrumentInfoRequest,System.out::println);
+
+        // Get orderbook
+        var orderbookRequest = MarketOrderBookRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
+        client.getMarketOrderbook(orderbookRequest,System.out::println);
+
+        // Get market tickers
+        var tickerReueqt = MarketDataTickerRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
+        client.getMarketTickers(tickerReueqt, System.out::println);
+
+        // Get funding history
+        var fundingHistoryRequest = FundingHistoryRequest.builder().category(ProductType.LINEAR).symbol("BTCUSD")
+                .startTime(1632046800000L) // Example start time
+                .endTime(1632133200000L)   // Example end time
+                .limit(150)
+                .build();
+        client.getFundingHistory(fundingHistoryRequest, System.out::println);
+
+        // Get Open Interest data
+        var openInterest = OpenInterestRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").intervalTime("5min").build();
+        client.getOpenInterest(openInterest, System.out::println);
+
+        // Get Recent Trade Data
+        var recentTrade = RecentTradeDataRequest.builder().category(ProductType.OPTION).symbol("ETH-30JUN23-2050-C").build();
+        client.getRecentTradeData(recentTrade, System.out::println);
+
+        // Get Historical Volatility
+        var historicalVolatilityRequest = HistoricalVolatilityRequest.builder().category(ProductType.OPTION).period(7).build();
+        client.getHistoricalVolatility(historicalVolatilityRequest, System.out::println);
+
+        // Get Insurance data
+        client.getInsurance("BTC", System.out::println); // BTC Insurance
+
+        // Get Risk Limit
+        var riskMimitRequest = MarketRiskLimitRequest.builder().category(ProductType.INVERSE).symbol("ADAUSD").build();
+        client.getRiskLimit(riskMimitRequest, System.out::println);
+
+        // Get delivery price
+        var deliveryPriceRequest = DeliveryPriceRequest.builder().category(ProductType.OPTION)
+                .baseCoin("BTC")
+                .limit(10)
+                .build();
+        client.getDeliveryPrice(deliveryPriceRequest, System.out::println);
+
+        // Get Long Short Ratio
+        var marketAccountRatioRequest = MarketAccountRatioRequest.builder().category(ProductType.LINEAR)
+                .symbol("BTCUSDT")
+                .period("15min")
+                .limit(10)
+                .build();
+        client.getMarketAccountRatio(marketAccountRatioRequest, System.out::println);
+    }
+}
+```
 ## Contact
 For support, join our Java Bybit API community on JavaBybitAPI Telegram.
 
