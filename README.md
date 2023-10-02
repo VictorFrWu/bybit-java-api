@@ -244,7 +244,19 @@ For support, join our Java Bybit API community on JavaBybitAPI Telegram.
 List of other contributors
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/wuhewuhe"><img src="https://avatars.githubusercontent.com/u/54495183?v=4" width="100px;" alt=""/><br /><sub><b>Victor</b></sub></a><br /><a href="https://github.com/bybit-exchange/pybit/commits?author=wuhewuhe" title="Code">💻</a> <a href="https://github.com/bybit-exchange/pybit/commits?author=wuhewuhe" title="Documentation">📖</a></td>
+    <td align="center">
+        <a href="https://github.com/wuhewuhe">
+            <img src="https://avatars.githubusercontent.com/u/32245754?v=4" width="100px;" alt=""/>
+            <br />
+            <sub>   
+                <b>Victor</b>
+            </sub>
+        </a>
+        <br />
+        <a href="https://github.com/wuhewuhe/bybit-java-api/commits?author=wuhewuhe" title="Code">
+            💻</a> <a href="https://github.com/wuhewuhe/bybit-java-api/commits?author=wuhewuhe" title="Documentation">
+            📖</a>
+</td>
 </tr>
 </table>
 
