@@ -30,19 +30,19 @@ public interface BybitApiService {
     @GET("/v5/market/time")
     Call<Object> getServerTime();
 
-     /**
-     *Query for historical mark price klines. Charts are returned in groups based on the requested interval.
+    /**
+     * Query for historical mark price klines. Charts are returned in groups based on the requested interval.
      * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
-     *<a href="https://bybit-exchange.github.io/docs/v5/market/kline">...</a>
-      * Request Parameters
-      * Parameter	Required	Type	Comments
-      * category	true	string	Product type. spot,linear,inverse
-      * symbol	true	string	Symbol name
-      * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
-      * start	false	integer	The start timestamp (ms)
-      * end	false	integer	The end timestamp (ms)
-      * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/kline">...</a>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot,linear,inverse
+     * symbol	true	string	Symbol name
+     * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+     * start	false	integer	The start timestamp (ms)
+     * end	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
      */
     @GET("/v5/market/kline")
     Call<Object> getMarketLinesData(@Query("category") String category,
@@ -56,7 +56,7 @@ public interface BybitApiService {
      * Query for historical mark price klines. Charts are returned in groups based on the requested interval.
      * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
-     *<a href="https://bybit-exchange.github.io/docs/v5/market/mark-kline">...</a>
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/mark-kline">...</a>
      * Request Parameters
      * Parameter	Required	Type	Comments
      * category	true	string	Product type. spot,linear,inverse
@@ -73,11 +73,12 @@ public interface BybitApiService {
                                          @Query("start") Long start,
                                          @Query("end") Long end,
                                          @Query("limit") Integer limit);
+
     /**
      * Query for historical index price klines. Charts are returned in groups based on the requested interval.
      * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
-     *<a href="https://bybit-exchange.github.io/docs/v5/market/index-kline">...</a>
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/index-kline">...</a>
      * Request Parameters
      * Parameter	Required	Type	Comments
      * category	true	string	Product type. spot,linear,inverse
@@ -122,13 +123,14 @@ public interface BybitApiService {
     /**
      * Get Instruments Info
      * Query for the instrument specification of online trading pairs.
-     *
+     * <p>
      * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
-     *
+     * <p>
      * CAUTION
      * Spot does not support pagination, so limit, cursor are invalid.
      * When query by baseCoin, regardless of category=linear or inverse, the result will have USDT perpetual, USDC contract and Inverse contract symbols.
      * <a href="https://bybit-exchange.github.io/docs/v5/market/instrument">...</a>
+     *
      * @param category
      * @param symbol
      * @param status
@@ -215,7 +217,7 @@ public interface BybitApiService {
             @Query("limit") Integer limit);
 
     /**
-     *Get Public Recent Trading History
+     * Get Public Recent Trading History
      * Query recent public trading data in Bybit.
      * <p>
      * Covers: Spot / USDT perpetual / USDC contract / Inverse contract / Option
@@ -306,6 +308,7 @@ public interface BybitApiService {
      * Get Insurance
      * Query for Bybit insurance pool data (BTC/USDT/USDC etc). The data is updated every 24 hours.
      * <a href="https://bybit-exchange.github.io/docs/v5/market/insurance">...</a>
+     *
      * @param coin
      * @return
      */
@@ -314,12 +317,13 @@ public interface BybitApiService {
 
     @GET("/v5/market/insurance")
     Call<Object> getInsurance();
+
     /**
      * Get Risk Limit
      * Query for the risk limit.
-     *
+     * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
-     *<a href="https://bybit-exchange.github.io/docs/v5/market/risk-limit">...</a>
+     * <a href="https://bybit-exchange.github.io/docs/v5/market/risk-limit">...</a>
      * Request Parameters
      * Parameter	Required	Type	Comments
      * category	true	string	Product type. linear,inverse
@@ -365,11 +369,41 @@ public interface BybitApiService {
      */
     @GET("/v5/market/account-ratio")
     Call<Object> getMarketAccountRatio(@Query("category") String category,
-                                  @Query("symbol") String symbol,
-                                  @Query("period") String baseCoin,
-                                  @Query("limit") Integer limit);
+                                       @Query("symbol") String symbol,
+                                       @Query("period") String baseCoin,
+                                       @Query("limit") Integer limit);
 
     // Trade
+
+    /**
+     * Get Order History
+     * Query order history. As order creation/cancellation is asynchronous, the data returned from this endpoint may delay. If you want to get real-time order information, you could query this endpoint or rely on the websocket stream (recommended).
+     * <p>
+     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
+     * Classic account covers: Spot / USDT perpetual / Inverse contract
+     * <p>
+     * INFO
+     * The orders in the last 7 days: supports querying all statuses
+     * The orders beyond 7 days: supports querying filled orders
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * TIP
+     * Classic account spot can get final status orders only
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/order-list">...</a>
+     *
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param settleCoin
+     * @param orderId
+     * @param orderLinkId
+     * @param orderFilter
+     * @param orderStatus
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/order/history")
     Call<Object> getHistoryOrderResult(@Query("category") String category,
@@ -385,7 +419,141 @@ public interface BybitApiService {
                                        @Query("limit") Integer limit,
                                        @Query("cursor") String cursor);
 
+    /**
+     * Get Borrow Quota (Spot)
+     * Query the qty and amount of borrowable coins in spot account.
+     *
+     * Covers: Spot (Unified Account)
+     *
+     * HTTP Request
+     * GET /v5/order/spot-borrow-check
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot
+     * symbol	true	string	Symbol name
+     * side	true	string	Transaction side. Buy,Sell
+     * Response Parameters
+     * Parameter	Type	Comments
+     * symbol	string	Symbol name
+     * side	string	Side
+     * maxTradeQty	string	The maximum base coin qty can be traded
+     * If spot margin trade on and symbol is margin trading pair, it returns available balance + max.borrowable amount
+     * Otherwise, it returns actual balance
+     * maxTradeAmount	string	The maximum quote coin amount can be traded
+     * If spot margin trade on and symbol is margin trading pair, it returns available balance + max.borrowable amount
+     * Otherwise, it returns actual balance
+     * borrowCoin	string	Borrow coin
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/spot-borrow-quota">...</a>
+     * @param category
+     * @param symbol
+     * @param side
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/order/spot-borrow-check")
+    Call<Object> getBorrowQuota(@Query("category") String category,
+                                @Query("symbol") String symbol,
+                                @Query("side") String side);
 
+    /**
+     * Set Disconnect Cancel All
+     * Covers: Option (Unified Account)
+     *
+     * INFO
+     * What is Disconnection Protect (DCP)?
+     * Based on the websocket private connection and heartbeat mechanism, Bybit provides disconnection protection function. The timing starts from the first disconnection. If the Bybit server does not receive the reconnection from the client for more than 10 (default) seconds and resumes the heartbeat "ping", then the client is in the state of "disconnection protect", all active option orders of the client will be cancelled automatically. If within 10 seconds, the client reconnects and resumes the heartbeat "ping", the timing will be reset and restarted at the next disconnection.
+     *
+     * How to enable DCP
+     * If you need to turn it on/off, you can contact your client manager for consultation and application. The default time window is 10 seconds.
+     *
+     * Applicable
+     * Effective for options only.
+     *
+     * TIP
+     * After the request is successfully sent, the system needs a certain time to take effect. It is recommended to query or set again after 10 seconds
+     *
+     * You can use this endpoint to get your current DCP configuration.
+     * Your private websocket connection must subscribe "dcp" topic in order to trigger DCP successfully
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/dcp">...</a>
+     * @param timeWindow
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/order/disconnected-cancel-all")
+    Call<Object> newOrder(@Query("timeWindow") Integer timeWindow);
+
+    /**
+     * Place Order
+     * This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.
+     * <p>
+     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
+     * Classic account covers: Spot / USDT perpetual / Inverse contract
+     * <p>
+     * INFO
+     * Supported order type (orderType):
+     * Limit order: orderType=Limit, it is necessary to specify order qty and price.
+     * <p>
+     * Market order: orderType=Market, execute at the best price in the Bybit market until the transaction is completed. When selecting a market order, the `price` is empty. In the futures trading system, in order to protect the serious slippage of the market order, the Bybit trading system will convert the market order into a limit order for matching. will be cancelled. The slippage threshold refers to the percentage that the order price deviates from the latest transaction price. The current threshold is set to 3% for BTC contracts and 5% for other contracts.
+     * Supported timeInForce strategy:
+     * GTC
+     * IOC
+     * FOK
+     * PostOnly: If the order would be filled immediately when submitted, it will be cancelled. The purpose of this is to protect your order during the submission process. If the matching system cannot entrust the order to the order book due to price changes on the market, it will be cancelled. For the PostOnly order type, the quantity that can be submitted in a single order is more than other types of orders, please refer to the parameter lotSizeFilter > postOnlyMaxOrderQty in the instruments-info endpoint.
+     * <p>
+     * How to create conditional order:
+     * When submitting an order, if triggerPrice is set, the order will be automatically converted into a conditional order. In addition, the conditional order does not occupy the margin. If the margin is insufficient after the conditional order is triggered, the order will be cancelled.
+     * <p>
+     * Take profit / Stop loss: You can set TP/SL while placing orders. Besides, you could modify the position's TP/SL.
+     * <p>
+     * Order quantity: The quantity of perpetual contracts you are going to buy/sell. For the order quantity, Bybit only supports positive number at present.
+     * <p>
+     * Order price: Place a limit order, this parameter is required. If you have position, the price should be higher than the liquidation price. For the minimum unit of the price change, please refer to the priceFilter > tickSize field in the instruments-info endpoint.
+     * <p>
+     * orderLinkId: You can customize the active order ID. We can link this ID to the order ID in the system. Once the active order is successfully created, we will send the unique order ID in the system to you. Then, you can use this order ID to cancel active orders, and if both orderId and orderLinkId are entered in the parameter input, Bybit will prioritize the orderId to process the corresponding order. Meanwhile, your customized order ID should be no longer than 36 characters and should be unique.
+     * <p>
+     * Open orders up limit:
+     * Future: Each account can hold a maximum of 500 active orders simultaneously. This is contract-specific, so the following situation is allowed: the same account can hold 300 BTCUSD active orders and 280 ETHUSD active orders at the same time. For conditional orders, each account can hold a maximum of 10 active orders simultaneously. When the upper limit of orders is reached, you can still place orders with parameters of reduceOnly or closeOnTrigger.
+     * Spot: 500 orders in total, including a maximum of 30 open TP/SL orders, a maximum of 30 open conditional orders
+     * Option: a maximum of 100 open orders
+     * <p>
+     * Rate limit:
+     * Please refer to rate limit table. If you need to raise the rate limit, please contact your client manager or submit an application via here
+     * <p>
+     * TIP
+     * To margin trade on spot on a normal account, you need to go here to borrow margin first.
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/create-order">...</a>
+     *
+     * @param category
+     * @param symbol
+     * @param isLeverage
+     * @param side
+     * @param orderType
+     * @param qty
+     * @param price
+     * @param triggerDirection
+     * @param orderFilter
+     * @param triggerPrice
+     * @param triggerBy
+     * @param orderIv
+     * @param timeInForce
+     * @param positionIdx
+     * @param orderLinkId
+     * @param takeProfit
+     * @param stopLoss
+     * @param tpTriggerBy
+     * @param slTriggerBy
+     * @param reduceOnly
+     * @param closeOnTrigger
+     * @param smpType
+     * @param mmp
+     * @param tpslMode
+     * @param tpLimitPrice
+     * @param slLimitPrice
+     * @param tpOrderType
+     * @param slOrderType
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create")
     Call<Object> newOrder(@Query("category") String category,
@@ -417,6 +585,24 @@ public interface BybitApiService {
                           @Query("tpOrderType") String tpOrderType,
                           @Query("slOrderType") String slOrderType);
 
+    /**
+     * Cancel Order
+     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
+     * Classic account covers: Spot / USDT perpetual / Inverse contract
+     * <p>
+     * IMPORTANT
+     * You must specify orderId or orderLinkId to cancel the order.
+     * If orderId and orderLinkId do not match, the system will process orderId first.
+     * You can only cancel unfilled or partially filled orders.
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/cancel-order">...</a>
+     *
+     * @param category
+     * @param symbol
+     * @param orderId
+     * @param orderLinkId
+     * @param orderFilter
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel")
     Call<Object> cancelOrder(@Query("category") String category,
@@ -425,6 +611,108 @@ public interface BybitApiService {
                              @Query("orderLinkId") String orderLinkId,
                              @Query("orderFilter") String orderFilter);
 
+    /**
+     * Cancel All Orders
+     * Cancel all open orders
+     * <p>
+     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
+     * Classic account covers: Spot / USDT perpetual / Inverse contract
+     * <p>
+     * INFO
+     * Support cancel orders by symbol/baseCoin/settleCoin. If you pass multiple of these params, the system will process one of param, which priority is symbol > baseCoin > settleCoin.
+     * NOTE: category=option, you can cancel all option open orders without passing any of those three params. However, for linear and inverse, you must specify one of those three params.
+     * NOTE: category=spot, you can cancel all spot open orders (normal order by default) without passing other params.
+     * HTTP Request
+     * POST /v5/order/cancel-all
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: spot, linear, inverse, option
+     * Classic account: spot, linear, inverse
+     * symbol	false	string	Symbol name. linear & inverse: Required if not passing baseCoin or settleCoin
+     * baseCoin	false	string	Base coin
+     * linear & inverse: If cancel all by baseCoin, it will cancel all linear & inverse orders. Required if not passing symbol or settleCoin
+     * Classic spot: invalid
+     * settleCoin	false	string	Settle coin
+     * linear & inverse: Required if not passing symbol or baseCoin
+     * Does not support spot
+     * orderFilter	false	string
+     * category=spot, you can pass Order, tpslOrder, StopOrder. If not passed, Order by default
+     * category=linear or inverse, you can pass Order, StopOrder. If not passed, all kinds of orders will be cancelled, like active order, conditional order, TP/SL order and trailing stop order
+     * category=option, you can pass Order. No matter it is passed or not, always cancel all orders
+     * stopOrderType	false	string	Stop order type, Stop
+     * Only used for category=linear or inverse and orderFilter=StopOrder,you can cancel conditional orders except TP/SL order and Trailing stop orders with this param
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/cancel-all">...</a>
+     *
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param settleCoin
+     * @param orderFilter
+     * @param stopOrderType
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/order/cancel-all")
+    Call<Object> cancelAllOrder(@Query("category") String category,
+                                @Query("symbol") String symbol,
+                                @Query("baseCoin") String baseCoin,
+                                @Query("settleCoin") String settleCoin,
+                                @Query("orderFilter") String orderFilter,
+                                @Query("stopOrderType") String stopOrderType);
+
+    /**
+     * Amend Order
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract / Option
+     * Classic account covers: USDT perpetual / Inverse contract
+     * <p>
+     * IMPORTANT
+     * You can only modify unfilled or partially filled orders.
+     * <p>
+     * HTTP Request
+     * POST /v5/order/amend
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse, option
+     * Classic account: linear, inverse. Please note that category is not involved with business logic
+     * symbol	true	string	Symbol name
+     * orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     * orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     * orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
+     * triggerPrice	false	string	If you expect the price to rise to trigger your conditional order, make sure:
+     * triggerPrice > market price
+     * Else, triggerPrice < market price
+     * qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
+     * price	false	string	Order price after modification. Do not pass it if not modify the price
+     * takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
+     * stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
+     * tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
+     * slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
+     * triggerBy	false	string	Trigger price type
+     * tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
+     * slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/amend-order">...</a>
+     *
+     * @param category
+     * @param symbol
+     * @param orderId
+     * @param orderLinkId
+     * @param orderIv
+     * @param triggerPrice
+     * @param qty
+     * @param price
+     * @param takeProfit
+     * @param stopLoss
+     * @param tpTriggerBy
+     * @param slTriggerBy
+     * @param triggerBy
+     * @param tpLimitPrice
+     * @param slLimitPrice
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/amend")
     Call<Object> amendOrder(@Query("category") String category,
@@ -443,6 +731,32 @@ public interface BybitApiService {
                             @Query("tpLimitPrice") String tpLimitPrice,
                             @Query("slLimitPrice") String slLimitPrice);
 
+    /**
+     * Get Open Orders
+     * Query unfilled or partially filled orders in real-time. To query older order records, please use the order history interface.
+     * <p>
+     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
+     * Classic account covers: Spot / USDT perpetual / Inverse contract
+     * <p>
+     * TIP
+     * It also supports querying filled, cancelled, and rejected orders which occurred in last 10 minutes (check the openOnly param). At most, 500 orders will be returned.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * The records are sorted by the createdTime from newest to oldest.
+     * INFO
+     * Classic account spot trade can return open orders only
+     *
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param settleCoin
+     * @param orderId
+     * @param orderLinkId
+     * @param openOnly
+     * @param orderFilter
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/order/realtime")
     Call<Object> getOpenOrders(@Query("category") String category,
@@ -711,19 +1025,21 @@ public interface BybitApiService {
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
 
     // Institution Endpoints
-    /**
-     Get Product Info
-     TIP
-     This endpoint can be queried without api key and secret, then it returns public product data
-     If your uid is bound with OTC loan product, then you can get your private product data by calling the endpoint with api key and secret
-     If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
-     HTTP Request
-     GET /v5/ins-loan/product-infos
 
-     Request Parameters
-     Parameter	Required	Type	Comments
-     productId	false	string	Product Id. If not passed, then return all products info
-     <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-product-info">...</a>
+    /**
+     * Get Product Info
+     * TIP
+     * This endpoint can be queried without api key and secret, then it returns public product data
+     * If your uid is bound with OTC loan product, then you can get your private product data by calling the endpoint with api key and secret
+     * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
+     * HTTP Request
+     * GET /v5/ins-loan/product-infos
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * productId	false	string	Product Id. If not passed, then return all products info
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-product-info">...</a>
+     *
      * @param productId
      * @return
      */
@@ -743,6 +1059,7 @@ public interface BybitApiService {
      * Parameter	Required	Type	Comments
      * productId	false	string	ProductId. If not passed, then return all product margin coin. For spot, it returns coin that convertRation greater than 0.
      * <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-coin-convert-info">...</a>
+     *
      * @param productId
      * @return
      */
@@ -755,7 +1072,7 @@ public interface BybitApiService {
     /**
      * Get Loan Orders
      * Get loan orders information
-     *
+     * <p>
      * TIP
      * Get the past 2 years data by default
      * Get up to the past 2 years of data
@@ -766,6 +1083,7 @@ public interface BybitApiService {
      * endTime	false	integer	The end timestamp (ms)
      * limit	false	integer	Limit for data size. [1, 100], Default: 10
      * <a href="https://bybit-exchange.github.io/docs/v5/otc/loan-info">...</a>
+     *
      * @param productId
      * @param startTime
      * @param endTime
@@ -782,19 +1100,20 @@ public interface BybitApiService {
     /**
      * Get Repay Orders
      * Get repaid order information
-     *
+     * <p>
      * TIP
      * Get the past 2 years data by default
      * Get up to the past 2 years of data
      * HTTP Request
      * GET /v5/ins-loan/repaid-history
-     *
+     * <p>
      * Request Parameters
      * Parameter	Required	Type	Comments
      * startTime	false	integer	The start timestamp (ms)
      * endTime	false	integer	The end timestamp (ms)
      * limit	false	integer	Limit for data size. [1, 100]. Default: 100
      * <a href="https://bybit-exchange.github.io/docs/v5/otc/repay-info">...</a>
+     *
      * @param startTime
      * @param endTime
      * @param limit
@@ -808,10 +1127,11 @@ public interface BybitApiService {
 
     /**
      * Get LTV
-     *
+     * <p>
      * HTTP Request
      * GET /v5/ins-loan/ltv-convert
      * <a href="https://bybit-exchange.github.io/docs/v5/otc/ltv-convert">...</a>
+     *
      * @return
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
@@ -1308,7 +1628,8 @@ public interface BybitApiService {
      * TIP
      * endTime - startTime should be less than 30 days. Queries for the last 30 days worth of records by default.
      * <p> <a href="
-     ">* https://bybit-exchange.github.io/docs/v5/asset/sub-deposit-record</a>
+     * ">* https://bybit-exchange.github.io/docs/v5/asset/sub-deposit-record</a>
+     *
      * @param subMemberId
      * @param coin
      * @param startTime
@@ -1335,6 +1656,7 @@ public interface BybitApiService {
      * Support to get deposit records by Master or Sub Member Api Key
      * <p>
      * <a href="https://bybit-exchange.github.io/docs/v5/asset/internal-deposit-record">...</a>
+     *
      * @param coin
      * @param startTime
      * @param endTime
@@ -1354,6 +1676,7 @@ public interface BybitApiService {
      * Get Master Deposit Address
      * Query the deposit address information of MASTER account.
      * <a href="https://bybit-exchange.github.io/docs/v5/asset/master-deposit-addr">...</a>
+     *
      * @param coin
      * @param chainType
      * @return
@@ -1366,10 +1689,11 @@ public interface BybitApiService {
     /**
      * Get Sub Deposit Address
      * Query the deposit address information of SUB account.
-     *
+     * <p>
      * CAUTION
      * Can use master UID's api key only
      * <a href="https://bybit-exchange.github.io/docs/v5/asset/sub-deposit-addr">...</a>
+     *
      * @param coin
      * @param chainType
      * @param subMemberId
@@ -1385,6 +1709,7 @@ public interface BybitApiService {
      * Get Coin Info
      * Query coin information, including chain information, withdraw and deposit status.
      * <a href="https://bybit-exchange.github.io/docs/v5/asset/coin-info">...</a>
+     *
      * @param coin
      * @return
      */
@@ -1400,10 +1725,11 @@ public interface BybitApiService {
      * Get Withdrawable Amount
      * INFO
      * How can partial funds be subject to delayed withdrawal requests?
-     *
+     * <p>
      * On-chain deposit: If the number of on-chain confirmations has not reached a risk-controlled level, a portion of the funds will be frozen for a period of time until they are unfrozen.
      * Buying crypto: If there is a risk, the funds will be frozen for a certain period of time and cannot be withdrawn.
      * <a href="https://bybit-exchange.github.io/docs/v5/asset/delay-amount">...</a>
+     *
      * @param coin
      * @return
      */
@@ -1420,6 +1746,7 @@ public interface BybitApiService {
      * endTime - startTime should be less than 30 days. Query last 30 days records by default.
      * Can query by the master UID's api key only
      * <a href="https://bybit-exchange.github.io/docs/v5/asset/withdraw-record">...</a>
+     *
      * @param withdrawID
      * @param coin
      * @param withdrawType
@@ -1432,20 +1759,21 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/withdraw/query-record")
     Call<Object> getAssetWithdrawalRecords(
-                                           @Query("withdrawID") String withdrawID,
-                                           @Query("coin") String coin,
-                                           @Query("withdrawType") Integer withdrawType,
-                                           @Query("startTime") Long startTime,
-                                           @Query("endTime") Long endTime,
-                                           @Query("limit") Integer limit,
-                                           @Query("cursor") String cursor);
+            @Query("withdrawID") String withdrawID,
+            @Query("coin") String coin,
+            @Query("withdrawType") Integer withdrawType,
+            @Query("startTime") Long startTime,
+            @Query("endTime") Long endTime,
+            @Query("limit") Integer limit,
+            @Query("cursor") String cursor);
 
     /**
      * Cancel Withdrawal
      * Cancel the withdrawal
-     *
+     * <p>
      * CAUTION
      * Can query by the master UID's api key only
+     *
      * @param withdrawId
      * @return
      */
@@ -1456,7 +1784,7 @@ public interface BybitApiService {
     /**
      * Withdraw
      * Withdraw assets from your Bybit account. You can make an off-chain transfer if the target wallet address is from Bybit. This means that no blockchain fee will be charged.
-     *
+     * <p>
      * DANGER
      * UTA does not have SPOT account
      * How do I know if my account is a UTA account? Call this endpoint, and if uta=1, then it is a UTA account.
@@ -1465,13 +1793,14 @@ public interface BybitApiService {
      * Can query by the master UID's api key only
      * FORMULA
      * feeType=0:
-     *
+     * <p>
      * withdrawPercentageFee != 0: handlingFee = inputAmount / (1 - withdrawPercentageFee) * withdrawPercentageFee + withdrawFee
      * withdrawPercentageFee = 0: handlingFee = withdrawFee
      * feeType=1:
-     *
+     * <p>
      * withdrawPercentageFee != 0: handlingFee = withdrawFee + (inputAmount - withdrawFee) * withdrawPercentageFee
      * withdrawPercentageFee = 0: handlingFee = withdrawFee
+     *
      * @param assetWithdrawRequest
      * @return
      */
@@ -1483,6 +1812,7 @@ public interface BybitApiService {
 
     /**
      * Get Announcement
+     *
      * @param locale
      * @param type
      * @param tag

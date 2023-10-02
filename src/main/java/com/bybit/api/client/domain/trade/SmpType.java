@@ -1,26 +1,21 @@
 package com.bybit.api.client.domain.trade;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
 
 /**
  * SMP execution type
  */
+@Getter
 public enum SmpType {
-    None,
-    CancelMaker,
-    CancelTaker,
-    CancelBoth,
-    UNKNOWN;
+    NONE("None"),
+    CANCEL_MAKER("CancelMaker"),
+    CANCEL_TAKER("CancelTaker"),
+    CANCEL_BOTH("CancelBoth");
 
-    @JsonCreator
-    public static SmpType fromString(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return UNKNOWN;
-        }
-        try {
-            return SmpType.valueOf(value.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return UNKNOWN;
-        }
+    private final String description;
+
+    SmpType(String description) {
+        this.description = description;
     }
 }

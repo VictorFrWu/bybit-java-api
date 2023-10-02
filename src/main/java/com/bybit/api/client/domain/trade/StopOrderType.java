@@ -1,27 +1,21 @@
 package com.bybit.api.client.domain.trade;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
 
+@Getter
 public enum StopOrderType {
-    TakeProfit,
-    StopLoss,
-    TrailingStop,
-    Stop,
-    PartialTakeProfit,
-    PartialStopLoss,
-    tpslOrder, // spot TP/SL order
-    NULL, //not a condition order
-    UNKNOWN;
+    TAKE_PROFIT("TakeProfit"),
+    STOP_LOSS("StopLoss"),
+    TRAILING_STOP("TrailingStop"),
+    STOP("Stop"),
+    PARTIAL_TAKE_PROFIT("PartialTakeProfit"),
+    PARTIAL_STOP_LOSS("PartialStopLoss"),
+    TPSL_ORDER("tpslOrder"),
+    MM_RATE_CLOSE("MmRateClose");
 
-    @JsonCreator
-    public static StopOrderType fromString(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return NULL;
-        }
-        try {
-            return StopOrderType.valueOf(value);
-        } catch (IllegalArgumentException e) {
-            return UNKNOWN;
-        }
+    private final String description;
+
+    StopOrderType(String description) {
+        this.description = description;
     }
 }

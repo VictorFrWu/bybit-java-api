@@ -1,30 +1,23 @@
 package com.bybit.api.client.domain.trade;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
 
+@Getter
 public enum CancelType {
-    CancelByUser,
-    CancelByReduceOnly,
-    CancelByPrepareLiq,
-    CancelAllBeforeLiq, //Cancelled due to liquidation
-    CancelByPrepareAdl,
-    CancelAllBeforeAdl, //Cancelled due to ADL
-    CancelByAdmin,
-    CancelByTpSlTsClear,
-    CancelByPzSideCh,
-    CancelBySmp,
-    Null,     // order was executed
-    UNKNOWN;
+    CANCEL_BY_USER("CancelByUser"),
+    CANCEL_BY_REDUCE_ONLY("CancelByReduceOnly"),
+    CANCEL_BY_PREPARE_LIQ("CancelByPrepareLiq"),
+    CANCEL_ALL_BEFORE_LIQ("CancelAllBeforeLiq"), // Cancelled due to liquidation
+    CANCEL_BY_PREPARE_ADL("CancelByPrepareAdl"),
+    CANCEL_ALL_BEFORE_ADL("CancelAllBeforeAdl"), // Cancelled due to ADL
+    CANCEL_BY_ADMIN("CancelByAdmin"),
+    CANCEL_BY_TP_SL_TS_CLEAR("CancelByTpSlTsClear"),
+    CANCEL_BY_PZ_SIDE_CH("CancelByPzSideCh"),
+    CANCEL_BY_SMP("CancelBySmp");
 
-    @JsonCreator
-    public static CancelType fromString(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return Null;
-        }
-        try {
-            return CancelType.valueOf(value.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return UNKNOWN;
-        }
+    private final String cancelReason;
+
+    CancelType(String cancelReason) {
+        this.cancelReason = cancelReason;
     }
 }

@@ -1,23 +1,25 @@
 package com.bybit.api.client.domain.trade;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
 
+@Getter
 public enum TriggerBy {
-    LastPrice,
-    IndexPrice,
-    MarkPrice,
-    Null,     // not a conditional order
-    UNKNOWN;
+    LAST_PRICE("LastPrice"),
+    INDEX_PRICE("IndexPrice"),
+    MARK_PRICE("MarkPrice");
 
-    @JsonCreator
-    public static TriggerBy fromString(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return Null;
-        }
-        try {
-            return TriggerBy.valueOf(value.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return UNKNOWN;
-        }
+    private final String trigger;
+
+    TriggerBy(String trigger) {
+        this.trigger = trigger;
+    }
+
+    public String getTrigger() {
+        return trigger;
+    }
+
+    @Override
+    public String toString() {
+        return trigger;
     }
 }
