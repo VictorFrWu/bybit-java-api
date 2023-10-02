@@ -2,7 +2,7 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitAnnouncementRestClient;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
-import com.bybit.api.client.service.BybitApiService;
+import com.bybit.api.client.BybitApiService;
 import lombok.Getter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;

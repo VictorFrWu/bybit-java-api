@@ -1,4 +1,4 @@
-package com.bybit.api.client.service;
+package com.bybit.api.client;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
@@ -30,20 +30,19 @@ public interface BybitApiService {
     @GET("/v5/market/time")
     Call<Object> getServerTime();
 
-    /**
-     *
      /**
      *Query for historical mark price klines. Charts are returned in groups based on the requested interval.
      * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
      *<a href="https://bybit-exchange.github.io/docs/v5/market/kline">...</a>
-     * @param category
-     * @param symbol
-     * @param interval
-     * @param limit
-     * @param start
-     * @param end
-     * @return a candlestick bar for the given symbol and interval
+      * Request Parameters
+      * Parameter	Required	Type	Comments
+      * category	true	string	Product type. spot,linear,inverse
+      * symbol	true	string	Symbol name
+      * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+      * start	false	integer	The start timestamp (ms)
+      * end	false	integer	The end timestamp (ms)
+      * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
      */
     @GET("/v5/market/kline")
     Call<Object> getMarketLinesData(@Query("category") String category,
@@ -58,13 +57,14 @@ public interface BybitApiService {
      * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
      *<a href="https://bybit-exchange.github.io/docs/v5/market/mark-kline">...</a>
-     * @param category  product type. spot,linear, inverse (mandatory)
-     * @param symbol    symbol to aggregate (mandatory)
-     * @param interval  candlestick interval (mandatory)
-     * @param limit     Default 500; max 1000 (optional)
-     * @param start Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
-     * @param end   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
-     * @return a candlestick bar for the given symbol and interval
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot,linear,inverse
+     * symbol	true	string	Symbol name
+     * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+     * start	false	integer	The start timestamp (ms)
+     * end	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
      */
     @GET("/v5/market/mark-price-kline")
     Call<Object> getMarketPriceLinesData(@Query("category") String category,
@@ -78,13 +78,14 @@ public interface BybitApiService {
      * <p>
      * Covers: USDT perpetual / USDC contract / Inverse contract
      *<a href="https://bybit-exchange.github.io/docs/v5/market/index-kline">...</a>
-     * @param category  product type. spot,linear, inverse (mandatory)
-     * @param symbol    symbol to aggregate (mandatory)
-     * @param interval  candlestick interval (mandatory)
-     * @param limit     Default 500; max 1000 (optional)
-     * @param start Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
-     * @param end   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
-     * @return a candlestick bar for the given symbol and interval
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot,linear,inverse
+     * symbol	true	string	Symbol name
+     * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+     * start	false	integer	The start timestamp (ms)
+     * end	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
      */
     @GET("/v5/market/index-price-kline")
     Call<Object> getIndexPriceLinesData(@Query("category") String category,
@@ -101,13 +102,14 @@ public interface BybitApiService {
      * Covers: USDT perpetual / USDC contract / Inverse contract
      * <p>
      * <a href="https://bybit-exchange.github.io/docs/v5/market/preimum-index-kline">...</a>
-     * @param category  product type. spot,linear, inverse (mandatory)
-     * @param symbol    symbol to aggregate (mandatory)
-     * @param interval  candlestick interval (mandatory)
-     * @param limit     Default 500; max 1000 (optional)
-     * @param start Timestamp in ms to get candlestick bars from INCLUSIVE (optional).
-     * @param end   Timestamp in ms to get candlestick bars until INCLUSIVE (optional).
-     * @return a candlestick bar for the given symbol and interval
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot,linear,inverse
+     * symbol	true	string	Symbol name
+     * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+     * start	false	integer	The start timestamp (ms)
+     * end	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
      */
     @GET("/v5/market/premium-index-price-kline")
     Call<Object> getPremiumIndexPriceLinesData(@Query("category") String category,
@@ -150,9 +152,16 @@ public interface BybitApiService {
      * TIP
      * The response is in the snapshot format.
      * <a href="https://bybit-exchange.github.io/docs/v5/market/orderbook">...</a>
-     * @param category
-     * @param symbol
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot,linear,inverse,option
+     * symbol	false	string	Symbol name
+     * status	false	string	Symbol status filter
+     * spot/linear/inverse has Trading only
+     * baseCoin	false	string	Base coin. linear,inverse,option only
+     * For option, it returns BTC by default
+     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 500
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
      */
     @GET("/v5/market/orderbook")
     Call<Object> getMarketOrderbook(@Query("category") String category, @Query("symbol") String symbol, @Query("limit") Integer limit);
@@ -166,11 +175,12 @@ public interface BybitApiService {
      * TIP
      * If category=option, symbol or baseCoin must be passed.
      * <a href="https://bybit-exchange.github.io/docs/v5/market/tickers">...</a>
-     * @param category
-     * @param symbol
-     * @param baseCoin
-     * @param expDate
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot,linear,inverse,option
+     * symbol	false	string	Symbol name
+     * baseCoin	false	string	Base coin. For option only
+     * expDate	false	string	Expiry date. e.g., 25DEC22. For option only
      */
     @GET("/v5/market/tickers")
     Call<Object> getMarketTickers(@Query("category") String category, @Query("symbol") String symbol, @Query("baseCoin") String baseCoin, @Query("expDate") String expDate);
@@ -188,12 +198,13 @@ public interface BybitApiService {
      * Passing only endTime returns 200 records up till endTime.
      * Passing neither returns 200 records up till the current time.
      * <a href="https://bybit-exchange.github.io/docs/v5/market/history-fund-rate">...</a>
-     * @param category
-     * @param symbol
-     * @param startTime
-     * @param endTime
-     * @param limit
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear,inverse
+     * symbol	true	string	Symbol name
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 200]. Default: 200
      */
     @GET("/v5/market/funding/history")
     Call<Object> getFundingHistory(
@@ -213,12 +224,17 @@ public interface BybitApiService {
      * <p>
      * USDT Perpetual, Inverse Perpetual & Inverse Futures
      * <a href="https://bybit-exchange.github.io/docs/v5/market/recent-trade">...</a>
-     * @param category
-     * @param symbol
-     * @param baseCoin
-     * @param optionType
-     * @param limit
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot,linear,inverse,option
+     * symbol	false	string	Symbol name
+     * required for spot/linear/inverse
+     * optional for option
+     * baseCoin	false	string	Base coin. For option only. If not passed, return BTC data by default
+     * optionType	false	string	Option type. Call or Put. For option only
+     * limit	false	integer	Limit for data size per page.
+     * spot: [1,60], default: 60.
+     * others: [1,1000], default: 500
      */
     @GET("/v5/market/recent-trade")
     Call<Object> getRecentTradeData(
@@ -238,14 +254,15 @@ public interface BybitApiService {
      * Returns single side data
      * The upper limit time you can query is the launch time of the symbol.
      * <a href="https://bybit-exchange.github.io/docs/v5/market/open-interest">...</a>
-     * @param category
-     * @param symbol
-     * @param intervalTime
-     * @param startTime
-     * @param endTime
-     * @param limit
-     * @param cursor
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear,inverse
+     * symbol	true	string	Symbol name
+     * intervalTime	true	string	Interval. 5min,15min,30min,1h,4h,1d
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 200]. Default: 50
+     * cursor	false	string	Cursor. Used to paginate
      */
     @GET("/v5/market/kline")
     Call<Object> getOpenInterest(
@@ -269,12 +286,13 @@ public interface BybitApiService {
      * startTime and endTime are a pair of params. Either both are passed or they are not passed at all.
      * This endpoint can query the last 2 years worth of data, but make sure [endTime - startTime] <= 30 days.
      * <a href="https://bybit-exchange.github.io/docs/v5/market/iv">...</a>
-     * @param category
-     * @param baseCoin
-     * @param period
-     * @param startTime
-     * @param endTime
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. option
+     * baseCoin	false	string	Base coin. Default: return BTC data
+     * period	false	integer	Period
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
      */
     @GET("/v5/market/historical-volatility")
     Call<Object> getHistoricalVolatility(
@@ -302,9 +320,10 @@ public interface BybitApiService {
      *
      * Covers: USDT perpetual / USDC contract / Inverse contract
      *<a href="https://bybit-exchange.github.io/docs/v5/market/risk-limit">...</a>
-     * @param category
-     * @param symbol
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear,inverse
+     * symbol	false	string	Symbol name
      */
     @GET("/v5/market/risk-limit")
     Call<Object> getRiskLimit(@Query("category") String category,
@@ -319,12 +338,13 @@ public interface BybitApiService {
      * HTTP Request
      * GET /v5/market/delivery-price
      * <a href="https://bybit-exchange.github.io/docs/v5/market/delivery-price">...</a>
-     * @param category
-     * @param symbol
-     * @param baseCoin
-     * @param limit
-     * @param cursor
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear, inverse, option
+     * symbol	false	string	Symbol name
+     * baseCoin	false	string	Base coin. Default: BTC. valid for option only
+     * limit	false	integer	Limit for data size per page. [1, 200]. Default: 50
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the
      */
     @GET("/v5/market/delivery-price")
     Call<Object> getDeliveryPrice(@Query("category") String category,
@@ -336,11 +356,12 @@ public interface BybitApiService {
     /**
      * Get Long Short Ratio
      * <a href="https://bybit-exchange.github.io/docs/v5/market/long-short-ratio">...</a>
-     * @param category
-     * @param symbol
-     * @param baseCoin
-     * @param limit
-     * @return
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear(USDT Perpetual only),inverse
+     * symbol	true	string	Symbol name
+     * period	true	string	Data recording period. 5min, 15min, 30min, 1h, 4h, 4d
+     * limit	false	integer	Limit for data size per page. [1, 500]. Default: 50
      */
     @GET("/v5/market/account-ratio")
     Call<Object> getMarketAccountRatio(@Query("category") String category,

@@ -1,11 +1,9 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiAccountRestClient;
 import com.bybit.api.client.BybitApiInsLendingRestClient;
-import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.domain.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.institution.InstitutionRepayOrdersRequest;
-import com.bybit.api.client.service.BybitApiService;
+import com.bybit.api.client.BybitApiService;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;

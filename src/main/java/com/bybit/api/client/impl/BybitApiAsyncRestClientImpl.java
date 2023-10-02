@@ -2,10 +2,9 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitApiAsyncRestClient;
 import com.bybit.api.client.BybitApiCallback;
-import com.bybit.api.client.domain.market.MarketInterval;
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.market.request.*;
-import com.bybit.api.client.service.BybitApiService;
+import com.bybit.api.client.BybitApiService;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
@@ -28,7 +27,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getMarketLinesData(MarketKlineRequest marketKlineRequest, BybitApiCallback<Object> callback) {
+    public void getMarketLinesData(MarketDataRequest marketKlineRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getMarketLinesData(
                 marketKlineRequest.getCategory().getProductTypeId(),
                 marketKlineRequest.getSymbol(),
@@ -39,7 +38,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getMarketPriceLinesData(MarketKlineRequest marketKlineRequest, BybitApiCallback<Object> callback) {
+    public void getMarketPriceLinesData(MarketDataRequest marketKlineRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getMarketPriceLinesData(
                 marketKlineRequest.getCategory().getProductTypeId(),
                 marketKlineRequest.getSymbol(),
@@ -50,7 +49,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getIndexPriceLinesData(MarketKlineRequest marketKlineRequest, BybitApiCallback<Object> callback) {
+    public void getIndexPriceLinesData(MarketDataRequest marketKlineRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getIndexPriceLinesData(
                 marketKlineRequest.getCategory().getProductTypeId(),
                 marketKlineRequest.getSymbol(),
@@ -61,7 +60,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getPremiumIndexPriceLinesData(MarketKlineRequest marketKlineRequest, BybitApiCallback<Object> callback) {
+    public void getPremiumIndexPriceLinesData(MarketDataRequest marketKlineRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getPremiumIndexPriceLinesData(
                 marketKlineRequest.getCategory().getProductTypeId(),
                 marketKlineRequest.getSymbol(),
@@ -72,11 +71,11 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getInstrumentsInfo(InstrumentInfoRequest instrumentInfoRequest, BybitApiCallback<Object> callback) {
+    public void getInstrumentsInfo(MarketDataRequest instrumentInfoRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getInstrumentsInfo(
                 instrumentInfoRequest.getCategory().getProductTypeId(),
                 instrumentInfoRequest.getSymbol(),
-                instrumentInfoRequest.getStatus(),
+                instrumentInfoRequest.getInstrumentStatus() == null ? null : instrumentInfoRequest.getInstrumentStatus().getStatus(),
                 instrumentInfoRequest.getBaseCoin(),
                 instrumentInfoRequest.getLimit(),
                 instrumentInfoRequest.getCursor()
@@ -84,7 +83,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getMarketOrderbook(MarketOrderBookRequest marketOrderBookRequest, BybitApiCallback<Object> callback) {
+    public void getMarketOrderbook(MarketDataRequest marketOrderBookRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getMarketOrderbook(
                 marketOrderBookRequest.getCategory().getProductTypeId(),
                 marketOrderBookRequest.getSymbol(),
@@ -93,7 +92,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getMarketTickers(MarketDataTickerRequest marketDataTickerRequest, BybitApiCallback<Object> callback) {
+    public void getMarketTickers(MarketDataRequest marketDataTickerRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getMarketTickers(
                 marketDataTickerRequest.getCategory().getProductTypeId(),
                 marketDataTickerRequest.getSymbol(),
@@ -103,7 +102,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getFundingHistory(FundingHistoryRequest fundingHistoryRequest, BybitApiCallback<Object> callback) {
+    public void getFundingHistory(MarketDataRequest fundingHistoryRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getFundingHistory(
                 fundingHistoryRequest.getCategory().getProductTypeId(),
                 fundingHistoryRequest.getSymbol(),
@@ -114,22 +113,22 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getRecentTradeData(RecentTradeDataRequest recentTradeRequest, BybitApiCallback<Object> callback) {
+    public void getRecentTradeData(MarketDataRequest recentTradeRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getRecentTradeData(
                 recentTradeRequest.getCategory().getProductTypeId(),
                 recentTradeRequest.getBaseCoin(),
-                recentTradeRequest.getOptionType(),
+                recentTradeRequest.getOptionType() == null ? null : recentTradeRequest.getOptionType().getOpType(),
                 recentTradeRequest.getSymbol(),
                 recentTradeRequest.getLimit()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
-    public void getOpenInterest(OpenInterestRequest openInterestRequest, BybitApiCallback<Object> callback) {
+    public void getOpenInterest(MarketDataRequest openInterestRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getOpenInterest(
                 openInterestRequest.getCategory().getProductTypeId(),
                 openInterestRequest.getSymbol(),
-                openInterestRequest.getIntervalTime(),
+                openInterestRequest.getMarketInterval() == null ? null : openInterestRequest.getMarketInterval().getIntervalId(),
                 openInterestRequest.getStartTime(),
                 openInterestRequest.getEndTime(),
                 openInterestRequest.getLimit(),
@@ -138,11 +137,11 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getHistoricalVolatility(HistoricalVolatilityRequest historicalVolatilityRequest, BybitApiCallback<Object> callback) {
+    public void getHistoricalVolatility(MarketDataRequest historicalVolatilityRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getHistoricalVolatility(
                 historicalVolatilityRequest.getCategory().getProductTypeId(),
                 historicalVolatilityRequest.getBaseCoin(),
-                historicalVolatilityRequest.getPeriod(),
+                historicalVolatilityRequest.getOptionPeriod(),
                 historicalVolatilityRequest.getStartTime(),
                 historicalVolatilityRequest.getEndTime()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
@@ -159,7 +158,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getRiskLimit(MarketRiskLimitRequest marketRiskLimitRequest, BybitApiCallback<Object> callback) {
+    public void getRiskLimit(MarketDataRequest marketRiskLimitRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getRiskLimit(
                         marketRiskLimitRequest.getCategory().getProductTypeId(),
                         marketRiskLimitRequest.getSymbol()
@@ -168,7 +167,7 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getDeliveryPrice(DeliveryPriceRequest deliveryPriceRequest, BybitApiCallback<Object> callback) {
+    public void getDeliveryPrice(MarketDataRequest deliveryPriceRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getDeliveryPrice(deliveryPriceRequest.getCategory().getProductTypeId(),
                 deliveryPriceRequest.getSymbol(),
                 deliveryPriceRequest.getBaseCoin(),
@@ -177,10 +176,10 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getMarketAccountRatio(MarketAccountRatioRequest marketAccountRatioRequest, BybitApiCallback<Object> callback) {
+    public void getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getMarketAccountRatio(marketAccountRatioRequest.getCategory().getProductTypeId(),
                 marketAccountRatioRequest.getSymbol(),
-                marketAccountRatioRequest.getPeriod(),
+                marketAccountRatioRequest.getDataRecordingPeriod() == null ? null : marketAccountRatioRequest.getDataRecordingPeriod().getPeriod(),
                 marketAccountRatioRequest.getLimit()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }

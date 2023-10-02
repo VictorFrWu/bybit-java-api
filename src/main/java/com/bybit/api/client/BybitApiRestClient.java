@@ -8,6 +8,7 @@ import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
+import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
@@ -25,37 +26,37 @@ public interface BybitApiRestClient {
     // Market Data
     Object getServerTime();
 
-    Object getMarketLinesData(MarketKlineRequest marketKlineRequest);
+    Object getMarketLinesData(MarketDataRequest marketKlineRequest);
 
-    Object getMarketPriceLinesData(MarketKlineRequest marketKlineRequest);
+    Object getMarketPriceLinesData(MarketDataRequest marketKlineRequest);
 
-    Object getIndexPriceLinesData(MarketKlineRequest marketKlineRequest);
+    Object getIndexPriceLinesData(MarketDataRequest marketKlineRequest);
 
-    Object getPremiumIndexPriceLinesData(MarketKlineRequest marketKlineRequest);
+    Object getPremiumIndexPriceLinesData(MarketDataRequest marketKlineRequest);
 
-    Object getInstrumentsInfo(InstrumentInfoRequest instrumentInfoRequest);
+    Object getInstrumentsInfo(MarketDataRequest instrumentInfoRequest);
 
-    Object getMarketOrderbook(MarketOrderBookRequest marketOrderBookRequest);
+    Object getMarketOrderbook(MarketDataRequest marketOrderBookRequest);
 
-    Object getMarketTickers(MarketDataTickerRequest marketDataTickerRequest);
+    Object getMarketTickers(MarketDataRequest marketDataTickerRequest);
 
-    Object getFundingHistory(FundingHistoryRequest fundingHistoryRequest);
+    Object getFundingHistory(MarketDataRequest fundingHistoryRequest);
 
-    Object getRecentTradeData(RecentTradeDataRequest recentTradeRequest);
+    Object getRecentTradeData(MarketDataRequest recentTradeRequest);
 
-    Object getOpenInterest(OpenInterestRequest openInterestRequest);
+    Object getOpenInterest(MarketDataRequest openInterestRequest);
 
-    Object getHistoricalVolatility(HistoricalVolatilityRequest HistoricalVolatilityRequest);
+    Object getHistoricalVolatility(MarketDataRequest HistoricalVolatilityRequest);
 
     Object getInsurance(String coin);
 
     Object getInsurance();
 
-    Object getRiskLimit(MarketRiskLimitRequest marketRiskLimitRequest);
+    Object getRiskLimit(MarketDataRequest marketRiskLimitRequest);
 
-    Object getDeliveryPrice(DeliveryPriceRequest deliveryPriceRequest);
+    Object getDeliveryPrice(MarketDataRequest deliveryPriceRequest);
 
-    Object getMarketAccountRatio(MarketAccountRatioRequest marketAccountRatioRequest);
+    Object getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest);
 
     // Trade
 
