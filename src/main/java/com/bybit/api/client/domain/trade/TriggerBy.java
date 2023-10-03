@@ -13,13 +13,4 @@ public enum TriggerBy {
     TriggerBy(String trigger) {
         this.trigger = trigger;
     }
-
-    public String getTrigger() {
-        return trigger;
-    }
-
-    @Override
-    public String toString() {
-        return trigger;
-    }
 }

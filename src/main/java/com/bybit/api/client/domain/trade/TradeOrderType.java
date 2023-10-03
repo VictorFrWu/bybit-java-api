@@ -8,9 +8,9 @@ public enum TradeOrderType {
     LIMIT("Limit"),
     UNKNOWN("UNKNOWN");  // Used in some responses, mainly when execType is Funding
 
-    private final String orderType;
+    private final String oType;
 
-    TradeOrderType(String orderType) {
-        this.orderType = orderType;
+    TradeOrderType(String oType) {
+        this.oType = oType;
     }
 }

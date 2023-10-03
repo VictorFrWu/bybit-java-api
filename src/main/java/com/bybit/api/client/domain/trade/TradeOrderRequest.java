@@ -13,7 +13,7 @@ import lombok.ToString;
 public class TradeOrderRequest {
     private ProductType category;  // always Required
     private String symbol;
-    private TransactionSide side;
+    private TransactionSide transactionSide;
     private TradeOrderType orderType;
     private String qty;
     private Integer isLeverage;
@@ -25,6 +25,7 @@ public class TradeOrderRequest {
     private String orderIv;
     private TimeInForce timeInForce;
     private PositionIdx positionIdx;
+    private String orderId;
     private String orderLinkId;
     private String takeProfit;
     private String stopLoss;
@@ -42,10 +43,11 @@ public class TradeOrderRequest {
     private String baseCoin;
     private String settleCoin;
     private Integer openOnly;
+    private Long startTime;
+    private Long endTime;
     private Integer limit;
     private String cursor;
     private StopOrderType stopOrderType;
     private OrderStatus orderStatus;
     private Integer timeWindow; // only to Disconnect Cancel All options
-    private String request; // batch order
 }

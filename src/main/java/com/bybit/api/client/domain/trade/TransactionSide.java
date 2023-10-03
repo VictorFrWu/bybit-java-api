@@ -7,11 +7,10 @@ public enum TransactionSide {
     BUY("Buy"),
     SELL("Sell");
 
-    private final String description;
+    private final String side;
 
-    TransactionSide(String description) {
-        this.description = description;
+    TransactionSide(String side) {
+        this.side = side;
     }
-
 }
 

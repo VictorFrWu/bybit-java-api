@@ -1,7 +1,9 @@
 package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.*;
-import com.bybit.api.client.domain.trade.requests.*;
+import com.bybit.api.client.domain.trade.TradeOrderRequest;
+import com.bybit.api.client.domain.trade.TradeOrderType;
+import com.bybit.api.client.domain.trade.TransactionSide;
 import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.impl.BybitApiClientFactory;
 
@@ -15,16 +17,24 @@ public class OrdersExample {
         BybitApiRestClient client = factory.newRestClient();
 
         // Getting a list of history order between 2 years
-        var allOrders = client.getHistoryOrderResult(new OrderHistoryRequest(ProductType.LINEAR).limit(10));
+        var orderHistory = TradeOrderRequest.builder().category(ProductType.LINEAR).limit(10).build();
+        var allOrders = client.getHistoryOrderResult(orderHistory);
         System.out.println(allOrders);
 
+        // Get all real time orders
+        var openOrderRequest = TradeOrderRequest.builder().category(ProductType.SPOT).build();
+        var allOpenOrders = client.getOpenOrders(openOrderRequest);
+        System.out.println(allOpenOrders);
+
         // Create a new order
-        NewOrderRequest newOrderRequest = new NewOrderRequest.Builder(ProductType.SPOT, "XRPUSDT", "Buy", "Market", "10").build();
-        var newOrder = client.newOrder(newOrderRequest);
+        var newOrderRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).symbol("XRPUSDT").transactionSide(TransactionSide.BUY).orderType(TradeOrderType.MARKET).qty("10").build();
+        var newOrder = client.createOrder(newOrderRequest);
         System.out.println(newOrder);
 
+        // Create a batch order
+
         // Create an AmendOrderRequest
-        AmendOrderRequest amendOrderRequest = new AmendOrderRequest.Builder(ProductType.LINEAR, "XRPUSDT")
+        var amendOrderRequest = TradeOrderRequest.builder().orderId("1523347543495541248").category(ProductType.LINEAR).symbol("XRPUSDT")
                 .price("0.5")  // setting a new price, for example
                 .qty("15")  // and a new quantity
                 .build();
@@ -32,15 +42,8 @@ public class OrdersExample {
         System.out.println(amendedOrder);
 
         // Create a CancelOrderRequest
-        CancelOrderRequest cancelOrderRequest = new CancelOrderRequest.Builder(ProductType.SPOT, "XRPUSDT").build();
+        var cancelOrderRequest = TradeOrderRequest.builder().category(ProductType.SPOT).symbol("XRPUSDT").orderId("1523347543495541248").build();
         var canceledOrder = client.cancelOrder(cancelOrderRequest);
         System.out.println(canceledOrder);
-
-        // Get all real time orders
-        OpenOrderRequest openOrderRequest = new OpenOrderRequest.Builder(ProductType.SPOT).build();
-        var allOpenOrders = client.getOpenOrders(openOrderRequest);
-        System.out.println(allOpenOrders);
-
-
     }
 }

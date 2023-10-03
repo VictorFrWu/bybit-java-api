@@ -14,11 +14,14 @@ import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.*;
+import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
 import com.bybit.api.client.BybitApiService;
+
+import java.util.List;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
@@ -212,7 +215,21 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
 
     // Trade Data endpoints
     @Override
-    public Object getHistoryOrderResult(OrderHistoryRequest orderHistoryRequest) {
+    public Object setDisconnectCancelAllTime(Integer timeWindow) {
+        return executeSync(bybitApiService.setDisconnectCancelAllTime((timeWindow)));
+    }
+
+    @Override
+    public Object getBorrowQuota(TradeOrderRequest borrowQuotaRequest) {
+        return executeSync(bybitApiService.getBorrowQuota(
+                borrowQuotaRequest.getCategory().getProductTypeId(),
+                borrowQuotaRequest.getSymbol(),
+                borrowQuotaRequest.getTransactionSide() == null ? null : borrowQuotaRequest.getTransactionSide().getSide()
+        ));
+    }
+
+    @Override
+    public Object getHistoryOrderResult(TradeOrderRequest orderHistoryRequest) {
         return executeSync(bybitApiService.getHistoryOrderResult(
                 orderHistoryRequest.getCategory().getProductTypeId(),
                 orderHistoryRequest.getSymbol(),
@@ -229,30 +246,30 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object newOrder(NewOrderRequest order) {
-        return executeSync(bybitApiService.newOrder(
+    public Object createOrder(TradeOrderRequest order) {
+        return executeSync(bybitApiService.createOrder(
                 order.getCategory().getProductTypeId(),
                 order.getSymbol(),
                 order.getIsLeverage(),
-                order.getSide(),
-                order.getOrderType(),
+                order.getTransactionSide() == null ? null : order.getTransactionSide().getSide(),
+                order.getOrderType() == null ? null : order.getOrderType().getOType(),
                 order.getQty(),
                 order.getPrice(),
                 order.getTriggerDirection(),
                 order.getOrderFilter(),
                 order.getTriggerPrice(),
-                order.getTriggerBy(),
+                order.getTriggerBy() == null ? null : order.getTriggerBy().getTrigger(),
                 order.getOrderIv(),
-                order.getTimeInForce(),
-                order.getPositionIdx(),
+                order.getTimeInForce() == null ? null : order.getTimeInForce().getDescription(),
+                order.getPositionIdx() == null ? null : order.getPositionIdx().getIndex(),
                 order.getOrderLinkId(),
                 order.getTakeProfit(),
                 order.getStopLoss(),
-                order.getTpTriggerBy(),
-                order.getSlTriggerBy(),
+                order.getTpTriggerBy()== null ? null : order.getTpTriggerBy().getTrigger(),
+                order.getSlTriggerBy()== null ? null : order.getSlTriggerBy().getTrigger(),
                 order.getReduceOnly(),
                 order.getCloseOnTrigger(),
-                order.getSmpType(),
+                order.getSmpType() == null ? null : order.getSmpType().getDescription(),
                 order.getMmp(),
                 order.getTpslMode(),
                 order.getTpLimitPrice(),
@@ -263,7 +280,15 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object amendOrder(AmendOrderRequest order) {
+    public Object createBatchOrder(String category, List<TradeOrderRequest> order) {
+        return executeSync(bybitApiService.createBatchOrder(
+                category,
+                order
+        ));
+    }
+
+    @Override
+    public Object amendOrder(TradeOrderRequest order) {
         return executeSync(bybitApiService.amendOrder(
                 order.getCategory().getProductTypeId(),
                 order.getSymbol(),
@@ -284,7 +309,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object cancelOrder(CancelOrderRequest order) {
+    public Object cancelOrder(TradeOrderRequest order) {
         return executeSync(bybitApiService.cancelOrder(
                 order.getCategory().getProductTypeId(),
                 order.getSymbol(),
@@ -295,7 +320,19 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getOpenOrders(OpenOrderRequest order) {
+    public Object cancelAllOrder(TradeOrderRequest order) {
+        return executeSync(bybitApiService.cancelAllOrder(
+                order.getCategory().getProductTypeId(),
+                order.getSymbol(),
+                order.getBaseCoin(),
+                order.getSettleCoin(),
+                order.getOrderFilter(),
+                order.getStopOrderType() == null ? null : order.getStopOrderType().getDescription()
+        ));
+    }
+
+    @Override
+    public Object getOpenOrders(TradeOrderRequest order) {
         return executeSync(bybitApiService.getOpenOrders(
                 order.getCategory().getProductTypeId(),
                 order.getSymbol(),
