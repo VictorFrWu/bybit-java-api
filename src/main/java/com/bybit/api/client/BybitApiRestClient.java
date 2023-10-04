@@ -17,11 +17,14 @@ import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.*;
+import com.bybit.api.client.domain.trade.BatchOrderRequest;
 import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
+import retrofit2.Call;
+import retrofit2.http.Body;
 
 import java.util.List;
 
@@ -60,24 +63,6 @@ public interface BybitApiRestClient {
     Object getDeliveryPrice(MarketDataRequest deliveryPriceRequest);
 
     Object getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest);
-
-    // Trade
-    Object getHistoryOrderResult(TradeOrderRequest orderHistoryRequest);
-
-    Object setDisconnectCancelAllTime(Integer timeWindow);
-
-    Object getBorrowQuota(TradeOrderRequest borrowQuotaRequest);
-
-    Object getOpenOrders(TradeOrderRequest order);
-
-    Object createOrder(TradeOrderRequest order);
-    Object createBatchOrder(String category, List<TradeOrderRequest> order);
-
-    Object cancelOrder(TradeOrderRequest order);
-
-    Object cancelAllOrder(TradeOrderRequest order);
-
-    Object amendOrder(TradeOrderRequest order);
 
     // User
 

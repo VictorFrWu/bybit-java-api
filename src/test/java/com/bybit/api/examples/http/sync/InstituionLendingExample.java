@@ -3,7 +3,7 @@ package com.bybit.api.examples.http.sync;
 import com.bybit.api.client.BybitApiInsLendingRestClient;
 import com.bybit.api.client.domain.institution.InstitutionLoanOrdersRequest;
 import com.bybit.api.client.domain.institution.InstitutionRepayOrdersRequest;
-import com.bybit.api.client.impl.BybitApiClientFactory;
+import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class InstituionLendingExample {
     public static void main(String[] args) {

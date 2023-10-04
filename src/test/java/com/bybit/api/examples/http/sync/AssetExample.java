@@ -4,7 +4,7 @@ import com.bybit.api.client.constant.Util;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.request.*;
-import com.bybit.api.client.impl.BybitApiClientFactory;
+import com.bybit.api.client.service.BybitApiClientFactory;
 import com.bybit.api.client.BybitApiRestClient;
 
 public class AssetExample {

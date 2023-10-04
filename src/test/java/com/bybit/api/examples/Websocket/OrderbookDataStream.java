@@ -1,7 +1,7 @@
 package com.bybit.api.examples.Websocket;
 
 import com.bybit.api.client.config.BybitApiConfig;
-import com.bybit.api.client.impl.BybitApiClientFactory;
+import com.bybit.api.client.service.BybitApiClientFactory;
 import com.bybit.api.client.BybitApiWebSocketClient;
 
 /**

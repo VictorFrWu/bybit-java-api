@@ -1,9 +1,9 @@
-package com.bybit.api.client.impl;
+package com.bybit.api.client.service;
 
 
 import com.bybit.api.client.*;
 import com.bybit.api.client.config.BybitApiConfig;
-import com.bybit.api.client.service.BybitApiServiceGenerator;
+import com.bybit.api.client.impl.*;
 
 /**
  * A factory for creating BybitApi client objects.
@@ -123,5 +123,18 @@ public class BybitApiClientFactory {
      */
     public BybitApiInsLendingRestClient newInsLendingRestClient() {
         return new BybitInsLendingRestClientImpl();
+    }
+
+    /**
+     * Creates a new synchronous/blocking REST client to trading
+     */
+    public BybitApiTradeRestClient newTradeRestClient() {
+        return new BybitTradeRestClientImpl(apiKey, secret);
+    }
+    /**
+     * Creates a new asynchronous/non-blocking REST client to trading
+     */
+    public BybitApAsynciTradeRestClient newAsyncTradeRestClient() {
+        return new BybitTradeAsyncRestClientImpl(apiKey, secret);
     }
 }

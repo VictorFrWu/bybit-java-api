@@ -4,7 +4,7 @@ import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.DataRecordingPeriod;
 import com.bybit.api.client.domain.market.InstrumentStatus;
 import com.bybit.api.client.domain.market.MarketDataRequest;
-import com.bybit.api.client.impl.BybitApiClientFactory;
+import com.bybit.api.client.service.BybitApiClientFactory;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.BybitApiAsyncRestClient;
 

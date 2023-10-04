@@ -3,7 +3,7 @@ package com.bybit.api.examples.http.sync;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
-import com.bybit.api.client.impl.BybitApiClientFactory;
+import com.bybit.api.client.service.BybitApiClientFactory;
 import com.bybit.api.client.BybitApiRestClient;
 
 import java.util.Map;

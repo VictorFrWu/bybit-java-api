@@ -702,13 +702,75 @@ public interface BybitApiService {
      * Valid for linear
      * > slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
      * Valid for linear
-     * @param category
-     * @param requests
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear, option
+     * request	true	array	Object
+     * > symbol	true	string	Symbol name
+     * > side	true	string	Buy, Sell
+     * > orderType	true	string	Market, Limit
+     * > qty	true	string	Order quantity
+     * In particular, for linear, if you pass qty="0", you can close the whole position of current symbol
+     * > price	false	string	Order price
+     * Market order will ignore this field
+     * Please check the min price and price precision from instrument info endpoint
+     * If you have position, price needs to be better than liquidation price
+     * > triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
+     * 1: triggered when market price rises to triggerPrice
+     * 2: triggered when market price falls to triggerPrice
+     * Valid for linear
+     * > triggerPrice	false	string
+     * For futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
+     * triggerPrice > market price
+     * Else, triggerPrice < market price
+     * > triggerBy	false	string	Conditional order param. Trigger price type. LastPrice, IndexPrice, MarkPrice
+     * > orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
+     * > timeInForce	false	string	Time in force
+     * Market order will use IOC directly
+     * If not passed, GTC is used by default
+     * > positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps have hedge mode)
+     * 0: one-way mode
+     * 1: hedge-mode Buy side
+     * 2: hedge-mode Sell side
+     * > orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
+     * Futures & Perps: orderLinkId rules:
+     * optional param
+     * always unique
+     * option orderLinkId rules:
+     * required param
+     * always unique
+     * > takeProfit	false	string	Take profit price, valid for linear
+     * > stopLoss	false	string	Stop loss price, valid for linear
+     * > tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice.
+     * Valid for linear
+     * > slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice
+     * Valid for linear
+     * > reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
+     * You must specify it as true when you are about to close/reduce the position
+     * When reduceOnly is true, take profit/stop loss cannot be set
+     * Valid for linear, & option
+     * > closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
+     * Valid for linear
+     * > smpType	false	string	Smp execution type. What is SMP?
+     * > mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
+     * > tpslMode	false	string	TP/SL mode
+     * Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
+     * Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
+     * Valid for linear
+     * > tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
+     * Valid for linear
+     * > slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
+     * Valid for linear
+     * > tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
+     * Valid for linear
+     * > slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
+     * Valid for linear
+     * @param batchOrderRequest
      * @return
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create-batch")
-    Call<Object> createBatchOrder(@Query("category") String category, @Query("request") List<TradeOrderRequest> requests);
+    Call<Object> createBatchOrder(@Body BatchOrderRequest batchOrderRequest);
 
     /**
      * Cancel Order
@@ -735,6 +797,35 @@ public interface BybitApiService {
                              @Query("orderId") String orderId,
                              @Query("orderLinkId") String orderLinkId,
                              @Query("orderFilter") String orderFilter);
+
+    /**
+     * Batch Cancel Order
+     * This endpoint allows you to cancel more than one open order in a single request.
+     * <p>
+     * Covers: Option (UTA, UTA Pro) / USDT Perpetual, UDSC Perpetual, USDC Futures (UTA Pro)
+     * <p>
+     * IMPORTANT
+     * You must specify orderId or orderLinkId.
+     * If orderId and orderLinkId is not matched, the system will process orderId first.
+     * You can cancel unfilled or partially filled orders.
+     * A maximum of 20 orders (option) & 10 orders (linear) can be cancelled per request.
+     * HTTP Request
+     * POST /v5/order/cancel-batch
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear, option
+     * request	true	array	Object
+     * > symbol	true	string	Symbol name
+     * > orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     * > orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/batch-cancel">...</a>
+     * @param batchOrderRequest
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/order/cancel-batch")
+    Call<Object> cancelBatchOrder(@Body BatchOrderRequest batchOrderRequest);
 
     /**
      * Cancel All Orders
@@ -855,6 +946,47 @@ public interface BybitApiService {
                             @Query("triggerBy") TriggerBy triggerBy,
                             @Query("tpLimitPrice") String tpLimitPrice,
                             @Query("slLimitPrice") String slLimitPrice);
+
+    /**
+     * Batch Amend Order
+     * Covers: Option (UTA, UTA Pro) / USDT Perpetual, UDSC Perpetual, USDC Futures (UTA Pro)
+     * <p>
+     * TIP
+     * This endpoint allows you to amend more than one open order in a single request.
+     * <p>
+     * You can modify unfilled or partially filled orders. Conditional orders are not supported.
+     * A maximum of 20 orders (option) & 10 orders (linear) can be amended per request.
+     * HTTP Request
+     * POST /v5/order/amend-batch
+     * <p>
+     * <a href="https://bybit-exchange.github.io/docs/v5/order/batch-amend">...</a>
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear, option
+     * request	true	array	Object
+     * > symbol	true	string	Symbol name
+     * > orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     * > orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     * > orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
+     * > triggerPrice	false	string	If you expect the price to rise to trigger your conditional order, make sure:
+     * triggerPrice > market price
+     * Else, triggerPrice < market price
+     * > qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
+     * > price	false	string	Order price after modification. Do not pass it if not modify the price
+     * > takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
+     * > stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
+     * > tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
+     * > slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
+     * > triggerBy	false	string	Trigger price type
+     * > tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
+     * > slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
+     * @param batchOrderRequest
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/order/amend-batch")
+    Call<Object> amendBatchOrder(@Body BatchOrderRequest batchOrderRequest);
 
     // User
     /*

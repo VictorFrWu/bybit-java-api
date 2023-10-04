@@ -5,7 +5,7 @@ import java.util.List;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Utility class
  */
@@ -56,5 +56,14 @@ public final class Util {
     {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
+    }
+
+    public static String convertMapToJson(Map<String, Object> map) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(map);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert map to JSON", e);
+        }
     }
 }
