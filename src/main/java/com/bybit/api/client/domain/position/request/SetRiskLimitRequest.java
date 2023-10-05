@@ -12,46 +12,17 @@
  */
 package com.bybit.api.client.domain.position.request;
 
-
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 @Getter
 @Setter
 @ToString
+@Builder
 public class SetRiskLimitRequest {
-    private final String category;
-    private final String symbol;
-    private final int riskId;
-    private final Integer positionIdx;
-
-    private SetRiskLimitRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.riskId = builder.riskId;
-        this.positionIdx = builder.positionIdx;
-    }
-
-    public static class Builder {
-        private final String category;
-        private final String symbol;
-        private final int riskId;
-        private Integer positionIdx;
-
-        public Builder(String category, String symbol, int riskId) {
-            this.category = category;
-            this.symbol = symbol;
-            this.riskId = riskId;
-        }
-
-        public Builder positionIdx(Integer positionIdx) {
-            this.positionIdx = positionIdx;
-            return this;
-        }
-
-        public SetRiskLimitRequest build() {
-            return new SetRiskLimitRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private Integer riskId;
+    private Integer positionIdx;
 }

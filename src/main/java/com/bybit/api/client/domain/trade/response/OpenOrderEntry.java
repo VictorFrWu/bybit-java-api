@@ -1,6 +1,7 @@
 package com.bybit.api.client.domain.trade.response;
 
 import com.bybit.api.client.constant.BybitApiConstants;
+import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.domain.trade.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

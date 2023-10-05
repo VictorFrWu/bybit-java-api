@@ -8,21 +8,16 @@ import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
-import com.bybit.api.client.domain.market.request.*;
-import com.bybit.api.client.domain.position.request.*;
+import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.*;
-import com.bybit.api.client.domain.trade.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
-import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
 import com.bybit.api.client.BybitApiService;
-
-import java.util.List;
+import com.bybit.api.client.service.JsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
@@ -33,6 +28,7 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
  */
 public class BybitApiRestClientImpl implements BybitApiRestClient {
     private final BybitApiService bybitApiService;
+    private final JsonConverter converter = new JsonConverter();
 
     public BybitApiRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);
@@ -266,7 +262,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     // Position endpoints
 
     @Override
-    public Object getPositionInfo(PositionListRequest positionListRequest) {
+    public Object getPositionInfo(PositionDataRequest positionListRequest) {
         return executeSync(bybitApiService.getPositionInfo(
                 positionListRequest.getCategory().getProductTypeId(),
                 positionListRequest.getSymbol(),
@@ -278,47 +274,55 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object setPositionLeverage(SetLeverageRequest setLeverageRequest) {
+    public Object setPositionLeverage(PositionDataRequest positionDataRequest) {
+        var setLeverageRequest = converter.mapToSetLeverageRequest(positionDataRequest);
         return executeSync(bybitApiService.setPositionLeverage(setLeverageRequest));
     }
 
     @Override
-    public Object swithMarginRequest(SwitchMarginRequest switchMarginRequest) {
+    public Object swithMarginRequest(PositionDataRequest positionDataRequest) {
+        var switchMarginRequest = converter.mapToSwitchMarginRequest(positionDataRequest);
         return executeSync(bybitApiService.swithMarginRequest(switchMarginRequest));
     }
 
     @Override
-    public Object switchPositionMode(SwitchPositionModeRequest switchPositionModeRequest) {
+    public Object switchPositionMode(PositionDataRequest positionDataRequest) {
+        var switchPositionModeRequest = converter.mapToSwitchPositionModeRequest(positionDataRequest);
         return executeSync(bybitApiService.switchPositionMode(switchPositionModeRequest));
     }
 
     @Override
-    public Object setTpslMode(SetTpSlModeRequest setTpSlModeRequest) {
+    public Object setTpslMode(PositionDataRequest positionDataRequest) {
+        var setTpSlModeRequest = converter.mapToSetTpSlModeRequest(positionDataRequest);
         return executeSync(bybitApiService.setTpslMode(setTpSlModeRequest));
     }
 
     @Override
-    public Object setRiskLimit(SetRiskLimitRequest setRiskLimitRequest) {
+    public Object setRiskLimit(PositionDataRequest positionDataRequest) {
+        var setRiskLimitRequest = converter.mapToSetRiskLimitRequest(positionDataRequest);
         return executeSync(bybitApiService.setRiskLimit(setRiskLimitRequest));
     }
 
     @Override
-    public Object setTradingStop(TradingStopRequest tradingStopRequest) {
+    public Object setTradingStop(PositionDataRequest positionDataRequest) {
+        var tradingStopRequest = converter.mapToTradingStopRequest(positionDataRequest);
         return executeSync(bybitApiService.setTradingStop(tradingStopRequest));
     }
 
     @Override
-    public Object setAutoAddMargin(SetAutoAddMarginRequest setAutoAddMarginRequest) {
+    public Object setAutoAddMargin(PositionDataRequest positionDataRequest) {
+        var setAutoAddMarginRequest = converter.mapToSetAutoAddMarginRequest(positionDataRequest);
         return executeSync(bybitApiService.setAutoAddMargin(setAutoAddMarginRequest));
     }
 
     @Override
-    public Object modifyPositionMargin(ModifyMarginRequest modifyMarginRequest) {
+    public Object modifyPositionMargin(PositionDataRequest positionDataRequest) {
+        var modifyMarginRequest = converter.mapToModifyMarginRequest(positionDataRequest);
         return executeSync(bybitApiService.modifyPositionMargin(modifyMarginRequest));
     }
 
     @Override
-    public Object getExecutionList(ExecutionHistoryRequest executionHistoryRequest) {
+    public Object getExecutionList(PositionDataRequest executionHistoryRequest) {
         return executeSync(bybitApiService.getExecutionList(
                 executionHistoryRequest.getCategory().getProductTypeId(),
                 executionHistoryRequest.getSymbol(),
@@ -333,9 +337,8 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
         ));
     }
 
-
     @Override
-    public Object getClosePnlList(ClosePnlHistoryRequest closePnlHistoryRequest) {
+    public Object getClosePnlList(PositionDataRequest closePnlHistoryRequest) {
         return executeSync(bybitApiService.getClosePnlList(
                 closePnlHistoryRequest.getCategory().getProductTypeId(),
                 closePnlHistoryRequest.getSymbol(),

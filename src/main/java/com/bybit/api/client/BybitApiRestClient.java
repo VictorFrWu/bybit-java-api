@@ -1,32 +1,21 @@
 package com.bybit.api.client;
 
 import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.institution.InstitutionLoanOrdersRequest;
-import com.bybit.api.client.domain.institution.InstitutionRepayOrdersRequest;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
-import com.bybit.api.client.domain.market.MarketInterval;
-import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.domain.market.request.*;
+import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.*;
-import com.bybit.api.client.domain.trade.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
-import com.bybit.api.client.domain.trade.requests.*;
 import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.SubUserRequest;
-import retrofit2.Call;
-import retrofit2.http.Body;
-
-import java.util.List;
 
 public interface BybitApiRestClient {
     // Market Data
@@ -64,253 +53,45 @@ public interface BybitApiRestClient {
 
     Object getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest);
 
-    // User
+    // Position Data
+    Object getPositionInfo(PositionDataRequest positionListRequest);
 
-    /**
-     * Get the information of the api key. Use the api key pending to be checked to call the endpoint. Both master and sub user's api key are applicable.
-     * <p>
-     * TIP
-     * Any permission can access this endpoint.
-     *
-     * @return
-     */
+    Object setPositionLeverage(PositionDataRequest setLeverageRequest);
+
+    Object swithMarginRequest(PositionDataRequest switchMarginRequest);
+
+    Object switchPositionMode(PositionDataRequest switchPositionModeRequest);
+
+    Object setTpslMode(PositionDataRequest setTpSlModeRequest);
+
+    Object setRiskLimit(PositionDataRequest setRiskLimitRequest);
+
+    Object setTradingStop(PositionDataRequest tradingStopRequest);
+
+    Object setAutoAddMargin(PositionDataRequest setAutoAddMarginRequest);
+
+    Object modifyPositionMargin(PositionDataRequest modifyMarginRequest);
+
+    Object getExecutionList(PositionDataRequest executionHistoryRequest);
+
+    Object getClosePnlList(PositionDataRequest closePnlHistoryRequest);
+
+    // User
     Object getCurrentAPIKeyInfo();
 
-    /**
-     * Get all sub uid of master account. Use master user's api key only.
-     * <p>
-     * TIP
-     * The API key must have one of the below permissions in order to call this endpoint..
-     * <p>
-     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
-     */
     Object getSubUIDList();
 
-    /**
-     * Create a new sub user id. Use master user's api key only.
-     * <p>
-     * TIP
-     * The API key must have one of the below permissions in order to call this endpoint..
-     * <p>
-     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
-     */
     Object createSubMember(SubUserRequest subUserRequest);
 
-    /**
-     * To create new API key for those newly created sub UID. Use master user's api key only.
-     * <p>
-     * TIP
-     * The API key must have one of the below permissions in order to call this endpoint..
-     * <p>
-     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
-     */
     Object createSubAPI(ApiKeyRequest apiKeyRequest);
 
-    /**
-     * Freeze Sub UID. Use master user's api key only.
-     * <p>
-     * TIP
-     * The API key must have one of the below permissions in order to call this endpoint..
-     * <p>
-     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
-     */
     Object freezeSubMember(FreezeSubUIDRquest freezeSubUIDRquest);
 
-    /**
-     * Get available wallet types for the master account or sub account
-     * <p>
-     * TIP
-     * Master api key: you can get master account and appointed sub account available wallet types, and support up to 200 sub uid in one request.
-     * Sub api key: you can get its own available wallet types
-     * PRACTICE
-     * "FUND" - If you never deposit or transfer capital into it, this wallet type will not be shown in the array, but your account indeed has this wallet.
-     * <p>
-     * ["SPOT","OPTION","FUND","CONTRACT"] : Normal account and Funding wallet was operated before
-     * ["SPOT","OPTION","CONTRACT"] : Normal account and Funding wallet is never operated
-     * ["SPOT","UNIFIED","FUND","CONTRACT"] : UMA account and Funding wallet was operated before. (No UMA account after we forced upgrade to UTA)
-     * ["SPOT","UNIFIED","CONTRACT"] : UMA account and Funding wallet is never operated. (No UMA account after we forced upgrade to UTA)
-     * ["UNIFIED""FUND","CONTRACT"] : UTA account and Funding wallet was operated before.
-     * ["UNIFIED","CONTRACT"] : UTA account and Funding wallet is never operated.
-     */
     Object getUIDWalletType(String memberIds);
 
     Object getUIDWalletType();
 
-    /**
-     * Get Affiliate User Info
-     * This API is used for affiliate to get their users information
-     * <p>
-     * TIP
-     * Use master UID only
-     * The api key can only have "Affiliate" permission
-     * The transaction volume and deposit amount are the total amount of the user done on Bybit, and have nothing to do with commission settlement.
-     * Any transaction volume data related to commission settlement is subject to the Affiliate Portal.
-     */
     Object getAffiliateUserInfo(String uid);
-
-    // Position Data
-
-    /**
-     * Get Position Info
-     * Query real-time position data, such as position size, cumulative realizedPNL.
-     * <p>
-     * Unified account covers: USDT perpetual / USDC contract / Inverse contract / Options
-     * Normal account covers: USDT perpetual / Inverse contract
-     *
-     * @param positionListRequest
-     * @return
-     */
-    Object getPositionInfo(PositionListRequest positionListRequest);
-
-    /**
-     * Set Leverage
-     * Set the leverage
-     * <p>
-     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     *
-     * @param setLeverageRequest
-     * @return
-     */
-    Object setPositionLeverage(SetLeverageRequest setLeverageRequest);
-
-    /**
-     * Switch Cross/Isolated Margin
-     * Select cross margin mode or isolated margin mode per symbol level
-     * <p>
-     * Unified account covers: Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     *
-     * @param switchMarginRequest
-     * @return
-     */
-    Object swithMarginRequest(SwitchMarginRequest switchMarginRequest);
-
-    /**
-     * Switch Position Mode
-     * It supports to switch the position mode for USDT perpetual and Inverse futures. If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
-     * <p>
-     * Unified account covers: USDT perpetual / Inverse Futures
-     * Normal account covers: USDT perpetual / Inverse Futures
-     * <p>
-     * TIP
-     * Priority for configuration to take effect: symbol > coin > system default     * : one-way mode
-     * If the request is by coin (settleCoin), then all symbols based on this setteCoin that do not have position and open order will be batch switched, and new listed symbol based on this settleCoin will be the same mode you set.
-     *
-     * @param switchPositionModeRequest
-     * @return
-     */
-    Object switchPositionMode(SwitchPositionModeRequest switchPositionModeRequest);
-
-    /**
-     * Set TP/SL Mode
-     * TIP
-     * To some extent, this endpoint is depreciated because now tpsl is based on order level. This API was used for position level change before.
-     * <p>
-     * However, you still can use it to set an implicit tpsl mode for a certain symbol because when you don't pass "tpslMode" in the place order or trading stop request, system will get the tpslMode by the default setting.
-     * <p>
-     * Set TP/SL mode to Full or Partial
-     * <p>
-     * Unified account covers: USDT perpetual / Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     * <p>
-     * INFO
-     * For partial TP/SL mode, you can set the TP/SL size smaller than position size.
-     *
-     * @param setTpSlModeRequest
-     * @return
-     */
-    Object setTpslMode(SetTpSlModeRequest setTpSlModeRequest);
-
-    /**
-     * Set Risk Limit
-     * The risk limit will limit the maximum position value you can hold under different margin requirements. If you want to hold a bigger position size, you need more margin. This interface can set the risk limit of a single position. If the order exceeds the current risk limit when placing an order, it will be rejected. Click here to learn more about risk limit.
-     * <p>
-     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     * <p>
-     * TIP
-     * Set the risk limit of the position. You can get risk limit information for each symbol here.
-     *
-     * @param setRiskLimitRequest
-     * @return
-     */
-    Object setRiskLimit(SetRiskLimitRequest setRiskLimitRequest);
-
-    /**
-     * Set Trading Stop
-     * Set the take profit, stop loss or trailing stop for the position.
-     * <p>
-     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     * <p>
-     * TIP
-     * Passing these parameters will create conditional orders by the system internally. The system will cancel these orders if the position is closed, and adjust the qty according to the size of the open position.
-     * <p>
-     * INFO
-     * New version of TP/SL function supports both holding entire position TP/SL orders and holding partial position TP/SL orders.
-     * <p>
-     * Full position TP/SL orders: This API can be used to modify the parameters of existing TP/SL orders.
-     * Partial position TP/SL orders: This API can only add partial position TP/SL orders.
-     * NOTE
-     * Under the new version of Tp/SL function, when calling this API to perform one-sided take profit or stop loss modification on existing TP/SL orders on the holding position, it will cause the paired tp/sl orders to lose binding relationship. This means that when calling the cancel API through the tp/sl order ID, it will only cancel the corresponding one-sided take profit or stop loss order ID.
-     *
-     * @param tradingStopRequest
-     * @return
-     */
-    Object setTradingStop(TradingStopRequest tradingStopRequest);
-
-    /**
-     * Set Auto Add Margin
-     * Turn on/off auto-add-margin for isolated margin position
-     * <p>
-     * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     *
-     * @param setAutoAddMarginRequest
-     * @return
-     */
-    Object setAutoAddMargin(SetAutoAddMarginRequest setAutoAddMarginRequest);
-
-    /**
-     * Add Or Reduce Margin
-     * Manually add or reduce margin for isolated margin position
-     * <p>
-     * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     *
-     * @param modifyMarginRequest
-     * @return
-     */
-    Object modifyPositionMargin(ModifyMarginRequest modifyMarginRequest);
-
-    /**
-     * Get Execution
-     * Query users' execution records, sorted by execTime in descending order. However, for Normal spot, they are sorted by execId in descending order.
-     * <p>
-     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
-     * Normal account covers: Spot / USDT perpetual / Inverse contract
-     * <p>
-     * TIP
-     * You may have multiple executions in a single order.
-     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
-     *
-     * @param executionHistoryRequest
-     * @return
-     */
-    Object getExecutionList(ExecutionHistoryRequest executionHistoryRequest);
-
-    /**
-     * Get Closed PnL
-     * Query user's closed profit and loss records. The results are sorted by createdTime in descending order.
-     * <p>
-     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
-     * Normal account covers: USDT perpetual / Inverse contract
-     *
-     * @param closePnlHistoryRequest
-     * @return
-     */
-    Object getClosePnlList(ClosePnlHistoryRequest closePnlHistoryRequest);
 
     // Pre Upgrade
 
@@ -732,7 +513,7 @@ public interface BybitApiRestClient {
     /**
      * Toggle Margin Trade
      * Turn on / off spot margin trade
-     *
+     * <p>
      * Covers: Margin trade (Normal Account)
      *
      * @param switchStatus
@@ -752,14 +533,16 @@ public interface BybitApiRestClient {
     /**
      * Repay
      * Covers: Margin trade (Normal Account)
+     *
      * @param spotMarginTradeRePayRequest
      * @return
      */
     Object repayNormalSpotMarginTrade(SpotMarginTradeRePayRequest spotMarginTradeRePayRequest);
 
     /**
-     *Get Borrow Order Detail
+     * Get Borrow Order Detail
      * Covers: Margin trade (Normal Account)
+     *
      * @param spotMarginTradeBorrowOrdersRequest
      * @return
      */
@@ -768,6 +551,7 @@ public interface BybitApiRestClient {
     /**
      * Get Repayment Order Detail
      * Covers: Margin trade (Normal Account)
+     *
      * @param spotMarginTradeRepayOrdersRequest
      * @return
      */
@@ -781,6 +565,7 @@ public interface BybitApiRestClient {
      * Use exchange broker master account to query
      * The data can support up to past 6 months until T-1
      * startTime & endTime are either entered at the same time or not entered
+     *
      * @param brokerEarningRequest
      * @return
      */
@@ -791,22 +576,25 @@ public interface BybitApiRestClient {
     /**
      * Get Lending Coin Info
      * Get the basic information of lending coins
-     *
+     * <p>
      * INFO
      * All v5/lending APIs need SPOT permission.
+     *
      * @param coin
      * @return
      */
     Object getC2CLendingCoinInfo(String coin);
+
     Object getC2CLendingCoinInfo();
 
     /**
      * Deposit Funds
      * Lending funds to Bybit asset pool
-     *
+     * <p>
      * INFO
      * normal & UMA account: deduct funds from Spot wallet
      * UTA account: deduct funds from Unified wallet
+     *
      * @param despoitFundRequest
      * @return
      */
@@ -815,9 +603,10 @@ public interface BybitApiRestClient {
     /**
      * Redeem Funds
      * Withdraw funds from the Bybit asset pool.
-     *
+     * <p>
      * TIP
      * There will be two redemption records: one for the redeemed quantity, and the other one is for the total interest occurred.
+     *
      * @param despoitFundRequest
      * @return
      */
@@ -836,7 +625,7 @@ public interface BybitApiRestClient {
      * Get Lending Account Info
      * HTTP Request
      * GET /v5/lending/account
-     *
+     * <p>
      * Request Parameters
      * Parameter	Required	Type	Comments
      * coin	true	string	Coin name
@@ -847,6 +636,7 @@ public interface BybitApiRestClient {
      * principalQty	string	Leftover quantity you can redeem for today (measured from 0 - 24 UTC)
      * principalTotal	string	Total amount redeemable by user
      * quantity	string	Current deposit quantity
+     *
      * @param coin
      * @return
      */
@@ -857,12 +647,13 @@ public interface BybitApiRestClient {
     /**
      * Get Coin Exchange Records
      * Query the coin exchange records.
-     *
+     * <p>
      * INFO
      * This endpoint currently is not available to get data after 12 Mar 2023. We will make it fully available later.
-     *
+     * <p>
      * CAUTION
      * You may have a long delay of this endpoint.
+     *
      * @param coinExchangeRecordsRequest
      * @return
      */
@@ -871,8 +662,9 @@ public interface BybitApiRestClient {
     /**
      * Get Delivery Record
      * Query delivery records of USDC futures and Options, sorted by deliveryTime in descending order
-     *
+     * <p>
      * Unified account covers: USDC futures / Option
+     *
      * @param deliveryRecordsRequest
      * @return
      */
@@ -881,8 +673,9 @@ public interface BybitApiRestClient {
     /**
      * Get USDC Session Settlement
      * Query session settlement records of USDC perpetual and futures
-     *
+     * <p>
      * Unified account covers: USDC perpetual / USDC futures
+     *
      * @param usdcSettlementRequest
      * @return
      */
@@ -891,9 +684,10 @@ public interface BybitApiRestClient {
     /**
      * Get Asset Info
      * Query asset information
-     *
+     * <p>
      * INFO
      * For now, it can query SPOT only.
+     *
      * @param assetInfoRequest
      * @return
      */
@@ -902,9 +696,10 @@ public interface BybitApiRestClient {
     /**
      * Get All Coins Balance
      * You could get all coin balance of all account types under the master account, and sub account.
-     *
+     * <p>
      * IMPORTANT
      * It is not allowed to get master account coin balance via sub account api key.
+     *
      * @param allCoinsBalanceRequest
      * @return
      */
@@ -913,6 +708,7 @@ public interface BybitApiRestClient {
     /**
      * Get Transferable Coin
      * Query the transferable coin list between each account type
+     *
      * @param fromAccountType
      * @param toAccountType
      * @return
@@ -922,11 +718,12 @@ public interface BybitApiRestClient {
     /**
      * Get Single Coin Balance
      * Query the balance of a specific coin in a specific account type. Supports querying sub UID's balance. Also, you can check the transferable amount from master to sub account, sub to master account or sub to sub account, especially for user who has INS loan.
-     *
+     * <p>
      * INFO
      * Sub account cannot query master account balance
      * Sub account can only check its own balance
      * Master account can check its own and its sub uids balance
+     *
      * @param singleCoinBalanceRequest
      * @return
      */
@@ -935,12 +732,13 @@ public interface BybitApiRestClient {
     /**
      * Create Internal Transfer
      * Create the internal transfer between different account types under the same UID.
-     *
+     * <p>
      * TIP
      * Each account type has its own acceptable coins, e.g, you cannot transfer USDC from SPOT to CONTRACT. Please refer to transferable coin list API to find out more.
-     *
+     * <p>
      * HTTP Request
      * POST /v5/asset/transfer/inter-transfer
+     *
      * @param assetInternalTransferRequest
      * @return
      */
@@ -949,9 +747,10 @@ public interface BybitApiRestClient {
     /**
      * Get Sub UID
      * Query the sub UIDs under a main UID
-     *
+     * <p>
      * CAUTION
      * Can query by the master UID's api key only
+     *
      * @return
      */
     Object getAssetTransferSubUidList();
@@ -959,13 +758,14 @@ public interface BybitApiRestClient {
     /**
      * Create Universal Transfer
      * Transfer between sub-sub or main-sub.
-     *
+     * <p>
      * CAUTION
      * Can use master or sub acct api key to request
      * To use sub acct api key, it must have "SubMemberTransferList" permission
      * When use sub acct api key, it can only transfer to main account
      * If you encounter errorCode: 131228 and msg: your balance is not enough, please go to Get Single Coin Balance to check transfer safe amount.
      * You can not transfer between the same UID
+     *
      * @param assetUniversalTransferRequest
      * @return
      */
@@ -974,6 +774,7 @@ public interface BybitApiRestClient {
     /**
      * Get Internal Transfer Records
      * Query the internal transfer records between different account types under the same UID.
+     *
      * @param internalTransferRequest
      * @return
      */
@@ -982,11 +783,12 @@ public interface BybitApiRestClient {
     /**
      * Get Universal Transfer Records
      * Query universal transfer records
-     *
+     * <p>
      * TIP
      * Main acct api key or Sub acct api key are both supported
      * Main acct api key needs "SubMemberTransfer" permission
      * Sub acct api key needs "SubMemberTransferList" permission
+     *
      * @param universalTransferRequest
      * @return
      */
@@ -995,9 +797,10 @@ public interface BybitApiRestClient {
     /**
      * Get Allowed Deposit Coin Info
      * Query allowed deposit coin information. To find out paired chain of coin, please refer coin info api.
-     *
+     * <p>
      * TIP
      * This is an endpoint that does not need authentication
+     *
      * @param allowedDepositCoinRequest
      * @return
      */
@@ -1006,7 +809,7 @@ public interface BybitApiRestClient {
     /**
      * HTTP Request
      * POST /v5/asset/deposit/deposit-to-account
-     *
+     * <p>
      * Request Parameters
      * Parameter	Required	Type	Comments
      * accountType	true	string	Account type
@@ -1020,6 +823,7 @@ public interface BybitApiRestClient {
      * status	integer	Request result:
      * 1: SUCCESS
      * 0: FAIL
+     *
      * @param accountType
      * @return
      */
@@ -1028,10 +832,11 @@ public interface BybitApiRestClient {
     /**
      * Get Deposit Records (on-chain)
      * Query deposit records.
-     *
+     * <p>
      * TIP
      * endTime - startTime should be less than 30 days. Query last 30 days records by default.
      * Can use main or sub UID api key to query deposit records respectively.
+     *
      * @param assetDepositRecordsRequest
      * @return
      */
@@ -1040,9 +845,10 @@ public interface BybitApiRestClient {
     /**
      * Get Sub Deposit Records (on-chain)
      * Query subaccount's deposit records by main UID's API key.
-     *
+     * <p>
      * TIP
      * endTime - startTime should be less than 30 days. Queries for the last 30 days worth of records by default.
+     *
      * @param assetDepositRecordsRequest
      * @return
      */
@@ -1051,10 +857,11 @@ public interface BybitApiRestClient {
     /**
      * Get Internal Deposit Records (off-chain)
      * Query deposit records within the Bybit platform. These transactions are not on the blockchain.
-     *
+     * <p>
      * RULES
      * The maximum difference between the start time and the end time is 30 days.
      * Support to get deposit records by Master or Sub Member Api Key
+     *
      * @param assetDepositRecordsRequest
      * @return
      */
@@ -1065,6 +872,7 @@ public interface BybitApiRestClient {
     Object getAssetSubMemberDepositAddress(AssetDepositRequest subDepositRequest);
 
     Object getAssetCoinInfo();
+
     Object getAssetCoinInfo(String coin);
 
     Object getAssetWithdrawalAmount(String coin);

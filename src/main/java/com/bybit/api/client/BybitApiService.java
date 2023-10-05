@@ -1,7 +1,7 @@
 package com.bybit.api.client;
 
 import com.bybit.api.client.constant.BybitApiConstants;
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.asset.request.AssetInternalTransferRequest;
@@ -17,8 +17,6 @@ import com.bybit.api.client.domain.user.request.ApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import retrofit2.Call;
 import retrofit2.http.*;
-
-import java.util.List;
 
 /**
  * Bybit's REST API URL mappings and endpoint security configuration.
@@ -1032,6 +1030,43 @@ public interface BybitApiService {
             @Body FreezeSubUIDRquest freezeSubUIDRquest);
 
     // Position Data endpoints
+
+    /**
+     * Get Position Info
+     * Query real-time position data, such as position size, cumulative realizedPNL.
+     * <p>
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract / Options
+     * Classic account covers: USDT perpetual / Inverse contract
+     * <p>
+     * INFO
+     * Regarding inverse contracts,
+     * <p>
+     * you can query all holding positions with "/v5/position/list?category=inverse";
+     * symbol parameter is supported to be passed with multiple symbols up to 10
+     * HTTP Request
+     * GET /v5/position/list
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse, option
+     * Classic account: linear, inverse
+     * symbol	false	string	Symbol name
+     * If symbol passed, it returns data regardless of having position or not.
+     * If symbol=null and settleCoin specified, it returns position size greater than zero.
+     * baseCoin	false	string	Base coin. option only. Return all option positions if not passed
+     * settleCoin	false	string	Settle coin. For linear, either symbol or settleCoin is required. symbol has a higher priority
+     * limit	false	integer	Limit for data size per page. [1, 200]. Default: 20
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * <a href="https://bybit-exchange.github.io/docs/v5/position">...</a>
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param settleCoin
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/position/list")
     Call<Object> getPositionInfo(@Query("category") String category,
@@ -1041,46 +1076,336 @@ public interface BybitApiService {
                                  @Query("limit") Integer limit,
                                  @Query("cursor") String cursor);
 
+    /**
+     * Set Leverage
+     * Set the leverage
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     *
+     * HTTP Request
+     * POST /v5/position/set-leverage
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse
+     * Classic account: linear, inverse. Please note that category is not involved with business logic
+     * symbol	true	string	Symbol name
+     * buyLeverage	true	string	[1, max leverage of corresponding risk limit]
+     * Classic account: under one-way mode, buyLeverage must be the same as sellLeverage
+     * Unified account: buyLeverage must be the same as sellLeverage all the time
+     * sellLeverage	true	string	[1, max leverage of corresponding risk limit]
+     * Classic account: under one-way mode, buyLeverage must be the same as sellLeverage
+     * Unified account: buyLeverage must be the same as sellLeverage all the time
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/leverage">...</a>
+     * @param setLeverageRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-leverage")
     Call<Object> setPositionLeverage(
             @Body SetLeverageRequest setLeverageRequest);
 
+    /**
+     * Switch Cross/Isolated Margin
+     * Select cross margin mode or isolated margin mode per symbol level
+     *
+     * Unified account covers: Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     *
+     * HTTP Request
+     * POST /v5/position/switch-isolated
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: inverse
+     * Classic account: linear, inverse. Please note that category is not involved with business logic
+     * symbol	true	string	Symbol name
+     * tradeMode	true	integer	0: cross margin. 1: isolated margin
+     * buyLeverage	true	string	The value must be equal to sellLeverage value
+     * sellLeverage	true	string	The value must be equal to buyLeverage value
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/cross-isolate">...</a>
+     * @param switchMarginRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/switch-isolated")
     Call<Object> swithMarginRequest(
             @Body SwitchMarginRequest switchMarginRequest);
 
+    /**
+     * Switch Position Mode
+     * It supports to switch the position mode for USDT perpetual and Inverse futures. If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
+     *
+     * Unified account covers: USDT perpetual / Inverse Futures
+     * Classic account covers: USDT perpetual / Inverse Futures
+     *
+     * TIP
+     * Priority for configuration to take effect: symbol > coin > system default
+     * System default: one-way mode
+     * If the request is by coin (settleCoin), then all symbols based on this setteCoin that do not have position and open order will be batch switched, and new listed symbol based on this settleCoin will be the same mode you set.
+     * Example
+     * System default	coin	symbol
+     * Initial setting	one-way	never configured	never configured
+     * Result	All USDT perpetual trading pairs are one-way mode
+     * Change 1	-	-	Set BTCUSDT to hedge-mode
+     * Result	BTCUSDT becomes hedge-mode, and all other symbols keep one-way mode
+     * list new symbol ETHUSDT	ETHUSDT is one-way mode （inherit default rules）
+     * Change 2	-	Set USDT to hedge-mode	-
+     * Result	All current trading pairs with no positions or orders are hedge-mode, and no adjustments will be made for trading pairs with positions and orders
+     * list new symbol SOLUSDT	SOLUSDT is hedge-mode (Inherit coin rule)
+     * Change 3	-	-	Set ASXUSDT to one-mode
+     * Take effect result	AXSUSDT is one-way mode, other trading pairs have no change
+     * list new symbol BITUSDT	BITUSDT is hedge-mode (Inherit coin rule)
+     * The position-switch ability for each contract
+     * Classic account	Unified account
+     * USDT perpetual	Support one-way & hedge-mode	Support one-way & hedge-mode
+     * USDC perpetual	Support one-way only	Support one-way only
+     * Inverse perpetual	Support one-way only	Support one-way only
+     * Inverse future	Support one-way & hedge-mode	Support one-way & hedge-mode
+     * HTTP Request
+     * POST /v5/position/switch-mode
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, USDT Perp; inverse, Inverse Futures
+     * Classic account: linear, USDT Perp; inverse, Inverse Futures. Please note that category is not involved with business logic
+     * symbol	false	string	Symbol name. Either symbol or coin is required. symbol has a higher priority
+     * coin	false	string	Coin
+     * mode	true	integer	Position mode. 0: Merged Single. 3: Both Sides
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/position-mode">...</a>
+     * @param switchPositionModeRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/switch-mode")
     Call<Object> switchPositionMode(
             @Body SwitchPositionModeRequest switchPositionModeRequest);
 
+    /**
+     * Set TP/SL Mode
+     * TIP
+     * To some extent, this endpoint is depreciated because now tpsl is based on order level. This API was used for position level change before.
+     *
+     * However, you still can use it to set an implicit tpsl mode for a certain symbol because when you don't pass "tpslMode" in the place order or trading stop request, system will get the tpslMode by the default setting.
+     *
+     * Set TP/SL mode to Full or Partial
+     *
+     * Unified account covers: USDT perpetual / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     *
+     * INFO
+     * For partial TP/SL mode, you can set the TP/SL size smaller than position size.
+     *
+     * HTTP Request
+     * POST /v5/position/set-tpsl-mode
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse
+     * Classic account: linear, inverse. Please note that category is not involved with business logic
+     * symbol	true	string	Symbol name
+     * tpSlMode	true	string	TP/SL mode. Full,Partial
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/tpsl-mode">...</a>
+     * @param setTpSlModeRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-tpsl-mode")
     Call<Object> setTpslMode(
             @Body SetTpSlModeRequest setTpSlModeRequest);
 
+    /**
+     * Set Risk Limit
+     * The risk limit will limit the maximum position value you can hold under different margin requirements. If you want to hold a bigger position size, you need more margin. This interface can set the risk limit of a single position. If the order exceeds the current risk limit when placing an order, it will be rejected. Click here to learn more about risk limit.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     *
+     * TIP
+     * Set the risk limit of the position. You can get risk limit information for each symbol here.
+     *
+     * HTTP Request
+     * POST /v5/position/set-risk-limit
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse
+     * Classic account: linear, inverse. Please note that category is not involved with business logic
+     * symbol	true	string	Symbol name
+     * riskId	true	integer	Risk limit ID
+     * positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode, it is required
+     * 0: one-way mode
+     * 1: hedge-mode Buy side
+     * 2: hedge-mode Sell side
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/set-risk-limit">...</a>
+     * @param setRiskLimitRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-risk-limit")
     Call<Object> setRiskLimit(
             @Body SetRiskLimitRequest setRiskLimitRequest);
 
+    /**
+     * Set Trading Stop
+     * Set the take profit, stop loss or trailing stop for the position.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     *
+     * TIP
+     * Passing these parameters will create conditional orders by the system internally. The system will cancel these orders if the position is closed, and adjust the qty according to the size of the open position.
+     *
+     * INFO
+     * New version of TP/SL function supports both holding entire position TP/SL orders and holding partial position TP/SL orders.
+     *
+     * Full position TP/SL orders: This API can be used to modify the parameters of existing TP/SL orders.
+     * Partial position TP/SL orders: This API can only add partial position TP/SL orders.
+     * NOTE
+     * Under the new version of Tp/SL function, when calling this API to perform one-sided take profit or stop loss modification on existing TP/SL orders on the holding position, it will cause the paired tp/sl orders to lose binding relationship. This means that when calling the cancel API through the tp/sl order ID, it will only cancel the corresponding one-sided take profit or stop loss order ID.
+     *
+     * HTTP Request
+     * POST /v5/position/trading-stop
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse
+     * Classic account: linear, inverse. Please note that category is not involved with business logic
+     * symbol	true	string	Symbol name
+     * takeProfit	false	string	Cannot be less than 0, 0 means cancel TP
+     * stopLoss	false	string	Cannot be less than 0, 0 means cancel SL
+     * trailingStop	false	string	Trailing stop by price distance. Cannot be less than 0, 0 means cancel TS
+     * tpTriggerBy	false	string	Take profit trigger price type
+     * slTriggerBy	false	string	Stop loss trigger price type
+     * activePrice	false	string	Trailing stop trigger price. Trailing stop will be triggered when this price is reached only
+     * tpslMode	false	string	TP/SL mode. Full: entire position TP/SL, Partial: partial position TP/SL. As each contract has an initial full TP/SL mode, if it has been modified before, it may be partial. Therefore, if not provided, the system will automatically retrieve the current TP/SL mode configuration for the contract.
+     * tpSize	false	string	Take profit size. Valid in TP/SL partial mode. Note: the value of tpSize and slSize must equal
+     * slSize	false	string	Stop loss size. Valid in TP/SL partial mode. Note: the value of tpSize and slSize must equal
+     * tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
+     * slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
+     * tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
+     * slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
+     * positionIdx	true	integer	Used to identify positions in different position modes.
+     * 0: one-way mode
+     * 1: hedge-mode Buy side
+     * 2: hedge-mode Sell side
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/trading-stop">...</a>
+     * @param tradingStopRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/trading-stop")
     Call<Object> setTradingStop(
             @Body TradingStopRequest tradingStopRequest);
 
+    /**
+     * Set Auto Add Margin
+     * Turn on/off auto-add-margin for isolated margin position
+     * <p>
+     * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     * <p>
+     * HTTP Request
+     * POST /v5/position/set-auto-add-margin
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse
+     * Classic account: linear, inverse
+     * symbol	true	string	Symbol name
+     * autoAddMargin	true	integer	Turn on/off. 0: off. 1: on
+     * positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode position, this param is required
+     * 0: one-way mode
+     * 1: hedge-mode Buy side
+     * 2: hedge-mode Sell side
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/auto-add-margin">...</a>
+     * @param setAutoAddMarginRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-auto-add-margin")
     Call<Object> setAutoAddMargin(
             @Body SetAutoAddMarginRequest setAutoAddMarginRequest);
 
+    /**
+     * Add Or Reduce Margin
+     * Manually add or reduce margin for isolated margin position
+     * <p>
+     * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     * <p>
+     * HTTP Request
+     * POST /v5/position/add-margin
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse
+     * Classic account: linear, inverse
+     * symbol	true	string	Symbol name
+     * margin	true	string	Add or reduce. To add, then 10; To reduce, then -10. Support up to 4 decimal
+     * positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode position, this param is required
+     * 0: one-way mode
+     * 1: hedge-mode Buy side
+     * 2: hedge-mode Sell side
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/manual-add-margin">...</a>
+     * @param modifyMarginRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/add-margin")
     Call<Object> modifyPositionMargin(
             @Body ModifyMarginRequest modifyMarginRequest);
 
+    /**
+     * Get Execution
+     * Query users' execution records, sorted by execTime in descending order. However, for Classic spot, they are sorted by execId in descending order.
+     *
+     * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
+     * Classic account covers: Spot / USDT perpetual / Inverse contract
+     *
+     * TIP
+     * Response items will have sorting issues When 'execTime' is the same. This issue is currently being optimized and will be released at the end of October. If you want to receive real-time execution information, Use the websocket stream (recommended).
+     * You may have multiple executions in a single order.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * HTTP Request
+     * GET /v5/execution/list
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: spot, linear, inverse, option
+     * Classic account: spot, linear, inverse
+     * symbol	false	string	Symbol name
+     * orderId	false	string	Order ID
+     * orderLinkId	false	string	User customised order ID. Classic account does not support this param
+     * baseCoin	false	string	Base coin. Unified account - inverse and Classic account do not support this param
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * execType	false	string	Execution type. Classic spot is not supported
+     * limit	false	integer	Limit for data size per page. [1, 100]. Default: 50
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/execution">...</a>
+     * @param category
+     * @param symbol
+     * @param orderId
+     * @param orderLinkId
+     * @param baseCoin
+     * @param startTime
+     * @param endTime
+     * @param execType
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/execution/list")
     Call<Object> getExecutionList(@Query("category") String category,
@@ -1094,6 +1419,35 @@ public interface BybitApiService {
                                   @Query("limit") Integer limit,
                                   @Query("cursor") String cursor);
 
+    /**
+     * Get Closed PnL
+     * Query user's closed profit and loss records. The results are sorted by createdTime in descending order.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     *
+     * HTTP Request
+     * GET /v5/position/closed-pnl
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: linear, inverse
+     * Classic account: linear, inverse. Please note that category is not involved with business logic
+     * symbol	false	string	Symbol name
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 100]. Default: 50
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * <a href="https://bybit-exchange.github.io/docs/v5/position/close-pnl">...</a>
+     * @param category
+     * @param symbol
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/position/closed-pnl")
     Call<Object> getClosePnlList(@Query("category") String category,

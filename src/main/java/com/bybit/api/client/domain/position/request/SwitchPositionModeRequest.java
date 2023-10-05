@@ -9,6 +9,9 @@
  */
 package com.bybit.api.client.domain.position.request;
 
+import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.position.PositionMode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,42 +19,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class SwitchPositionModeRequest {
-    private final String category;
-    private final String symbol;
-    private final String coin;
-    private final int mode;
-
-    private SwitchPositionModeRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.coin = builder.coin;
-        this.mode = builder.mode;
-    }
-
-    public static class Builder {
-        private final String category;
-        private String symbol;
-        private String coin;
-        private final int mode;
-
-        public Builder(String category, int mode) {
-            this.category = category;
-            this.mode = mode;
-        }
-
-        public Builder symbol(String symbol) {
-            this.symbol = symbol;
-            return this;
-        }
-
-        public Builder coin(String coin) {
-            this.coin = coin;
-            return this;
-        }
-
-        public SwitchPositionModeRequest build() {
-            return new SwitchPositionModeRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private String coin;
+    private Integer positionMode;
 }

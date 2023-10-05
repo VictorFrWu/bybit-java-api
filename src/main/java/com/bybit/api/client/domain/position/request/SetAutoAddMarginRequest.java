@@ -13,6 +13,8 @@
  */
 package com.bybit.api.client.domain.position.request;
 
+import com.bybit.api.client.domain.ProductType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,38 +22,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class SetAutoAddMarginRequest {
-    private final String category;
-    private final String symbol;
-    private final int autoAddMargin;
-    private final int positionIdx;
-
-    private SetAutoAddMarginRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.autoAddMargin = builder.autoAddMargin;
-        this.positionIdx = builder.positionIdx;
-    }
-
-    public static class Builder {
-        private final String category;
-        private final String symbol;
-        private final int autoAddMargin;
-        private int positionIdx;
-
-        public Builder(String category, String symbol, int autoAddMargin) {
-            this.category = category;
-            this.symbol = symbol;
-            this.autoAddMargin = autoAddMargin;
-        }
-
-        public Builder positionIdx(int positionIdx) {
-            this.positionIdx = positionIdx;
-            return this;
-        }
-
-        public SetAutoAddMarginRequest build() {
-            return new SetAutoAddMarginRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private Integer autoAddMargin;
+    private Integer positionIdx;
 }

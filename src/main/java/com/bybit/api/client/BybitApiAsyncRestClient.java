@@ -4,6 +4,7 @@ import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
+import com.bybit.api.client.domain.position.PositionDataRequest;
 
 /**
  * Bybit API facade, supporting asynchronous/non-blocking access Bybit's REST API.
@@ -43,4 +44,27 @@ public interface BybitApiAsyncRestClient {
     void getDeliveryPrice(MarketDataRequest deliveryPriceRequest, BybitApiCallback<Object> callback);
 
     void getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest, BybitApiCallback<Object> callback);
+
+    // Position Data
+    void getPositionInfo(PositionDataRequest positionListRequest, BybitApiCallback<Object> callback);
+
+    void setPositionLeverage(PositionDataRequest setLeverageRequest, BybitApiCallback<Object> callback);
+
+    void swithMarginRequest(PositionDataRequest switchMarginRequest, BybitApiCallback<Object> callback);
+
+    void switchPositionMode(PositionDataRequest switchPositionModeRequest, BybitApiCallback<Object> callback);
+
+    void setTpslMode(PositionDataRequest setTpSlModeRequest, BybitApiCallback<Object> callback);
+
+    void setRiskLimit(PositionDataRequest setRiskLimitRequest, BybitApiCallback<Object> callback);
+
+    void setTradingStop(PositionDataRequest tradingStopRequest, BybitApiCallback<Object> callback);
+
+    void setAutoAddMargin(PositionDataRequest setAutoAddMarginRequest, BybitApiCallback<Object> callback);
+
+    void modifyPositionMargin(PositionDataRequest modifyMarginRequest, BybitApiCallback<Object> callback);
+
+    void getExecutionList(PositionDataRequest executionHistoryRequest, BybitApiCallback<Object> callback);
+
+    void getClosePnlList(PositionDataRequest closePnlHistoryRequest, BybitApiCallback<Object> callback);
 }

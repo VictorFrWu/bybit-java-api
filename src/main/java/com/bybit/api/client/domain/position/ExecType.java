@@ -1,5 +1,8 @@
 package com.bybit.api.client.domain.position;
 
+import lombok.Getter;
+
+@Getter
 public enum ExecType {
     Trade("Trade"),
     AdlTrade("AdlTrade"), //Auto-Deleveraging
@@ -12,9 +15,5 @@ public enum ExecType {
 
     ExecType(String execTypeId) {
         this.execTypeId = execTypeId;
-    }
-
-    public String getExecTypeId() {
-        return execTypeId;
     }
 }

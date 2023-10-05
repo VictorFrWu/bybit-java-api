@@ -13,6 +13,9 @@
  */
 package com.bybit.api.client.domain.position.request;
 
+import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.trade.PositionIdx;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,39 +23,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class ModifyMarginRequest {
-    private final String category;
-    private final String symbol;
-    private final String margin;
-    private final int positionIdx;
-
-    private ModifyMarginRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.margin = builder.margin;
-        this.positionIdx = builder.positionIdx;
-    }
-
-    public static class Builder {
-        private final String category;
-        private final String symbol;
-        private final String margin;
-        private int positionIdx;
-
-        public Builder(String category, String symbol, String margin) {
-            this.category = category;
-            this.symbol = symbol;
-            this.margin = margin;
-        }
-
-        public Builder positionIdx(int positionIdx) {
-            this.positionIdx = positionIdx;
-            return this;
-        }
-
-        public ModifyMarginRequest build() {
-            return new ModifyMarginRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private String margin;
+    private Integer positionIdx;
 }
 

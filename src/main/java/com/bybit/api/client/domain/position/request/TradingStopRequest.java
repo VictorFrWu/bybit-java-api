@@ -26,6 +26,12 @@
 
 package com.bybit.api.client.domain.position.request;
 
+import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.TradeOrderType;
+import com.bybit.api.client.domain.TriggerBy;
+import com.bybit.api.client.domain.position.TpslMode;
+import com.bybit.api.client.domain.trade.PositionIdx;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,134 +39,22 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class TradingStopRequest {
-    private final String category;
-    private final String symbol;
-    private final String takeProfit;
-    private final String stopLoss;
-    private final String trailingStop;
-    private final String tpTriggerBy;
-    private final String slTriggerBy;
-    private final String activePrice;
-    private final String tpslMode;
-    private final String tpSize;
-    private final String slSize;
-    private final String tpLimitPrice;
-    private final String slLimitPrice;
-    private final String tpOrderType;
-    private final String slOrderType;
-    private final int positionIdx;
-
-    private TradingStopRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.takeProfit = builder.takeProfit;
-        this.stopLoss = builder.stopLoss;
-        this.trailingStop = builder.trailingStop;
-        this.tpTriggerBy = builder.tpTriggerBy;
-        this.slTriggerBy = builder.slTriggerBy;
-        this.activePrice = builder.activePrice;
-        this.tpslMode = builder.tpslMode;
-        this.tpSize = builder.tpSize;
-        this.slSize = builder.slSize;
-        this.tpLimitPrice = builder.tpLimitPrice;
-        this.slLimitPrice = builder.slLimitPrice;
-        this.tpOrderType = builder.tpOrderType;
-        this.slOrderType = builder.slOrderType;
-        this.positionIdx = builder.positionIdx;
-    }
-
-    public static class Builder {
-        private final String category;
-        private String symbol;
-        private String takeProfit = "0";
-        private String stopLoss = "0";
-        private String trailingStop = "0";
-        private String tpTriggerBy;
-        private String slTriggerBy;
-        private String activePrice;
-        private String tpslMode;
-        private String tpSize;
-        private String slSize;
-        private String tpLimitPrice;
-        private String slLimitPrice;
-        private String tpOrderType;
-        private String slOrderType;
-        private int positionIdx;
-
-        public Builder(String category, String symbol, int positionIdx) {
-            this.category = category;
-            this.symbol = symbol;
-            this.positionIdx = positionIdx;
-        }
-
-        public Builder takeProfit(String takeProfit) {
-            this.takeProfit = takeProfit;
-            return this;
-        }
-
-        public Builder stopLoss(String stopLoss) {
-            this.stopLoss = stopLoss;
-            return this;
-        }
-
-        public Builder trailingStop(String trailingStop) {
-            this.trailingStop = trailingStop;
-            return this;
-        }
-
-        public Builder tpTriggerBy(String tpTriggerBy) {
-            this.tpTriggerBy = tpTriggerBy;
-            return this;
-        }
-
-        public Builder slTriggerBy(String slTriggerBy) {
-            this.slTriggerBy = slTriggerBy;
-            return this;
-        }
-
-        public Builder activePrice(String activePrice) {
-            this.activePrice = activePrice;
-            return this;
-        }
-
-        public Builder tpslMode(String tpslMode) {
-            this.tpslMode = tpslMode;
-            return this;
-        }
-
-        public Builder tpSize(String tpSize) {
-            this.tpSize = tpSize;
-            return this;
-        }
-
-        public Builder slSize(String slSize) {
-            this.slSize = slSize;
-            return this;
-        }
-
-        public Builder tpLimitPrice(String tpLimitPrice) {
-            this.tpLimitPrice = tpLimitPrice;
-            return this;
-        }
-
-        public Builder slLimitPrice(String slLimitPrice) {
-            this.slLimitPrice = slLimitPrice;
-            return this;
-        }
-
-        public Builder tpOrderType(String tpOrderType) {
-            this.tpOrderType = tpOrderType;
-            return this;
-        }
-
-        public Builder slOrderType(String slOrderType) {
-            this.slOrderType = slOrderType;
-            return this;
-        }
-
-        public TradingStopRequest build() {
-            return new TradingStopRequest(this);
-        }
-    }
+    private String category;
+    private  String symbol;
+    private  String takeProfit;
+    private  String stopLoss;
+    private  String trailingStop;
+    private String tpTriggerBy;
+    private  String slTriggerBy;
+    private  String activePrice;
+    private String tpslMode;
+    private  String tpSize;
+    private  String slSize;
+    private  String tpLimitPrice;
+    private  String slLimitPrice;
+    private String tpOrderType;
+    private  String slOrderType;
+    private Integer positionIdx;
 }

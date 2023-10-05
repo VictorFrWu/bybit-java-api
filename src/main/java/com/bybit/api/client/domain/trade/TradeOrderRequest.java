@@ -1,6 +1,8 @@
 package com.bybit.api.client.domain.trade;
 
 import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.TradeOrderType;
+import com.bybit.api.client.domain.TriggerBy;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

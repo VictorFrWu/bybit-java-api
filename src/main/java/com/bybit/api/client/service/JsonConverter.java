@@ -1,6 +1,10 @@
 package com.bybit.api.client.service;
 
 import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.TradeOrderType;
+import com.bybit.api.client.domain.TriggerBy;
+import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.trade.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonConverter {
+
+    // Trade Mapper
     private final ObjectMapper mapper = new ObjectMapper();
 
     public BatchOrderRequest jsonToBatchOrderRequest(String json) throws IOException {
@@ -34,7 +40,7 @@ public class JsonConverter {
                     .orderLinkId(requestNode.has("orderLinkId") ? requestNode.get("orderLinkId").asText() : null)
                     .orderFilter(requestNode.has("orderFilter") ? requestNode.get("orderFilter").asText() : null)
                     .triggerPrice(requestNode.has("triggerPrice") ? requestNode.get("triggerPrice").asText() : null)
-                    .triggerBy(requestNode.has("triggerBy") ?TriggerBy.valueOf(requestNode.get("triggerBy").asText().toUpperCase()) : null)
+                    .triggerBy(requestNode.has("triggerBy") ? TriggerBy.valueOf(requestNode.get("triggerBy").asText().toUpperCase()) : null)
                     .orderIv(requestNode.has("orderIv") ? requestNode.get("orderIv").asText() : null)
                     .timeInForce(requestNode.has("timeInForce") ? TimeInForce.valueOf(requestNode.get("timeInForce").asText().toUpperCase()) : null)
                     .positionIdx(requestNode.has("positionIdx") ? PositionIdx.valueOf(requestNode.get("positionIdx").asText().toUpperCase()) : null)
@@ -124,4 +130,91 @@ public class JsonConverter {
         }
         return null;
     }
+
+    // Position Mapper
+    public SetLeverageRequest mapToSetLeverageRequest(PositionDataRequest positionDataRequest) {
+        return SetLeverageRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .buyLeverage(positionDataRequest.getBuyLeverage())
+                .sellLeverage(positionDataRequest.getSellLeverage())
+                .build();
+    }
+
+    public SetAutoAddMarginRequest mapToSetAutoAddMarginRequest(PositionDataRequest positionDataRequest) {
+        return SetAutoAddMarginRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .autoAddMargin(positionDataRequest.getAutoAddMargin().getValue())
+                .positionIdx(positionDataRequest.getPositionIdx().getIndex())
+                .build();
+    }
+
+    public ModifyMarginRequest mapToModifyMarginRequest(PositionDataRequest positionDataRequest) {
+        return ModifyMarginRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .margin(positionDataRequest.getMargin())
+                .positionIdx(positionDataRequest.getPositionIdx().getIndex())
+                .build();
+    }
+
+    public SetRiskLimitRequest mapToSetRiskLimitRequest(PositionDataRequest positionDataRequest) {
+        return SetRiskLimitRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .riskId(positionDataRequest.getRiskId())
+                .positionIdx(positionDataRequest.getPositionIdx().getIndex())
+                .build();
+    }
+
+    public SetTpSlModeRequest mapToSetTpSlModeRequest(PositionDataRequest positionDataRequest) {
+        return SetTpSlModeRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .tpSlMode(positionDataRequest.getTpslMode().getDescription())
+                .build();
+    }
+
+    public SwitchPositionModeRequest mapToSwitchPositionModeRequest(PositionDataRequest positionDataRequest) {
+        return SwitchPositionModeRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .coin(positionDataRequest.getBaseCoin())
+                .positionMode(positionDataRequest.getPositionMode().getValue())
+                .build();
+    }
+
+    public TradingStopRequest mapToTradingStopRequest(PositionDataRequest positionDataRequest) {
+        return TradingStopRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .takeProfit(positionDataRequest.getTakeProfit())
+                .stopLoss(positionDataRequest.getStopLoss())
+                .trailingStop(positionDataRequest.getTrailingStop())
+                .tpTriggerBy(positionDataRequest.getTpTriggerBy().getTrigger())
+                .slTriggerBy(positionDataRequest.getSlTriggerBy().getTrigger())
+                .activePrice(positionDataRequest.getActivePrice())
+                .tpslMode(positionDataRequest.getTpslMode().getDescription())
+                .tpSize(positionDataRequest.getTpSize())
+                .slSize(positionDataRequest.getSlSize())
+                .tpLimitPrice(positionDataRequest.getTpLimitPrice())
+                .slLimitPrice(positionDataRequest.getSlLimitPrice())
+                .tpOrderType(positionDataRequest.getTpOrderType().getOType())
+                .slOrderType(positionDataRequest.getSlOrderType().getOType())
+                .positionIdx(positionDataRequest.getPositionIdx().getIndex())
+                .build();
+    }
+
+    public SwitchMarginRequest mapToSwitchMarginRequest(PositionDataRequest positionDataRequest) {
+        return SwitchMarginRequest.builder()
+                .category(positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .tradeMode(positionDataRequest.getTradeMode().getValue())
+                .buyLeverage(positionDataRequest.getBuyLeverage())
+                .sellLeverage(positionDataRequest.getSellLeverage())
+                .build();
+    }
+
+
 }

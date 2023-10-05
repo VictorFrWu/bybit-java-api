@@ -1,12 +1,8 @@
 package com.bybit.api.examples.http.async;
 
 import com.bybit.api.client.BybitApAsynciTradeRestClient;
-import com.bybit.api.client.BybitApiAsyncRestClient;
 import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.domain.market.DataRecordingPeriod;
-import com.bybit.api.client.domain.market.InstrumentStatus;
-import com.bybit.api.client.domain.market.MarketDataRequest;
-import com.bybit.api.client.domain.market.MarketInterval;
+import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
 

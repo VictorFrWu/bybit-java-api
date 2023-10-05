@@ -11,6 +11,9 @@
  */
 package com.bybit.api.client.domain.position.request;
 
+import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.position.MarginMode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,38 +21,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class SwitchMarginRequest {
-    private final String category;
-    private final String symbol;
-    private final int tradeMode;
-    private final String buyLeverage;
-    private final String sellLeverage;
-
-    private SwitchMarginRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.tradeMode = builder.tradeMode;
-        this.buyLeverage = builder.buyLeverage;
-        this.sellLeverage = builder.sellLeverage;
-    }
-
-    public static class Builder {
-        private final String category;
-        private final String symbol;
-        private final int tradeMode;
-        private final String buyLeverage;
-        private final String sellLeverage;
-
-        public Builder(String category, String symbol, int tradeMode, String buyLeverage, String sellLeverage) {
-            this.category = category;
-            this.symbol = symbol;
-            this.tradeMode = tradeMode;
-            this.buyLeverage = buyLeverage;
-            this.sellLeverage = sellLeverage;
-        }
-
-        public SwitchMarginRequest build() {
-            return new SwitchMarginRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private Integer tradeMode;
+    private String buyLeverage;
+    private String sellLeverage;
 }
