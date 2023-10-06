@@ -40,10 +40,10 @@ import lombok.ToString;
 @ToString
 @Builder
 public class AssetDepositRecordsRequest {
-    private final String subMemberId; // required = true to Get Sub Deposit Records (on-chain)
-    private final String coin;
-    private final Long startTime;
-    private final Long endTime;
-    private final Integer limit;
-    private final String cursor;
+    private String subMemberId; // required = true to Get Sub Deposit Records (on-chain)
+    private String coin;
+    private Long startTime;
+    private Long endTime;
+    private Integer limit;
+    private String cursor;
 }

@@ -30,9 +30,9 @@ import lombok.*;
 @ToString
 @Builder
 public class AssetCoinsBalanceRequest {
-    private final String memberId;
-    private final AccountType accountType;
-    private final String coin;
-    private final String withBonus;
+    private String memberId;
+    private String accountType;
+    private String coin;
+    private String withBonus;
 }
 

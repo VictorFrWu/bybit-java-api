@@ -6,9 +6,7 @@ import com.bybit.api.client.domain.account.request.ResetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
-import com.bybit.api.client.domain.asset.request.AssetInternalTransferRequest;
-import com.bybit.api.client.domain.asset.request.AssetUniversalTransferRequest;
-import com.bybit.api.client.domain.asset.request.AssetWithdrawRequest;
+import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
@@ -2133,271 +2131,6 @@ public interface BybitApiService {
     @GET("/v5/account/mmp-state")
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
 
-    // Institution Endpoints
-
-    /**
-     * Get Product Info
-     * TIP
-     * This endpoint can be queried without api key and secret, then it returns public product data
-     * If your uid is bound with OTC loan product, then you can get your private product data by calling the endpoint with api key and secret
-     * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
-     * HTTP Request
-     * GET /v5/ins-loan/product-infos
-     * <p>
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * productId	false	string	Product Id. If not passed, then return all products info
-     * <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-product-info">...</a>
-     *
-     * @param productId
-     * @return
-     */
-    @GET("/v5/ins-loan/product-infos")
-    Call<Object> getInsProductInfo(@Query("productId") String productId);
-
-    @GET("/v5/ins-loan/product-infos")
-    Call<Object> getInsProductInfo();
-
-    /**
-     * Get Margin Coin Info
-     * TIP
-     * This endpoint can be queried without api key and secret, then it returns public margin data
-     * If your uid is bound with OTC loan product, then you can get your private margin data by calling the endpoint with api key and secret
-     * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * productId	false	string	ProductId. If not passed, then return all product margin coin. For spot, it returns coin that convertRation greater than 0.
-     * <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-coin-convert-info">...</a>
-     *
-     * @param productId
-     * @return
-     */
-    @GET("/v5/ins-loan/ensure-tokens-convert")
-    Call<Object> getInsMarginCoinInfo(@Query("productId") String productId);
-
-    @GET("/v5/ins-loan/ensure-tokens-convert")
-    Call<Object> getInsMarginCoinInfo();
-
-    /**
-     * Get Loan Orders
-     * Get loan orders information
-     * <p>
-     * TIP
-     * Get the past 2 years data by default
-     * Get up to the past 2 years of data
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * orderId	false	string	Loan order id. If not passed, then return all orders, sort by loanTime in descend
-     * startTime	false	integer	The start timestamp (ms)
-     * endTime	false	integer	The end timestamp (ms)
-     * limit	false	integer	Limit for data size. [1, 100], Default: 10
-     * <a href="https://bybit-exchange.github.io/docs/v5/otc/loan-info">...</a>
-     *
-     * @param productId
-     * @param startTime
-     * @param endTime
-     * @param limit
-     * @return
-     */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/ins-loan/loan-order")
-    Call<Object> getInsLoanOrders(@Query("productId") String productId,
-                                  @Query("startTime") Long startTime,
-                                  @Query("endTime") Long endTime,
-                                  @Query("limit") Integer limit);
-
-    /**
-     * Get Repay Orders
-     * Get repaid order information
-     * <p>
-     * TIP
-     * Get the past 2 years data by default
-     * Get up to the past 2 years of data
-     * HTTP Request
-     * GET /v5/ins-loan/repaid-history
-     * <p>
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * startTime	false	integer	The start timestamp (ms)
-     * endTime	false	integer	The end timestamp (ms)
-     * limit	false	integer	Limit for data size. [1, 100]. Default: 100
-     * <a href="https://bybit-exchange.github.io/docs/v5/otc/repay-info">...</a>
-     *
-     * @param startTime
-     * @param endTime
-     * @param limit
-     * @return
-     */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/ins-loan/repaid-history")
-    Call<Object> getInsRepayOrders(@Query("startTime") Long startTime,
-                                   @Query("endTime") Long endTime,
-                                   @Query("limit") Integer limit);
-
-    /**
-     * Get LTV
-     * <p>
-     * HTTP Request
-     * GET /v5/ins-loan/ltv-convert
-     * <a href="https://bybit-exchange.github.io/docs/v5/otc/ltv-convert">...</a>
-     *
-     * @return
-     */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/ins-loan/ltv-convert")
-    Call<Object> getInsLoanToValue();
-
-    // Spot Data endpoints
-
-    // Spot Leverage
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-lever-token/info")
-    Call<Object> getSpotLeverageTokenInfo(@Query("ltCoin") String ltCoin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-lever-token/info")
-    Call<Object> getSpotLeverageTokenInfo();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-lever-token/reference")
-    Call<Object> getSpotLeverageTokenMarket(@Query("ltCoin") String ltCoin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-lever-token/reference")
-    Call<Object> getSpotLeverageTokenMarket();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/spot-lever-token/purchase")
-    Call<Object> purchaseSpotLeverageToken(@Body SpotLeverageTokenRequest spotLeverageTokenRequest);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/spot-lever-token/redeem")
-    Call<Object> redeemSpotLeverageToken(@Body SpotLeverageTokenRequest spotLeverageTokenRequest);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-lever-token/order-record")
-    Call<Object> getSpotLeverageRecords(@Query("ltCoin") String ltCoin,
-                                        @Query("orderId") String orderId,
-                                        @Query("startTime") Long startTime,
-                                        @Query("endTime") Long endTime,
-                                        @Query("limit") Integer limit,
-                                        @Query("ltOrderType") Integer ltOrderType,
-                                        @Query("serialNo") String serialNo);
-
-    // Spot Margin UTA
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-margin-trade/data")
-    Call<Object> getUtaVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
-                                              @Query("currency") String currency);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/spot-margin-trade/switch-mode")
-    Call<Object> setUTASpotMarginTrade(@Body String spotMarginMode);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/spot-margin-trade/set-leverage")
-    Call<Object> setUTASpotMarginTradeLeverage(@Body String leverage);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-margin-trade/state")
-    Call<Object> getUTASpotMarginTradeLeverageState();
-
-    // Spot Margin Normal
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/data")
-    Call<Object> getNormalVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
-                                                 @Query("currency") String currency);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/pledge-token")
-    Call<Object> getNormalSpotMarginTradeCoinInfo(@Query("coin") String coin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/pledge-token")
-    Call<Object> getNormalSpotMarginTradeCoinInfo();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/borrow-token")
-    Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/borrow-token")
-    Call<Object> getNormalSpotMarginTradeBorrowCoinInfo();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/loan-info")
-    Call<Object> getNormalSpotMarginTradeInterestQuota(@Query("coin") String coin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/account")
-    Call<Object> getNormalSpotMarginTradeAccountInfo();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/spot-cross-margin-trade/switch")
-    Call<Object> getNormalSpotToggleMarginTrade(@Body int switchStatus);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/spot-cross-margin-trade/loan")
-    Call<Object> loanNormalSpotMarginTrade(@Body SpotMarginTradeBorrowRequest spotMarginTradeBorrowRequest);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/spot-cross-margin-trade/repay")
-    Call<Object> repayNormalSpotMarginTrade(@Body SpotMarginTradeRePayRequest spotMarginTradeRePayRequest);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/orders")
-    Call<Object> getNormalMarginTradeBorrowOrders(@Query("startTime") Long startTime,
-                                                  @Query("endTime") Long endTime,
-                                                  @Query("coin") String coin,
-                                                  @Query("status") Integer status,
-                                                  @Query("limit") Integer limit);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/repay-history")
-    Call<Object> getNormalMarginTradeRepayOrders(@Query("startTime") Long startTime,
-                                                 @Query("endTime") Long endTime,
-                                                 @Query("coin") String coin,
-                                                 @Query("limit") Integer limit);
-
-    // Broker Endpoints
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/broker/earning-record")
-    Call<Object> getBrokerEarningData(@Query("bizType") String bizType,
-                                      @Query("startTime") Long startTime,
-                                      @Query("endTime") Long endTime,
-                                      @Query("limit") Integer limit,
-                                      @Query("cursor") String cursor);
-
-    // C2C Endpoints
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/lending/info")
-    Call<Object> getC2CLendingCoinInfo(@Query("coin") String coin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/lending/info")
-    Call<Object> getC2CLendingCoinInfo();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/lending/purchase")
-    Call<Object> C2cLendingDepositFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/lending/redeem")
-    Call<Object> C2cLendingRedeemFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/lending/history-order")
-    Call<Object> getC2cOrdersRecords(@Query("coin") String coin,
-                                     @Query("orderId") String orderId,
-                                     @Query("startTime") Long startTime,
-                                     @Query("endTime") Long endTime,
-                                     @Query("limit") Integer limit,
-                                     @Query("orderType") String orderType);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/lending/account")
-    Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
-
     // Asset Endpoints
 
     /**
@@ -2697,12 +2430,12 @@ public interface BybitApiService {
      * <p>
      * <a href="https://bybit-exchange.github.io/docs/v5/asset/set-deposit-acct">...</a>
      *
-     * @param accountType
+     * @param setAssetDepositAccountRequest
      * @return
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/deposit/deposit-to-account")
-    Call<Object> setAssetDepositAccount(@Query("accountType") String accountType);
+    Call<Object> setAssetDepositAccount(@Body SetAssetDepositAccountRequest setAssetDepositAccountRequest);
 
     /**
      * Get Deposit Records (on-chain)
@@ -2826,10 +2559,6 @@ public interface BybitApiService {
     @GET("/v5/asset/coin/query-info")
     Call<Object> getAssetCoinInfo(@Query("coin") String coin);
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/asset/coin/query-info")
-    Call<Object> getAssetCoinInfo();
-
     /**
      * Get Withdrawable Amount
      * INFO
@@ -2883,12 +2612,12 @@ public interface BybitApiService {
      * CAUTION
      * Can query by the master UID's api key only
      *
-     * @param withdrawId
+     * @param assetCancelWithdrawRequest
      * @return
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/withdraw/cancel")
-    Call<Object> cancelAssetWithdraw(@Body String withdrawId);
+    Call<Object> cancelAssetWithdraw(@Body AssetCancelWithdrawRequest assetCancelWithdrawRequest);
 
     /**
      * Withdraw
@@ -2916,6 +2645,270 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/withdraw/create")
     Call<Object> createAssetWithdraw(@Body AssetWithdrawRequest assetWithdrawRequest);
+
+    // Institution Endpoints
+    /**
+     * Get Product Info
+     * TIP
+     * This endpoint can be queried without api key and secret, then it returns public product data
+     * If your uid is bound with OTC loan product, then you can get your private product data by calling the endpoint with api key and secret
+     * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
+     * HTTP Request
+     * GET /v5/ins-loan/product-infos
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * productId	false	string	Product Id. If not passed, then return all products info
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-product-info">...</a>
+     *
+     * @param productId
+     * @return
+     */
+    @GET("/v5/ins-loan/product-infos")
+    Call<Object> getInsProductInfo(@Query("productId") String productId);
+
+    @GET("/v5/ins-loan/product-infos")
+    Call<Object> getInsProductInfo();
+
+    /**
+     * Get Margin Coin Info
+     * TIP
+     * This endpoint can be queried without api key and secret, then it returns public margin data
+     * If your uid is bound with OTC loan product, then you can get your private margin data by calling the endpoint with api key and secret
+     * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * productId	false	string	ProductId. If not passed, then return all product margin coin. For spot, it returns coin that convertRation greater than 0.
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/margin-coin-convert-info">...</a>
+     *
+     * @param productId
+     * @return
+     */
+    @GET("/v5/ins-loan/ensure-tokens-convert")
+    Call<Object> getInsMarginCoinInfo(@Query("productId") String productId);
+
+    @GET("/v5/ins-loan/ensure-tokens-convert")
+    Call<Object> getInsMarginCoinInfo();
+
+    /**
+     * Get Loan Orders
+     * Get loan orders information
+     * <p>
+     * TIP
+     * Get the past 2 years data by default
+     * Get up to the past 2 years of data
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * orderId	false	string	Loan order id. If not passed, then return all orders, sort by loanTime in descend
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size. [1, 100], Default: 10
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/loan-info">...</a>
+     *
+     * @param productId
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/loan-order")
+    Call<Object> getInsLoanOrders(@Query("productId") String productId,
+                                  @Query("startTime") Long startTime,
+                                  @Query("endTime") Long endTime,
+                                  @Query("limit") Integer limit);
+
+    /**
+     * Get Repay Orders
+     * Get repaid order information
+     * <p>
+     * TIP
+     * Get the past 2 years data by default
+     * Get up to the past 2 years of data
+     * HTTP Request
+     * GET /v5/ins-loan/repaid-history
+     * <p>
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size. [1, 100]. Default: 100
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/repay-info">...</a>
+     *
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/repaid-history")
+    Call<Object> getInsRepayOrders(@Query("startTime") Long startTime,
+                                   @Query("endTime") Long endTime,
+                                   @Query("limit") Integer limit);
+
+    /**
+     * Get LTV
+     * <p>
+     * HTTP Request
+     * GET /v5/ins-loan/ltv-convert
+     * <a href="https://bybit-exchange.github.io/docs/v5/otc/ltv-convert">...</a>
+     *
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/ins-loan/ltv-convert")
+    Call<Object> getInsLoanToValue();
+
+    // Spot Data endpoints
+
+    // Spot Leverage
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-lever-token/info")
+    Call<Object> getSpotLeverageTokenInfo(@Query("ltCoin") String ltCoin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-lever-token/info")
+    Call<Object> getSpotLeverageTokenInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-lever-token/reference")
+    Call<Object> getSpotLeverageTokenMarket(@Query("ltCoin") String ltCoin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-lever-token/reference")
+    Call<Object> getSpotLeverageTokenMarket();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/spot-lever-token/purchase")
+    Call<Object> purchaseSpotLeverageToken(@Body SpotLeverageTokenRequest spotLeverageTokenRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/spot-lever-token/redeem")
+    Call<Object> redeemSpotLeverageToken(@Body SpotLeverageTokenRequest spotLeverageTokenRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-lever-token/order-record")
+    Call<Object> getSpotLeverageRecords(@Query("ltCoin") String ltCoin,
+                                        @Query("orderId") String orderId,
+                                        @Query("startTime") Long startTime,
+                                        @Query("endTime") Long endTime,
+                                        @Query("limit") Integer limit,
+                                        @Query("ltOrderType") Integer ltOrderType,
+                                        @Query("serialNo") String serialNo);
+
+    // Spot Margin UTA
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-margin-trade/data")
+    Call<Object> getUtaVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
+                                              @Query("currency") String currency);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/spot-margin-trade/switch-mode")
+    Call<Object> setUTASpotMarginTrade(@Body String spotMarginMode);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/spot-margin-trade/set-leverage")
+    Call<Object> setUTASpotMarginTradeLeverage(@Body String leverage);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-margin-trade/state")
+    Call<Object> getUTASpotMarginTradeLeverageState();
+
+    // Spot Margin Normal
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/data")
+    Call<Object> getNormalVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
+                                                 @Query("currency") String currency);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/pledge-token")
+    Call<Object> getNormalSpotMarginTradeCoinInfo(@Query("coin") String coin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/pledge-token")
+    Call<Object> getNormalSpotMarginTradeCoinInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/borrow-token")
+    Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/borrow-token")
+    Call<Object> getNormalSpotMarginTradeBorrowCoinInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/loan-info")
+    Call<Object> getNormalSpotMarginTradeInterestQuota(@Query("coin") String coin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/account")
+    Call<Object> getNormalSpotMarginTradeAccountInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/spot-cross-margin-trade/switch")
+    Call<Object> getNormalSpotToggleMarginTrade(@Body int switchStatus);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/spot-cross-margin-trade/loan")
+    Call<Object> loanNormalSpotMarginTrade(@Body SpotMarginTradeBorrowRequest spotMarginTradeBorrowRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/spot-cross-margin-trade/repay")
+    Call<Object> repayNormalSpotMarginTrade(@Body SpotMarginTradeRePayRequest spotMarginTradeRePayRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/orders")
+    Call<Object> getNormalMarginTradeBorrowOrders(@Query("startTime") Long startTime,
+                                                  @Query("endTime") Long endTime,
+                                                  @Query("coin") String coin,
+                                                  @Query("status") Integer status,
+                                                  @Query("limit") Integer limit);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/spot-cross-margin-trade/repay-history")
+    Call<Object> getNormalMarginTradeRepayOrders(@Query("startTime") Long startTime,
+                                                 @Query("endTime") Long endTime,
+                                                 @Query("coin") String coin,
+                                                 @Query("limit") Integer limit);
+
+    // Broker Endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/broker/earning-record")
+    Call<Object> getBrokerEarningData(@Query("bizType") String bizType,
+                                      @Query("startTime") Long startTime,
+                                      @Query("endTime") Long endTime,
+                                      @Query("limit") Integer limit,
+                                      @Query("cursor") String cursor);
+
+    // C2C Endpoints
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/info")
+    Call<Object> getC2CLendingCoinInfo(@Query("coin") String coin);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/info")
+    Call<Object> getC2CLendingCoinInfo();
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/lending/purchase")
+    Call<Object> C2cLendingDepositFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/lending/redeem")
+    Call<Object> C2cLendingRedeemFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/history-order")
+    Call<Object> getC2cOrdersRecords(@Query("coin") String coin,
+                                     @Query("orderId") String orderId,
+                                     @Query("startTime") Long startTime,
+                                     @Query("endTime") Long endTime,
+                                     @Query("limit") Integer limit,
+                                     @Query("orderType") String orderType);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @GET("/v5/lending/account")
+    Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 
     // Announcement
 

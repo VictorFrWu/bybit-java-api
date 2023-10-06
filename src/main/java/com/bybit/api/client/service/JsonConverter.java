@@ -7,6 +7,8 @@ import com.bybit.api.client.domain.account.AccountDataRequest;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
+import com.bybit.api.client.domain.asset.AssetDataRequest;
+import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.account.request.*;
@@ -327,4 +329,56 @@ public class JsonConverter {
                 .build();
     }
 
+    // Asset request
+    public AssetInternalTransferRequest mapToAssetInternalTransferRequest(AssetDataRequest assetDataRequest) {
+        return AssetInternalTransferRequest.builder()
+                .transferId(assetDataRequest.getTransferId())
+                .coin(assetDataRequest.getCoin())
+                .amount(assetDataRequest.getAmount())
+                .fromAccountType(assetDataRequest.getFromAccountType().getAccountTypeValue())  // Assuming fromAccountType is an enum and you want to store its name as String in AssetInternalTransferRequest
+                .toAccountType(assetDataRequest.getToAccountType().getAccountTypeValue())      // Same assumption as above
+                .build();
+    }
+
+    public AssetUniversalTransferRequest mapToAssetUniversalTransferRequest(AssetDataRequest assetDataRequest) {
+        return AssetUniversalTransferRequest.builder()
+                .transferId(assetDataRequest.getTransferId())
+                .coin(assetDataRequest.getCoin())
+                .amount(assetDataRequest.getAmount())
+                .fromMemberId(assetDataRequest.getFromMemberId())  // Assuming memberId in AssetDataRequest is a String and you want to convert it to Integer in AssetUniversalTransferRequest
+                .toMemberId(assetDataRequest.getToMemberId())  // Same assumption as above
+                .fromAccountType(assetDataRequest.getFromAccountType().getAccountTypeValue())  // Assuming fromAccountType is an enum and you want to store its name as String in AssetUniversalTransferRequest
+                .toAccountType(assetDataRequest.getToAccountType().getAccountTypeValue())      // Same assumption as above
+                .build();
+    }
+
+    public SetAssetDepositAccountRequest mapToSetDepositAccountRequest(AssetDataRequest request) {
+        return SetAssetDepositAccountRequest.builder().accountType(request.getAccountType() == null ? null : request.getAccountType().getAccountTypeValue()).build();
+    }
+
+    public AssetCoinInfoRequest mapToAssetCoinInfoRequest(AssetDataRequest request) {
+        return AssetCoinInfoRequest.builder().coin(request.getCoin()).build();
+    }
+
+    public AssetWithdrawAmountRequest mapToAssetWithdrawAmountRequest(AssetDataRequest request) {
+        return AssetWithdrawAmountRequest.builder().coin(request.getCoin()).build();
+    }
+
+    public AssetCancelWithdrawRequest mapToAssetCancelWithdrawRequest(AssetDataRequest request) {
+        return AssetCancelWithdrawRequest.builder().withdrawId(request.getWithdrawID()).build();
+    }
+
+    public AssetWithdrawRequest mapToAssetWithdrawRequest(AssetDataRequest assetDataRequest) {
+        return AssetWithdrawRequest.builder()
+                .coin(assetDataRequest.getCoin())
+                .chain(assetDataRequest.getChain())
+                .address(assetDataRequest.getAddress())
+                .tag(assetDataRequest.getTag())
+                .amount(assetDataRequest.getAmount())
+                .timestamp(assetDataRequest.getTimestamp())
+                .forceChain(assetDataRequest.getForceChain())
+                .accountType(assetDataRequest.getAccountType() != null ? assetDataRequest.getAccountType().name() : null)  // Assuming accountType is an enum and you want to store its name as String in AssetWithdrawRequest
+                .feeType(assetDataRequest.getFeeType() == null ? null : assetDataRequest.getFeeType().getValue())
+                .build();
+    }
 }

@@ -31,7 +31,7 @@ import lombok.ToString;
 public class AssetWithdrawRecordsRequest {
     private String withdrawID;
     private String coin;
-    private WithdrawType withdrawType;  // 0 for on-chain, 1 for off-chain, 2 for all
+    private Integer withdrawType;  // 0 for on-chain, 1 for off-chain, 2 for all
     private Long startTime;
     private Long endTime;
     private Integer limit;

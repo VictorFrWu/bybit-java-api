@@ -31,9 +31,9 @@ import lombok.ToString;
 @ToString
 @Builder
 public class AssetAllowedDepositCoinRequest {
-    private final String coin;
-    private final String chain;
-    private final Integer limit;
-    private final String cursor;
+    private String coin;
+    private String chain;
+    private Integer limit;
+    private String cursor;
 }
 

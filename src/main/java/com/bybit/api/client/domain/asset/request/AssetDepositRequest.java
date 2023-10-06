@@ -24,7 +24,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class AssetDepositRequest {
-    private final String coin;
-    private final String chainType;
-    private final String subMemberId;
+    private String coin;
+    private String chainType;
+    private String subMemberId;
 }

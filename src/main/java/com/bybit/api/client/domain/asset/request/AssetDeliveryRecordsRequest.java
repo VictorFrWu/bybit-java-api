@@ -33,9 +33,9 @@ import lombok.*;
 @ToString
 @Builder
 public class AssetDeliveryRecordsRequest {
-    private final ProductType category;
-    private final String symbol;
-    private final String expDate;
-    private final Integer limit;
-    private final String cursor;
+    private String category;
+    private String symbol;
+    private String expDate;
+    private Integer limit;
+    private String cursor;
 }

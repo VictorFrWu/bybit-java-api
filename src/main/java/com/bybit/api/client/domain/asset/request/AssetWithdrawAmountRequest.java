@@ -9,11 +9,6 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class AssetInternalTransferRequest {
-    private String transferId;
+public class AssetWithdrawAmountRequest {
     private String coin;
-    private String amount;
-    private String fromAccountType;
-    private String toAccountType;
 }
-

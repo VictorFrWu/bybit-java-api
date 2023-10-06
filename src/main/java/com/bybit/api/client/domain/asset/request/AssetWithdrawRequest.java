@@ -34,13 +34,12 @@ import lombok.ToString;
 @ToString
 @Builder
 public class AssetWithdrawRequest {
-
-    private final String coin; // mandatory
-    private final String chain; // mandatory
-    private final String address; // mandatory
+    private String coin; // mandatory
+    private String chain; // mandatory
+    private String address; // mandatory
     private String tag;
-    private final String amount; // mandatory
-    private final Long timestamp; // mandatory
+    private String amount; // mandatory
+    private Long timestamp; // mandatory
     private Integer forceChain;
     private String accountType;
     private Integer feeType;

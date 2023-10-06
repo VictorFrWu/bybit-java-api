@@ -30,13 +30,13 @@ import lombok.*;
 @ToString
 @Builder
 public class AssetSingleCoinBalanceRequest {
-    private final String memberId;
-    private final String toMemberId;
-    private final AccountType accountType; // Required true
-    private final AccountType toAccountType;
-    private final String coin; // Required true
-    private final Integer withBonus;
-    private final Integer withTransferSafeAmount;
-    private final Integer withLtvTransferSafeAmount;
+    private String memberId;
+    private String toMemberId;
+    private String accountType; // Required true
+    private String toAccountType;
+    private String coin; // Required true
+    private Integer withBonus;
+    private Integer withTransferSafeAmount;
+    private Integer withLtvTransferSafeAmount;
 }
 

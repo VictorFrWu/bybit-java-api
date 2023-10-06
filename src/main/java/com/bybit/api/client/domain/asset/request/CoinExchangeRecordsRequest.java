@@ -32,8 +32,8 @@ import lombok.ToString;
 @ToString
 @Builder
 public class CoinExchangeRecordsRequest {
-    private final String fromCoin;
-    private final String toCoin;
-    private final Integer limit;
-    private final String cursor;
+    private String fromCoin;
+    private String toCoin;
+    private Integer limit;
+    private String cursor;
 }

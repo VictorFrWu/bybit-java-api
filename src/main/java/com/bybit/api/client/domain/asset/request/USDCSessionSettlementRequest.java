@@ -31,9 +31,9 @@ import lombok.*;
 @ToString
 @Builder
 public class USDCSessionSettlementRequest {
-    private final ProductType category;
-    private final String symbol;
-    private final Integer limit;
-    private final String cursor;
+    private String category;
+    private String symbol;
+    private Integer limit;
+    private String cursor;
 }
 

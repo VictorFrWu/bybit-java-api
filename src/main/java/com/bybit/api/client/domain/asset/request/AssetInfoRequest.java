@@ -26,7 +26,7 @@ import lombok.*;
 @ToString
 @Builder
 public class AssetInfoRequest {
-    private final AccountType accountType;
-    private final String coin;
+    private String accountType;
+    private String coin;
 }
 

@@ -33,12 +33,12 @@ import lombok.*;
 @Getter
 @Setter
 public class AssetTransferRecordsRequest {
-    private final String transferId;
-    private final String coin;
-    private final TransferStatus transferStatus;
-    private final Long startTime;
-    private final Long endTime;
-    private final Integer limit;
-    private final String cursor;
+    private String transferId;
+    private String coin;
+    private String transferStatus;
+    private Long startTime;
+    private Long endTime;
+    private Integer limit;
+    private String cursor;
 }
 

@@ -1,56 +1,47 @@
-package com.bybit.api.examples.http.sync;
+package com.bybit.api.examples.http.async;
 
+import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.constant.Util;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
-import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
-public class AssetExample {
+public class AssetAsyncExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newAsyncRestClient();
 
         // Get Coin Exchange Records
         var coinExchangeRecordsRequest = AssetDataRequest.builder().build();
-        var coinExchangeRecords = client.getAssetCoinExchangeRecords(coinExchangeRecordsRequest);
-        System.out.println(coinExchangeRecords);
+        client.getAssetCoinExchangeRecords(coinExchangeRecordsRequest, System.out::println);
 
         // Get Delivery Records
         var deliveryRecordsRequest = AssetDataRequest.builder().category(ProductType.LINEAR).build();
-        var deliveryRecords = client.getAssetDeliveryRecords(deliveryRecordsRequest);
-        System.out.println(deliveryRecords);
+        client.getAssetDeliveryRecords(deliveryRecordsRequest, System.out::println);
 
         // Get USDC settlement
         var usdcSettlementRequest = AssetDataRequest.builder().category(ProductType.LINEAR).build();
-        var usdcSettlement = client.getAssetUSDCSettlementRecords(usdcSettlementRequest);
-        System.out.println(usdcSettlement);
+        client.getAssetUSDCSettlementRecords(usdcSettlementRequest, System.out::println);
 
         // Get Asset Info
         var assetInfoRequest = AssetDataRequest.builder().accountType(AccountType.SPOT).build();
-        var assetInfo = client.getAssetInfo(assetInfoRequest);
-        System.out.println(assetInfo);
+        client.getAssetInfo(assetInfoRequest, System.out::println);
 
         // Get All Coins Balance
         var allCoinsBalanceRequest = AssetDataRequest.builder().accountType(AccountType.UNIFIED).build();
-        var allCoinsBalance = client.getAssetAllCoinsBalance(allCoinsBalanceRequest);
-        System.out.println(allCoinsBalance);
+        client.getAssetAllCoinsBalance(allCoinsBalanceRequest, System.out::println);
 
         // Get Single Coin Balance
         var SingleCoinBalanceRequest = AssetDataRequest.builder().accountType(AccountType.UNIFIED).coin("USDT").build();
-        var SingleCoinBalanc = client.getAssetSingleCoinBalance(SingleCoinBalanceRequest);
-        System.out.println(SingleCoinBalanc);
+        client.getAssetSingleCoinBalance(SingleCoinBalanceRequest, System.out::println);
 
         // Get Transferable Coin
         var transferableCoinsRequest = AssetDataRequest.builder().fromAccountType(AccountType.UNIFIED).toAccountType(AccountType.FUND).build();
-        var transferableCoins = client.getAssetTransferableCoins(transferableCoinsRequest);
-        System.out.println(transferableCoins);
+        client.getAssetTransferableCoins(transferableCoinsRequest, System.out::println);
 
         // Get Sub Uids
-        var assetSubUids = client.getAssetTransferSubUidList();
-        System.out.println(assetSubUids);
+        client.getAssetTransferSubUidList(System.out::println);
 
         // Create Internal Transfer
         var assetInternalTransferRequest = AssetDataRequest.builder()
@@ -60,8 +51,7 @@ public class AssetExample {
                 .fromAccountType(AccountType.UNIFIED)
                 .toAccountType(AccountType.FUND)
                 .build();
-        var internalTransfer = client.createAssetInternalTransfer(assetInternalTransferRequest);
-        System.out.println(internalTransfer);
+        client.createAssetInternalTransfer(assetInternalTransferRequest, System.out::println);
 
         // Create Universal Transfer
         var assetUniversalTransferRequest = AssetDataRequest.builder()
@@ -73,66 +63,53 @@ public class AssetExample {
                 .fromAccountType(AccountType.UNIFIED)
                 .toAccountType(AccountType.FUND)
                 .build();
-        var universalTransfer = client.createAssetUniversalTransfer(assetUniversalTransferRequest);
-        System.out.println(universalTransfer);
+        client.createAssetUniversalTransfer(assetUniversalTransferRequest, System.out::println);
 
         // Get Allowed Deposit Coin Info
         var allowedDepositCoinRequest = AssetDataRequest.builder().build();
-        var allowedDepositCoinInfo = client.getAssetAllowedDepositCoinInfo(allowedDepositCoinRequest);
-        System.out.println(allowedDepositCoinInfo);
+        client.getAssetAllowedDepositCoinInfo(allowedDepositCoinRequest, System.out::println);
 
         // Set Deposit Account
         var setDepositAccountRequest = AssetDataRequest.builder().accountType(AccountType.FUND).build();
-        var setDepositAccount = client.setAssetDepositAccount(setDepositAccountRequest);
-        System.out.println(setDepositAccount);
+        client.setAssetDepositAccount(setDepositAccountRequest, System.out::println);
 
         var depositRecordsRequest = AssetDataRequest.builder();
         // Get Deposit Records (on-chain)
-        var depositRecordsOnChain = client.getAssetDepositRecords(depositRecordsRequest.build());
-        System.out.println(depositRecordsOnChain);
+        client.getAssetDepositRecords(depositRecordsRequest.build(), System.out::println);
 
         // Get Sub Deposit Records (on-chain)
-        var depositSubRecordsOnChain = client.getAssetSubMembersDepositRecords(depositRecordsRequest.subMemberId("1637192").build());
-        System.out.println(depositSubRecordsOnChain);
+        client.getAssetSubMembersDepositRecords(depositRecordsRequest.subMemberId("1637192").build(), System.out::println);
 
         // Get Internal Deposit Records (off-chain)
-        var internalDepositRecords = client.getAssetInternalDepositRecords(depositRecordsRequest.build());
-        System.out.println(internalDepositRecords);
+        client.getAssetInternalDepositRecords(depositRecordsRequest.build(), System.out::println);
 
         // Get Internal Transfer Records
         var internalTransferRequest = AssetDataRequest.builder().build();
-        var internalTransferRecords = client.getAssetInternalTransferRecords(internalTransferRequest);
-        System.out.println(internalTransferRecords);
+        client.getAssetInternalTransferRecords(internalTransferRequest, System.out::println);
 
         // Get Universal Transfer Records
         var universalTransferRequest = AssetDataRequest.builder().build();
-        var universalTransferRecords = client.getAssetUniversalTransferRecords(universalTransferRequest);
-        System.out.println(universalTransferRecords);
+        client.getAssetUniversalTransferRecords(universalTransferRequest, System.out::println);
 
         // Get Master Deposit Address
         var masterDepositRequest = AssetDataRequest.builder().coin("USDT").build();
-        var masterDeposit = client.getAssetMasterDepositAddress(masterDepositRequest);
-        System.out.println(masterDeposit);
+        client.getAssetMasterDepositAddress(masterDepositRequest, System.out::println);
 
         // Get Sub Deposit Address
         var subDepositRequest = AssetDataRequest.builder().coin("USDT").chainType("TRC20").subMemberId("1637192").build();
-        var subDeposit = client.getAssetSubMemberDepositAddress(subDepositRequest);
-        System.out.println(subDeposit);
+        client.getAssetSubMemberDepositAddress(subDepositRequest, System.out::println);
 
         // Get coin info
         var coinInfoRequest = AssetDataRequest.builder().coin("ETH").build();
-        var coinInfo = client.getAssetCoinInfo(coinInfoRequest);
-        System.out.println(coinInfo);
+        client.getAssetCoinInfo(coinInfoRequest, System.out::println);
 
         // Get Withdrawable Amount
-        var withdrawAmountRequest =AssetDataRequest.builder().coin("USDT").build();
-        var withdrawalAmount = client.getAssetWithdrawalAmount(withdrawAmountRequest);
-        System.out.println(withdrawalAmount);
+        var withdrawAmountRequest = AssetDataRequest.builder().coin("USDT").build();
+        client.getAssetWithdrawalAmount(withdrawAmountRequest, System.out::println);
 
         // Get Withdraw Records
         var assetWithdrawRecordsRequest = AssetDataRequest.builder().build();
-        var withdrawRecords = client.getAssetWithdrawalRecords(assetWithdrawRecordsRequest);
-        System.out.println(withdrawRecords);
+        client.getAssetWithdrawalRecords(assetWithdrawRecordsRequest, System.out::println);
 
         // Withdraw
         var assetWithdrawRequest = AssetDataRequest.builder()
@@ -142,12 +119,10 @@ public class AssetExample {
                 .amount("100")
                 .timestamp(Util.generateTimestamp())
                 .build();
-        var assetWithdraw = client.createAssetWithdraw(assetWithdrawRequest);
-        System.out.println(assetWithdraw);
+        client.createAssetWithdraw(assetWithdrawRequest, System.out::println);
 
         // Cancel Withdraw
         var assetWithdrawCancelRequest = AssetDataRequest.builder().withdrawID("xxxxx").build();
-        var cancelWithdraw = client.cancelAssetWithdraw(assetWithdrawCancelRequest);
-        System.out.println(cancelWithdraw);
+        client.cancelAssetWithdraw(assetWithdrawCancelRequest, System.out::println);
     }
 }

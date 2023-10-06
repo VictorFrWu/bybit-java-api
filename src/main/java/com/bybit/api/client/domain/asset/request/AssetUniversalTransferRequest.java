@@ -10,12 +10,12 @@ import lombok.ToString;
 @ToString
 @Builder
 public class AssetUniversalTransferRequest {
-    private final String transferId;
-    private final String coin;
-    private final String amount;
-    private final Integer fromMemberId;
-    private final Integer toMemberId;
-    private final String fromAccountType;
-    private final String toAccountType;
+    private String transferId;
+    private String coin;
+    private String amount;
+    private Integer fromMemberId;
+    private Integer toMemberId;
+    private String fromAccountType;
+    private String toAccountType;
 }
 
