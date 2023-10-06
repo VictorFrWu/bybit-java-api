@@ -4,8 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum MarginMode {
-    CROSS_MARGIN(0, "Cross Margin"),
-    ISOLATED_MARGIN(1, "Isolated Margin");
+    CROSS_MARGIN(0, "REGULAR_MARGIN"), // Cross margin
+    ISOLATED_MARGIN(1, "ISOLATED_MARGIN"),
+    PORTFOLIO_MARGIN(2,"PORTFOLIO_MARGIN");
 
     private final int value;
     private final String description;

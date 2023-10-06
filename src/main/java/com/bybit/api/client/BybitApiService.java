@@ -2,8 +2,10 @@ package com.bybit.api.client;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.TriggerBy;
+import com.bybit.api.client.domain.account.request.ResetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
+import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
 import com.bybit.api.client.domain.asset.request.AssetInternalTransferRequest;
 import com.bybit.api.client.domain.asset.request.AssetUniversalTransferRequest;
 import com.bybit.api.client.domain.asset.request.AssetWithdrawRequest;
@@ -1694,15 +1696,107 @@ public interface BybitApiService {
                                              @Query("cursor") String cursor);
 
     // Account Data endpoints
+
+    /**
+     * Get Wallet Balance
+     * Obtain wallet balance, query asset information of each currency, and account risk rate information. By default, currency information with assets or liabilities of 0 is not returned.
+     *
+     * TIP
+     * The trading of UTA inverse contracts is conducted through the CONTRACT wallet.
+     * To get Funding wallet balance, please go to this endpoint
+     * HTTP Request
+     * GET /v5/account/wallet-balance
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * accountType	true	string	Account type
+     * Unified account: UNIFIED (trade spot/linear/options), CONTRACT(trade inverse)
+     * Classic account: CONTRACT, SPOT
+     * coin	false	string	Coin name
+     * If not passed, it returns non-zero asset info
+     * You can pass multiple coins to query, separated by comma. USDT,USDC
+     * https://bybit-exchange.github.io/docs/v5/account/wallet-balance
+     * @param accountType
+     * @param coin
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/wallet-balance")
     Call<Object> getWalletBalance(@Query("accountType") String accountType,
                                   @Query("coin") String coin);
 
+    /**
+     * Upgrade to Unified Account
+     * Upgrade Unified Account
+     *
+     * UPGRADE GUIDANCE
+     * Check your current account status by calling this Get Account Info
+     *
+     * if unifiedMarginStatus=1, then it is classic account, you can call below upgrade endpoint to UTA Pro. Check Get Account Info after a while and if unifiedMarginStatus=4, then it is successfully upgraded to UTA Pro.
+     *
+     * if unifiedMarginStatus=2, then it is UMA, you need to call below upgrade endpoint twice. The first call, your account will be upgraded to UTA, please make sure you call this Get Account Info and unifiedMarginStatus=3, then you can start the 2nd call, if you see unifiedMarginStatus=4, then it is UTA Pro.
+     *
+     * if unifiedMarginStatus=3, then it is UTA, you need to call below upgrade endpoint to UTA Pro. Check Get Account Info after a while and if unifiedMarginStatus=4, then it is successfully upgraded to UTA Pro.
+     *
+     * IMPORTANT
+     * Banned / Express path users cannot upgrade the account to Unified Account for now.
+     *
+     * INFO
+     * You can upgrade the normal acct to unified acct without closing positions now, but please note belows:
+     *
+     * Please avoid upgrading during these period:
+     * every hour	50th minute to 5th minute of next hour
+     * Please ensure:
+     * No open order and debt in the Spot account
+     * No open order and hedge-mode USDT position or isolated margin USDT position in the Derivatives account
+     * No open order in the USDC Derivatives account
+     * Cannot have TPSL order either
+     * When the unifiedUpgradeProcess = PROCESS, it means that the system needs asynchronous verification processing, and the upgrade result cannot be returned in real time. You can check API Get Account Info after 3-5 minutes, check whether the upgrade is successful according to the "unifiedMarginStatus" field in the return.
+     *
+     * During the account upgrade process, the data of Rest API/Websocket stream may be inaccurate due to the fact that the account-related asset data is in the processing state. It is recommended to query and use it after the upgrade is completed.
+     *
+     * HTTP Request
+     * POST /v5/account/upgrade-to-uta
+     *
+     * Request Parameters
+     * None
+     *
+     * Response Parameters
+     * Parameter	Type	Comments
+     * unifiedUpdateStatus	string	Upgrade status. FAIL,PROCESS,SUCCESS
+     * unifiedUpdateMsg	Object	If PROCESS,SUCCESS, it returns null
+     * > msg	array	Error message array. Only FAIL will have this f
+     * https://bybit-exchange.github.io/docs/v5/account/upgrade-unified-account
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/upgrade-to-uta")
     Call<Object> upgradeAccountToUTA();
 
+    /**
+     * Get Borrow History
+     * Get interest records, sorted in reverse order of creation time.
+     *
+     * Unified account
+     *
+     * HTTP Request
+     * GET /v5/account/borrow-history
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * currency	false	string	USDC,USDT,BTC,ETH
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end time. timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 50]. Default: 20
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * https://bybit-exchange.github.io/docs/v5/account/borrow-history
+     * @param currency
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/borrow-history")
     Call<Object> getAccountBorrowHistory(@Query("currency") String currency,
@@ -1711,36 +1805,212 @@ public interface BybitApiService {
                                          @Query("limit") Integer limit,
                                          @Query("cursor") String cursor);
 
+    /**
+     * Set Collateral Coin
+     * You can decide whether the assets in the Unified account needs to be collateral coins.
+     *
+     * HTTP Request
+     * POST /v5/account/set-collateral-switch
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * coin	true	string	Coin name
+     * You can get collateral coin from here
+     * USDT, USDC cannot be switched off
+     * collateralSwitch	true	string	ON: switch on collateral, OFF: switch off collateral
+     * https://bybit-exchange.github.io/docs/v5/account/set-collateral
+     * @param setCollateralCoinRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/set-collateral-switch")
     Call<Object> setAccountCollateralCoin(@Body SetCollateralCoinRequest setCollateralCoinRequest);
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/account/collateral-info")
-    Call<Object> getAccountCollateralInfo();
-
+    /**
+     * Get Collateral Info
+     * Get the collateral information of the current unified margin account, including loan interest rate, loanable amount, collateral conversion rate, whether it can be mortgaged as margin, etc.
+     *
+     * HTTP Request
+     * GET /v5/account/collateral-info
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * currency	false	string	Asset currency of all current collateral
+     * Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * > currency	string	Currency of all current collateral
+     * > hourlyBorrowRate	string	Hourly borrow rate
+     * > maxBorrowingAmount	string	Max borrow amount. This value is shared across main-sub UIDs
+     * > freeBorrowingAmount	string	Depreciated field, always return "", please refer to freeBorrowingLimit
+     * > freeBorrowingLimit	string	The maximum limit for interest-free borrowing
+     * > freeBorrowAmount	string	The amount of borrowing within your total borrowing amount that is exempt from interest charges
+     * > borrowAmount	string	Borrow amount
+     * > availableToBorrow	string	Available amount to borrow. This value is shared across main-sub UIDs
+     * > borrowable	boolean	Whether currency can be borrowed
+     * > borrowUsageRate	string	Borrow usage rate: borrowAmount/maxBorrowingAmount. It is an actual value between 0 and 1
+     * > marginCollateral	boolean	Whether it can be used as a margin collateral currency (platform)
+     * When marginCollateral=false, then collateralSwitch is meaningless
+     * > collateralSwitch	boolean	Whether the collateral is turned on by user (user)
+     * When marginCollateral=true, then collateralSwitch is meaningful
+     * > collateralRatio	string	Collateral ratio
+     * https://bybit-exchange.github.io/docs/v5/account/collateral-info
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/collateral-info")
     Call<Object> getAccountCollateralInfo(@Query("currency") String currency);
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/asset/coin-greeks")
-    Call<Object> getAccountCoinGeeks();
-
+    /**
+     * Get Coin Greeks
+     * Get current account Greeks information
+     *
+     * HTTP Request
+     * GET /v5/asset/coin-greeks
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * baseCoin	false	string	Base coin. If not passed, all supported base coin greeks will be returned by default
+     * Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * > baseCoin	string	Base coin. e.g.,BTC,ETH,SOL
+     * > totalDelta	string	Delta value
+     * > totalGamma	string	Gamma value
+     * > totalVega	string	Vega value
+     * > totalTheta	string	Theta value
+     * https://bybit-exchange.github.io/docs/v5/account/coin-greeks
+     * @param baseCoin
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/coin-greeks")
     Call<Object> getAccountCoinGeeks(@Query("baseCoin") String baseCoin);
 
+    /**
+     * Get Fee Rate
+     * Get the trading fee rate.
+     *
+     * Covers: Spot / USDT perpetual / USDC perpetual / USDC futures / Inverse perpetual / Inverse futures / Options
+     *
+     * HTTP Request
+     * GET /v5/account/fee-rate
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. spot, linear, inverse, option
+     * symbol	false	string	Symbol name. Valid for linear, inverse, spot
+     * baseCoin	false	string	Base coin. SOL, BTC, ETH. Valid for option
+     * Response Parameters
+     * Parameter	Type	Comments
+     * category	string	Product type. spot, option. Derivatives does not have this field
+     * list	array	Object
+     * > symbol	string	Symbol name. Keeps "" for Options
+     * > baseCoin	string	Base coin. SOL, BTC, ETH
+     * Derivatives does not have this field
+     * Keeps "" for Spot
+     * > takerFeeRate	string	Taker fee rate
+     * > makerFeeRate	string	Maker fee rate
+     * https://bybit-exchange.github.io/docs/v5/account/fee-rate
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/fee-rate")
     Call<Object> getAccountFreeRate(@Query("category") String category,
                                     @Query("symbol") String symbol,
                                     @Query("baseCoin") String baseCoin);
 
+    /**
+     * Get Account Info
+     * Query the margin mode configuration of the account.
+     *
+     * NOTE
+     * Query the margin mode and the upgraded status of account
+     *
+     * HTTP Request
+     * GET /v5/account/info
+     *
+     * Request Parameters
+     * None
+     *
+     * Response Parameters
+     * Parameter	Type	Comments
+     * unifiedMarginStatus	integer	Account status
+     * marginMode	string	ISOLATED_MARGIN, REGULAR_MARGIN, PORTFOLIO_MARGIN
+     * dcpStatus	string	Disconnected-CancelAll-Prevention status: ON, OFF
+     * timeWindow	integer	DCP trigger time window which user pre-set. Between [3, 300] seconds, default: 10 sec
+     * smpGroup	integer	Smp group ID. If the UID has no group, it is 0 by default
+     * isMasterTrader	boolean	Whether the account is a master trader (copytrading). true, false
+     * updatedTime	string	Account data updated timestamp (ms)
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/info")
     Call<Object> getAccountInfo();
 
+    /**
+     * Get Transaction Log
+     * Query transaction logs in Unified account.
+     *
+     * HTTP Request
+     * GET /v5/account/transaction-log
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * accountType	false	string	Account Type. UNIFIED
+     * category	false	string	Product type. spot,linear,option
+     * currency	false	string	Currency
+     * baseCoin	false	string	BaseCoin. e.g., BTC of BTCPERP
+     * type	false	string	Types of transaction logs
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 50]. Default: 20
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * > id	string	Unique id
+     * > symbol	string	Symbol name
+     * > category	string	Product type
+     * > side	string	Side. Buy,Sell,None
+     * > transactionTime	string	Transaction timestamp (ms)
+     * > type	string	Type
+     * > qty	string	Quantity
+     * > size	string	Size
+     * > currency	string	USDC、USDT、BTC、ETH
+     * > tradePrice	string	Trade price
+     * > funding	string	Funding fee
+     * Positive value means receiving funding fee
+     * Negative value means deducting funding fee
+     * > fee	string	Trading fee
+     * Positive fee value means expense
+     * Negative fee value means rebates
+     * > cashFlow	string	Cash flow, e.g., (1) close the position, and unRPL converts to RPL, (2) 8-hour session settlement for USDC Perp and Futures, (3) transfer in or transfer out. This does not include trading fee, funding fee
+     * > change	string	Change = cashFlow + funding - fee
+     * > cashBalance	string	Cash balance. This is the wallet balance after a cash change
+     * > feeRate	string
+     * When type=TRADE, then it is trading fee rate
+     * When type=SETTLEMENT, it means funding fee rate. For side=Buy, feeRate=market fee rate; For side=Sell, feeRate= - market fee rate
+     * > bonusChange	string	The change of bonus
+     * > tradeId	string	Trade ID
+     * > orderId	string	Order ID
+     * > orderLinkId	string	User customised order ID
+     * nextPageCursor	string	Refer to the cursor request parameter
+     * https://bybit-exchange.github.io/docs/v5/account/transaction-log
+     * @param accountType
+     * @param category
+     * @param currency
+     * @param baseCoin
+     * @param type
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/transaction-log")
     Call<Object> getTransactionLog(@Query("accountType") String accountType,
@@ -1753,18 +2023,112 @@ public interface BybitApiService {
                                    @Query("limit") Integer limit,
                                    @Query("cursor") String cursor);
 
+    /**
+     * Set Margin Mode
+     * Default is regular margin mode
+     *
+     * INFO
+     * UTA account can be switched between these 3 kinds of margin modes, which is across UID level, working for USDT Perp, USDC Perp, USDC Futures and Options (Option does not support ISOLATED_MARGIN)
+     * Classic account can be switched between REGULAR_MARGIN and PORTFOLIO_MARGIN, only work for USDC Perp and Options trading.
+     * HTTP Request
+     * POST /v5/account/set-margin-mode
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * setMarginMode	true	string	ISOLATED_MARGIN, REGULAR_MARGIN(i.e. Cross margin), PORTFOLIO_MARGIN
+     * Response Parameters
+     * Parameter	Type	Comments
+     * reasons	array	Object. If requested successfully, it is an empty array
+     * > reasonCode	string	Fail reason code
+     * > reasonMsg	string	Fail reason msg
+     * https://bybit-exchange.github.io/docs/v5/account/set-margin-mode
+     * @param setMarginMode
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/set-margin-mode")
-    Call<Object> setAccountMarginMode(@Query("setMarginMode") String setMarginMode); // ISOLATED_MARGIN, REGULAR_MARGIN(i.e. Cross margin), PORTFOLIO_MARGIN
+    Call<Object> setAccountMarginMode(@Body SetMarginModeRequest setMarginMode); // ISOLATED_MARGIN, REGULAR_MARGIN(i.e. Cross margin), PORTFOLIO_MARGIN
 
+    /**
+     * Set MMP
+     * INFO
+     * What is MMP?
+     * Market Maker Protection (MMP) is an automated mechanism designed to protect market makers (MM) against liquidity risks and over-exposure in the market. It prevents simultaneous trade executions on quotes provided by the MM within a short time span. The MM can automatically pull their quotes if the number of contracts traded for an underlying asset exceeds the configured threshold within a certain time frame. Once MMP is triggered, any pre-existing MMP orders will be automatically canceled, and new orders tagged as MMP will be rejected for a specific duration — known as the frozen period — so that MM can reassess the market and modify the quotes.
+     *
+     * How to enable MMP
+     * Send an email to Bybit (financial.inst@bybit.com) or contact your business development (BD) manager to apply for MMP. After processed, the default settings are as below table:
+     *
+     * Parameter	Type	Comments	Default value
+     * baseCoin	string	Base coin	BTC
+     * window	string	Time window (millisecond)	5000
+     * frozenPeriod	string	Frozen period (millisecond)	100
+     * qtyLimit	string	Quantity limit	100
+     * deltaLimit	string	Delta limit	100
+     * Applicable
+     * Effective for options only. When you place an option order, set mmp=true, which means you mark this order as a mmp order.
+     *
+     * HTTP Request
+     * POST /v5/account/mmp-modify
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * baseCoin	true	string	Base coin
+     * window	true	string	Time window (ms)
+     * frozenPeriod	true	string	Frozen period (ms). "0" means the trade will remain frozen until manually reset
+     * qtyLimit	true	string	Trade qty limit (positive and up to 2 decimal places)
+     * deltaLimit	true	string	Delta limit (positive and up to 2 decimal places)
+     * https://bybit-exchange.github.io/docs/v5/account/set-mmp
+     * @param setMMPRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/mmp-modify")
     Call<Object> modifyAccountMMP(@Body SetMMPRequest setMMPRequest);
 
+    /**
+     *Reset MMP
+     * INFO
+     * Once the mmp triggered, you can unfreeze the account by this endpoint, then qtyLimit and deltaLimit will be reset to 0.
+     * If the account is not frozen, reset action can also remove previous accumulation, i.e., qtyLimit and deltaLimit will be reset to 0.
+     * HTTP Request
+     * POST /v5/account/mmp-reset
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * baseCoin	true	string	Base coin
+     * https://bybit-exchange.github.io/docs/v5/account/reset-mmp
+     * @param resetMMPRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/mmp-reset")
-    Call<Object> resetAccountMMP(@Query("baseCoin") String baseCoin);
+    Call<Object> resetAccountMMP(@Body ResetMMPRequest resetMMPRequest);
 
+    /**
+     * Get MMP State
+     * HTTP Request
+     * GET /v5/account/mmp-state
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * baseCoin	true	string	Base coin
+     * Response Parameters
+     * Parameter	Type	Comments
+     * result	array	Object
+     * > baseCoin	string	Base coin
+     * > mmpEnabled	boolean	Whether the account is enabled mmp
+     * > window	string	Time window (ms)
+     * > frozenPeriod	string	Frozen period (ms)
+     * > qtyLimit	string	Trade qty limit
+     * > deltaLimit	string	Delta limit
+     * > mmpFrozenUntil	string	Unfreeze timestamp (ms)
+     * > mmpFrozen	boolean	Whether the mmp is triggered.
+     * true: mmpFrozenUntil is meaningful
+     * false: please ignore the value of mmpFrozenUntil
+     * https://bybit-exchange.github.io/docs/v5/account/get-mmp-state
+     * @param baseCoin
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/account/mmp-state")
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);

@@ -1,5 +1,6 @@
 package com.bybit.api.client;
 
+import com.bybit.api.client.domain.account.AccountDataRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
@@ -11,7 +12,7 @@ import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
  * Bybit API facade, supporting asynchronous/non-blocking access Bybit's REST API.
  */
 public interface BybitApiAsyncRestClient {
-    // Market Data
+    // Market endpoints
     void getServerTime(BybitApiCallback<Object> callback);
 
     void getMarketLinesData(MarketDataRequest marketKlineRequest, BybitApiCallback<Object> callback);
@@ -46,7 +47,7 @@ public interface BybitApiAsyncRestClient {
 
     void getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest, BybitApiCallback<Object> callback);
 
-    // Position Data
+    // Position endpoints
     void getPositionInfo(PositionDataRequest positionListRequest, BybitApiCallback<Object> callback);
 
     void setPositionLeverage(PositionDataRequest setLeverageRequest, BybitApiCallback<Object> callback);
@@ -69,8 +70,7 @@ public interface BybitApiAsyncRestClient {
 
     void getClosePnlList(PositionDataRequest closePnlHistoryRequest, BybitApiCallback<Object> callback);
 
-    // Pre upgrade request
-    // Pre Upgrade
+    // Pre upgrade endpoints
     void getPreUpgradeOrderHistory(PreUpgradeDataRequest preupgradeOderHistoryRequest, BybitApiCallback<Object> callback);
 
     void getPreUpgradeTradeHistory(PreUpgradeDataRequest preUpgradeTradeHistoryRequest, BybitApiCallback<Object> callback);
@@ -82,4 +82,19 @@ public interface BybitApiAsyncRestClient {
     void getPreUpgradeOptionDelivery(PreUpgradeDataRequest preUpgradeOptionDeliveryRequest, BybitApiCallback<Object> callback);
 
     void getPreUpgradeUsdcSettlement(PreUpgradeDataRequest preUpgradeUsdcSettlementRequest, BybitApiCallback<Object> callback);
+
+    // Account endpoints
+    void getWalletBalance(AccountDataRequest walletBalanceRequest, BybitApiCallback<Object> callback);
+    void upgradeAccountToUTA(BybitApiCallback<Object> callback);
+    void getAccountBorrowHistory(AccountDataRequest borrowHistoryRequest, BybitApiCallback<Object> callback);
+    void setAccountCollateralCoin(AccountDataRequest setCollateralCoinRequest, BybitApiCallback<Object> callback);
+    void getAccountCollateralInfo(AccountDataRequest request, BybitApiCallback<Object> callback);
+    void getAccountCoinGeeks(AccountDataRequest request, BybitApiCallback<Object> callback);
+    void getAccountFreeRate(AccountDataRequest getFeeRateRequest, BybitApiCallback<Object> callback);
+    void getAccountInfo(BybitApiCallback<Object> callback);
+    void getTransactionLog(AccountDataRequest getTransactionLogRequest, BybitApiCallback<Object> callback);
+    void setAccountMarginMode(AccountDataRequest request, BybitApiCallback<Object> callback);
+    void modifyAccountMMP(AccountDataRequest setMMPRequest, BybitApiCallback<Object> callback);
+    void resetAccountMMP(AccountDataRequest request, BybitApiCallback<Object> callback);
+    void getAccountMMPState(AccountDataRequest request, BybitApiCallback<Object> callback);
 }

@@ -1,6 +1,7 @@
 package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitApiRestClient;
+import com.bybit.api.client.domain.account.AccountDataRequest;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.request.*;
@@ -432,7 +433,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
 
     // Account endpoints
     @Override
-    public Object getWalletBalance(WalletBalanceRequest walletBalanceRequest) {
+    public Object getWalletBalance(AccountDataRequest walletBalanceRequest) {
         return executeSync(bybitApiService.getWalletBalance(
                 walletBalanceRequest.getAccountType().getAccountTypeValue(),
                 walletBalanceRequest.getCoins()
@@ -445,7 +446,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getAccountBorrowHistory(BorrowHistoryRequest borrowHistoryRequest) {
+    public Object getAccountBorrowHistory(AccountDataRequest borrowHistoryRequest) {
         return executeSync(bybitApiService.getAccountBorrowHistory(
                 borrowHistoryRequest.getCurrency(),
                 borrowHistoryRequest.getStartTime(),
@@ -456,32 +457,24 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object setAccountCollateralCoin(SetCollateralCoinRequest setCollateralCoinRequest) {
-        return executeSync(bybitApiService.setAccountCollateralCoin(setCollateralCoinRequest));
+    public Object setAccountCollateralCoin(AccountDataRequest setCollateralCoinRequest) {
+        var request = converter.mapToSetCollateralCoinRequest(setCollateralCoinRequest);
+        return executeSync(bybitApiService.setAccountCollateralCoin(request));
     }
 
     @Override
-    public Object getAccountCollateralInfo(String currency) {
-        return executeSync((bybitApiService.getAccountCollateralInfo(currency)));
+    public Object getAccountCollateralInfo(AccountDataRequest request) {
+        return executeSync((bybitApiService.getAccountCollateralInfo(
+                request.getCurrency()
+        )));
     }
 
     @Override
-    public Object getAccountCollateralInfo() {
-        return executeSync((bybitApiService.getAccountCollateralInfo()));
+    public Object getAccountCoinGeeks(AccountDataRequest request) {
+        return executeSync((bybitApiService.getAccountCoinGeeks(request.getBaseCoin())));
     }
-
     @Override
-    public Object getAccountCoinGeeks(String baseCoin) {
-        return executeSync((bybitApiService.getAccountCoinGeeks(baseCoin)));
-    }
-
-    @Override
-    public Object getAccountCoinGeeks() {
-        return executeSync((bybitApiService.getAccountCoinGeeks()));
-    }
-
-    @Override
-    public Object getAccountFreeRate(GetFeeRateRequest getFeeRateRequest) {
+    public Object getAccountFreeRate(AccountDataRequest getFeeRateRequest) {
         return executeSync(bybitApiService.getAccountFreeRate(
                 getFeeRateRequest.getCategory().getProductTypeId(),
                 getFeeRateRequest.getSymbol(),
@@ -496,7 +489,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getTransactionLog(GetTransactionLogRequest getTransactionLogRequest) {
+    public Object getTransactionLog(AccountDataRequest getTransactionLogRequest) {
         return executeSync(bybitApiService.getTransactionLog(
                 getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
                 getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getProductTypeId(),
@@ -512,25 +505,27 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
 
 
     @Override
-    public Object setAccountMarginMode(String setMarginMode) {
-        return executeSync(bybitApiService.setAccountMarginMode(setMarginMode));
+    public Object setAccountMarginMode(AccountDataRequest setMarginMode) {
+        var request = converter.mapToSetMarginModeRequest(setMarginMode);
+        return executeSync(bybitApiService.setAccountMarginMode(request));
     }
 
     @Override
-    public Object modifyAccountMMP(SetMMPRequest setMMPRequest) {
-        return executeSync(bybitApiService.modifyAccountMMP(setMMPRequest));
+    public Object modifyAccountMMP(AccountDataRequest setMMPRequest) {
+        var request = converter.mapToSetMMPRequest(setMMPRequest);
+        return executeSync(bybitApiService.modifyAccountMMP(request));
     }
 
     @Override
-    public Object resetAccountMMP(String baseCoin) {
-        return executeSync(bybitApiService.resetAccountMMP(baseCoin));
+    public Object resetAccountMMP(AccountDataRequest request) {
+        var resetMMPRequest = converter.mapToResetMarginModeRequest(request);
+        return executeSync(bybitApiService.resetAccountMMP(resetMMPRequest));
     }
 
     @Override
-    public Object getAccountMMPState(String baseCoin) {
-        return executeSync(bybitApiService.getAccountMMPState(baseCoin));
+    public Object getAccountMMPState(AccountDataRequest request) {
+        return executeSync(bybitApiService.getAccountMMPState(request.getBaseCoin()));
     }
-
 
     // Spots
     // Spot Leverage endpoints

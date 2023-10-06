@@ -3,8 +3,13 @@ package com.bybit.api.client.service;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
+import com.bybit.api.client.domain.account.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
+import com.bybit.api.client.domain.account.request.SetMMPRequest;
+import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
+import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
@@ -289,6 +294,36 @@ public class JsonConverter {
                 .symbol(preUpgradeDataRequest.getSymbol())
                 .limit(preUpgradeDataRequest.getLimit())
                 .cursor(preUpgradeDataRequest.getCursor())
+                .build();
+    }
+
+    // Account request
+    public SetMarginModeRequest mapToSetMarginModeRequest(AccountDataRequest accountDataRequest) {
+        return SetMarginModeRequest.builder()
+                .setMarginMode(accountDataRequest.getSetMarginMode() == null ? null : accountDataRequest.getSetMarginMode().getDescription())
+                .build();
+    }
+
+    public ResetMMPRequest mapToResetMarginModeRequest(AccountDataRequest accountDataRequest) {
+        return ResetMMPRequest.builder()
+                .baseCoin(accountDataRequest.getBaseCoin())
+                .build();
+    }
+
+    public SetCollateralCoinRequest mapToSetCollateralCoinRequest(AccountDataRequest accountDataRequest) {
+        return SetCollateralCoinRequest.builder()
+                .coin(accountDataRequest.getCoin())
+                .collateralSwitch(accountDataRequest.getCollateralSwitch())
+                .build();
+    }
+
+    public SetMMPRequest mapToSetMMPRequest(AccountDataRequest accountDataRequest) {
+        return SetMMPRequest.builder()
+                .baseCoin(accountDataRequest.getBaseCoin())
+                .window(accountDataRequest.getWindow())
+                .frozenPeriod(accountDataRequest.getFrozenPeriod())
+                .qtyLimit(accountDataRequest.getQtyLimit())
+                .deltaLimit(accountDataRequest.getDeltaLimit())
                 .build();
     }
 

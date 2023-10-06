@@ -1,5 +1,6 @@
 package com.bybit.api.examples.http.sync;
 
+import com.bybit.api.client.domain.account.AccountDataRequest;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.account.request.BorrowHistoryRequest;
 import com.bybit.api.client.domain.account.request.GetTransactionLogRequest;
@@ -13,7 +14,7 @@ public class AccountExample {
         BybitApiRestClient client = factory.newRestClient();
 
         // Get wallet balance
-        var walletBalanceRequest = new WalletBalanceRequest.Builder(AccountType.UNIFIED).build();
+        var walletBalanceRequest = AccountDataRequest.builder().accountType(AccountType.UNIFIED).build();
         var walletBalanceData = client.getWalletBalance(walletBalanceRequest);
         System.out.println(walletBalanceData);
 
@@ -22,7 +23,7 @@ public class AccountExample {
         System.out.println(upgradeToUTAResult);
 
         // Get Borrow History
-        var accountBorrowHistoryRequest = new BorrowHistoryRequest.Builder().build();
+        var accountBorrowHistoryRequest = AccountDataRequest.builder().build();
         var accountBorrowData = client.getAccountBorrowHistory(accountBorrowHistoryRequest);
         System.out.println(accountBorrowData);
 
@@ -31,11 +32,12 @@ public class AccountExample {
         System.out.println(accountInfo);
 
         // Get Coin Geek
-        var coinGeeks = client.getAccountCoinGeeks();
+        var coinGeekRequest = AccountDataRequest.builder().baseCoin("BTC").build();
+        var coinGeeks = client.getAccountCoinGeeks(coinGeekRequest);
         System.out.println(coinGeeks);
 
         // Get Transaction Log
-        var transactionLogRequest = new GetTransactionLogRequest.Builder().build();
+        var transactionLogRequest = AccountDataRequest.builder().build();
         var transactionLogData = client.getTransactionLog(transactionLogRequest);
         System.out.println(transactionLogData);
 

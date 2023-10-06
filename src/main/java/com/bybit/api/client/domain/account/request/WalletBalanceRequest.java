@@ -12,6 +12,7 @@ request Parameters
 package com.bybit.api.client.domain.account.request;
 
 import com.bybit.api.client.domain.account.AccountType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,30 +20,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class WalletBalanceRequest {
-    private final AccountType accountType;
-    private final String coins;
-
-    private WalletBalanceRequest(Builder builder) {
-        this.accountType = builder.accountType;
-        this.coins = builder.coins;
-    }
-
-    public static class Builder {
-        private final AccountType accountType;
-        private String coins;
-
-        public Builder(AccountType accountType) {
-            this.accountType = accountType;
-        }
-
-        public Builder coins(String coins) {
-            this.coins = coins;
-            return this;
-        }
-
-        public WalletBalanceRequest build() {
-            return new WalletBalanceRequest(this);
-        }
-    }
+    private String accountType;
+    private String coins;
 }

@@ -10,6 +10,7 @@
 package com.bybit.api.client.domain.account.request;
 
 import com.bybit.api.client.domain.ProductType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,41 +18,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class GetFeeRateRequest {
-    private final ProductType category;
-    private final String symbol;
-    private final String baseCoin;
-
-    private GetFeeRateRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.baseCoin = builder.baseCoin;
-    }
-
-    public static class Builder {
-        private ProductType category;
-        private String symbol;
-        private String baseCoin;
-
-        public Builder category(ProductType category) {
-            this.category = category;
-            return this;
-        }
-
-        public Builder symbol(String symbol) {
-            this.symbol = symbol;
-            return this;
-        }
-
-        public Builder baseCoin(String baseCoin) {
-            this.baseCoin = baseCoin;
-            return this;
-        }
-
-        public GetFeeRateRequest build() {
-            return new GetFeeRateRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private String baseCoin;
 }
 
 
