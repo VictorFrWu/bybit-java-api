@@ -6,6 +6,8 @@ import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.trade.*;
+import com.bybit.api.client.domain.preupgrade.request.*;
+import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -131,7 +133,7 @@ public class JsonConverter {
         return null;
     }
 
-    // Position Mapper
+    // Position Request
     public SetLeverageRequest mapToSetLeverageRequest(PositionDataRequest positionDataRequest) {
         return SetLeverageRequest.builder()
                 .category(positionDataRequest.getCategory().getProductTypeId())
@@ -216,5 +218,78 @@ public class JsonConverter {
                 .build();
     }
 
+    // Pre upgrade request
+    public PreUpgradeClosePnlRequest mapToPreUpgradeClosePnlRequest(PreUpgradeDataRequest preUpgradeDataRequest) {
+        return PreUpgradeClosePnlRequest.builder()
+                .category(preUpgradeDataRequest.getCategory().getProductTypeId())
+                .symbol(preUpgradeDataRequest.getSymbol())
+                .startTime(preUpgradeDataRequest.getStartTime())
+                .endTime(preUpgradeDataRequest.getEndTime())
+                .limit(preUpgradeDataRequest.getLimit())
+                .cursor(preUpgradeDataRequest.getCursor())
+                .build();
+    }
+
+    public PreUpgradeOrderHistoryRequest mapToPreUpgradeOrderHistoryRequest(PreUpgradeDataRequest preUpgradeDataRequest) {
+        return PreUpgradeOrderHistoryRequest.builder()
+                .category(preUpgradeDataRequest.getCategory().getProductTypeId())
+                .symbol(preUpgradeDataRequest.getSymbol())
+                .baseCoin(preUpgradeDataRequest.getBaseCoin())
+                .orderId(preUpgradeDataRequest.getOrderId())
+                .orderLinkId(preUpgradeDataRequest.getOrderLinkId())
+                .orderFilter(preUpgradeDataRequest.getOrderFilter())
+                .orderStatus(preUpgradeDataRequest.getOrderStatus() != null ? preUpgradeDataRequest.getOrderStatus().getDescription() : null)
+                .startTime(preUpgradeDataRequest.getStartTime())
+                .endTime(preUpgradeDataRequest.getEndTime())
+                .limit(preUpgradeDataRequest.getLimit())
+                .cursor(preUpgradeDataRequest.getCursor())
+                .build();
+    }
+
+    public PreUpgradeOptionDeliveryRequest mapToPreUpgradeOptionDeliveryRequest(PreUpgradeDataRequest preUpgradeDataRequest) {
+        return PreUpgradeOptionDeliveryRequest.builder()
+                .category(preUpgradeDataRequest.getCategory().getProductTypeId())
+                .symbol(preUpgradeDataRequest.getSymbol())
+                .expDate(preUpgradeDataRequest.getExpDate())
+                .limit(preUpgradeDataRequest.getLimit())
+                .cursor(preUpgradeDataRequest.getCursor())
+                .build();
+    }
+
+    public PreUpgradeTransactionRequest mapToPreUpgradeTransactionRequest(PreUpgradeDataRequest preUpgradeDataRequest) {
+        return PreUpgradeTransactionRequest.builder()
+                .category(preUpgradeDataRequest.getCategory().getProductTypeId())
+                .baseCoin(preUpgradeDataRequest.getBaseCoin())
+                .transactionType(preUpgradeDataRequest.getTransactionType() != null ? preUpgradeDataRequest.getTransactionType().getTransactionTypeId() : null)
+                .startTime(preUpgradeDataRequest.getStartTime())
+                .endTime(preUpgradeDataRequest.getEndTime())
+                .limit(preUpgradeDataRequest.getLimit())
+                .cursor(preUpgradeDataRequest.getCursor())
+                .build();
+    }
+
+    public PreUpgradeTradeHistoryRequest mapToPreUpgradeTradeHistoryRequest(PreUpgradeDataRequest preUpgradeDataRequest) {
+        return PreUpgradeTradeHistoryRequest.builder()
+                .category(preUpgradeDataRequest.getCategory().getProductTypeId())
+                .symbol(preUpgradeDataRequest.getSymbol())
+                .orderId(preUpgradeDataRequest.getOrderId())
+                .orderLinkId(preUpgradeDataRequest.getOrderLinkId())
+                .baseCoin(preUpgradeDataRequest.getBaseCoin())
+                .startTime(preUpgradeDataRequest.getStartTime())
+                .endTime(preUpgradeDataRequest.getEndTime())
+                .execType(preUpgradeDataRequest.getExecType() != null ? preUpgradeDataRequest.getExecType().getExecTypeId() : null)
+                .limit(preUpgradeDataRequest.getLimit())
+                .cursor(preUpgradeDataRequest.getCursor())
+                .build();
+    }
+
+    public PreUpgradeUsdcSettlementRequest mapToPreUpgradeUsdcSettlementRequest(PreUpgradeDataRequest preUpgradeDataRequest) {
+        return PreUpgradeUsdcSettlementRequest.builder()
+                .category(preUpgradeDataRequest.getCategory().getProductTypeId())
+                .symbol(preUpgradeDataRequest.getSymbol())
+                .limit(preUpgradeDataRequest.getLimit())
+                .cursor(preUpgradeDataRequest.getCursor())
+                .build();
+    }
 
 }

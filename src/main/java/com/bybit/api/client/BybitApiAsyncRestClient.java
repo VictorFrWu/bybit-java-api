@@ -5,6 +5,7 @@ import com.bybit.api.client.domain.market.MarketInterval;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 
 /**
  * Bybit API facade, supporting asynchronous/non-blocking access Bybit's REST API.
@@ -67,4 +68,18 @@ public interface BybitApiAsyncRestClient {
     void getExecutionList(PositionDataRequest executionHistoryRequest, BybitApiCallback<Object> callback);
 
     void getClosePnlList(PositionDataRequest closePnlHistoryRequest, BybitApiCallback<Object> callback);
+
+    // Pre upgrade request
+    // Pre Upgrade
+    void getPreUpgradeOrderHistory(PreUpgradeDataRequest preupgradeOderHistoryRequest, BybitApiCallback<Object> callback);
+
+    void getPreUpgradeTradeHistory(PreUpgradeDataRequest preUpgradeTradeHistoryRequest, BybitApiCallback<Object> callback);
+
+    void getPreUpgradeClosePnl(PreUpgradeDataRequest preUpgradeClosePnlRequest, BybitApiCallback<Object> callback);
+
+    void getPreUpgradeTransaction(PreUpgradeDataRequest preUpgradeTransactionRequest, BybitApiCallback<Object> callback);
+
+    void getPreUpgradeOptionDelivery(PreUpgradeDataRequest preUpgradeOptionDeliveryRequest, BybitApiCallback<Object> callback);
+
+    void getPreUpgradeUsdcSettlement(PreUpgradeDataRequest preUpgradeUsdcSettlementRequest, BybitApiCallback<Object> callback);
 }

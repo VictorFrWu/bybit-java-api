@@ -9,6 +9,7 @@ import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
@@ -351,7 +352,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
 
     // Pre upgrade endpoints
     @Override
-    public Object getPreUpgradeClosePnl(PreUpgradeClosePnlRequest request) {
+    public Object getPreUpgradeClosePnl(PreUpgradeDataRequest request) {
         return executeSync(bybitApiService.getPreUpgradeClosePnl(
                 request.getCategory().getProductTypeId(),
                 request.getSymbol(),
@@ -363,7 +364,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getPreUpgradeOrderHistory(PreUpgradeOrderHistoryRequest request) {
+    public Object getPreUpgradeOrderHistory(PreUpgradeDataRequest request) {
         return executeSync(bybitApiService.getPreUpgradeOrderHistory(
                 request.getCategory().getProductTypeId(),
                 request.getSymbol(),
@@ -371,7 +372,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
                 request.getOrderId(),
                 request.getOrderLinkId(),
                 request.getOrderFilter(),
-                request.getOrderStatus(),
+                request.getOrderStatus() == null ? null : request.getOrderStatus().getDescription(),
                 request.getStartTime(),
                 request.getEndTime(),
                 request.getLimit(),
@@ -380,7 +381,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getPreUpgradeTradeHistory(PreUpgradeTradeHistoryRequest request) {
+    public Object getPreUpgradeTradeHistory(PreUpgradeDataRequest request) {
         return executeSync(bybitApiService.getPreUpgradeTradeHistory(
                 request.getCategory().getProductTypeId(),
                 request.getSymbol(),
@@ -396,7 +397,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getPreUpgradeTransaction(PreUpgradeTransactionRequest request) {
+    public Object getPreUpgradeTransaction(PreUpgradeDataRequest request) {
         return executeSync(bybitApiService.getPreUpgradeTransaction(
                 request.getCategory().getProductTypeId(),
                 request.getBaseCoin(),
@@ -409,7 +410,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getPreUpgradeOptionDelivery(PreUpgradeOptionDeliveryRequest request) {
+    public Object getPreUpgradeOptionDelivery(PreUpgradeDataRequest request) {
         return executeSync(bybitApiService.getPreUpgradeOptionDelivery(
                 request.getCategory().getProductTypeId(),
                 request.getSymbol(),
@@ -420,7 +421,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getPreUpgradeUsdcSettlement(PreUpgradeUsdcSettlementRequest request) {
+    public Object getPreUpgradeUsdcSettlement(PreUpgradeDataRequest request) {
         return executeSync(bybitApiService.getPreUpgradeUsdcSettlement(
                 request.getCategory().getProductTypeId(),
                 request.getSymbol(),

@@ -1458,6 +1458,34 @@ public interface BybitApiService {
                                  @Query("cursor") String cursor);
 
     // Pre upgrade data endpoints
+
+    /**
+     * Get Pre-upgrade Closed PnL
+     * Query user's closed profit and loss records from before you upgraded the account to a Unified account. The results are sorted by createdTime in descending order.
+     *
+     * For now, it only supports to query USDT perpetual, Inverse perpetual and futures.
+     *
+     * HTTP Request
+     * GET /v5/pre-upgrade/position/closed-pnl
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type linear, inverse
+     * symbol	true	string	Symbol name
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 100]. Default: 50
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     *
+     * https://bybit-exchange.github.io/docs/v5/pre-upgrade/close-pnl
+     * @param category
+     * @param symbol
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/pre-upgrade/position/closed-pnl")
     Call<Object> getPreUpgradeClosePnl(@Query("category") String category,
@@ -1467,6 +1495,28 @@ public interface BybitApiService {
                                        @Query("limit") Integer limit,
                                        @Query("cursor") String cursor);
 
+    /**
+     * Get Pre-upgrade Option Delivery Record
+     * Query delivery records of Option before you upgraded the account to a Unified account, sorted by deliveryTime in descending order
+     *
+     * HTTP Request
+     * GET /v5/pre-upgrade/asset/delivery-record
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. option
+     * symbol	false	string	Symbol name
+     * expDate	false	string	Expiry date. 25MAR22. Default: return all
+     * limit	false	integer	Limit for data size per page. [1, 50]. Default: 20
+     * cursor	false	string	Cursor. Used for pagination
+     * https://bybit-exchange.github.io/docs/v5/pre-upgrade/delivery
+     * @param category
+     * @param symbol
+     * @param expDate
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/pre-upgrade/asset/delivery-record")
     Call<Object> getPreUpgradeOptionDelivery(@Query("category") String category,
@@ -1475,6 +1525,46 @@ public interface BybitApiService {
                                              @Query("limit") Integer limit,
                                              @Query("cursor") String cursor);
 
+    /**
+     * Get Pre-upgrade Order History
+     * After the account is upgraded to a Unified account, you can get the orders which occurred before the upgrade.
+     *
+     * INFO
+     * can get all status in 7 days
+     * can only get filled orders beyond 7 days
+     * HTTP Request
+     * GET /v5/pre-upgrade/order/history
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear, inverse, option
+     * symbol	false	string	Symbol name.
+     * If not passed, return settleCoin=USDT by default
+     * To get USDC perp, please pass symbol
+     * baseCoin	false	string	Base coin. Used for option query
+     * orderId	false	string	Order ID
+     * orderLinkId	false	string	User customised order ID
+     * orderFilter	false	string	Order: active order, StopOrder: conditional order
+     * orderStatus	false	string	Order status
+     * startTime	false	integer	The start timestamp (ms)
+     * startTime and endTime must be passed together
+     * If not passed, query the past 7 days data by default
+     * endTime	false	integer	The end timestamp (ms)
+     * limit	false	integer	Limit for data size per page. [1, 50]. Default: 20
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @param category
+     * @param symbol
+     * @param baseCoin
+     * @param orderId
+     * @param orderLinkId
+     * @param orderFilter
+     * @param orderStatus
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/pre-upgrade/order/history")
     Call<Object> getPreUpgradeOrderHistory(@Query("category") String category,
@@ -1489,6 +1579,43 @@ public interface BybitApiService {
                                            @Query("limit") Integer limit,
                                            @Query("cursor") String cursor);
 
+    /**
+     * Get Pre-upgrade Trade History
+     * Get users' execution records which occurred before you upgraded the account to a Unified account, sorted by execTime in descending order
+     *
+     * For now, it supports to query USDT perpetual, USDC perpetual, Inverse perpetual and futures, Option.
+     *
+     * TIP
+     * Response items will have sorting issues When 'execTime' is the same. This issue is currently being optimized and will be released at the end of October. If you want to receive real-time execution information, Use the websocket stream (recommended).
+     * You may have multiple executions in a single order.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * HTTP Request
+     * GET /v5/pre-upgrade/execution/list
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type linear, inverse, option
+     * symbol	false	string	Symbol name
+     * orderId	false	string	Order ID
+     * orderLinkId	false	string	User customised order ID
+     * baseCoin	false	string	Base coin. Used for option
+     * startTime	false	integer	The start timestamp (ms)
+     * endTime	false	integer	The end timestamp (ms)
+     * execType	false	string	Execution type
+     * limit	false	integer	Limit for data size per page. [1, 100]. Default: 50
+     * cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @param category
+     * @param symbol
+     * @param orderId
+     * @param orderLinkId
+     * @param baseCoin
+     * @param startTime
+     * @param endTime
+     * @param execType
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/pre-upgrade/execution/list")
     Call<Object> getPreUpgradeTradeHistory(@Query("category") String category,
@@ -1502,6 +1629,34 @@ public interface BybitApiService {
                                            @Query("limit") Integer limit,
                                            @Query("cursor") String cursor);
 
+    /**
+     * Get Pre-upgrade Transaction Log
+     * Query transaction logs which occurred in the USDC Derivatives wallet before the account was upgraded to a Unified account.
+     *
+     * You can get USDC Perpetual, Option records.
+     *
+     * HTTP Request
+     * GET /v5/pre-upgrade/account/transaction-log
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	false	string	Product type. linear,option
+     * baseCoin	false	string	BaseCoin. e.g., BTC of BTCPERP
+     * type	false	string	Types of transaction logs
+     * startTime	false	integer	The start timestamp (ms) of creation
+     * endTime	false	integer	The end timestamp (ms) of creation
+     * limit	false	integer	Limit for data size per page. [1, 50]. Default: 20
+     * cursor	false	string	Cursor. Used for pagination
+     * https://bybit-exchange.github.io/docs/v5/pre-upgrade/transaction-log
+     * @param category
+     * @param baseCoin
+     * @param type
+     * @param startTime
+     * @param endTime
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/pre-upgrade/account/transaction-log")
     Call<Object> getPreUpgradeTransaction(@Query("category") String category,
@@ -1512,6 +1667,25 @@ public interface BybitApiService {
                                           @Query("limit") Integer limit,
                                           @Query("cursor") String cursor);
 
+    /**
+     * Get Pre-upgrade USDC Session Settlement
+     * Query session settlement records of USDC perpetual before you upgrade the account to Unified account.
+     *
+     * HTTP Request
+     * GET /v5/pre-upgrade/asset/settlement-record
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type. linear
+     * symbol	false	string	Symbol name
+     * limit	false	integer	Limit for data size per page. [1, 50]. Default: 20
+     * cursor	false	string	Cursor. Used for pagination
+     * @param category
+     * @param symbol
+     * @param limit
+     * @param cursor
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/pre-upgrade/asset/settlement-record")
     Call<Object> getPreUpgradeUsdcSettlement(@Query("category") String category,

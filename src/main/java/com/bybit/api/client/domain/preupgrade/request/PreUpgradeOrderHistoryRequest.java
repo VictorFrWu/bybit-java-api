@@ -20,6 +20,7 @@
 package com.bybit.api.client.domain.preupgrade.request;
 
 import com.bybit.api.client.domain.ProductType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,103 +28,18 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class PreUpgradeOrderHistoryRequest {
-    private final ProductType category;
-    private final String symbol;
-    private final String baseCoin;
-    private final String orderId;
-    private final String orderLinkId;
-    private final String orderFilter;
-    private final String orderStatus;
-    private final Long startTime;
-    private final Long endTime;
-    private final Integer limit;
-    private final String cursor;
-
-    private PreUpgradeOrderHistoryRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.baseCoin = builder.baseCoin;
-        this.orderId = builder.orderId;
-        this.orderLinkId = builder.orderLinkId;
-        this.orderFilter = builder.orderFilter;
-        this.orderStatus = builder.orderStatus;
-        this.startTime = builder.startTime;
-        this.endTime = builder.endTime;
-        this.limit = builder.limit;
-        this.cursor = builder.cursor;
-    }
-
-    public static class Builder {
-        private final ProductType category;
-        private String symbol;// Default value USDT
-        private String baseCoin;
-        private String orderId;
-        private String orderLinkId;
-        private String orderFilter;
-        private String orderStatus;
-        private Long startTime;
-        private Long endTime;
-        private Integer limit; // Default value 20
-        private String cursor;
-
-        public Builder(ProductType category) {
-            this.category = category;
-        }
-
-        public Builder symbol(String symbol) {
-            this.symbol = symbol;
-            return this;
-        }
-
-        public Builder baseCoin(String baseCoin) {
-            this.baseCoin = baseCoin;
-            return this;
-        }
-
-        public Builder orderId(String orderId) {
-            this.orderId = orderId;
-            return this;
-        }
-
-        public Builder orderLinkId(String orderLinkId) {
-            this.orderLinkId = orderLinkId;
-            return this;
-        }
-
-        public Builder orderFilter(String orderFilter) {
-            this.orderFilter = orderFilter;
-            return this;
-        }
-
-        public Builder orderStatus(String orderStatus) {
-            this.orderStatus = orderStatus;
-            return this;
-        }
-
-        public Builder startTime(Long startTime) {
-            this.startTime = startTime;
-            return this;
-        }
-
-        public Builder endTime(Long endTime) {
-            this.endTime = endTime;
-            return this;
-        }
-
-        public Builder limit(Integer limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder cursor(String cursor) {
-            this.cursor = cursor;
-            return this;
-        }
-
-        public PreUpgradeOrderHistoryRequest build() {
-            return new PreUpgradeOrderHistoryRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private String baseCoin;
+    private String orderId;
+    private String orderLinkId;
+    private String orderFilter;
+    private String orderStatus;
+    private Long startTime;
+    private Long endTime;
+    private Integer limit;
+    private String cursor;
 }
 

@@ -1,44 +1,38 @@
-package com.bybit.api.examples.http.sync;
+package com.bybit.api.examples.http.async;
 
+import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
-import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
-public class PreUpgradeExample {
+public class PreUpgradeAsyncExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newAsyncRestClient();
 
         // Get preupgrade order history
         var preupgradeOrderHistoryRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
-        var preupgradeOrderHistoryData = client.getPreUpgradeOrderHistory(preupgradeOrderHistoryRequest);
-        System.out.println(preupgradeOrderHistoryData);
+        client.getPreUpgradeOrderHistory(preupgradeOrderHistoryRequest, System.out::println);
 
         // Get preupgrade trade history
         var preUpgradeTradeHistoryRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
-        var preUpgradeTradeHistoryData = client.getPreUpgradeTradeHistory(preUpgradeTradeHistoryRequest);
-        System.out.println(preUpgradeTradeHistoryData);
+        client.getPreUpgradeTradeHistory(preUpgradeTradeHistoryRequest, System.out::println);
 
         // Get preupgrade close pnl history
         var preupgradeClosePnlRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
-        var preUpgradeClosePnl = client.getPreUpgradeClosePnl(preupgradeClosePnlRequest);
-        System.out.println(preUpgradeClosePnl);
+        client.getPreUpgradeClosePnl(preupgradeClosePnlRequest, System.out::println);
 
         // Get preupgrade Transaction log
         var preUpgradeTransactionRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
-        var preUpgradeTransaction = client.getPreUpgradeTransaction(preUpgradeTransactionRequest);
-        System.out.println(preUpgradeTransaction);
+        client.getPreUpgradeTransaction(preUpgradeTransactionRequest, System.out::println);
+
 
         // Get preupgrade option delivery
         var preUpgradeOptionDeliveryRequest = PreUpgradeDataRequest.builder().category(ProductType.OPTION).build();
-        var preUpgradeOptionDeliveryData = client.getPreUpgradeOptionDelivery(preUpgradeOptionDeliveryRequest);
-        System.out.println(preUpgradeOptionDeliveryData);
+        client.getPreUpgradeOptionDelivery(preUpgradeOptionDeliveryRequest, System.out::println);
 
         // Get preupgrade usdc session settlement
         var preUpgradeUsdcSettlementRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
-        var preUpgradeUsdcSettlementData = client.getPreUpgradeUsdcSettlement(preUpgradeUsdcSettlementRequest);
-        System.out.println(preUpgradeUsdcSettlementData);
+        client.getPreUpgradeUsdcSettlement(preUpgradeUsdcSettlementRequest, System.out::println);
     }
 }

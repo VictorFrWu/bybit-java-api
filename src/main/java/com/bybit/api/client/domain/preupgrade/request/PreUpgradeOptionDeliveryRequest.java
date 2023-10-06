@@ -10,6 +10,7 @@
 package com.bybit.api.client.domain.preupgrade.request;
 
 import com.bybit.api.client.domain.ProductType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,54 +18,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class PreUpgradeOptionDeliveryRequest {
-    private final ProductType category;
-    private final String symbol;
-    private final String expDate;
-    private final Integer limit;
-    private final String cursor;
-
-    private PreUpgradeOptionDeliveryRequest(Builder builder) {
-        this.category = builder.category;
-        this.symbol = builder.symbol;
-        this.expDate = builder.expDate;
-        this.limit = builder.limit;
-        this.cursor = builder.cursor;
-    }
-
-    public static class Builder {
-        private final ProductType category;
-        private String symbol;
-        private String expDate;
-        private Integer limit; // Default value 20
-        private String cursor;
-
-        public Builder(ProductType category) {
-            this.category = category;
-        }
-
-        public Builder symbol(String symbol) {
-            this.symbol = symbol;
-            return this;
-        }
-
-        public Builder expDate(String expDate) {
-            this.expDate = expDate;
-            return this;
-        }
-
-        public Builder limit(Integer limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder cursor(String cursor) {
-            this.cursor = cursor;
-            return this;
-        }
-
-        public PreUpgradeOptionDeliveryRequest build() {
-            return new PreUpgradeOptionDeliveryRequest(this);
-        }
-    }
+    private String category;
+    private String symbol;
+    private String expDate;
+    private Integer limit;
+    private String cursor;
 }

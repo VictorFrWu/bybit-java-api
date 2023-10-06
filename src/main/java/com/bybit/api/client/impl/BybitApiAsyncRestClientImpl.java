@@ -6,6 +6,7 @@ import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.market.request.*;
 import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.bybit.api.client.service.JsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -274,6 +275,86 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
                 closePnlHistoryRequest.getEndTime(),
                 closePnlHistoryRequest.getLimit(),
                 closePnlHistoryRequest.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    // pre upgrade endpoints
+    @Override
+    public void getPreUpgradeOrderHistory(PreUpgradeDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getPreUpgradeOrderHistory(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getBaseCoin(),
+                request.getOrderId(),
+                request.getOrderLinkId(),
+                request.getOrderFilter(),
+                request.getOrderStatus() == null ? null : request.getOrderStatus().getDescription(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getLimit(),
+                request.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getPreUpgradeTradeHistory(PreUpgradeDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getPreUpgradeTradeHistory(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getOrderId(),
+                request.getOrderLinkId(),
+                request.getBaseCoin(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getExecType() == null ? null : request.getExecType().getExecTypeId(),
+                request.getLimit(),
+                request.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getPreUpgradeClosePnl(PreUpgradeDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getPreUpgradeClosePnl(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getLimit(),
+                request.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getPreUpgradeTransaction(PreUpgradeDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getPreUpgradeTransaction(
+                request.getCategory().getProductTypeId(),
+                request.getBaseCoin(),
+                request.getTransactionType() == null ? null : request.getTransactionType().getTransactionTypeId(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getLimit(),
+                request.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getPreUpgradeOptionDelivery(PreUpgradeDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getPreUpgradeOptionDelivery(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getExpDate(),
+                request.getLimit(),
+                request.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getPreUpgradeUsdcSettlement(PreUpgradeDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getPreUpgradeUsdcSettlement(
+                request.getCategory().getProductTypeId(),
+                request.getSymbol(),
+                request.getLimit(),
+                request.getCursor()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 }
