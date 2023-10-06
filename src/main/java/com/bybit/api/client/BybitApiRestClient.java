@@ -1,24 +1,17 @@
 package com.bybit.api.client;
 
 import com.bybit.api.client.domain.account.AccountDataRequest;
-import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
-import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.position.PositionDataRequest;
-import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
-import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.*;
-import com.bybit.api.client.domain.user.request.ApiKeyRequest;
-import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
-import com.bybit.api.client.domain.user.request.SubUserRequest;
+import com.bybit.api.client.domain.user.UserDataRequest;
 
 public interface BybitApiRestClient {
     // Market Data
@@ -79,22 +72,18 @@ public interface BybitApiRestClient {
 
     Object getClosePnlList(PositionDataRequest closePnlHistoryRequest);
 
-    // User
-    Object getCurrentAPIKeyInfo();
-
+    // User Data
+    Object createSubMember(UserDataRequest subUserRequest);
+    Object createSubAPI(UserDataRequest createApiKeyRequest);
     Object getSubUIDList();
-
-    Object createSubMember(SubUserRequest subUserRequest);
-
-    Object createSubAPI(ApiKeyRequest apiKeyRequest);
-
-    Object freezeSubMember(FreezeSubUIDRquest freezeSubUIDRquest);
-
-    Object getUIDWalletType(String memberIds);
-
-    Object getUIDWalletType();
-
-    Object getAffiliateUserInfo(String uid);
+    Object freezeSubMember(UserDataRequest freezeSubUIDRequest);
+    Object getCurrentAPIKeyInfo();
+    Object getUIDWalletType(UserDataRequest userDataRequest);
+    Object modifyMasterApiKey(UserDataRequest userDataRequest);
+    Object modifySubApiKey(UserDataRequest userDataRequest);
+    Object deleteMasterApiKey();
+    Object deleteSubApiKey(UserDataRequest userDataRequest);
+    Object getAffiliateUserInfo(UserDataRequest userDataRequest);
 
     // Pre Upgrade
     Object getPreUpgradeOrderHistory(PreUpgradeDataRequest preupgradeOderHistoryRequest);

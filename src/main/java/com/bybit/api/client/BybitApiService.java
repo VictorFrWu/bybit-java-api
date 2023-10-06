@@ -13,8 +13,11 @@ import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
-import com.bybit.api.client.domain.user.request.ApiKeyRequest;
+import com.bybit.api.client.domain.user.UserDataRequest;
+import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
+import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
+import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -987,47 +990,458 @@ public interface BybitApiService {
     Call<Object> amendBatchOrder(@Body BatchOrderRequest batchOrderRequest);
 
     // User
-    /*
-    to do : modify & delete master and sub api key !! need to investigate
-    * */
+
+    /**
+     * Get API Key Information
+     * Get the information of the api key. Use the api key pending to be checked to call the endpoint. Both master and sub user's api key are applicable.
+     *
+     * TIP
+     * Any permission can access this endpoint.
+     *
+     * HTTP Request
+     * GET /v5/user/query-api
+     *
+     * Request Parameters
+     * None
+     *
+     * Response Parameters
+     * Parameter	Type	Comments
+     * id	string	Unique ID. Internal use
+     * note	string	The remark
+     * apiKey	string	Api key
+     * readOnly	integer	0：Read and Write. 1：Read only
+     * secret	string	Always ""
+     * permissions	Object	The types of permission
+     * > ContractTrade	array	Permission of contract trade
+     * > Spot	array	Permission of spot
+     * > Wallet	array	Permission of wallet
+     * > Options	array	Permission of USDC Contract. It supports trade option and USDC perpetual.
+     * > Derivatives	array	Permission of derivatives
+     * > CopyTrading	array	Permission of copytrade. Not applicable to subaccount, always []
+     * > BlockTrade	array	Permission of blocktrade. Not applicable to subaccount, always []
+     * > Exchange	array	Permission of exchange
+     * > NFT	array	Permission of NFT. Not applicable to sub account, always []
+     * ips	array	IP bound
+     * type	integer	The type of api key. 1：personal, 2：connected to the third-party app
+     * deadlineDay	integer	The remaining valid days of api key. Only for those api key with no IP bound or the password has been changed
+     * expiredAt	datetime	The expiry day of the api key. Only for those api key with no IP bound or the password has been changed
+     * createdAt	datetime	The create day of the api key
+     * unified	integer	Whether the account to which the api key belongs is a unified margin account. 0：regular account; 1：unified margin account
+     * uta	integer	Whether the account to which the account upgrade to unified trade account. 0：regular account; 1：unified trade account
+     * userID	integer	User ID
+     * inviterID	integer	Inviter ID (the UID of the account which invited this account to the platform)
+     * vipLevel	string	VIP Level
+     * mktMakerLevel	string	Market maker level
+     * affiliateID	integer	Affiliate Id. 0 represents that there is no binding relationship.
+     * rsaPublicKey	string	Rsa public key
+     * isMaster	boolean	If this api key belongs to master account or not
+     * parentUid	string	The main account uid. Returns "0" when the endpoint is called by main account
+     * https://bybit-exchange.github.io/docs/v5/user/apikey-info
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/user/query-api")
     Call<Object> getCurrentAPIKeyInfo();
 
+    /**
+     * Get Sub UID List
+     * Get all sub UID of master account. Use master user's api key only.
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint..
+     *
+     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
+     * HTTP Request
+     * GET /v5/user/query-sub-members
+     *
+     * Request Parameters
+     * None
+     *
+     * Response Parameters
+     * Parameter	Type	Comments
+     * subMembers	array	Object
+     * > uid	string	Sub user Id
+     * > username	string	Username
+     * > memberType	integer	1: normal sub account, 6: custodial sub account
+     * > status	integer	The status of the user account
+     * 1: normal
+     * 2: login banned
+     * 4: frozen
+     * > accountMode	integer	The account mode of the user account
+     * 1: classic account
+     * 2: UMA
+     * 3: UTA
+     * > remark	string	The remark
+     * https://bybit-exchange.github.io/docs/v5/user/subuid-list
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/user/query-sub-members")
     Call<Object> getSubUIDList();
 
+    /**
+     * Get UID Wallet Type
+     * Get available wallet types for the master account or sub account
+     *
+     * TIP
+     * Master api key: you can get master account and appointed sub account available wallet types, and support up to 200 sub UID in one request.
+     * Sub api key: you can get its own available wallet types
+     * PRACTICE
+     * "FUND" - If you never deposit or transfer capital into it, this wallet type will not be shown in the array, but your account indeed has this wallet.
+     *
+     * ["SPOT","OPTION","FUND","CONTRACT"] : Classic account and Funding wallet was operated before
+     * ["SPOT","OPTION","CONTRACT"] : Classic account and Funding wallet is never operated
+     * ["SPOT","UNIFIED","FUND","CONTRACT"] : UMA account and Funding wallet was operated before. (No UMA account after we forced upgrade to UTA)
+     * ["SPOT","UNIFIED","CONTRACT"] : UMA account and Funding wallet is never operated. (No UMA account after we forced upgrade to UTA)
+     * ["UNIFIED""FUND","CONTRACT"] : UTA account and Funding wallet was operated before.
+     * ["UNIFIED","CONTRACT"] : UTA account and Funding wallet is never operated.
+     * HTTP Request
+     * GET /v5/user/get-member-type
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * memberIds	false	string
+     * Query itself wallet types when not passed
+     * When use master api key to query sub UID, master UID data is always returned in the top of the array
+     * Multiple sub UID are supported, separated by commas
+     * This param is ignored when you use sub account api key
+     * Response Parameters
+     * Parameter	Type	Comments
+     * accounts	array	Object
+     * > uid	string	Master/Sub user Id
+     * > accountType	array	Wallets array. SPOT, CONTRACT, FUND, OPTION, UNIFIED. Please check above practice to understand the value
+     * https://bybit-exchange.github.io/docs/v5/user/wallet-type
+     * @param memberIds
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/user/get-member-type")
     Call<Object> getUIDWalletType(@Query("memberIds") String memberIds);
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/user/get-member-type")
-    Call<Object> getUIDWalletType();
-
+    /**
+     * Get Affiliate User Info
+     * This API is used for affiliate to get their users information
+     *
+     * TIP
+     * Use master UID only
+     * The api key can only have "Affiliate" permission
+     * The transaction volume and deposit amount are the total amount of the user done on Bybit, and have nothing to do with commission settlement. Any transaction volume data related to commission settlement is subject to the Affiliate Portal.
+     * HTTP Request
+     * GET /v5/user/aff-customer-info
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * uid	true	string	The master account UID of affiliate's client
+     * Response Parameters
+     * Parameter	Type	Comments
+     * uid	string	UID
+     * vipLevel	string	VIP level
+     * takerVol30Day	string	Taker volume in last 30 days (USDT). All volume related attributes below includes Derivatives, Option, Spot volume
+     * makerVol30Day	string	Maker volume in last 30 days (USDT)
+     * tradeVol30Day	string	Total trading volume in last 30 days (USDT)
+     * depositAmount30Day	string	Deposit amount in last 30 days (USDT)
+     * takerVol365Day	string	Taker volume in the past year (USDT)
+     * makerVol365Day	string	Maker volume in the past year (USDT)
+     * tradeVol365Day	string	Total trading volume in the past year (USDT)
+     * depositAmount365Day	string	Total deposit amount in the past year (USDT)
+     * totalWalletBalance	string	Wallet balance range
+     * 1: less than 100 USDT value
+     * 2: [100, 250) USDT value
+     * 3: [250, 500) USDT value
+     * 4: greater than 500 USDT value
+     * depositUpdateTime	string	The update date time (UTC) of deposit data
+     * volUpdateTime	string	The update date of volume data time (UTC)
+     * https://bybit-exchange.github.io/docs/v5/user/affiliate-info
+     * @param uid
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/user/aff-customer-info")
-    Call<Object> getAffiliateUserInfo(@Query("iod") String uid);
+    Call<Object> getAffiliateUserInfo(@Query("uid") String uid);
 
+    /**
+     * Create Sub UID
+     * Create a new sub user id. Use master user's api key only.
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint..
+     *
+     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
+     * HTTP Request
+     * POST /v5/user/create-sub-member
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * username	true	string	Give a username of the new sub user id.
+     * 6-16 characters, must include both numbers and letters.
+     * cannot be the same as the exist or deleted one.
+     * password	false	string	Set the password for the new sub user id.
+     * 8-30 characters, must include numbers, upper and lowercase letters.
+     * memberType	true	integer	1: normal sub account, 6: custodial sub account
+     * switch	false	integer
+     * 0: turn off quick login (default)
+     * 1: turn on quick login.
+     * isUta	false	boolean
+     * true: create UTA account
+     * false(default): create classic account
+     * note	false	string	Set a remark
+     * Response Parameters
+     * Parameter	Type	Comments
+     * uid	string	Sub user Id
+     * username	string	Give a username of the new sub user id.
+     * 6-16 characters, must include both numbers and letters.
+     * cannot be the same as the exist or deleted one.
+     * memberType	integer	1: normal sub account, 6: custodial sub account
+     * status	integer	The status of the user account
+     * 1: normal
+     * 2: login banned
+     * 4: frozen
+     * remark	string	The remark
+     * https://bybit-exchange.github.io/docs/v5/user/create-subuid
+     * @param userSubMemberRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/create-sub-member")
-    Call<Object> createSubMember(@Query("username") String username,
-                                 @Query("password") String password,
-                                 @Query("memberType") Integer memberType,
-                                 @Query("switch") Integer switchOption,
-                                 @Query("isUta") boolean isUta,
-                                 @Query("note") String note);
+    Call<Object> createSubMember(@Body UserSubMemberRequest userSubMemberRequest);
 
+    /**
+     * Create Sub UID
+     * Create a new sub user id. Use master user's api key only.
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint..
+     *
+     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
+     * HTTP Request
+     * POST /v5/user/create-sub-member
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * username	true	string	Give a username of the new sub user id.
+     * 6-16 characters, must include both numbers and letters.
+     * cannot be the same as the exist or deleted one.
+     * password	false	string	Set the password for the new sub user id.
+     * 8-30 characters, must include numbers, upper and lowercase letters.
+     * memberType	true	integer	1: normal sub account, 6: custodial sub account
+     * switch	false	integer
+     * 0: turn off quick login (default)
+     * 1: turn on quick login.
+     * isUta	false	boolean
+     * true: create UTA account
+     * false(default): create classic account
+     * note	false	string	Set a remark
+     * Response Parameters
+     * Parameter	Type	Comments
+     * uid	string	Sub user Id
+     * username	string	Give a username of the new sub user id.
+     * 6-16 characters, must include both numbers and letters.
+     * cannot be the same as the exist or deleted one.
+     * memberType	integer	1: normal sub account, 6: custodial sub account
+     * status	integer	The status of the user account
+     * 1: normal
+     * 2: login banned
+     * 4: frozen
+     * remark	string	The remark
+     * @param createApiKeyRequest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/create-sub-api")
-    Call<Object> createSubAPI(
-            @Body ApiKeyRequest apiKeyRequest);
+    Call<Object> createSubAPI(@Body CreateApiKeyRequest createApiKeyRequest);
 
+    /**
+     * Modify Master API Key
+     * Modify the settings of master api key. Use the api key pending to be modified to call the endpoint. Use master user's api key only.
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint..
+     *
+     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
+     * INFO
+     * Only the api key that calls this interface can be modified
+     *
+     * HTTP Request
+     * POST /v5/user/update-api
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * readOnly	false	integer	0 (default)：Read and Write. 1：Read only
+     * ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
+     * don't pass ips or pass with "*" means no bind
+     * No ip bound api key will be invalid after 90 days
+     * api key will be invalid after 7 days once the account password is changed
+     * permissions	false	Object	Tick the types of permission. Don't send this param if you don't want to change the permission
+     * > ContractTrade	false	array	Contract Trade. ["Order","Position"]
+     * > Spot	false	array	Spot Trade. ["SpotTrade"]
+     * > Wallet	false	array	Wallet. ["AccountTransfer","SubMemberTransfer"]
+     * > Options	false	array	USDC Contract. ["OptionsTrade"]
+     * > Derivatives	false	array	This param is depreciated because system will automatically add this permission according to your account is UTA or Classic
+     * > CopyTrading	false	array	Copytrade. ["CopyTrading"]
+     * > BlockTrade	false	array	Blocktrade. ["BlockTrade"]
+     * > Exchange	false	array	Exchange. ["ExchangeHistory"]
+     * > NFT	false	array	NFT. ["NFTQueryProductList"]
+     * > Affiliate	false	array	Affiliate. ["Affiliate"]
+     * This permission is only useful for affiliate
+     * If you need this permission, make sure you remove all other permissions
+     * Response Parameters
+     * Parameter	Type	Comments
+     * id	string	Unique id. Internal used
+     * note	string	The remark
+     * apiKey	string	Api key
+     * readOnly	integer	0：Read and Write. 1：Read only
+     * secret	string	Always ""
+     * permissions	Object	The types of permission
+     * > ContractTrade	array	Permisson of contract trade
+     * > Spot	array	Permisson of spot
+     * > Wallet	array	Permisson of wallet
+     * > Options	array	Permission of USDC Contract. It supports trade option and usdc perpetual.
+     * > Derivatives	array	Permission of Unified account
+     * > CopyTrading	array	Permission of copytrade. Not applicable to sub account, always []
+     * > BlockTrade	array	Permission of blocktrade. Not applicable to sub account, always []
+     * > Exchange	array	Permission of exchange
+     * > NFT	array	Permission of NFT. Not applicable to sub account, always []
+     * ips	array	IP bound
+     * @param modifyMasterApiKeyRequest
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/user/update-api")
+    Call<Object> modifyMasterApiKey(@Body ModifyApiKeyRequest modifyMasterApiKeyRequest);
+
+    /**
+     * Modify Sub API Key
+     * Modify the settings of sub api key. Use the sub account api key pending to be modified to call the endpoint or use master account api key to manage its sub account api key.
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint
+     *
+     * sub API key: "Account Transfer", "Sub Member Transfer"
+     * master API Key: "Account Transfer", "Sub Member Transfer", "Withdrawal"
+     * HTTP Request
+     * POST /v5/user/update-sub-api
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * apikey	false	string	Sub account api key
+     * You must pass this param when you use master account manage sub account api key settings
+     * If you use corresponding sub uid api key call this endpoint, apikey param cannot be passed, otherwise throwing an error
+     * readOnly	false	integer	0 (default)：Read and Write. 1：Read only
+     * ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
+     * don't pass ips or pass with "*" means no bind
+     * No ip bound api key will be invalid after 90 days
+     * api key will be invalid after 7 days once the account password is changed
+     * permissions	false	Object	Tick the types of permission. Don't send this param if you don't want to change the permission
+     * > ContractTrade	false	array	Contract Trade. ["Order","Position"]
+     * > Spot	false	array	Spot Trade. ["SpotTrade"]
+     * > Wallet	false	array	Wallet. ["AccountTransfer", "SubMemberTransferList"]
+     * > Options	false	array	USDC Contract. ["OptionsTrade"]
+     * > Derivatives	false	array	This param is depreciated because system will automatically add this permission according to your account is UTA or Classic
+     * > Exchange	false	array	Exchange. ["ExchangeHistory"]
+     * > CopyTrading	false	array	Copytrade. ["CopyTrading"]
+     * Response Parameters
+     * Parameter	Type	Comments
+     * id	string	Unique id. Internal used
+     * note	string	The remark
+     * apiKey	string	Api key
+     * readOnly	integer	0：Read and Write. 1：Read only
+     * secret	string	Always ""
+     * permissions	Object	The types of permission
+     * > ContractTrade	array	Permisson of contract trade
+     * > Spot	array	Permisson of spot
+     * > Wallet	array	Permisson of wallet
+     * > Options	array	Permission of USDC Contract. It supports trade option and usdc perpetual.
+     * > Derivatives	array	Permission of Unified account
+     * > CopyTrading	array	Permission of copytrade
+     * > BlockTrade	array	Permission of blocktrade. Not applicable to sub account, always []
+     * > Exchange	array	Permission of exchange
+     * > NFT	array	Permission of NFT. Not applicable to sub account, always []
+     * ips	array	IP bound
+     * https://bybit-exchange.github.io/docs/v5/user/modify-sub-apikey
+     * @param modifysubApiKeyRequest
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/user/update-sub-api")
+    Call<Object> modifySubApiKey(@Body ModifyApiKeyRequest modifysubApiKeyRequest);
+
+    /**
+     * Delete Master API Key
+     * Delete the api key of master account. Use the api key pending to be delete to call the endpoint. Use master user's api key only.
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint..
+     *
+     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
+     * DANGER
+     * BE CAREFUL! The API key used to call this interface will be invalid immediately.
+     *
+     * HTTP Request
+     * POST /v5/user/delete-api
+     *
+     * Request Parameters
+     * None
+     *
+     * Response Parameters
+     * None
+     * https://bybit-exchange.github.io/docs/v5/user/rm-master-apikey
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/user/delete-api")
+    Call<Object> deleteMasterApiKey();
+
+    /**
+     * Delete Sub API Key
+     * Delete the api key of sub account. Use the sub api key pending to be delete to call the endpoint or use the master api key to delete corresponding sub account api key
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint.
+     *
+     * sub API key: "Account Transfer", "Sub Member Transfer"
+     * master API Key: "Account Transfer", "Sub Member Transfer", "Withdrawal"
+     * DANGER
+     * BE CAREFUL! The Sub account API key will be invalid immediately after calling the endpoint.
+     *
+     * HTTP Request
+     * POST /v5/user/delete-sub-api
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * apikey	false	string	Sub account api key
+     * You must pass this param when you use master account manage sub account api key settings
+     * If you use corresponding sub uid api key call this endpoint, apikey param cannot be passed, otherwise throwing an error
+     * Response Parameters
+     * None
+     * https://bybit-exchange.github.io/docs/v5/user/rm-sub-apikey
+     * @return
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/user/delete-sub-api")
+    Call<Object> deleteSubApiKey(@Body ModifyApiKeyRequest deleteSubUidRequest);
+
+    /**
+     * Freeze Sub UID
+     * Freeze Sub UID. Use master user's api key only.
+     *
+     * TIP
+     * The API key must have one of the below permissions in order to call this endpoint..
+     *
+     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
+     * HTTP Request
+     * POST /v5/user/frozen-sub-member
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * subuid	true	integer	Sub user Id
+     * frozen	true	integer	0：unfreeze, 1：freeze
+     * https://bybit-exchange.github.io/docs/v5/user/froze-subuid
+     * @param freezeSubUIDRquest
+     * @return
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/frozen-sub-member")
-    Call<Object> freezeSubMember(
-            @Body FreezeSubUIDRquest freezeSubUIDRquest);
+    Call<Object> freezeSubMember(@Body FreezeSubUIDRquest freezeSubUIDRquest);
 
     // Position Data endpoints
 

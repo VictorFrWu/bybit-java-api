@@ -10,8 +10,11 @@ import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
+import com.bybit.api.client.domain.user.UserDataRequest;
+import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
 import com.bybit.api.client.service.JsonConverter;
 
+import static com.bybit.api.client.constant.Util.listToString;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
@@ -672,5 +675,67 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     public void createAssetWithdraw(AssetDataRequest assetWithdrawRequest, BybitApiCallback<Object> callback) {
         var request = converter.mapToAssetWithdrawRequest(assetWithdrawRequest);
         bybitApiService.createAssetWithdraw(request).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    // User endpoints
+    @Override
+    public void createSubMember(UserDataRequest request, BybitApiCallback<Object> callback) {
+        UserSubMemberRequest subUserRequest = converter.mapToCreateSubMemberRequest(request);
+        bybitApiService.createSubMember(subUserRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void createSubAPI(UserDataRequest request, BybitApiCallback<Object> callback) {
+        var createApiKeyRequest = converter.mapToCreateSubApiRequest(request);
+        bybitApiService.createSubAPI(createApiKeyRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getSubUIDList(BybitApiCallback<Object> callback) {
+        bybitApiService.getSubUIDList().enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void freezeSubMember(UserDataRequest request, BybitApiCallback<Object> callback) {
+        var freezeSubUIDRquest = converter.mapToFreezeSubApiRequest(request);
+        bybitApiService.freezeSubMember(freezeSubUIDRquest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getCurrentAPIKeyInfo(BybitApiCallback<Object> callback) {
+        bybitApiService.getCurrentAPIKeyInfo().enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getUIDWalletType(UserDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getUIDWalletType(request.getMemberIds() == null ? null : listToString(request.getMemberIds())).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void modifyMasterApiKey(UserDataRequest userDataRequest, BybitApiCallback<Object> callback) {
+        var modifyMasterApiKeyRequest = converter.mapToModifyApiKeyRequest(userDataRequest);
+        bybitApiService.modifyMasterApiKey(modifyMasterApiKeyRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void modifySubApiKey(UserDataRequest userDataRequest, BybitApiCallback<Object> callback) {
+        var modifySubApiKeyRequest = converter.mapToModifyApiKeyRequest(userDataRequest);
+        bybitApiService.modifySubApiKey(modifySubApiKeyRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void deleteMasterApiKey(BybitApiCallback<Object> callback) {
+        bybitApiService.deleteMasterApiKey().enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void deleteSubApiKey(UserDataRequest userDataRequest, BybitApiCallback<Object> callback) {
+        var deleteSubApiKeyRequest = converter.mapToDeleteSubApiKeyRequest(userDataRequest);
+        bybitApiService.deleteSubApiKey(deleteSubApiKeyRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getAffiliateUserInfo(UserDataRequest userDataRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getAffiliateUserInfo(userDataRequest.getUid()).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 }

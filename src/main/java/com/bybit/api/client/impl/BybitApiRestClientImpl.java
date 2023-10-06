@@ -2,8 +2,6 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.domain.account.AccountDataRequest;
-import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.broker.request.BrokerEarningRequest;
@@ -12,16 +10,15 @@ import com.bybit.api.client.domain.c2c.ClientLendingOrderRecordsRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
-import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.*;
-import com.bybit.api.client.domain.user.request.ApiKeyRequest;
-import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
-import com.bybit.api.client.domain.user.request.SubUserRequest;
+import com.bybit.api.client.domain.user.UserDataRequest;
 import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
 import com.bybit.api.client.service.JsonConverter;
 
+import static com.bybit.api.client.constant.Util.listToString;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
@@ -147,7 +144,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
         return executeSync(bybitApiService.getRecentTradeData(
                 recentTradeRequest.getCategory().getProductTypeId(),
                 recentTradeRequest.getBaseCoin(),
-                recentTradeRequest.getOptionType() == null ? null :  recentTradeRequest.getOptionType().getOpType(),
+                recentTradeRequest.getOptionType() == null ? null : recentTradeRequest.getOptionType().getOpType(),
                 recentTradeRequest.getSymbol(),
                 recentTradeRequest.getLimit()
         ));
@@ -225,40 +222,54 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object createSubMember(SubUserRequest subUserRequest) {
-        return executeSync(bybitApiService.createSubMember(
-                subUserRequest.getUsername(),
-                subUserRequest.getPassword(),
-                subUserRequest.getMemberType(),
-                subUserRequest.getSwitchOption(),
-                subUserRequest.getIsUta(),
-                subUserRequest.getNote()
-        ));
+    public Object createSubMember(UserDataRequest request) {
+        UserSubMemberRequest subUserRequest = converter.mapToCreateSubMemberRequest(request);
+        return executeSync(bybitApiService.createSubMember(subUserRequest));
     }
 
     @Override
-    public Object createSubAPI(ApiKeyRequest apiKeyRequest) {
-        return executeSync(bybitApiService.createSubAPI(apiKeyRequest));
+    public Object createSubAPI(UserDataRequest request) {
+        var createApiKeyRequest = converter.mapToCreateSubApiRequest(request);
+        return executeSync(bybitApiService.createSubAPI(createApiKeyRequest));
     }
 
     @Override
-    public Object freezeSubMember(FreezeSubUIDRquest freezeSubUIDRquest) {
+    public Object freezeSubMember(UserDataRequest request) {
+        var freezeSubUIDRquest = converter.mapToFreezeSubApiRequest(request);
         return executeSync(bybitApiService.freezeSubMember(freezeSubUIDRquest));
     }
 
     @Override
-    public Object getUIDWalletType(String memberIds) {
-        return executeSync(bybitApiService.getUIDWalletType(memberIds));
+    public Object getUIDWalletType(UserDataRequest request) {
+        return executeSync(bybitApiService.getUIDWalletType(request.getMemberIds() == null ? null : listToString(request.getMemberIds())));
     }
 
     @Override
-    public Object getUIDWalletType() {
-        return executeSync(bybitApiService.getUIDWalletType());
+    public Object modifyMasterApiKey(UserDataRequest userDataRequest) {
+        var modifyMasterApiKeyRequest = converter.mapToModifyApiKeyRequest(userDataRequest);
+        return executeSync(bybitApiService.modifyMasterApiKey(modifyMasterApiKeyRequest));
     }
 
     @Override
-    public Object getAffiliateUserInfo(String uid) {
-        return executeSync(bybitApiService.getAffiliateUserInfo(uid));
+    public Object modifySubApiKey(UserDataRequest userDataRequest) {
+        var modifySubApiKeyRequest = converter.mapToModifyApiKeyRequest(userDataRequest);
+        return executeSync(bybitApiService.modifySubApiKey(modifySubApiKeyRequest));
+    }
+
+    @Override
+    public Object deleteMasterApiKey() {
+        return executeSync(bybitApiService.deleteMasterApiKey());
+    }
+
+    @Override
+    public Object deleteSubApiKey(UserDataRequest userDataRequest) {
+        var deleteSubApiKeyRequest = converter.mapToDeleteSubApiKeyRequest(userDataRequest);
+        return executeSync(bybitApiService.deleteSubApiKey(deleteSubApiKeyRequest));
+    }
+
+    @Override
+    public Object getAffiliateUserInfo(UserDataRequest request) {
+        return executeSync(bybitApiService.getAffiliateUserInfo(request.getUid()));
     }
 
 
@@ -474,6 +485,7 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     public Object getAccountCoinGeeks(AccountDataRequest request) {
         return executeSync((bybitApiService.getAccountCoinGeeks(request.getBaseCoin())));
     }
+
     @Override
     public Object getAccountFreeRate(AccountDataRequest getFeeRateRequest) {
         return executeSync(bybitApiService.getAccountFreeRate(

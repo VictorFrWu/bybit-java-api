@@ -15,6 +15,14 @@ import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
+import com.bybit.api.client.domain.user.IsUta;
+import com.bybit.api.client.domain.user.MemberType;
+import com.bybit.api.client.domain.user.SwitchOption;
+import com.bybit.api.client.domain.user.UserDataRequest;
+import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
+import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
+import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
+import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,11 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JsonConverter {
+import static com.bybit.api.client.constant.Util.listToString;
 
-    // Trade Mapper
+public class JsonConverter {
     private final ObjectMapper mapper = new ObjectMapper();
 
+    // Trade Mapper
     public BatchOrderRequest jsonToBatchOrderRequest(String json) throws IOException {
         JsonNode rootNode = mapper.readTree(json);
 
@@ -379,6 +388,50 @@ public class JsonConverter {
                 .forceChain(assetDataRequest.getForceChain())
                 .accountType(assetDataRequest.getAccountType() != null ? assetDataRequest.getAccountType().name() : null)  // Assuming accountType is an enum and you want to store its name as String in AssetWithdrawRequest
                 .feeType(assetDataRequest.getFeeType() == null ? null : assetDataRequest.getFeeType().getValue())
+                .build();
+    }
+
+    // User Requests
+    public UserSubMemberRequest mapToCreateSubMemberRequest(UserDataRequest subUserRequest) {
+        return UserSubMemberRequest.builder()
+                .username(subUserRequest.getUsername())
+                .password(subUserRequest.getPassword())
+                .memberType(subUserRequest.getMemberType() == null ? MemberType.NORMAL_SUB_ACCOUNT.getValue() : subUserRequest.getMemberType().getValue())
+                .switchOption(subUserRequest.getSwitchOption() == null ? SwitchOption.TURN_OFF.getValue() : subUserRequest.getSwitchOption().getValue())
+                .isUta(subUserRequest.getIsUta() == null ? IsUta.CLASSIC_ACCOUNT.isValue() : subUserRequest.getIsUta().isValue())
+                .note(subUserRequest.getNote())
+                .build();
+    }
+
+    public CreateApiKeyRequest mapToCreateSubApiRequest(UserDataRequest subUserRequest) {
+        return CreateApiKeyRequest.builder()
+                .subuid(subUserRequest.getSubuid())
+                .note(subUserRequest.getPassword())
+                .readOnly(subUserRequest.getReadOnlyStatus() == null ? null : subUserRequest.getReadOnlyStatus().getValue())
+                .ips(subUserRequest.getIps() == null ? null : listToString(subUserRequest.getIps()))
+                .permissions(subUserRequest.getUserPermissionsMap() == null ? null : subUserRequest.getUserPermissionsMap().getPermissionMap())
+                .build();
+    }
+
+    public FreezeSubUIDRquest mapToFreezeSubApiRequest(UserDataRequest request) {
+        return FreezeSubUIDRquest.builder()
+                .subuid(request.getSubuid())
+                .frozen(request.getFrozenStatus() == null ? null : request.getFrozenStatus().getValue())
+                .build();
+    }
+
+    public ModifyApiKeyRequest mapToModifyApiKeyRequest(UserDataRequest userDataRequest) {
+        return ModifyApiKeyRequest.builder()
+                .readOnly(userDataRequest.getReadOnlyStatus() == null ? null : userDataRequest.getReadOnlyStatus().getValue())
+                .ips(userDataRequest.getIps() == null ? null : listToString(userDataRequest.getIps()))
+                .permissionsMap(userDataRequest.getUserPermissionsMap() == null ? null : userDataRequest.getUserPermissionsMap().getPermissionMap())
+                .build();
+    }
+
+    public ModifyApiKeyRequest mapToDeleteSubApiKeyRequest(UserDataRequest userDataRequest) {
+        return ModifyApiKeyRequest
+                .builder()
+                .apikey(userDataRequest.getApikey())
                 .build();
     }
 }

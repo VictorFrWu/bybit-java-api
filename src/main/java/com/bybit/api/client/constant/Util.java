@@ -58,12 +58,7 @@ public final class Util {
         return uuid.toString();
     }
 
-    public static String convertMapToJson(Map<String, Object> map) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(map);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to convert map to JSON", e);
-        }
+    public static String listToString(List<String> items) {
+        return String.join(",", items);
     }
 }

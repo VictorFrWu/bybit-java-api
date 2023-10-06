@@ -1,14 +1,16 @@
-package com.bybit.api.examples.http.sync;
+package com.bybit.api.examples.http.async;
 
+import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.domain.user.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
+
 import java.util.List;
 import java.util.Map;
-public class UserExample {
+
+public class UserAsyncExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newAsyncRestClient();
 
         // create a new sub user
         var subUserRequest = UserDataRequest.builder().username("VictorWuTest3")
@@ -18,16 +20,13 @@ public class UserExample {
                 .switchOption(SwitchOption.TURN_OFF)
                 .isUta(IsUta.CLASSIC_ACCOUNT)
                 .build();
-        var subUser = client.createSubMember(subUserRequest);
-        System.out.println(subUser);
+        client.createSubMember(subUserRequest, System.out::println);
 
         // Get API Key Information
-        var apikeyInfo = client.getCurrentAPIKeyInfo();
-        System.out.println(apikeyInfo);
+        client.getCurrentAPIKeyInfo(System.out::println);
 
         // Get sub UID list
-        var subUidsInfo = client.getSubUIDList();
-        System.out.println(subUidsInfo);
+        client.getSubUIDList(System.out::println);
 
         // Create a new api key
         Map<String, List<String>> permissionMap = Map.of(
@@ -46,22 +45,18 @@ public class UserExample {
                 .ips(List.of("*"))
                 .note("Some note")
                 .build();
-        var subAPIKey = client.createSubAPI(createApiKeyRequest);
-        System.out.println(subAPIKey);
+        client.createSubAPI(createApiKeyRequest, System.out::println);
 
         // freeze a sub uid
         UserDataRequest freezeSubUIDRequest = UserDataRequest.builder().subuid(1553904).frozenStatus(FrozenStatus.UNFREEZE).build();
-        var freezeResponse = client.freezeSubMember(freezeSubUIDRequest);
-        System.out.println(freezeResponse);
+        client.freezeSubMember(freezeSubUIDRequest, System.out::println);
 
         // get UID wallet type
         UserDataRequest uidWallet = UserDataRequest.builder().build();
-        var uidWalletType = client.getUIDWalletType(uidWallet);
-        System.out.println(uidWalletType);
+        client.getUIDWalletType(uidWallet, System.out::println);
 
         // get affiliate User info
         UserDataRequest affiliateRequest = UserDataRequest.builder().uid("1553904").build();
-        var affiliateInfo = client.getAffiliateUserInfo(affiliateRequest);
-        System.out.println(affiliateInfo);
+       client.getAffiliateUserInfo(affiliateRequest, System.out::println);
     }
 }
