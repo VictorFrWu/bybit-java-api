@@ -4,6 +4,9 @@ package com.bybit.api.client.service;
 import com.bybit.api.client.*;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.impl.*;
+import com.bybit.api.client.websocket.WebsocketClient;
+import com.bybit.api.client.websocket.WebsocketClientImpl;
+import com.bybit.api.client.websocket.WebsocketMessageHandler;
 
 /**
  * A factory for creating BybitApi client objects.
@@ -112,13 +115,6 @@ public class BybitApiClientFactory {
     }
 
     /**
-     * Creates a new web socket client used for handling data streams.
-     */
-    public BybitApiWebSocketClient newWebSocketClient(boolean useTestnetStreaming, String websocketChannel) {
-        return new BybitApiWebSocketClientImpl(BybitApiServiceGenerator.getSharedClient(), useTestnetStreaming, websocketChannel);
-    }
-
-    /**
      * Creates a new synchronous/blocking REST client to Institution Lending Endpoints
      */
     public BybitApiInsLendingRestClient newInsLendingRestClient() {
@@ -136,5 +132,9 @@ public class BybitApiClientFactory {
      */
     public BybitApAsynciTradeRestClient newAsyncTradeRestClient() {
         return new BybitTradeAsyncRestClientImpl(apiKey, secret);
+    }
+
+    public WebsocketClient newWebsocketClient(WebsocketMessageHandler messageHandler) {
+        return new WebsocketClientImpl(apiKey, secret, BybitApiConfig.useTestnet ? BybitApiConfig.STREAM_TESTNET_DOMAIN : BybitApiConfig.STREAM_MAINNET_DOMAIN, messageHandler);
     }
 }

@@ -18,6 +18,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -64,9 +65,9 @@ public class BybitApiServiceGenerator {
     public static <S> S createService(Class<S> serviceClass, String apiKey, String secret) {
         String baseUrl = null;
         if (!BybitApiConfig.useTestnet) {
-            baseUrl = BybitApiConfig.getApiBaseUrl();
+            baseUrl = BybitApiConfig.MAINNET_DOMAIN;
         } else {
-            baseUrl = BybitApiConfig.getTestNetBaseUrl();
+            baseUrl = BybitApiConfig.TESTNET_DOMAIN;
         }
 
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
@@ -108,7 +109,7 @@ public class BybitApiServiceGenerator {
      */
     public static BybitApiError getBybitApiError(Response<?> response) throws IOException, BybitApiException{
         if (errorBodyConverter != null) {
-            return errorBodyConverter.convert(response.errorBody());
+            return errorBodyConverter.convert(Objects.requireNonNull(response.errorBody()));
         }
             return new BybitApiError();
     }

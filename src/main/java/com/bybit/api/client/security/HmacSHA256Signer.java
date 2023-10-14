@@ -1,12 +1,18 @@
 package com.bybit.api.client.security;
 
+import com.alibaba.fastjson.JSON;
 import com.bybit.api.client.exception.BybitApiException;
+import okhttp3.WebSocket;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class to sign messages using HMAC-SHA256.
@@ -15,10 +21,11 @@ public class HmacSHA256Signer {
 
     /**
      * Sign the given message using the given secret.
-     * @param apiKey api key
-     * @param apiSecret api secret
-     * @param payload query parameters
-     * @param timestamp current time in milliseconds
+     *
+     * @param apiKey     api key
+     * @param apiSecret  api secret
+     * @param payload    query parameters
+     * @param timestamp  current time in milliseconds
      * @param recvWindow server receives window
      * @return a signed message
      */
@@ -41,6 +48,7 @@ public class HmacSHA256Signer {
 
     /**
      * To convert bytes to hex
+     *
      * @param hash
      * @return hex string
      */
@@ -52,5 +60,18 @@ public class HmacSHA256Signer {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    public static String auth(String data, String apiSecret) {
+        byte[] hmacSha256;
+        try {
+            SecretKeySpec secretKeySpec = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
+            Mac mac = Mac.getInstance("HmacSHA256");
+            mac.init(secretKeySpec);
+            hmacSha256 = mac.doFinal(data.getBytes());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to calculate hmac-sha256", e);
+        }
+        return Hex.encodeHexString(hmacSha256);
     }
 }

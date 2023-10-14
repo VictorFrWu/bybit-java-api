@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import okio.Buffer;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +28,7 @@ public class AuthenticationInterceptor implements Interceptor {
         this.secret = secret;
     }
 
+    @NotNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();
