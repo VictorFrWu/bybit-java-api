@@ -40,10 +40,9 @@ public interface WebsocketClient {
      * Topic:
      * orderbook.{depth}.{symbol} e.g., orderbook.1.BTCUSDT
      * https://bybit-exchange.github.io/docs/v5/websocket/public/orderbook
-     * @param strings
-     * @param wssPath
+
      */
-    void orderBookStream(List<String> strings, String wssPath);
+    void getOrderBookStream(List<String> argNames, String path);
 
     /**
      * Trade
@@ -57,10 +56,9 @@ public interface WebsocketClient {
      * publicTrade.{symbol}
      * Note: option uses baseCoin, e.g., publicTrade.BTC
      * https://bybit-exchange.github.io/docs/v5/websocket/public/trade
-     * @param strings
-     * @param wssPath
+
      */
-    void tradeInfoStream(List<String> strings, String wssPath);
+    void getTradeStream(List<String> argNames, String path);
 
     /**
      * Ticker
@@ -74,10 +72,9 @@ public interface WebsocketClient {
      * Topic:
      * tickers.{symbol}
      * https://bybit-exchange.github.io/docs/v5/websocket/public/ticker
-     * @param strings
-     * @param wssPath
+
      */
-    void marketTickerStream(List<String> strings, String wssPath);
+    void getTickerStream(List<String> argNames, String path);
 
     /**
      * Kline
@@ -98,10 +95,9 @@ public interface WebsocketClient {
      * Topic:
      * kline.{interval}.{symbol} e.g., kline.30.BTCUSDT
      * https://bybit-exchange.github.io/docs/v5/websocket/public/kline
-     * @param strings
-     * @param wssPath
+
      */
-    void marketKlineStream(List<String> strings, String wssPath);
+    void getMarketKlineStream(List<String> argNames, String path);
 
     /**
      * Liquidation
@@ -112,10 +108,9 @@ public interface WebsocketClient {
      * Topic:
      * liquidation.{symbol} e.g., liquidation.BTCUSDT
      * https://bybit-exchange.github.io/docs/v5/websocket/public/liquidation
-     * @param strings
-     * @param wssPath
+
      */
-    void liquidationStream(List<String> strings, String wssPath);
+    void getLiquidationStream(List<String> argNames, String path);
 
     /**
      * LT Kline
@@ -136,10 +131,9 @@ public interface WebsocketClient {
      * Topic:
      * kline_lt.{interval}.{symbol} e.g., kline_lt.30.BTC3SUSDT
      * https://bybit-exchange.github.io/docs/v5/websocket/public/etp-kline
-     * @param strings
-     * @param wssPath
+
      */
-    void leverageTokenKlineStream(List<String> strings, String wssPath);
+    void getLeverageKlineStream(List<String> argNames, String path);
 
     /**
      * LT Ticker
@@ -150,10 +144,9 @@ public interface WebsocketClient {
      * Topic:
      * tickers_lt.{symbol} e.g.,tickers_lt.BTC3SUSDT
      * https://bybit-exchange.github.io/docs/v5/websocket/public/etp-ticker
-     * @param strings
-     * @param wssPath
+
      */
-    void leverageTickerStream(List<String> strings, String wssPath);
+    void getLeverageTickerStream(List<String> argNames, String path);
 
     /**
      * LT Nav
@@ -164,8 +157,93 @@ public interface WebsocketClient {
      * Topic:
      * lt.{symbol} e.g.,lt.BTC3SUSDT
      * https://bybit-exchange.github.io/docs/v5/websocket/public/etp-nav
-     * @param strings
-     * @param wssPath
+
      */
-    void leverageTickerNavStream(List<String> strings, String wssPath);
+    void getLeverageNavStream(List<String> argNames, String path);
+
+    /**
+     * Position
+     * Subscribe to the position stream to see changes to your position data in real-time.
+     *
+     * All-In-One Topic: position
+     * Categorised Topic: position.linear, position.inverse, position.option
+     *
+     * INFO
+     * All-In-One topic and Categorised topic cannot be in the same subscription request
+     * All-In-One topic: Allow you to listen to all categories (linear, inverse, option) websocket updates
+     * Categorised Topic: Allow you to listen only to specific category websocket updates
+     * https://bybit-exchange.github.io/docs/v5/websocket/private/position
+
+     */
+    void getPositionStream(List<String> argNames, String path);
+
+    /**
+     * Execution
+     * Subscribe to the execution stream to see your executions in real-time.
+     *
+     * TIP
+     * You may have multiple executions for one order in a single message.
+     *
+     * All-In-One Topic: execution
+     * Categorised Topic: execution.spot, execution.linear, execution.inverse, execution.option
+     *
+     * INFO
+     * All-In-One topic and Categorised topic cannot be in the same subscription request
+     * All-In-One topic: Allow you to listen to all categories (spot, linear, inverse, option) websocket updates
+     * Categorised Topic: Allow you to listen only to specific category websocket updates
+     * https://bybit-exchange.github.io/docs/v5/websocket/private/execution
+
+     */
+    void getExecutionStream(List<String> argNames, String path);
+
+    /**
+     * Order
+     * Subscribe to the order stream to see changes to your orders in real-time.
+     *
+     * All-In-One Topic: order
+     * Categorised Topic: order.spot, order.linear, order.inverse, order.option
+     *
+     * INFO
+     * All-In-One topic and Categorised topic cannot be in the same subscription request
+     * All-In-One topic: Allow you to listen to all categories (spot, linear, inverse, option) websocket updates
+     * Categorised Topic: Allow you to listen only to specific category websocket updates
+     * https://bybit-exchange.github.io/docs/v5/websocket/private/order
+
+     */
+    void getOrderStream(List<String> argNames, String path);
+
+    /**
+     * Wallet
+     * Subscribe to the wallet stream to see changes to your wallet in real-time.
+     *
+     * Topic: wallet
+     * https://bybit-exchange.github.io/docs/v5/websocket/private/wallet
+
+     */
+    void getWalletStream(List<String> argNames, String path);
+
+    /**
+     * Greek
+     * Subscribe to the greeks stream to see changes to your greeks data in real-time. option only.
+     *
+     * Topic: greeks
+     * https://bybit-exchange.github.io/docs/v5/websocket/private/greek
+     */
+    void getGreekStream(List<String> argNames, String path);
+
+    /**
+     * Dcp
+     * Subscribe to the dcp stream to trigger DCP function.
+     *
+     * For example, connection A subscribes "dcp", connection B does not and connection C subscribes "dcp".
+     *
+     * If A is alive, B is dead, C is alive, then this case will not trigger DCP.
+     * If A is alive, B is dead, C is dead, then this case will not trigger DCP.
+     * If A is dead, B is alive, C is dead, then DCP is triggered when reach the timeWindow threshold
+     * To sum up, for those private connections subscribing "dcp" topic are all dead, then DCP will be triggered.
+     *
+     * Topic: dcp
+     * https://bybit-exchange.github.io/docs/v5/websocket/private/dcp
+     */
+    void getDcpStream(List<String> argNames, String path);
 }

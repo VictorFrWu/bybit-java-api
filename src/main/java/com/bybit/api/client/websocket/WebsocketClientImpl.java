@@ -6,11 +6,13 @@ import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.security.HmacSHA256Signer;
 import lombok.Getter;
 import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -84,12 +86,12 @@ public class WebsocketClientImpl implements WebsocketClient {
     }
 
     private String createAuthMessage() {
-        long expires = System.currentTimeMillis() + 1000;
+        long expires = Instant.now().toEpochMilli() + 10000;
         String val = "GET/realtime" + expires;
         String signature = HmacSHA256Signer.auth(val, secret);
 
-        var args = List.of(apikey,expires,signature);
-        var authMap = Map.of("op","ouath", "args", args);
+        var args = List.of(apikey, expires, signature);
+        var authMap = Map.of("req_id", UUID.randomUUID().toString(), "op", "auth", "args", args);
         return JSON.toJSONString(authMap);
     }
 
@@ -183,49 +185,85 @@ public class WebsocketClientImpl implements WebsocketClient {
     }
 
     @Override
-    public void orderBookStream(List<String> argNames, String path) {
+    public void getOrderBookStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }
 
     @Override
-    public void tradeInfoStream(List<String> strings, String wssPath) {
+    public void getTradeStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }
 
     @Override
-    public void marketTickerStream(List<String> strings, String wssPath) {
+    public void getTickerStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }
 
     @Override
-    public void marketKlineStream(List<String> strings, String wssPath) {
+    public void getMarketKlineStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }
 
     @Override
-    public void liquidationStream(List<String> strings, String wssPath) {
+    public void getLiquidationStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }
 
     @Override
-    public void leverageTokenKlineStream(List<String> strings, String wssPath) {
+    public void getLeverageKlineStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }
 
     @Override
-    public void leverageTickerStream(List<String> strings, String wssPath) {
+    public void getLeverageTickerStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }
 
     @Override
-    public void leverageTickerNavStream(List<String> strings, String wssPath) {
+    public void getLeverageNavStream(List<String> argNames, String path) {
+        setupOrderBookStream(argNames, path);
+        connect();
+    }
+
+    @Override
+    public void getPositionStream(List<String> argNames, String path) {
+        setupOrderBookStream(argNames, path);
+        connect();
+    }
+
+    @Override
+    public void getExecutionStream(List<String> argNames, String path) {
+        setupOrderBookStream(argNames, path);
+        connect();
+    }
+
+    @Override
+    public void getOrderStream(List<String> argNames, String path) {
+        setupOrderBookStream(argNames, path);
+        connect();
+    }
+
+    @Override
+    public void getWalletStream(List<String> argNames, String path) {
+        setupOrderBookStream(argNames, path);
+        connect();
+    }
+
+    @Override
+    public void getGreekStream(List<String> argNames, String path) {
+        setupOrderBookStream(argNames, path);
+        connect();
+    }
+
+    @Override
+    public void getDcpStream(List<String> argNames, String path) {
         setupOrderBookStream(argNames, path);
         connect();
     }

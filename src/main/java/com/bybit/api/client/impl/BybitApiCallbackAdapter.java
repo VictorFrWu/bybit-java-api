@@ -3,6 +3,7 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.BybitApiCallback;
 import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.exception.BybitApiException;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,7 +20,7 @@ public class BybitApiCallbackAdapter<T> implements Callback<T> {
         this.callback = callback;
     }
 
-    public void onResponse(Call<T> call, Response<T> response) {
+    public void onResponse(@NotNull Call<T> call, Response<T> response) {
         if (response.isSuccessful()) {
             callback.onResponse(response.body());
         } else {
@@ -38,7 +39,7 @@ public class BybitApiCallbackAdapter<T> implements Callback<T> {
     }
 
     @Override
-    public void onFailure(Call<T> call, Throwable throwable) {
+    public void onFailure(@NotNull Call<T> call, @NotNull Throwable throwable) {
         if (throwable instanceof BybitApiException) {
             callback.onFailure(throwable);
         } else {
