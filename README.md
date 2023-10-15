@@ -35,8 +35,7 @@ Maven Example
 
 ## Usage
 
-### Http Sync Examples
-Http Async Examples
+### Http Async Examples
 - Place Single Order
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
@@ -47,7 +46,6 @@ Http Async Examples
                 .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.ImmediateOrCancel)
                 .positionIdx(PositionIdx.ONE_WAY_MODE).build();
         client.createOrder(newOrderRequest, System.out::println);
-    }
 ```
 
 - Place Batch Order
@@ -58,7 +56,7 @@ Http Async Examples
                 TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
                 .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
                 var createBatchOrders = BatchOrderRequest.builder().category(ProductType.OPTION).request(orderRequests).build();
-                client.createBatchOrder(createBatchOrders, System.out::println);
+        client.createBatchOrder(createBatchOrders, System.out::println);
 ```
 - Position Info
 ```java
@@ -69,6 +67,7 @@ Http Async Examples
         var positionListRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
         client.getPositionInfo(positionListRequest, System.out::println);
 ```
+### Http Async Examples
 - Place Batch Order
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
@@ -126,7 +125,8 @@ Http Async Examples
         System.out.println(walletBalanceData);
 ```
 
-- Websocket public channel
+### Websocket public channel
+- Order book Subscribe
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
         var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
@@ -135,7 +135,8 @@ Http Async Examples
         client.getOrderBookStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 
-- Websocket private channel
+### Websocket private channel
+- Order Subscribe
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY","YOUR_API_SECRET",true);
         var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));

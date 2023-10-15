@@ -76,6 +76,14 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages Repository</name>
+            <url>https://maven.pkg.github.com/wuhewuhe/bybit-java-api</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
