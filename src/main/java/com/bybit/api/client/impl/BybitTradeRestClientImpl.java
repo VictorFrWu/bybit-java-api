@@ -33,7 +33,7 @@ public class BybitTradeRestClientImpl implements BybitApiTradeRestClient {
         return executeSync(bybitApiService.getBorrowQuota(
                 borrowQuotaRequest.getCategory().getProductTypeId(),
                 borrowQuotaRequest.getSymbol(),
-                borrowQuotaRequest.getTransactionSide() == null ? null : borrowQuotaRequest.getTransactionSide().getSide()
+                borrowQuotaRequest.getSide() == null ? null : borrowQuotaRequest.getSide().getTransactionSide()
         ));
     }
 
@@ -54,38 +54,20 @@ public class BybitTradeRestClientImpl implements BybitApiTradeRestClient {
                 orderHistoryRequest.getCursor()));
     }
 
-    @Override
     public Object createOrder(TradeOrderRequest order) {
-        return executeSync(bybitApiService.createOrder(
-                order.getCategory().getProductTypeId(),
-                order.getSymbol(),
-                order.getIsLeverage(),
-                order.getTransactionSide() == null ? null : order.getTransactionSide().getSide(),
-                order.getOrderType() == null ? null : order.getOrderType().getOType(),
-                order.getQty(),
-                order.getPrice(),
-                order.getTriggerDirection(),
-                order.getOrderFilter(),
-                order.getTriggerPrice(),
-                order.getTriggerBy() == null ? null : order.getTriggerBy().getTrigger(),
-                order.getOrderIv(),
-                order.getTimeInForce() == null ? null : order.getTimeInForce().getDescription(),
-                order.getPositionIdx() == null ? null : order.getPositionIdx().getIndex(),
-                order.getOrderLinkId(),
-                order.getTakeProfit(),
-                order.getStopLoss(),
-                order.getTpTriggerBy()== null ? null : order.getTpTriggerBy().getTrigger(),
-                order.getSlTriggerBy()== null ? null : order.getSlTriggerBy().getTrigger(),
-                order.getReduceOnly(),
-                order.getCloseOnTrigger(),
-                order.getSmpType() == null ? null : order.getSmpType().getDescription(),
-                order.getMmp(),
-                order.getTpslMode(),
-                order.getTpLimitPrice(),
-                order.getSlLimitPrice(),
-                order.getTpOrderType(),
-                order.getSlOrderType()
-        ));
+        return executeSync(bybitApiService.createOrder(order));
+    }
+
+    @Override
+    public Object createOrder(Map<String, Object> payload) {
+        var singleOrderRequest = converter.convertMapToSingleOrderRequest(payload);
+        return executeSync(bybitApiService.createOrder(singleOrderRequest));
+    }
+
+    @Override
+    public Object createOrder(String json) throws IOException {
+        var singleOrderRequest = converter.convertJsonToSingleOrderRequest(json);
+        return executeSync(bybitApiService.createOrder(singleOrderRequest));
     }
 
     @Override

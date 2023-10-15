@@ -566,38 +566,12 @@ public interface BybitApiService {
      * TIP
      * To margin trade on spot on a normal account, you need to go here to borrow margin first.
      * <a href="https://bybit-exchange.github.io/docs/v5/order/create-order">...</a>
-     *
-     * @param category
-     * @param symbol
-     * @param isLeverage
-     * @param side
-     * @param orderType
-     * @param qty
-     * @param price
-     * @param triggerDirection
-     * @param orderFilter
-     * @param triggerPrice
-     * @param triggerBy
-     * @param orderIv
-     * @param timeInForce
-     * @param positionIdx
-     * @param orderLinkId
-     * @param takeProfit
-     * @param stopLoss
-     * @param tpTriggerBy
-     * @param slTriggerBy
-     * @param reduceOnly
-     * @param closeOnTrigger
-     * @param smpType
-     * @param mmp
-     * @param tpslMode
-     * @param tpLimitPrice
-     * @param slLimitPrice
-     * @param tpOrderType
-     * @param slOrderType
      * @return
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/order/create")
+    Call<Object> createOrder(@Body TradeOrderRequest tradeOrderRequest);
+/*    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create")
     Call<Object> createOrder(@Query("category") String category,
                           @Query("symbol") String symbol,
@@ -626,7 +600,7 @@ public interface BybitApiService {
                           @Query("tpLimitPrice") String tpLimitPrice,
                           @Query("slLimitPrice") String slLimitPrice,
                           @Query("tpOrderType") String tpOrderType,
-                          @Query("slOrderType") String slOrderType);
+                          @Query("slOrderType") String slOrderType);*/
 
     /**
      * Batch Place Order

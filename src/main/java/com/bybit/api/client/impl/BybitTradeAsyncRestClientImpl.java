@@ -1,9 +1,8 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApAsynciTradeRestClient;
+import com.bybit.api.client.BybitApiAsyncTradeRestClient;
 import com.bybit.api.client.BybitApiCallback;
 import com.bybit.api.client.BybitApiService;
-import com.bybit.api.client.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.trade.BatchOrderRequest;
 import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.service.JsonConverter;
@@ -12,9 +11,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
-import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
-public class BybitTradeAsyncRestClientImpl implements BybitApAsynciTradeRestClient {
+public class BybitTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestClient {
     private final BybitApiService bybitApiService;
     private final JsonConverter converter = new JsonConverter();
 
@@ -50,7 +48,7 @@ public class BybitTradeAsyncRestClientImpl implements BybitApAsynciTradeRestClie
         bybitApiService.getBorrowQuota(
                 borrowQuotaRequest.getCategory().getProductTypeId(),
                 borrowQuotaRequest.getSymbol(),
-                borrowQuotaRequest.getTransactionSide() == null ? null : borrowQuotaRequest.getTransactionSide().getSide())
+                borrowQuotaRequest.getSide() == null ? null : borrowQuotaRequest.getSide().getTransactionSide())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
@@ -72,36 +70,19 @@ public class BybitTradeAsyncRestClientImpl implements BybitApAsynciTradeRestClie
 
     @Override
     public void createOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
-        bybitApiService.createOrder(
-                order.getCategory().getProductTypeId(),
-                order.getSymbol(),
-                order.getIsLeverage(),
-                order.getTransactionSide() == null ? null : order.getTransactionSide().getSide(),
-                order.getOrderType() == null ? null : order.getOrderType().getOType(),
-                order.getQty(),
-                order.getPrice(),
-                order.getTriggerDirection(),
-                order.getOrderFilter(),
-                order.getTriggerPrice(),
-                order.getTriggerBy() == null ? null : order.getTriggerBy().getTrigger(),
-                order.getOrderIv(),
-                order.getTimeInForce() == null ? null : order.getTimeInForce().getDescription(),
-                order.getPositionIdx() == null ? null : order.getPositionIdx().getIndex(),
-                order.getOrderLinkId(),
-                order.getTakeProfit(),
-                order.getStopLoss(),
-                order.getTpTriggerBy()== null ? null : order.getTpTriggerBy().getTrigger(),
-                order.getSlTriggerBy()== null ? null : order.getSlTriggerBy().getTrigger(),
-                order.getReduceOnly(),
-                order.getCloseOnTrigger(),
-                order.getSmpType() == null ? null : order.getSmpType().getDescription(),
-                order.getMmp(),
-                order.getTpslMode(),
-                order.getTpLimitPrice(),
-                order.getSlLimitPrice(),
-                order.getTpOrderType(),
-                order.getSlOrderType())
-                .enqueue(new BybitApiCallbackAdapter<>(callback));
+        bybitApiService.createOrder(order).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void createOrder(Map<String, Object> order, BybitApiCallback<Object> callback) {
+        var singleOrderRequest = converter.convertMapToSingleOrderRequest(order);
+        bybitApiService.createOrder(singleOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void createOrder(String order, BybitApiCallback<Object> callback) throws IOException {
+        var singleOrderRequest = converter.convertJsonToSingleOrderRequest(order);
+        bybitApiService.createOrder(singleOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override

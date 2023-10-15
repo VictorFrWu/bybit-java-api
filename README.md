@@ -21,7 +21,7 @@ BybitJavaAPI provides an official, robust, and high-performance Java connector t
 BybitJavaAPI is under active development with the latest features and updates from Bybit's API implemented promptly. The module utilizes minimal external libraries to provide a lightweight and efficient experience. If you've made enhancements or fixed bugs, please submit a pull request.
 
 ## Installation
-Ensure you have Java 1.8 or higher. You can include BybitJavaAPI in your project using Maven or Gradle.
+Ensure you have Java 8 or higher. You can include BybitJavaAPI in your project using Maven or Gradle.
 
 Maven Example
 ```java
@@ -34,7 +34,78 @@ Maven Example
 ```
 
 ## Usage
-Http Sync Examples
+
+### Http Sync Examples
+Http Async Examples
+- Place Single Order
+```java
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
+
+        // Place an order
+        var newOrderRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).symbol("XRPUSDT")
+                .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.ImmediateOrCancel)
+                .positionIdx(PositionIdx.ONE_WAY_MODE).build();
+        client.createOrder(newOrderRequest, System.out::println);
+    }
+```
+
+- Place Batch Order
+```java
+        // Create a batch order
+        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+                .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
+                TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+                .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
+                var createBatchOrders = BatchOrderRequest.builder().category(ProductType.OPTION).request(orderRequests).build();
+                client.createBatchOrder(createBatchOrders, System.out::println);
+```
+- Position Info
+```java
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        BybitApiAsyncRestClient client = factory.newAsyncRestClient();
+
+        // Get Position Info
+        var positionListRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
+        client.getPositionInfo(positionListRequest, System.out::println);
+```
+- Place Batch Order
+```java
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        BybitApiTradeRestClient client = factory.newTradeRestClient();
+
+        // Create a batch order
+        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+                        .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
+                TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+                        .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
+        var createBatchOrders = BatchOrderRequest.builder().category(ProductType.OPTION).request(orderRequests).build();
+        var createBatchRequestResponse = client.createBatchOrder(createBatchOrders);
+        System.out.println(createBatchRequestResponse);
+
+        // Create a batch order by map
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("category", "option");
+        List<Map<String, Object>> orders = new ArrayList<>();
+        List<Integer> prices = Arrays.asList(15000, 15500, 16000, 16500, 16600);
+        for (Integer price : prices) {
+            Map<String, Object> order = new HashMap<>();
+            order.put("symbol", "BTC-30JUN23-20000-C");
+            order.put("side", "Buy");
+            order.put("orderType", "Limit");
+            order.put("qty", "0.1");
+            order.put("price", price.toString());
+            orders.add(order);
+        }
+        payload.put("request", orders);
+        var createBatchResponse = client.createBathOrder(payload);
+        System.out.println(createBatchResponse);
+        
+        var batchOrderRequest = client.createBathOrder(jsonRequest);
+        System.out.println(batchOrderRequest);
+```
+
+- Market Data Info 
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
         BybitApiRestClient client = factory.newRestClient();
@@ -43,83 +114,34 @@ Http Sync Examples
         // Weekly market Kline
         var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
         System.out.println(marketKlineResult);
-
-        // Weekly market price Kline for a symbol
-        var marketPriceKlineResult = client.getMarketPriceLinesData(marketKLineRequest);
-        System.out.println(marketPriceKlineResult);
-
-        // Weekly index price Kline for a symbol
-        var indexPriceKlineResult = client.getIndexPriceLinesData(marketKLineRequest);
-        System.out.println(indexPriceKlineResult);
-
-        // Weekly premium index price Kline for a symbol
-        var indexPremiumPriceKlineResult = client.getPremiumIndexPriceLinesData(marketKLineRequest);
-        System.out.println(indexPremiumPriceKlineResult);
-
-        // Get server time
-        var serverTime = client.getServerTime();
-        System.out.println(serverTime);
-
-        // Get Instrument info
-        var instrumentInfoRequest = MarketDataRequest.builder().category(ProductType.SPOT)
-        .symbol("BTCUSDT")
-        .instrumentStatus(InstrumentStatus.TRADING)
-        .limit(500)
-        .build();
-        var instrumentInfoResponse = client.getInstrumentsInfo(instrumentInfoRequest);
-        System.out.println(instrumentInfoResponse);
 ```
-Http Async Examples
+- Account Data Info
+```java
+  BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+  BybitApiRestClient client = factory.newRestClient();
+
+        // Get wallet balance
+        var walletBalanceRequest = AccountDataRequest.builder().accountType(AccountType.UNIFIED).build();
+        var walletBalanceData = client.getWalletBalance(walletBalanceRequest);
+        System.out.println(walletBalanceData);
 ```
-        // Get orderbook
-        var orderbookRequest = MarketDataRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
-        client.getMarketOrderbook(orderbookRequest,System.out::println);
 
-        // Get market tickers
-        var tickerReueqt = MarketDataRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
-        client.getMarketTickers(tickerReueqt, System.out::println);
+- Websocket public channel
+```java
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
+        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
 
-        // Get funding history
-        var fundingHistoryRequest = MarketDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSD")
-                .startTime(1632046800000L) // Example start time
-                .endTime(1632133200000L)   // Example end time
-                .limit(150)
-                .build();
-        client.getFundingHistory(fundingHistoryRequest, System.out::println);
+        // Orderbook
+        client.getOrderBookStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+```
 
-        // Get Open Interest data
-        var openInterest = MarketDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.FIVE_MINUTES).build();
-        client.getOpenInterest(openInterest, System.out::println);
+- Websocket private channel
+```java
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY","YOUR_API_SECRET",true);
+        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
 
-        // Get Recent Trade Data
-        var recentTrade = MarketDataRequest.builder().category(ProductType.OPTION).symbol("ETH-30JUN23-2050-C").build();
-        client.getRecentTradeData(recentTrade, System.out::println);
-
-        // Get Historical Volatility
-        var historicalVolatilityRequest = MarketDataRequest.builder().category(ProductType.OPTION).optionPeriod(7).build();
-        client.getHistoricalVolatility(historicalVolatilityRequest, System.out::println);
-
-        // Get Insurance data
-        client.getInsurance("BTC", System.out::println); // BTC Insurance
-
-        // Get Risk Limit
-        var riskMimitRequest = MarketDataRequest.builder().category(ProductType.INVERSE).symbol("ADAUSD").build();
-        client.getRiskLimit(riskMimitRequest, System.out::println);
-
-        // Get delivery price
-        var deliveryPriceRequest = MarketDataRequest.builder().category(ProductType.OPTION)
-                .baseCoin("BTC")
-                .limit(10)
-                .build();
-        client.getDeliveryPrice(deliveryPriceRequest, System.out::println);
-
-        // Get Long Short Ratio
-        var marketAccountRatioRequest = MarketDataRequest.builder().category(ProductType.LINEAR)
-                .symbol("BTCUSDT")
-                .dataRecordingPeriod(DataRecordingPeriod.FIFTEEN_MINUTES)
-                .limit(10)
-                .build();
-        client.getMarketAccountRatio(marketAccountRatioRequest, System.out::println);
+        // Order
+        client.getOrderBookStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
 ```
 ## Contact
 For support, join our Java Bybit API community on JavaBybitAPI Telegram.

@@ -7,15 +7,13 @@ import lombok.Getter;
  */
 @Getter
 public enum PositionIdx {
-    ONE_WAY_MODE(0, "one-way mode position"),
-    HEDGE_MODE_BUY(1, "Buy side of hedge-mode position"),
-    HEDGE_MODE_SELL(2, "Sell side of hedge-mode position");
+    ONE_WAY_MODE(0),
+    HEDGE_MODE_BUY(1),
+    HEDGE_MODE_SELL(2);
 
     private final int index;
-    private final String description;
 
-    PositionIdx(int index, String description) {
+    PositionIdx(int index) {
         this.index = index;
-        this.description = description;
     }
 }

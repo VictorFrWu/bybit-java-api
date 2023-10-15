@@ -1,6 +1,5 @@
 package com.bybit.api.client.domain.trade;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 /**

@@ -3,13 +3,12 @@ package com.bybit.api.examples.http.sync;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.position.PositionDataRequest;
-import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
 import com.bybit.api.client.BybitApiRestClient;
 
-public class PositionDataExamples {
+public class PositionDataExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         BybitApiRestClient client = factory.newRestClient();
 
         // Get Position Info

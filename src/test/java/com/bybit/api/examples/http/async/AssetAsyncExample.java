@@ -9,7 +9,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class AssetAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         var client = factory.newAsyncRestClient();
 
         // Get Coin Exchange Records

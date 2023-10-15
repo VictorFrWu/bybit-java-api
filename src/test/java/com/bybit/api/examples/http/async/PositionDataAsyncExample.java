@@ -1,15 +1,14 @@
 package com.bybit.api.examples.http.async;
 
 import com.bybit.api.client.BybitApiAsyncRestClient;
-import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
-public class PositionDataAsyncExamples {
+public class PositionDataAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         BybitApiAsyncRestClient client = factory.newAsyncRestClient();
 
         // Get Position Info

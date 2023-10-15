@@ -18,6 +18,8 @@ public interface BybitApiTradeRestClient {
     Object getOpenOrders(TradeOrderRequest order);
 
     Object createOrder(TradeOrderRequest order);
+    Object createOrder(Map<String, Object> payload);
+    Object createOrder(String json) throws IOException;
     Object createBatchOrder(BatchOrderRequest batchOrderRequest);
     Object createBathOrder(Map<String, Object> payload);
     Object createBathOrder(String json) throws IOException;

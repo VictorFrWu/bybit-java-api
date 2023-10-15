@@ -10,7 +10,7 @@ import com.bybit.api.client.BybitApiRestClient;
 
 public class AccountExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         BybitApiRestClient client = factory.newRestClient();
 
         // Get wallet balance

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 public class UserExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         BybitApiRestClient client = factory.newRestClient();
 
         // create a new sub user

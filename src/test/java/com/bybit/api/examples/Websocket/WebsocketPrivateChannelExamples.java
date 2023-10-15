@@ -8,7 +8,7 @@ import java.util.List;
 
 public class WebsocketPrivateChannelExamples {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm","Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj",true);
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY","YOUR_API_SECRET",true);
         var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
 
         // Position

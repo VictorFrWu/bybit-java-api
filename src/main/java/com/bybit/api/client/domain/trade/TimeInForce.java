@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum TimeInForce {
-    GTC("GoodTillCancel"),
-    IOC("ImmediateOrCancel"),
-    FOK("FillOrKill"),
+    GOOD_TILL_CANCEL("GTC"),
+    IMMEDIATE_OR_CANCEL("IOC"),
+    FILL_OR_KILL("FOK"),
     POST_ONLY("PostOnly");
 
     private final String description;

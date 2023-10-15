@@ -7,7 +7,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class InstituionLendingExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         BybitApiInsLendingRestClient client = factory.newInsLendingRestClient();
 
         // Get Product info

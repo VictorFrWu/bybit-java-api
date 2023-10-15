@@ -11,7 +11,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
  */
 public class OrdersExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         BybitApiTradeRestClient client = factory.newTradeRestClient();
 
         // Getting a list of history order between 2 years
@@ -25,7 +25,7 @@ public class OrdersExample {
         System.out.println(allOpenOrders);
 
         // Create a new order
-        var newOrderRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).symbol("XRPUSDT").transactionSide(TransactionSide.BUY).orderType(TradeOrderType.MARKET).qty("10").build();
+        var newOrderRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).symbol("XRPUSDT").side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").build();
         var newOrder = client.createOrder(newOrderRequest);
         System.out.println(newOrder);
 

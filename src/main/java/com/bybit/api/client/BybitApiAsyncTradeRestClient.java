@@ -6,7 +6,7 @@ import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import java.io.IOException;
 import java.util.Map;
 
-public interface BybitApAsynciTradeRestClient {
+public interface BybitApiAsyncTradeRestClient {
 
     // Trade
     void getHistoryOrderResult(TradeOrderRequest orderHistoryRequest, BybitApiCallback<Object> callback);
@@ -18,6 +18,8 @@ public interface BybitApAsynciTradeRestClient {
     void getOpenOrders(TradeOrderRequest order, BybitApiCallback<Object> callback);
 
     void createOrder(TradeOrderRequest order, BybitApiCallback<Object> callback);
+    void createOrder(Map<String, Object> order, BybitApiCallback<Object> callback);
+    void createOrder(String order, BybitApiCallback<Object> callback) throws IOException;
     void createBatchOrder(BatchOrderRequest batchOrderRequest, BybitApiCallback<Object> callback);
     void createBathOrder(Map<String, Object> payload, BybitApiCallback<Object> callback);
     void createBathOrder(String json, BybitApiCallback<Object> callback) throws IOException;

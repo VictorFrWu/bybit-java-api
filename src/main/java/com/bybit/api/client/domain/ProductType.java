@@ -16,5 +16,4 @@ public enum ProductType {
     ProductType(String productTypeId) {
         this.productTypeId = productTypeId;
     }
-
 }

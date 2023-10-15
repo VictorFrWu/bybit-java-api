@@ -130,7 +130,7 @@ public class BybitApiClientFactory {
     /**
      * Creates a new asynchronous/non-blocking REST client to trading
      */
-    public BybitApAsynciTradeRestClient newAsyncTradeRestClient() {
+    public BybitApiAsyncTradeRestClient newAsyncTradeRestClient() {
         return new BybitTradeAsyncRestClientImpl(apiKey, secret);
     }
 
