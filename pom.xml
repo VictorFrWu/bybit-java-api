@@ -6,13 +6,36 @@
 
     <groupId>com.bybit.api</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
+
     <licenses>
         <license>
             <name>The MIT License</name>
             <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
+
+    <description>Bybit Open API SDK implemented HTTP Sync Async Request and Websocket Subscribe</description>
+
+    <developers>
+        <developer>
+            <id>developerId</id>
+            <name>Victor WU</name>
+            <email>dachichiwuhe@gmail.com</email>
+            <organization>bybit-exchange</organization>
+            <organizationUrl>https://www.bybit.com/en-US/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/wuhewuhe/bybit-java-api.git</connection>
+        <developerConnection>scm:git:ssh://github.com/wuhewuhe/bybit-java-api.git</developerConnection>
+        <url>https://github.com/wuhewuhe/bybit-java-api</url>
+    </scm>
 
     <properties>
         <com.squareup.retrofit2.version>2.9.0</com.squareup.retrofit2.version>
@@ -38,8 +61,9 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version>
+            <version>2.13.4.2</version>
         </dependency>
+
         <!-- SLF4J and Logback dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -73,6 +97,11 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+            <version>2.5.0</version>
         </dependency>
     </dependencies>
 
