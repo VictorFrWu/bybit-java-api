@@ -28,7 +28,7 @@ Maven Example
 <!-- Maven -->
 <dependency>
     <groupId>com.bybit.api</groupId>
-    <artifactId>BybitJavaAPI</artifactId>
+    <artifactId>bybit-java-api</artifactId>
     <version>1.0.6</version>
 </dependency>
 ```
