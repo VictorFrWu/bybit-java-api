@@ -45,7 +45,7 @@ public class MarketDataEndpointsExample {
 
         // Get orderbook
         var orderbookRequest = MarketDataRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
-        var orderBook = client.getMarketOrderbook(orderbookRequest);
+        var orderBook = client.getMarketOrderBook(orderbookRequest);
         System.out.println(orderBook);
 
         // Get market tickers

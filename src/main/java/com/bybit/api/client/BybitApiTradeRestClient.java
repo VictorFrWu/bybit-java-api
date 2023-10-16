@@ -10,13 +10,9 @@ public interface BybitApiTradeRestClient {
 
     // Trade
     Object getHistoryOrderResult(TradeOrderRequest orderHistoryRequest);
-
     Object setDisconnectCancelAllTime(Integer timeWindow);
-
     Object getBorrowQuota(TradeOrderRequest borrowQuotaRequest);
-
     Object getOpenOrders(TradeOrderRequest order);
-
     Object createOrder(TradeOrderRequest order);
     Object createOrder(Map<String, Object> payload);
     Object createOrder(String json) throws IOException;
@@ -30,10 +26,6 @@ public interface BybitApiTradeRestClient {
     Object cancelBatchOrder(Map<String, Object> payload);
     Object cancelBatchOrder(String json) throws IOException;
     Object cancelOrder(TradeOrderRequest order);
-
     Object cancelAllOrder(TradeOrderRequest order);
-
     Object amendOrder(TradeOrderRequest order);
-
-
 }

@@ -20,9 +20,9 @@ public interface WebsocketClient {
      * The WebSocket will keep pushing delta messages every time the orderbook changes. If you receive a new snapshot message, you will have to reset your local orderbook.
      * If there is a problem on Bybit's end, a snapshot will be re-sent, which is guaranteed to contain the latest data.
      * INFO
-     * Linear & inverse level 1 data: if 3 seconds have elapsed without a change in the orderbook, a snapshot message will be pushed again.
+     * Linear and inverse level 1 data: if 3 seconds have elapsed without a change in the orderbook, a snapshot message will be pushed again.
      *
-     * Linear & inverse:
+     * Linear and inverse:
      * Level 1 data, push frequency: 10ms
      * Level 50 data, push frequency: 20ms
      * Level 200 data, push frequency: 100ms
@@ -66,8 +66,8 @@ public interface WebsocketClient {
      *
      * NOTE
      * This topic utilises the snapshot field and delta field. If a response param is not found in the message, then its value has not changed.
-     * Spot & Option tickers message are snapshot only
-     * Push frequency: Derivatives & Options - 100ms, Spot - real-time
+     * Spot and Option tickers message are snapshot only
+     * Push frequency: Derivatives and Options - 100ms, Spot - real-time
      *
      * Topic:
      * tickers.{symbol}

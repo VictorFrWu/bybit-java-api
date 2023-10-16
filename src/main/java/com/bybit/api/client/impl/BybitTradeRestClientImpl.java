@@ -4,7 +4,7 @@ import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.trade.*;
-import com.bybit.api.client.service.JsonConverter;
+import com.bybit.api.client.service.BybitJsonConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
 public class BybitTradeRestClientImpl implements BybitApiTradeRestClient {
     private final BybitApiService bybitApiService;
-    private final JsonConverter converter = new JsonConverter();
+    private final BybitJsonConverter converter = new BybitJsonConverter();
 
     public BybitTradeRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);

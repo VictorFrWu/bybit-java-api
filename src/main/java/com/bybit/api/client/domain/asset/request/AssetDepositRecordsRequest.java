@@ -1,7 +1,7 @@
 /**
  * HTTP Request
  * GET /v5/asset/deposit/query-record
- * <p>
+ 
  * Request Parameters
  * Parameter	Required	Type	Comments
  * coin	false	string	Coin

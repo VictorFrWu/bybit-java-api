@@ -12,7 +12,7 @@ import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.bybit.api.client.domain.user.UserDataRequest;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
-import com.bybit.api.client.service.JsonConverter;
+import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.constant.Util.listToString;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -24,7 +24,7 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
 
     private final BybitApiService bybitApiService;
-    private final JsonConverter converter = new JsonConverter();
+    private final BybitJsonConverter converter = new BybitJsonConverter();
 
     public BybitApiAsyncRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);
@@ -94,8 +94,8 @@ public class BybitApiAsyncRestClientImpl implements BybitApiAsyncRestClient {
     }
 
     @Override
-    public void getMarketOrderbook(MarketDataRequest marketOrderBookRequest, BybitApiCallback<Object> callback) {
-        bybitApiService.getMarketOrderbook(
+    public void getMarketOrderBook(MarketDataRequest marketOrderBookRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getMarketOrderBook(
                 marketOrderBookRequest.getCategory().getProductTypeId(),
                 marketOrderBookRequest.getSymbol(),
                 marketOrderBookRequest.getLimit()

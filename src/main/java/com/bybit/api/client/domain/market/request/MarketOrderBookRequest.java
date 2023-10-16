@@ -5,7 +5,7 @@
  * symbol	true	string	Symbol name
  * limit	false	integer	Limit size for each bid and ask
  * spot: [1, 50]. Default: 1.
- * linear&inverse: [1, 200]. Default: 25.
+ * linear and inverse: [1, 200]. Default: 25.
  * option: [1, 25]. Default: 1.
  * Response Parameters
  * Parameter	Type	Comments

@@ -24,7 +24,7 @@ public class NormalSpotMarginExample {
         var normalBorrowCoinInfo = client.getNormalSpotMarginTradeBorrowCoinInfo("ETH");
         System.out.println(normalBorrowCoinInfo);
 
-        // Get Interest & Quota
+        // Get Interest and Quota
         var normalInteresetQuota = client.getNormalSpotMarginTradeInterestQuota("ETH");
         System.out.println(normalInteresetQuota);
 

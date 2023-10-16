@@ -21,7 +21,7 @@ BybitJavaAPI provides an official, robust, and high-performance Java connector t
 BybitJavaAPI is under active development with the latest features and updates from Bybit's API implemented promptly. The module utilizes minimal external libraries to provide a lightweight and efficient experience. If you've made enhancements or fixed bugs, please submit a pull request.
 
 ## Installation
-Ensure you have Java 8 or higher. You can include BybitJavaAPI in your project using Maven or Gradle.
+Ensure you have Java 11 or higher. You can include BybitJavaAPI in your project using Maven or Gradle.
 
 Maven Example
 ```java

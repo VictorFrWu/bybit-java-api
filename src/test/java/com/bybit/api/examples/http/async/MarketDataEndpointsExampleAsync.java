@@ -39,7 +39,7 @@ public class MarketDataEndpointsExampleAsync {
 
         // Get orderbook
         var orderbookRequest = MarketDataRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();
-        client.getMarketOrderbook(orderbookRequest,System.out::println);
+        client.getMarketOrderBook(orderbookRequest,System.out::println);
 
         // Get market tickers
         var tickerReueqt = MarketDataRequest.builder().category(ProductType.SPOT).symbol("BTCUSDT").build();

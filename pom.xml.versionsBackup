@@ -6,7 +6,7 @@
 
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>bybit-java-api</name>
     <url>https://github.com/wuhewuhe/bybit-java-api</url>
 
@@ -123,19 +123,19 @@
     </dependencies>
 
     <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages Repository</name>
-            <url>https://maven.pkg.github.com/wuhewuhe/bybit-java-api</url>
-        </repository>
-        <!--        <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        <!--        <repository>
+                    <id>github</id>
+                    <name>GitHub Packages Repository</name>
+                    <url>https://maven.pkg.github.com/wuhewuhe/bybit-java-api</url>
                 </repository>-->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <build>

@@ -16,7 +16,7 @@ import com.bybit.api.client.domain.spot.marginTrade.*;
 import com.bybit.api.client.domain.user.UserDataRequest;
 import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
-import com.bybit.api.client.service.JsonConverter;
+import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.constant.Util.listToString;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -28,7 +28,7 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
  */
 public class BybitApiRestClientImpl implements BybitApiRestClient {
     private final BybitApiService bybitApiService;
-    private final JsonConverter converter = new JsonConverter();
+    private final BybitJsonConverter converter = new BybitJsonConverter();
 
     public BybitApiRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);
@@ -110,8 +110,8 @@ public class BybitApiRestClientImpl implements BybitApiRestClient {
     }
 
     @Override
-    public Object getMarketOrderbook(MarketDataRequest marketOrderBookRequest) {
-        return executeSync(bybitApiService.getMarketOrderbook(
+    public Object getMarketOrderBook(MarketDataRequest marketOrderBookRequest) {
+        return executeSync(bybitApiService.getMarketOrderBook(
                 marketOrderBookRequest.getCategory().getProductTypeId(),
                 marketOrderBookRequest.getSymbol(),
                 marketOrderBookRequest.getLimit()
