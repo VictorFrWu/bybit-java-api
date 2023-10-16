@@ -29,7 +29,7 @@ Maven Example
 <dependency>
     <groupId>com.bybit.api</groupId>
     <artifactId>BybitJavaAPI</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
