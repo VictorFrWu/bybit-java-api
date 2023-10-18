@@ -2728,6 +2728,20 @@ public interface BybitApiService {
                                      @Query("limit") Integer limit,
                                      @Query("orderType") String orderType);
 
+    /**
+     * Get Lending Account Info
+     * @param coin true	string	Coin name
+     *
+     * https://bybit-exchange.github.io/docs/v5/c2c-lend/account-info
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin name
+     * principalInterest	string	User Redeemable interest
+     * principalQty	string	Leftover quantity you can redeem for today (measured from 0 - 24 UTC), formula: min(the rest amount of principle, the amount that the user can redeem on the day)
+     * principalTotal	string	Total amount redeemable by user
+     * quantity	string	Current deposit quantity
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/lending/account")
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
