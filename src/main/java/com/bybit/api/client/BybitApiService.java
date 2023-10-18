@@ -2733,6 +2733,29 @@ public interface BybitApiService {
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 
     // Announcement
+
+    /**
+     * Get Announcement
+     * @param locale true	string	Language symbol
+     * @param type false	string	Announcement type
+     * @param tag false	string	Announcement tag
+     * @param page false	integer	Page number. Default: 1
+     * @param limit false	integer	Limit for data size per page. Default: 20
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * total	integer	Total records
+     * list	array	Object
+     * &gt; title	string	Announcement title
+     * &gt; description	string	Announcement description
+     * &gt; type	Object
+     * &gt; &gt; title	string	The title of announcement type
+     * &gt; &gt; key	string	The key of announcement type
+     * &gt; tags	array<string>	The tag of announcement
+     * &gt; url	string	Announcement url
+     * &gt; dateTimestamp	number	Publish timestamp (ms) of announcement
+     * &gt; startDataTimestamp	number	The start timestamp (ms) of the event, only valid when list.type.key == "latest_activities"
+     * &gt; endDataTimestamp	number	The end timestamp (ms) of the event, only valid when list.type.key == "latest_activities"
+     */
     @GET("/v5/announcements/index")
     Call<Object> getAnouncementInfo(
             @Query("locale") String locale,
