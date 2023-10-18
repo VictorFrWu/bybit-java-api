@@ -165,6 +165,21 @@ List of other contributors
             📖</a>
 </td>
 </tr>
+  <tr>
+    <td align="center">
+        <a href="https://github.com/Doom-Prince">
+            <img src="https://avatars.githubusercontent.com/u/32245754?v=4" width="100px;" alt=""/>
+            <br />
+            <sub>   
+                <b>Doom</b>
+            </sub>
+        </a>
+        <br />
+        <a href="https://github.com/wuhewuhe/bybit-java-api/commits?author=Doom-Prince" title="Code">
+            💻</a> <a href="https://github.com/wuhewuhe/bybit-java-api/commits?author=Doom-Prince" title="Documentation">
+            📖</a>
+</td>
+</tr>
 </table>
 
 ## Donations
