@@ -110,17 +110,31 @@ public interface BybitApiService {
                                          @Query("limit") Integer limit);
 
     /**
+     * Get Index Price Kline
      * Query for historical index price klines. Charts are returned in groups based on the requested interval.
+     *
      * Covers: USDT perpetual / USDC contract / Inverse contract
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. spot,linear,inverse
-     * symbol	true	string	Symbol name
-     * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
-     * start	false	integer	The start timestamp (ms)
-     * end	false	integer	The end timestamp (ms)
-     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
+     *
      * https://bybit-exchange.github.io/docs/v5/market/index-kline
+     *
+     * @param category 	true	string	Product type. linear,inverse
+     * @param symbol true	string	Symbol name
+     * @param interval 	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+     * @param start false	integer	The start timestamp (ms)
+     * @param end 	false	integer	The end timestamp (ms)
+     * @param limit false	integer	Limit for data size per page. [1, 1000]. Default: 200
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * category	string	Product type
+     * symbol	string	Symbol name
+     * list	array
+     * An string array of individual candle
+     * Sort in reverse by startTime
+     * &gt; list[0]: startTime	string	Start time of the candle (ms)
+     * &gt; list[1]: openPrice	string	Open price
+     * &gt; list[2]: highPrice	string	Highest price
+     * &gt; list[3]: lowPrice	string	Lowest price
+     * &gt; list[4]: closePrice	string	Close price. Is the last traded price when the candle is not closed
      */
     @GET("/v5/market/index-price-kline")
     Call<Object> getIndexPriceLinesData(@Query("category") String category,
