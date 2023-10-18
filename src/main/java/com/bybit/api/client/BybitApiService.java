@@ -30,22 +30,43 @@ public interface BybitApiService {
     /**
      * Get Bybit Server Time
      * https://bybit-exchange.github.io/docs/v5/market/time
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * timeSecond	string	Bybit server timestamp (sec)
+     * timeNano	string	Bybit server timestamp (nano)
      */
     @GET("/v5/market/time")
     Call<Object> getServerTime();
 
     /**
-     * Query for historical mark price klines. Charts are returned in groups based on the requested interval.
-     * Covers: USDT perpetual / USDC contract / Inverse contract
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. spot,linear,inverse
-     * symbol	true	string	Symbol name
-     * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
-     * start	false	integer	The start timestamp (ms)
-     * end	false	integer	The end timestamp (ms)
-     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
-     * https://bybit-exchange.github.io/docs/v5/market/kline
+     * Get Kline
+     * Query for historical klines (also known as candles/candlesticks). Charts are returned in groups based on the requested interval.
+     *
+     * Covers: Spot / USDT perpetual / USDC contract / Inverse contract
+     *
+     * https://bybit-exchange.github.io/docs/v5/market/time
+     *
+     * @param category true	string	Product type. spot,linear,inverse
+     * @param symbol true	string	Symbol name
+     * @param interval true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+     * @param start false	integer	The start timestamp (ms)
+     * @param end false	integer	The end timestamp (ms)
+     * @param limit false	integer	Limit for data size per page. [1, 1000]. Default: 200
+     * @return Response Parameters
+     *      * Parameter	Type	Comments
+     *      * category	string	Product type
+     *      * symbol	string	Symbol name
+     *      * list	array
+     *      * An string array of individual candle
+     *      * Sort in reverse by startTime
+     *      * &gt; list[0]: startTime	string	Start time of the candle (ms)
+     *      * &gt; list[1]: openPrice	string	Open price
+     *      * &gt; list[2]: highPrice	string	Highest price
+     *      * &gt; list[3]: lowPrice	string	Lowest price
+     *      * &gt; list[4]: closePrice	string	Close price. Is the last traded price when the candle is not closed
+     *      * &gt; list[5]: volume	string	Trade volume. Unit of contract: pieces of contract. Unit of spot: quantity of coins
+     *      * &gt; list[6]: turnover	string	Turnover. Unit of figure: quantity of quota coin
      */
     @GET("/v5/market/kline")
     Call<Object> getMarketLinesData(@Query("category") String category,
@@ -58,15 +79,27 @@ public interface BybitApiService {
     /**
      * Query for historical mark price klines. Charts are returned in groups based on the requested interval.
      * Covers: USDT perpetual / USDC contract / Inverse contract
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. spot,linear,inverse
-     * symbol	true	string	Symbol name
-     * interval	true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
-     * start	false	integer	The start timestamp (ms)
-     * end	false	integer	The end timestamp (ms)
-     * limit	false	integer	Limit for data size per page. [1, 1000]. Default: 200
+     *
      * https://bybit-exchange.github.io/docs/v5/market/mark-kline
+     *
+     * @param category true	string	Product type. spot,linear,inverse
+     * @param symbol true	string	Symbol name
+     * @param interval true	string	Kline interval. 1,3,5,15,30,60,120,240,360,720,D,M,W
+     * @param start false	integer	The start timestamp (ms)
+     * @param end false	integer	The end timestamp (ms)
+     * @param limit false	integer	Limit for data size per page. [1, 1000]. Default: 200
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * category	string	Product type
+     * symbol	string	Symbol name
+     * list	array
+     * An string array of individual candle
+     * Sort in reverse by startTime
+     * &gt; list[0]: startTime	string	Start time of the candle (ms)
+     * &gt; list[1]: openPrice	string	Open price
+     * &gt; list[2]: highPrice	string	Highest price
+     * &gt; list[3]: lowPrice	string	Lowest price
+     * &gt; list[4]: closePrice	string	Close price. Is the last traded price when the candle is not closed
      */
     @GET("/v5/market/mark-price-kline")
     Call<Object> getMarketPriceLinesData(@Query("category") String category,
