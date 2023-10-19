@@ -2,7 +2,6 @@ package com.bybit.api.client.security;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.constant.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import okio.Buffer;
 import org.apache.commons.lang3.StringUtils;
@@ -48,24 +47,9 @@ public class AuthenticationInterceptor implements Interceptor {
             Buffer buffer = new Buffer();
             original.body().writeTo(buffer);
             payload = buffer.readUtf8();
-            if(StringUtils.isEmpty(payload))
-            {
-                // Extract JSON payload from POST request
-                payload = original.url().query();
-
-                // Convert query parameters into a JSON payload
-                Map<String, Object> paramsMap = Util.convertQueryToMap(payload);
-                ObjectMapper objectMapper = new ObjectMapper();
-                payload = objectMapper.writeValueAsString(paramsMap);
-            }
-            // Remove query parameters from URL
-            HttpUrl newUrl = original.url().newBuilder()
-                    .query(null)
-                    .build();
-            newRequestBuilder.url(newUrl);
-
             MediaType mediaType = MediaType.parse("application/json");
-            newRequestBuilder.post(RequestBody.create(mediaType, payload)); // set new POST body
+            RequestBody body = RequestBody.create(payload, mediaType);
+            newRequestBuilder.post(body);
         }
 
         if (isApiKeyRequired || isSignatureRequired) {

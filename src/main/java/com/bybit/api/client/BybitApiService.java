@@ -679,7 +679,7 @@ public interface BybitApiService {
     @GET("/v5/market/account-ratio")
     Call<Object> getMarketAccountRatio(@Query("category") String category,
                                        @Query("symbol") String symbol,
-                                       @Query("period") String baseCoin,
+                                       @Query("period") String period,
                                        @Query("limit") Integer limit);
 
     // Trade
