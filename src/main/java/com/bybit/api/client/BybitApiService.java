@@ -3621,11 +3621,48 @@ public interface BybitApiService {
                                      @Query("limit") Integer limit,
                                      @Query("orderType") String orderType);
 
+    /**
+     * Get Lending Account Info
+     * @param coin true	string	Coin name
+     *
+     * https://bybit-exchange.github.io/docs/v5/c2c-lend/account-info
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin name
+     * principalInterest	string	User Redeemable interest
+     * principalQty	string	Leftover quantity you can redeem for today (measured from 0 - 24 UTC), formula: min(the rest amount of principle, the amount that the user can redeem on the day)
+     * principalTotal	string	Total amount redeemable by user
+     * quantity	string	Current deposit quantity
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/lending/account")
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 
     // Announcement
+
+    /**
+     * Get Announcement
+     * @param locale true	string	Language symbol
+     * @param type false	string	Announcement type
+     * @param tag false	string	Announcement tag
+     * @param page false	integer	Page number. Default: 1
+     * @param limit false	integer	Limit for data size per page. Default: 20
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * total	integer	Total records
+     * list	array	Object
+     * &gt; title	string	Announcement title
+     * &gt; description	string	Announcement description
+     * &gt; type	Object
+     * &gt; &gt; title	string	The title of announcement type
+     * &gt; &gt; key	string	The key of announcement type
+     * &gt; tags	array<string>	The tag of announcement
+     * &gt; url	string	Announcement url
+     * &gt; dateTimestamp	number	Publish timestamp (ms) of announcement
+     * &gt; startDataTimestamp	number	The start timestamp (ms) of the event, only valid when list.type.key == "latest_activities"
+     * &gt; endDataTimestamp	number	The end timestamp (ms) of the event, only valid when list.type.key == "latest_activities"
+     */
     @GET("/v5/announcements/index")
     Call<Object> getAnouncementInfo(
             @Query("locale") String locale,
