@@ -168,7 +168,7 @@ List of other contributors
   <tr>
     <td align="center">
         <a href="https://github.com/Doom-Prince">
-            <img src="https://avatars.githubusercontent.com/u/32245754?v=4" width="100px;" alt=""/>
+            <img src="https://avatars.githubusercontent.com/u/124635036?v=4" width="100px;" alt=""/>
             <br />
             <sub>   
                 <b>Doom</b>
