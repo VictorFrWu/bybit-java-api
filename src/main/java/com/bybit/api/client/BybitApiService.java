@@ -462,7 +462,7 @@ public interface BybitApiService {
      *
      * You can download archived historical trades here:
      *
-     * USDT Perpetual, Inverse Perpetual & Inverse Futures
+     * USDT Perpetual, Inverse Perpetual and Inverse Futures
      * Spot
      *
      * https://bybit-exchange.github.io/docs/v5/market/recent-trade
@@ -544,7 +544,7 @@ public interface BybitApiService {
      * The data is hourly.
      * If both startTime and endTime are not specified, it will return the most recent 1 hours worth of data.
      * startTime and endTime are a pair of params. Either both are passed or they are not passed at all.
-     * This endpoint can query the last 2 years worth of data, but make sure [endTime - startTime] <= 30 days.
+     * This endpoint can query the last 2 years worth of data, but make sure [endTime - startTime] &le; 30 days.
      *
      * https://bybit-exchange.github.io/docs/v5/market/iv
      *
@@ -694,7 +694,7 @@ public interface BybitApiService {
      * INFO
      * The orders in the last 7 days: supports querying all statuses
      * The orders beyond 7 days: supports querying filled orders
-     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId &gt; orderLinkId &gt; symbol &gt; baseCoin.
      * TIP
      * Classic account spot can get final status orders only
      *
@@ -704,8 +704,8 @@ public interface BybitApiService {
      * Unified account: spot, linear, inverse, option
      * Classic account: spot, linear, inverse
      * @param symbol	false	string	Symbol name
-     * @param baseCoin	false	string	Base coin. Unified account - inverse & Classic account does not support this param
-     * @param settleCoin	false	string	Settle coin. Unified account - inverse & Classic account does not support this param
+     * @param baseCoin	false	string	Base coin. Unified account - inverse and Classic account does not support this param
+     * @param settleCoin	false	string	Settle coin. Unified account - inverse and Classic account does not support this param
      * @param orderId	false	string	Order ID
      * @param orderLinkId	false	string	User customised order ID
      * @param orderFilter    false	string	Order: active order, StopOrder: conditional order for Futures and Spot, tpslOrder: spot TP/SL order
@@ -854,7 +854,7 @@ public interface BybitApiService {
      *
      * TIP
      * It also supports querying filled, cancelled, and rejected orders which occurred in last 10 minutes (check the openOnly param). At most, 500 orders will be returned.
-     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId &gt; orderLinkId &gt; symbol &gt; baseCoin.
      * The records are sorted by the createdTime from newest to oldest.
      * INFO
      * Classic account spot trade can return open orders only
@@ -865,16 +865,16 @@ public interface BybitApiService {
      * Unified account: spot, linear, inverse, option
      * Classic account: spot, linear, inverse
      * @param symbol	false	string	Symbol name. For linear, either symbol, baseCoin, settleCoin is required
-     * @param baseCoin	false	string	Base coin. Supports linear, inverse & option. For option. Return all option open orders if not passed
+     * @param baseCoin	false	string	Base coin. Supports linear, inverse and option. For option. Return all option open orders if not passed
      * @param settleCoin    false	string	Settle coin
      * linear: either symbol, baseCoin or settleCoin is required
      * spot: invalid
      * @param orderId	false	string	Order ID
      * @param orderLinkId	false	string	User customised order ID
      * @param openOnly    false	integer
-     * Unified account & Classic account: 0(default) - query open orders only
+     * Unified account and Classic account: 0(default) - query open orders only
      * Unified account - spot / linear / option: 1
-     * Unified account - inverse & Classic account - linear / inverse: 2
+     * Unified account - inverse and Classic account - linear / inverse: 2
      * return cancelled, rejected or totally filled orders by last 10 minutes, A maximum of 500 records are kept under each account. If the Bybit service is restarted due to an update, this part of the data will be cleared and accumulated again, but the order records will still be queried in order history
      * Classic spot: not supported, return open orders only
      * @param orderFilter    false	string	Order: active order, StopOrder: conditional order for Futures and Spot, tpslOrder: spot TP/SL order
@@ -971,7 +971,86 @@ public interface BybitApiService {
      * Please refer to rate limit table. If you need to raise the rate limit, please contact your client manager or submit an application via here
      * TIP
      * To margin trade on spot on a normal account, you need to go here to borrow margin first.
+     *
      * https://bybit-exchange.github.io/docs/v5/order/create-order
+     *
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * category	true	string	Product type
+     * Unified account: spot, linear, inverse, option
+     * Classic account: spot, linear, inverse
+     * symbol	true	string	Symbol name
+     * isLeverage	false	integer	Whether to borrow. Valid for Unified spot only. 0(default): false then spot trading, 1: true then margin trading
+     * side	true	string	Buy, Sell
+     * orderType	true	string	Market, Limit
+     * qty	true	string	Order quantity.
+     * For Spot Market Buy order, please note that qty should be quote curreny amount, and make sure it satisfies quotePrecision in Spot instrument spec
+     * For other cases, please make sure the input qty is the multiples of minOrderQty from instrument info endpoint
+     * In particular, for Futures and Perps, if you pass qty="0", you can close the whole position of current symbol
+     * price	false	string	Order price
+     * Market order will ignore this field
+     * Please check the min price and price precision from instrument info endpoint
+     * If you have position, price needs to be better than liquidation price
+     * triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
+     * 1: triggered when market price rises to triggerPrice
+     * 2: triggered when market price falls to triggerPrice
+     * Valid for linear and inverse
+     * orderFilter	false	string	If it is not passed, Order by default.
+     * Order
+     * tpslOrder: Spot TP/SL order, the assets are occupied even before the order is triggered
+     * StopOrder: Spot conditional order, the assets will not be occupied until the price of the underlying asset reaches the trigger price, and the required assets will be occupied after the Conditional order is triggered
+     * Valid for spot only
+     * triggerPrice	false	string
+     * For Perps and Futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
+     * triggerPrice &gt; market price
+     * Else, triggerPrice &lt;  market price
+     * For spot, it is the TP/SL and Conditional order trigger price
+     * triggerBy	false	string	Trigger price type, Conditional order param for Perps and Futures. LastPrice, IndexPrice, MarkPrice
+     * Valid for linear and inverse
+     * orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
+     * timeInForce	false	string	Time in force
+     * Market order will use IOC directly
+     * If not passed, GTC is used by default
+     * positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps and Inverse contracts have hedge mode)
+     * 0: one-way mode
+     * 1: hedge-mode Buy side
+     * 2: hedge-mode Sell side
+     * orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
+     * Futures and Perps: orderLinkId rules:
+     * optional param
+     * always unique
+     * option orderLinkId rules:
+     * required param
+     * always unique
+     * takeProfit	false	string	Take profit price, valid for linear and inverse
+     * stopLoss	false	string	Stop loss price, valid for linear and inverse
+     * tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice. Valid for linear and inverse
+     * slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice. Valid for linear and inverse
+     * reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
+     * You must specify it as true when you are about to close/reduce the position
+     * When reduceOnly is true, take profit/stop loss cannot be set
+     * Valid for linear, inverse and option
+     * closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
+     * Valid for linear and inverse
+     * smpType	false	string	Smp execution type. What is SMP?
+     * mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
+     * tpslMode	false	string	TP/SL mode
+     * Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
+     * Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
+     * Valid for linear and inverse
+     * tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit.
+     * Valid for linear and inverse
+     * slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit.
+     * Valid for linear and inverse
+     * tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market.
+     * Valid for linear and inverse
+     * slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market.
+     * Valid for linear and inverse
+     * @param tradeOrderRequest
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * orderId	string	Order ID
+     * orderLinkId	string	User customised order ID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create")
@@ -1184,7 +1263,7 @@ public interface BybitApiService {
      * Classic account covers: Spot / USDT perpetual / Inverse contract
      *
      * INFO
-     * Support cancel orders by symbol/baseCoin/settleCoin. If you pass multiple of these params, the system will process one of param, which priority is symbol > baseCoin > settleCoin.
+     * Support cancel orders by symbol/baseCoin/settleCoin. If you pass multiple of these params, the system will process one of param, which priority is symbol &gt; baseCoin &gt; settleCoin.
      * NOTE: category=option, you can cancel all option open orders without passing any of those three params. However, for linear and inverse, you must specify one of those three params.
      * NOTE: category=spot, you can cancel all spot open orders (normal order by default) without passing other params.
      *
@@ -1193,13 +1272,13 @@ public interface BybitApiService {
      * @param category    true	string	Product type
      * Unified account: spot, linear, inverse, option
      * Classic account: spot, linear, inverse
-     * @param symbol	false	string	Symbol name. linear & inverse: Required if not passing baseCoin or settleCoin
+     * @param symbol	false	string	Symbol name. linear and inverse: Required if not passing baseCoin or settleCoin
      * @param baseCoin    false	string	Base coin
-     * linear & inverse(Classic account): If cancel all by baseCoin, it will cancel all linear & inverse orders. Required if not passing symbol or settleCoin
-     * linear & inverse(Unified account): If cancel all by baseCoin, it will cancel all corresponding category orders. Required if not passing symbol or settleCoin
+     * linear and inverse(Classic account): If cancel all by baseCoin, it will cancel all linear and inverse orders. Required if not passing symbol or settleCoin
+     * linear and inverse(Unified account): If cancel all by baseCoin, it will cancel all corresponding category orders. Required if not passing symbol or settleCoin
      * Classic spot: invalid
      * @param settleCoin    false	string	Settle coin
-     * linear & inverse: Required if not passing symbol or baseCoin
+     * linear and inverse: Required if not passing symbol or baseCoin
      * Does not support spot
      * @param orderFilter    false	string
      * category=spot, you can pass Order, tpslOrder, StopOrder. If not passed, Order by default
@@ -1245,8 +1324,8 @@ public interface BybitApiService {
      * @param orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
      * @param orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
      * @param triggerPrice    false	string	If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice > market price
-     * Else, triggerPrice < market price
+     * triggerPrice &gt; market price
+     * Else, triggerPrice &lt;  market price
      * @param qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
      * @param price	false	string	Order price after modification. Do not pass it if not modify the price
      * @param takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
@@ -1745,18 +1824,18 @@ public interface BybitApiService {
      * &gt; side	string	Position side. Buy: long, Sell: short. Note: under one-way mode, it returns None if empty position
      * &gt; size	string	Position size
      * &gt; avgPrice	string	Average entry price
-     * For USDC Perp & Futures, it indicates average entry price, and it will not be changed with 8-hour session settlement
+     * For USDC Perp and Futures, it indicates average entry price, and it will not be changed with 8-hour session settlement
      * &gt; positionValue	string	Position value
      * &gt; tradeMode	integer	Trade mode
-     * Classic & UTA (inverse): 0: cross-margin, 1: isolated margin
+     * Classic and UTA (inverse): 0: cross-margin, 1: isolated margin
      * UTA: depreciated, always 0
      * &gt; autoAddMargin	integer	Whether to add margin automatically. 0: false, 1: true. For UTA, it is meaningful only when UTA enables ISOLATED_MARGIN
      * &gt; positionStatus	String	Position status. Normal, Liq, Adl
      * &gt; leverage	string	Position leverage. Valid for contract. Note: for portfolio margin mode, this field returns "", which means leverage rules are invalid
      * &gt; markPrice	string	Last mark price
      * &gt; liqPrice	string	Position liquidation price
-     * UTA (inverse) & UTA (isolated margin enabled) & Classic account: it is the real price for isolated and cross positions, and keeps "" when liqPrice <= minPrice or liqPrice >= maxPrice
-     * UTA (Cross margin mode): it is an estimated price for cross positions(because the unified mode controls the risk rate according to the account), and keeps "" when liqPrice <= minPrice or liqPrice >= maxPrice
+     * UTA (inverse) and UTA (isolated margin enabled) and Classic account: it is the real price for isolated and cross positions, and keeps "" when liqPrice &le; minPrice or liqPrice &ge; maxPrice
+     * UTA (Cross margin mode): it is an estimated price for cross positions(because the unified mode controls the risk rate according to the account), and keeps "" when liqPrice &le; minPrice or liqPrice &ge; maxPrice
      * However, this field is empty for Portfolio Margin Mode, and no liquidation price will be provided
      * &gt; bustPrice	string	Bankruptcy price. Note: Unified mode returns "", no position bankruptcy price (exclude inverse trade under UTA)
      * &gt; positionIM	string	Initial margin. For portfolio margin mode, it returns ""
@@ -1768,7 +1847,7 @@ public interface BybitApiService {
      * &gt; trailingStop	string	Trailing stop (The distance from market price)
      * &gt; unrealisedPnl	string	Unrealised PnL
      * &gt; cumRealisedPnl	string	Cumulative realised pnl
-     * Futures & Perp: it is the all time cumulative realised P&L
+     * Futures and Perp: it is the all time cumulative realised P&L
      * Option: it is the realised P&L when you hold that position
      * &gt; adlRankIndicator	integer	Auto-deleverage rank indicator. What is Auto-Deleveraging?
      * &gt; createdTime	string	Position created timestamp (ms)
@@ -2043,7 +2122,7 @@ public interface BybitApiService {
      * TIP
      * Response items will have sorting issues When 'execTime' is the same. This issue is currently being optimized and will be released at the end of October. If you want to receive real-time execution information, Use the websocket stream (recommended).
      * You may have multiple executions in a single order.
-     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId &gt; orderLinkId &gt; symbol &gt; baseCoin.
      *
      * https://bybit-exchange.github.io/docs/v5/position/execution
      *
@@ -2329,7 +2408,7 @@ public interface BybitApiService {
      * TIP
      * Response items will have sorting issues When 'execTime' is the same. This issue is currently being optimized and will be released at the end of October. If you want to receive real-time execution information, Use the websocket stream (recommended).
      * You may have multiple executions in a single order.
-     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+     * You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId &gt; orderLinkId &gt; symbol &gt; baseCoin.
      *
      * https://bybit-exchange.github.io/docs/v5/pre-upgrade/execution
      *
@@ -2412,7 +2491,7 @@ public interface BybitApiService {
      * &gt; type	string	Type
      * &gt; qty	string	Quantity
      * &gt; size	string	Size
-     * &gt; currency	string	USDC、USDT、BTC、ETH
+     * &gt; currency	string	USDC USDT BTC ETH
      * &gt; tradePrice	string	Trade price
      * &gt; funding	string	Funding fee
      * Positive value means receiving funding fee
@@ -2494,16 +2573,16 @@ public interface BybitApiService {
      * Parameter	Type	Comments
      * list	array	Object
      * &gt; accountType	string	Account type
-     * &gt; accountLTV	string	Account LTV: account total borrowed size / (account total equity + account total borrowed size). In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; accountIMRate	string	Initial Margin Rate: Account Total Initial Margin Base Coin / Account Margin Balance Base Coin. In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; accountMMRate	string	Maintenance Margin Rate: Account Total Maintenance Margin Base Coin / Account Margin Balance Base Coin. In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; totalEquity	string	Equity of account converted to usd：Account Margin Balance Base Coin + Account Option Value Base Coin. In non-unified mode & unified (inverse), the field will be returned as an empty string.
-     * &gt; totalWalletBalance	string	Wallet Balance of account converted to usd：∑ Asset Wallet Balance By USD value of each asset。In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; totalMarginBalance	string	Margin Balance of account converted to usd：totalWalletBalance + totalPerpUPL. In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; totalAvailableBalance	string	Available Balance of account converted to usd：Regular mode：totalMarginBalance - totalInitialMargin. In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; totalPerpUPL	string	Unrealised P&L of Perpetuals and USDC Futures of account converted to usd：∑ Each Perp and USDC Futures upl by base coin. In non-unified mode & unified (inverse), the field will be returned as an empty string.
-     * &gt; totalInitialMargin	string	Initial Margin of account converted to usd：∑ Asset Total Initial Margin Base Coin. In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; totalMaintenanceMargin	string	Maintenance Margin of account converted to usd: ∑ Asset Total Maintenance Margin Base Coin. In non-unified mode & unified (inverse) & unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; accountLTV	string	Account LTV: account total borrowed size / (account total equity + account total borrowed size). In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; accountIMRate	string	Initial Margin Rate: Account Total Initial Margin Base Coin / Account Margin Balance Base Coin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; accountMMRate	string	Maintenance Margin Rate: Account Total Maintenance Margin Base Coin / Account Margin Balance Base Coin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; totalEquity	string	Equity of account converted to usd：Account Margin Balance Base Coin + Account Option Value Base Coin. In non-unified mode and unified (inverse), the field will be returned as an empty string.
+     * &gt; totalWalletBalance	string	Wallet Balance of account converted to usd：∑ Asset Wallet Balance By USD value of each asset。In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; totalMarginBalance	string	Margin Balance of account converted to usd：totalWalletBalance + totalPerpUPL. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; totalAvailableBalance	string	Available Balance of account converted to usd：Regular mode：totalMarginBalance - totalInitialMargin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; totalPerpUPL	string	Unrealised P&L of Perpetuals and USDC Futures of account converted to usd：∑ Each Perp and USDC Futures upl by base coin. In non-unified mode and unified (inverse), the field will be returned as an empty string.
+     * &gt; totalInitialMargin	string	Initial Margin of account converted to usd：∑ Asset Total Initial Margin Base Coin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
+     * &gt; totalMaintenanceMargin	string	Maintenance Margin of account converted to usd: ∑ Asset Total Maintenance Margin Base Coin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
      * &gt; coin	array	Object
      * &gt; &gt; coin	string	Coin name, such as BTC, ETH, USDT, USDC
      * &gt; &gt; equity	string	Equity of current coin
@@ -2742,7 +2821,7 @@ public interface BybitApiService {
      * &gt; type	string	Type
      * &gt; qty	string	Quantity. It is the quantity for each trade entry and it does not have direction
      * &gt; size	string	Size. The rest position size after the trade is executed, and it has direction, i.e., short with "-"
-     * &gt; currency	string	USDC、USDT、BTC、ETH
+     * &gt; currency	string	USDC USDT BTC ETH
      * &gt; tradePrice	string	Trade price
      * &gt; funding	string	Funding fee
      * Positive value means receiving funding fee
