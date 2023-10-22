@@ -1,6 +1,5 @@
-# BybitJavaAPI
-
-The Official Java API connector for Bybit's HTTP and WebSocket APIs.
+# bybit-java-api
+[![Java 11](https://img.shields.io/badge/Java-11-brightgreen.svg)](https://github.com/wuhewuhe/bybit-java-api)   [![Contributor Victor](https://img.shields.io/badge/contributor-Victor-blue.svg)](https://github.com/wuhewuhe/bybit-java-api)   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/wuhewuhe/bybit-java-api/blob/main/LICENSE)
 
 ## Table of Contents
 
@@ -13,13 +12,19 @@ The Official Java API connector for Bybit's HTTP and WebSocket APIs.
 - [Donations](#donations)
 
 ## About
-BybitJavaAPI provides an official, robust, and high-performance Java connector to Bybit's trading APIs. Initially conceptualized by esteemed Java developer Victor, this module is now maintained by Bybit's in-house Java experts. Your contributions are most welcome!
+The Official Java API connector for Bybit's HTTP and WebSocket APIs.
+
+bybit-java-api provides an official, robust, and high-performance Java connector to Bybit's trading APIs. 
+
+Initially conceptualized by esteemed Java developer Victor, this module is now maintained by Bybit's in-house Java experts. 
+
+Your contributions are most welcome!
 
 ## Development
-BybitJavaAPI is under active development with the latest features and updates from Bybit's API implemented promptly. The module utilizes minimal external libraries to provide a lightweight and efficient experience. If you've made enhancements or fixed bugs, please submit a pull request.
+bybit-java-api is under active development with the latest features and updates from Bybit's API implemented promptly. The module utilizes minimal external libraries to provide a lightweight and efficient experience. If you've made enhancements or fixed bugs, please submit a pull request.
 
 ## Installation
-Ensure you have Java 11 or higher. You can include BybitJavaAPI in your project using Maven or Gradle.
+Ensure you have Java 11 or higher. You can include bybit-java-api in your project using Maven or Gradle.
 
 Maven Example
 ```java
@@ -27,7 +32,7 @@ Maven Example
 <dependency>
     <groupId>com.bybit.api</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 </dependency>
 ```
 
@@ -143,7 +148,7 @@ Maven Example
         client.getOrderBookStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
 ```
 ## Contact
-For support, join our Java Bybit API community on JavaBybitAPI Telegram.
+For support, join our Bybit API community on [Telegram](https://t.me/Bybitapi).
 
 ## Contributors
 List of other contributors
