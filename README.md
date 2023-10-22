@@ -1,7 +1,5 @@
 # BybitJavaAPI
 
-Build Status Build Status Contributions Welcome
-
 The Official Java API connector for Bybit's HTTP and WebSocket APIs.
 
 ## Table of Contents
@@ -179,6 +177,6 @@ List of other contributors
 </table>
 
 ## Donations
-Your donations keep our development active and our community growing. Donate to YOUR_CRYPTO_ADDRESS.
+Your donations keep our development active and our community growing. Donate USDT to our [ERC20 Wallet Address](0x238bbb45af1254e2fd76564c9b56042c452f3d6e).
 
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
