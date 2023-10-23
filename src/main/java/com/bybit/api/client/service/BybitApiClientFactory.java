@@ -101,17 +101,24 @@ public class BybitApiClientFactory {
     }
 
     /**
+     * Creates a new synchronous/blocking REST client.
+     */
+    public BybitApiUserRestClient newUserRestClient() {
+        return new BybitApiUserRestClientImpl(apiKey, secret);
+    }
+
+    /**
+     * Creates a new asynchronous/non-blocking REST client to User and upgrade endpoints.
+     */
+    public BybitApiAsyncUserRestClient newAsyncUserRestClient() {
+        return new BybitApiAsyncUserRestClientImpl(apiKey, secret);
+    }
+
+    /**
      * Creates a new synchronous/blocking REST client to Market Data Endpoints
      */
     public BybitMarketDataRestClient newMarketDataRestClient() {
         return new BybitMarketDataRestClientImpl();
-    }
-
-    /**
-     * Creates a new asynchronous/non-blocking REST client.
-     */
-    public BybitApiAsyncRestClient newAsyncRestClient() {
-        return new BybitApiAsyncRestClientImpl(apiKey, secret);
     }
 
     /**
@@ -122,10 +129,17 @@ public class BybitApiClientFactory {
     }
 
     /**
-     * Creates a new synchronous/blocking REST client to Institution Lending Endpoints
+     * Creates a new synchronous/blocking REST client to Institution and Broker Endpoints
      */
-    public BybitApiInsLendingRestClient newInsLendingRestClient() {
-        return new BybitInsLendingRestClientImpl();
+    public BybitApiInstitutionRestClient newInstitutionRestClient() {
+        return new BybitInstitutionRestClientImpl();
+    }
+
+    /**
+     * Creates a new asynchronous/non-blocking REST client to Institution Lending Endpoints
+     */
+    public BybitApiAsyncInstitutionRestClient newAsyncInstitutionRestClient() {
+        return new BybitApiAsyncInstitutionRestClientImpl();
     }
 
     /**

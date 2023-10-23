@@ -1,21 +1,12 @@
 package com.bybit.api.client;
 
-import com.bybit.api.client.domain.account.AccountDataRequest;
-import com.bybit.api.client.domain.asset.AssetDataRequest;
-import com.bybit.api.client.domain.market.MarketDataRequest;
-import com.bybit.api.client.domain.market.MarketInterval;
-import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.domain.market.request.*;
-import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.bybit.api.client.domain.user.UserDataRequest;
 
 /**
  * Bybit API facade, supporting asynchronous/non-blocking access Bybit's REST API.
  */
-public interface BybitApiAsyncRestClient {
-
-
+public interface BybitApiAsyncUserRestClient {
     // Pre upgrade endpoints
     void getPreUpgradeOrderHistory(PreUpgradeDataRequest preupgradeOderHistoryRequest, BybitApiCallback<Object> callback);
     void getPreUpgradeTradeHistory(PreUpgradeDataRequest preUpgradeTradeHistoryRequest, BybitApiCallback<Object> callback);

@@ -9,14 +9,14 @@ import com.bybit.api.client.BybitApiRestClient;
 public class PreUpgradeExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newUserRestClient();
 
-        // Get preupgrade order history
+        // Get pre-upgrade order history
         var preupgradeOrderHistoryRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
         var preupgradeOrderHistoryData = client.getPreUpgradeOrderHistory(preupgradeOrderHistoryRequest);
         System.out.println(preupgradeOrderHistoryData);
 
-        // Get preupgrade trade history
+        // Get pre-upgrade trade history
         var preUpgradeTradeHistoryRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
         var preUpgradeTradeHistoryData = client.getPreUpgradeTradeHistory(preUpgradeTradeHistoryRequest);
         System.out.println(preUpgradeTradeHistoryData);
@@ -26,17 +26,17 @@ public class PreUpgradeExample {
         var preUpgradeClosePnl = client.getPreUpgradeClosePnl(preupgradeClosePnlRequest);
         System.out.println(preUpgradeClosePnl);
 
-        // Get preupgrade Transaction log
+        // Get pre-upgrade Transaction log
         var preUpgradeTransactionRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
         var preUpgradeTransaction = client.getPreUpgradeTransaction(preUpgradeTransactionRequest);
         System.out.println(preUpgradeTransaction);
 
-        // Get preupgrade option delivery
+        // Get pre-upgrade option delivery
         var preUpgradeOptionDeliveryRequest = PreUpgradeDataRequest.builder().category(ProductType.OPTION).build();
         var preUpgradeOptionDeliveryData = client.getPreUpgradeOptionDelivery(preUpgradeOptionDeliveryRequest);
         System.out.println(preUpgradeOptionDeliveryData);
 
-        // Get preupgrade usdc session settlement
+        // Get pre-upgrade usdc session settlement
         var preUpgradeUsdcSettlementRequest = PreUpgradeDataRequest.builder().category(ProductType.LINEAR).build();
         var preUpgradeUsdcSettlementData = client.getPreUpgradeUsdcSettlement(preUpgradeUsdcSettlementRequest);
         System.out.println(preUpgradeUsdcSettlementData);

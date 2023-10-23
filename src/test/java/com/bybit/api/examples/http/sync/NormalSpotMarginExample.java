@@ -8,7 +8,7 @@ import com.bybit.api.client.BybitApiRestClient;
 
 public class NormalSpotMarginExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("VUEODVICUIVUXIJJKO", "TWZAESUUJGROUJTAMRKLDDMHLPOXUHUEDBFZ");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         BybitApiRestClient client = factory.newRestClient();
 
         // Get VIP Margin Data
