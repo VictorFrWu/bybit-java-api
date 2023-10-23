@@ -2,9 +2,7 @@ package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
-import com.bybit.api.client.domain.preupgrade.request.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
 public class PreUpgradeExample {
     public static void main(String[] args) {

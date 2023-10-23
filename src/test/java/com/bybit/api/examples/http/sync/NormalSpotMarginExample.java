@@ -1,48 +1,52 @@
 package com.bybit.api.examples.http.sync;
 
+import com.bybit.api.client.domain.spot.CompleteRepayment;
+import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
+import com.bybit.api.client.domain.spot.SwitchStatus;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.spot.marginTrade.VIPMarginDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
 public class NormalSpotMarginExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newSpotMarginRestClient();
 
         // Get VIP Margin Data
-        var normalMarginDataRequest = new VIPMarginDataRequest.Builder().build();
+        var normalMarginDataRequest = SpotMarginDataRequest.builder().build();
         var normalMarginData = client.getNormalVipSpotMarginTradeData(normalMarginDataRequest);
         System.out.println(normalMarginData);
 
         // Get Margin Coin Info
-        var normalMarginCoinInfo = client.getNormalSpotMarginTradeCoinInfo("ETH");
+        var marginCoinInfo = SpotMarginDataRequest.builder().coin("ETH").build();
+        var normalMarginCoinInfo = client.getNormalSpotMarginTradeCoinInfo(marginCoinInfo);
         System.out.println(normalMarginCoinInfo);
 
         // Get Borrowable Coin Info
-        var normalBorrowCoinInfo = client.getNormalSpotMarginTradeBorrowCoinInfo("ETH");
+        var normalBorrowCoinInfo = client.getNormalSpotMarginTradeBorrowCoinInfo(marginCoinInfo);
         System.out.println(normalBorrowCoinInfo);
 
         // Get Interest and Quota
-        var normalInteresetQuota = client.getNormalSpotMarginTradeInterestQuota("ETH");
-        System.out.println(normalInteresetQuota);
+        var normalInterestQuota = client.getNormalSpotMarginTradeInterestQuota(marginCoinInfo);
+        System.out.println(normalInterestQuota);
 
         // Get Loan Account Info
         var normalSpotLoanAccountInfo = client.getNormalSpotMarginTradeAccountInfo();
         System.out.println(normalSpotLoanAccountInfo);
 
         // Toggle Margin Trade
-        var normalSpotToggleMarginTrade = client.getNormalSpotToggleMarginTrade(1);
+        var setToogleMarginRequest = SpotMarginDataRequest.builder().switchStatus(SwitchStatus.ON).build();
+        var normalSpotToggleMarginTrade = client.setNormalSpotToggleMarginTrade(setToogleMarginRequest);
         System.out.println(normalSpotToggleMarginTrade);
 
         // Borrow
-        var normalSpotBorrowRequest = new SpotMarginTradeBorrowRequest.Builder("ETH", "10").build();
+        var normalSpotBorrowRequest = SpotMarginDataRequest.builder().coin("ETH").qty("10").build();
         var normalSpotBorrowResult = client.loanNormalSpotMarginTrade(normalSpotBorrowRequest);
         System.out.println(normalSpotBorrowResult);
 
         // Repay
-        var normalSpotRepayRequest = new SpotMarginTradeRePayRequest.Builder("ETH").completeRepayment(1).build();
+        var normalSpotRepayRequest = SpotMarginDataRequest.builder().coin("ETH").completeRepayment(CompleteRepayment.TRUE).build();
         var normalSpotRepayResult = client.repayNormalSpotMarginTrade(normalSpotRepayRequest);
         System.out.println(normalSpotRepayResult);
     }

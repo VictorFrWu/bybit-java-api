@@ -12,11 +12,11 @@ import java.util.Map;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
-public class BybitTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestClient {
+public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitTradeAsyncRestClientImpl(String apiKey, String secret) {
+    public BybitApiTradeAsyncRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);
     }
 

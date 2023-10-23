@@ -11,6 +11,17 @@
 ## About
 The Official Java API connector for Bybit's HTTP and WebSocket APIs.
 
+Dive into a plethora of functionalities:
+- Market Data Retrieval
+- Trade Execution
+- Position Management
+- Account and Asset Info Retrieval
+- User and Upgrade Management
+- Public Websocket Streaming
+- Private Websocket Streaming
+- Lending Institution and Client
+- Broker Earning Data
+
 bybit-java-api provides an official, robust, and high-performance Java connector to Bybit's trading APIs. 
 
 Initially conceptualized by esteemed Java developer Victor, this module is now maintained by Bybit's in-house Java experts. 
@@ -61,7 +72,7 @@ Maven Example
 - Position Info
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        BybitApiAsyncRestClient client = factory.newAsyncRestClient();
+        var client = factory.newAsyncPositionRestClient();
 
         // Get Position Info
         var positionListRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
@@ -107,7 +118,7 @@ Maven Example
 - Market Data Info 
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newMarketDataRestClient();
 
         var marketKLineRequest = MarketDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
         // Weekly market Kline
@@ -116,8 +127,8 @@ Maven Example
 ```
 - Account Data Info
 ```java
-  BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-  BybitApiRestClient client = factory.newRestClient();
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        var client = factory.newAccountRestClient();
 
         // Get wallet balance
         var walletBalanceRequest = AccountDataRequest.builder().accountType(AccountType.UNIFIED).build();

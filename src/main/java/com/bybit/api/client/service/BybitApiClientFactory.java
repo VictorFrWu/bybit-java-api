@@ -94,10 +94,15 @@ public class BybitApiClientFactory {
     }
 
     /**
-     * Creates a new synchronous/blocking REST client.
+     * Creates a new synchronous/blocking REST client to spot leverage token and spot margin endpoints.
      */
-    public BybitApiRestClient newRestClient() {
-        return new BybitApiRestClientImpl(apiKey, secret);
+    public BybitApiSpotMarginRestClient newSpotMarginRestClient() {
+        return new BybitApiSpotMarginRestClientImpl(apiKey, secret);
+    }
+
+
+    public BybitApiAsyncSpotMarginRestClient newSpotMarginAsyncRestClient() {
+        return new BybitApiAsyncSpotMarginRestClientImpl(apiKey, secret);
     }
 
     /**
@@ -117,44 +122,47 @@ public class BybitApiClientFactory {
     /**
      * Creates a new synchronous/blocking REST client to Market Data Endpoints
      */
-    public BybitMarketDataRestClient newMarketDataRestClient() {
-        return new BybitMarketDataRestClientImpl();
+    public BybitApiMarketRestClient newMarketDataRestClient() {
+        return new BybitApiMarketRestClientImpl();
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Market Data Endpoints
      */
     public BybitApiAsyncMarketDataRestClient newAsyncMarketDataRestClient() {
-        return new BybitMarketDataAsyncRestClientImpl();
+        return new BybitApiMarketAsyncRestClientImpl();
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Institution and Broker Endpoints
      */
-    public BybitApiInstitutionRestClient newInstitutionRestClient() {
-        return new BybitInstitutionRestClientImpl();
+    public BybitApiLendingRestClient newLendingRestClient() {
+        return new BybitApiLendingRestClientImpl(apiKey, secret);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to Institution Lending Endpoints
      */
-    public BybitApiAsyncInstitutionRestClient newAsyncInstitutionRestClient() {
-        return new BybitApiAsyncInstitutionRestClientImpl();
+    public BybitApiAsyncLendingRestClient newAsyncLendingRestClient() {
+        return new BybitApiAsyncLendingRestClientImpl();
     }
 
     /**
      * Creates a new synchronous/blocking REST client to trading
      */
     public BybitApiTradeRestClient newTradeRestClient() {
-        return new BybitTradeRestClientImpl(apiKey, secret);
+        return new BybitApiTradeRestClientImpl(apiKey, secret);
     }
     /**
      * Creates a new asynchronous/non-blocking REST client to trading
      */
     public BybitApiAsyncTradeRestClient newAsyncTradeRestClient() {
-        return new BybitTradeAsyncRestClientImpl(apiKey, secret);
+        return new BybitApiTradeAsyncRestClientImpl(apiKey, secret);
     }
 
+    /**
+     * Access to public and private websocket
+     */
     public WebsocketClient newWebsocketClient(WebsocketMessageHandler messageHandler) {
         return new WebsocketClientImpl(apiKey, secret, BybitApiConfig.useTestnet ? BybitApiConfig.STREAM_TESTNET_DOMAIN : BybitApiConfig.STREAM_MAINNET_DOMAIN, messageHandler);
     }
@@ -163,7 +171,7 @@ public class BybitApiClientFactory {
      * Creates a new synchronous/blocking REST client to position data
      */
     public BybitApiPositionRestClient newPositionRestClient() {
-        return new BybitPositionRestClientImpl(apiKey, secret);
+        return new BybitApiPositionRestClientImpl(apiKey, secret);
     }
 
     /**
@@ -177,7 +185,7 @@ public class BybitApiClientFactory {
      * Creates a new synchronous/blocking REST client to Account data
      */
     public BybitApiAccountRestClient newAccountRestClient() {
-        return new BybitAccountRestClientImpl(apiKey, secret);
+        return new BybitApiAccountRestClientImpl(apiKey, secret);
     }
 
     /**
@@ -191,7 +199,7 @@ public class BybitApiClientFactory {
      * Creates a new synchronous/blocking REST client to Asset data
      */
     public BybitApiAssetRestClient newAssetRestClient() {
-        return new BybitAssetRestClientImpl(apiKey, secret);
+        return new BybitApiAssetRestClientImpl(apiKey, secret);
     }
 
     /**
@@ -199,5 +207,19 @@ public class BybitApiClientFactory {
      */
     public BybitApiAsyncAssetRestClient newAsyncAssetRestClient() {
         return new BybitApiAsyncAssetRestClientImpl(apiKey, secret);
+    }
+
+    /**
+     * Creates a new synchronous/blocking REST client to Broker earning data
+     */
+    public BybitApiBrokerRestClient newBrokerRestClient() {
+        return new BybitApBrokerRestClientImpl(apiKey, secret);
+    }
+
+    /**
+     * Creates a new asynchronous/non-blocking client to Broker earning data
+     */
+    public BybitApiAsyncBrokerRestClient newAsyncBrokerRestClient() {
+        return new BybitApiAsyncBrokerRestClientImpl(apiKey, secret);
     }
 }

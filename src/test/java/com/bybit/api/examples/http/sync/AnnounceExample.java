@@ -1,6 +1,5 @@
 package com.bybit.api.examples.http.sync;
 
-import com.bybit.api.client.BybitMarketDataRestClient;
 import com.bybit.api.client.domain.announcement.LanguageSymbol;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;

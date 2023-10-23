@@ -1,20 +1,18 @@
 package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitApiAccountRestClient;
-import com.bybit.api.client.BybitApiPositionRestClient;
 import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.domain.account.AccountDataRequest;
-import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
-public class BybitAccountRestClientImpl implements BybitApiAccountRestClient {
+public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitAccountRestClientImpl(String apiKey, String secret) {
+    public BybitApiAccountRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);
     }
     // Account endpoints

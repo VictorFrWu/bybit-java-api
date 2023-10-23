@@ -2,7 +2,7 @@ package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.user.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
+
 import java.util.List;
 import java.util.Map;
 public class UserExample {

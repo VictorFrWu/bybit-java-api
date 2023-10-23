@@ -1,22 +1,20 @@
 package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitApiAssetRestClient;
-import com.bybit.api.client.BybitApiPositionRestClient;
 import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.AssetCancelWithdrawRequest;
 import com.bybit.api.client.domain.asset.request.SetAssetDepositAccountRequest;
-import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
-public class BybitAssetRestClientImpl implements BybitApiAssetRestClient {
+public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitAssetRestClientImpl(String apiKey, String secret) {
+    public BybitApiAssetRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);
     }
 

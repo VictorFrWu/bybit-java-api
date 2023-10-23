@@ -7,7 +7,7 @@ import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
 import com.bybit.api.client.domain.asset.request.*;
-import com.bybit.api.client.domain.c2c.ClientLendingFundsRequest;
+import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
@@ -3547,23 +3547,14 @@ public interface BybitApiService {
     Call<Object> getInsLoanToValue();
 
     // Spot Data endpoints
-
     // Spot Leverage
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-lever-token/info")
     Call<Object> getSpotLeverageTokenInfo(@Query("ltCoin") String ltCoin);
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-lever-token/info")
-    Call<Object> getSpotLeverageTokenInfo();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-lever-token/reference")
     Call<Object> getSpotLeverageTokenMarket(@Query("ltCoin") String ltCoin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-lever-token/reference")
-    Call<Object> getSpotLeverageTokenMarket();
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-lever-token/purchase")
@@ -3612,16 +3603,8 @@ public interface BybitApiService {
     Call<Object> getNormalSpotMarginTradeCoinInfo(@Query("coin") String coin);
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/pledge-token")
-    Call<Object> getNormalSpotMarginTradeCoinInfo();
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/borrow-token")
     Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
-
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/spot-cross-margin-trade/borrow-token")
-    Call<Object> getNormalSpotMarginTradeBorrowCoinInfo();
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/loan-info")
@@ -3633,7 +3616,7 @@ public interface BybitApiService {
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/switch")
-    Call<Object> getNormalSpotToggleMarginTrade(@Body int switchStatus);
+    Call<Object> setNormalSpotToggleMarginTrade(@Body int switchStatus);
 
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/loan")
@@ -3659,6 +3642,31 @@ public interface BybitApiService {
                                                  @Query("limit") Integer limit);
 
     // Broker Endpoints
+
+    /**
+     * Get Broker Earning
+     * INFO
+     * Use exchange broker master account to query
+     * The data can support up to past 6 months until T-1
+     * startTime & endTime are either entered at the same time or not entered
+     * https://bybit-exchange.github.io/docs/v5/broker/earning
+     * @param bizType	false	string	Business type. SPOT, DERIVATIVES, OPTIONS
+     * @param startTime	false	integer	The start timestamp(ms)e
+     * @param endTime	false	integer	The end timestamp(ms)
+     * @param limit	false	integer	Limit for data size per page. [1, 1000]. Default: 1000
+     * @param cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * > userId	string	UID
+     * > bizType	string	Business type
+     * > symbol	string	Symbol name
+     * > coin	string	Coin name. The currency of earning
+     * > earning	string	Earning
+     * > orderId	string	Order ID
+     * > execTime	string	Execution timestamp (ms)
+     * nextPageCursor	string	Refer to the cursor request parameter
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/broker/earning-record")
     Call<Object> getBrokerEarningData(@Query("bizType") String bizType,
@@ -3668,22 +3676,114 @@ public interface BybitApiService {
                                       @Query("cursor") String cursor);
 
     // C2C Endpoints
+
+    /**
+     * Get the basic information of lending coins
+     *
+     * INFO
+     * All v5/lending APIs need SPOT permission.
+     * https://bybit-exchange.github.io/docs/v5/c2c-lend/coin-info
+     * @param coin false	string	Coin name. Return all currencies by default
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * > coin	string	Coin name
+     * > maxRedeemQty	string	The maximum redeemable qty per day (measured from 0 - 24 UTC)
+     * > minPurchaseQty	string	The minimum qty that can be deposited per request
+     * > precision	string	Deposit quantity accuracy
+     * > rate	string	Annualized interest rate. e.g. 0.0002 means 0.02%
+     * > loanToPoolRatio	string	Capital utilization rate. e.g. 0.0004 means 0.04%
+     * > actualApy	string	The actual annualized interest rate
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/lending/info")
     Call<Object> getC2CLendingCoinInfo(@Query("coin") String coin);
 
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
-    @GET("/v5/lending/info")
-    Call<Object> getC2CLendingCoinInfo();
-
+    /**
+     * Deposit Funds
+     * Lending funds to Bybit asset pool
+     *
+     * INFO
+     * normal & UMA account: deduct funds from Spot wallet
+     * UTA account: deduct funds from Unified wallet
+     * https://bybit-exchange.github.io/docs/v5/c2c-lend/deposit
+     * @param depositFundRequest    coin	true	string	Coin name
+     *                              quantity	true	string	Deposit quantity
+     *                              serialNo	false	string	Customised ID. If not passed, system will create one by default
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin name
+     * createdTime	string	Created timestamp (ms)
+     * orderId	string	Order ID
+     * quantity	string	Deposit quantity
+     * serialNo	string	Serial No
+     * status	string	Order status. 0: Initial, 1: Processing, 2: Success, 10: Failed
+     * updatedTime	string	Updated timestamp (ms)
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/lending/purchase")
-    Call<Object> C2cLendingDepositFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
+    Call<Object> C2cLendingDepositFunds(@Body ClientLendingFundsRequest depositFundRequest);
 
+    /**
+     * Withdraw funds from the Bybit asset pool.
+     *
+     * TIP
+     * There will be two redemption records: one for the redeemed quantity, and the other one is for the total interest occurred.
+     * https://bybit-exchange.github.io/docs/v5/c2c-lend/redeem
+     * @param depositFundRequest    coin	true	string	Coin name
+     *                              quantity	ture	string	Redemption quantity
+     *                              serialNo	false	string	Serial no. A customised ID, and it will automatically generated if not passed
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin name
+     * createdTime	string	Created timestamp (ms)
+     * orderId	string	Order ID
+     * principalQty	string	Redemption quantity
+     * serialNo	string	Serial No
+     * status	string	Order status. 0: Initial, 1: Processing, 2: Success, 10: Failed
+     * updatedTime	string	Updated timestamp (ms)
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/lending/redeem")
-    Call<Object> C2cLendingRedeemFunds(@Body ClientLendingFundsRequest depsoitFundRequest);
+    Call<Object> C2cLendingRedeemFunds(@Body ClientLendingFundsRequest depositFundRequest);
 
+    /**
+     * Cancel the withdrawal operation.
+     * https://bybit-exchange.github.io/docs/v5/c2c-lend/cancel-redeem
+     * @param depositFundRequest    coin	false	string	Coin name
+     *                              orderId	false	string	The order ID of redemption
+     *                              serialNo	false	string	Serial no. The customised ID of redemption
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * orderId	string	Order ID
+     * serialNo	string	Serial No
+     * updatedTime	string	Updated timestamp (ms)
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/lending/redeem-cancel")
+    Call<Object> C2cLendingRedeemCancel(@Body ClientLendingFundsRequest depositFundRequest);
+
+    /**
+     * Get Order Records
+     * https://bybit-exchange.github.io/docs/v5/c2c-lend/order-record
+     * @param coin coin	false	string	Coin name
+     * @param orderId orderId	false	string	Order ID
+     * @param startTime startTime	false	long	The start timestamp (ms)
+     * @param endTime endTime	false	long	The end timestamp (ms)
+     * @param limit limit	false	integer	Limit for data size per page. [1, 500]. Default: 50
+     * @param orderType orderType	false	string	Order type. 1: deposit, 2: redemption, 3: Payment of proceeds
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * > coin	string	Coin name
+     * > createdTime	string	Created timestamp (ms)
+     * > orderId	string	Order ID
+     * > quantity	string	quantity
+     * > serialNo	string	Serial No
+     * > status	string	Order status. 0: Initial, 1: Processing, 2: Success, 10: Failed, 11: Cancelled
+     * > updatedTime	string	Updated timestamp (ms)
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/lending/history-order")
     Call<Object> getC2cOrdersRecords(@Query("coin") String coin,
@@ -3712,7 +3812,6 @@ public interface BybitApiService {
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 
     // Announcement
-
     /**
      * Get Announcement
      * @param locale true	string	Language symbol

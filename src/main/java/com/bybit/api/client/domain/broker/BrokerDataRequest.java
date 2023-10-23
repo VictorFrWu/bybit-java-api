@@ -1,4 +1,4 @@
-package com.bybit.api.client.domain.spot.marginTrade;
+package com.bybit.api.client.domain.broker;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,13 +7,12 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @Builder
-public class SpotMarginTradeBorrowOrdersRequest {
+@ToString
+public class BrokerDataRequest {
+    private final BusinessType bizType;
     private final Long startTime;
     private final Long endTime;
-    private final String coin;
-    private final Integer status;
     private final Integer limit;
+    private final String cursor;
 }
-

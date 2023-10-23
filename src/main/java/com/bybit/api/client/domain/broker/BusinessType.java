@@ -1,4 +1,4 @@
-package com.bybit.api.client.domain.institution;
+package com.bybit.api.client.domain.broker;
 
 import lombok.Getter;
 
