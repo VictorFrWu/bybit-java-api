@@ -9,6 +9,7 @@
  */
 package com.bybit.api.client.domain.spot.marginTrade;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,27 +17,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class SpotMarginTradeBorrowRequest {
     private final String coin;
     private final String qty;
-
-    private SpotMarginTradeBorrowRequest(Builder builder) {
-        this.coin = builder.coin;
-        this.qty = builder.qty;
-    }
-
-    public static class Builder {
-        private final String coin;
-        private final String qty;
-
-        public Builder(String coin, String qty) {
-            this.coin = coin;
-            this.qty = qty;
-        }
-
-        public SpotMarginTradeBorrowRequest build() {
-            return new SpotMarginTradeBorrowRequest(this);
-        }
-    }
 }
 

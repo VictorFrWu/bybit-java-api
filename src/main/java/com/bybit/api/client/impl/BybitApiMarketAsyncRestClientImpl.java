@@ -1,25 +1,19 @@
 package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitApiAsyncMarketDataRestClient;
-import com.bybit.api.client.BybitApiAsyncTradeRestClient;
 import com.bybit.api.client.BybitApiCallback;
 import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
-import com.bybit.api.client.domain.trade.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
-
-import java.io.IOException;
-import java.util.Map;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
-public class BybitMarketDataAsyncRestClientImpl implements BybitApiAsyncMarketDataRestClient {
+public class BybitApiMarketAsyncRestClientImpl implements BybitApiAsyncMarketDataRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitMarketDataAsyncRestClientImpl() {
+    public BybitApiMarketAsyncRestClientImpl() {
         bybitApiService = createService(BybitApiService.class);
     }
     // Market Data endpoints

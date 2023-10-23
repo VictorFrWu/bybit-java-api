@@ -2,23 +2,17 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.BybitApiPositionRestClient;
 import com.bybit.api.client.BybitApiService;
-import com.bybit.api.client.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.position.PositionDataRequest;
-import com.bybit.api.client.domain.trade.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
-
-import java.io.IOException;
-import java.util.Map;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
-public class BybitPositionRestClientImpl implements BybitApiPositionRestClient {
+public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitPositionRestClientImpl(String apiKey, String secret) {
+    public BybitApiPositionRestClientImpl(String apiKey, String secret) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret);
     }
 

@@ -2,11 +2,7 @@ package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.account.AccountDataRequest;
 import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.account.request.BorrowHistoryRequest;
-import com.bybit.api.client.domain.account.request.GetTransactionLogRequest;
-import com.bybit.api.client.domain.account.request.WalletBalanceRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
 public class AccountExample {
     public static void main(String[] args) {

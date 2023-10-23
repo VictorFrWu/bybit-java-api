@@ -3,7 +3,7 @@ package com.bybit.api.client;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
 
-public interface BybitMarketDataRestClient {
+public interface BybitApiMarketRestClient {
     // Market Data
     Object getServerTime();
     Object getMarketLinesData(MarketDataRequest marketKlineRequest);

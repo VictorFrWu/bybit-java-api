@@ -1,6 +1,5 @@
 package com.bybit.api.examples.http.async;
 
-import com.bybit.api.client.BybitApiRestClient;
 import com.bybit.api.client.domain.user.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
 

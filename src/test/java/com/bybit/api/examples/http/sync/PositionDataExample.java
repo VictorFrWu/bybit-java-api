@@ -4,7 +4,6 @@ import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
 public class PositionDataExample {
     public static void main(String[] args) {

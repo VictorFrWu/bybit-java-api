@@ -7,6 +7,7 @@
  */
 package com.bybit.api.client.domain.spot.leverageToken;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,35 +15,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class SpotLeverageTokenRequest {
     private final String ltCoin;
     private final String ltAmount;
     private final String serialNo;
-
-    private SpotLeverageTokenRequest(Builder builder) {
-        this.ltCoin = builder.ltCoin;;
-        this.ltAmount = builder.ltAmount;;
-        this.serialNo = builder.serialNo;
-    }
-
-    public static class Builder {
-        private final String ltCoin;
-        private final String ltAmount;
-        private String serialNo;
-
-        public Builder(String ltCoin, String ltAmount) {
-            this.ltCoin = ltCoin;
-            this.ltAmount = ltAmount;
-        }
-
-        public Builder serialNo(String serialNo) {
-            this.serialNo = serialNo;
-            return this;
-        }
-
-        public SpotLeverageTokenRequest build() {
-            return new SpotLeverageTokenRequest(this);
-        }
-    }
+    private final String quantity;
 }
 

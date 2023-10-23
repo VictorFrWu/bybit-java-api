@@ -1,25 +1,28 @@
 package com.bybit.api.examples.http.sync;
 
+import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
+import com.bybit.api.client.domain.spot.SwitchStatus;
 import com.bybit.api.client.domain.spot.marginTrade.VIPMarginDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
-import com.bybit.api.client.BybitApiRestClient;
 
 public class UTASpotMarginExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newSpotMarginRestClient();
 
         // Get VIP Margin Data
-        var utaMarginDataRequest = new VIPMarginDataRequest.Builder().build();
+        var utaMarginDataRequest = SpotMarginDataRequest.builder().build();
         var utaMarginData = client.getUtaVipSpotMarginTradeData(utaMarginDataRequest);
         System.out.println(utaMarginData);
 
         // Toggle Margin Trade
-        var utaToggleMarginTradeResult = client.setUTASpotMarginTrade("1");
+        var toggleMarginTradeRequest = SpotMarginDataRequest.builder().switchStatus(SwitchStatus.ON).build();
+        var utaToggleMarginTradeResult = client.setUTASpotMarginTrade(toggleMarginTradeRequest);
         System.out.println(utaToggleMarginTradeResult);
 
         // Set Leverage
-        var utaLeverageResult = client.setUTASpotMarginTradeLeverage("2");
+        var spotLeverageSetRequest = SpotMarginDataRequest.builder().leverage("2").build();
+        var utaLeverageResult = client.setUTASpotMarginTradeLeverage(spotLeverageSetRequest);
         System.out.println(utaLeverageResult);
 
         // Get Status And Leverage

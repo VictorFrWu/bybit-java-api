@@ -1,6 +1,6 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitMarketDataRestClient;
+import com.bybit.api.client.BybitApiMarketRestClient;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.BybitApiService;
 import com.bybit.api.client.domain.market.MarketDataRequest;
@@ -10,10 +10,10 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.createServic
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
 @Getter
-public class BybitMarketDataRestClientImpl implements BybitMarketDataRestClient {
+public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     private final BybitApiService bybitApiService;
 
-    public BybitMarketDataRestClientImpl() {
+    public BybitApiMarketRestClientImpl() {
         bybitApiService = createService(BybitApiService.class);
     }
 

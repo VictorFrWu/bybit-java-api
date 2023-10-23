@@ -1,5 +1,6 @@
 package com.bybit.api.client.domain.institution;
 
+import com.bybit.api.client.domain.broker.BusinessType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class InstitutionDataRequest {
+public class LendingDataRequest {
     private final String productId;
     private final String orderId;
     private final BusinessType bizType;
@@ -17,5 +18,9 @@ public class InstitutionDataRequest {
     private final Long endTime;
     private final Integer limit;
     private final String cursor;
+    private final String coin;
+    private final LendingOrderType lendingOrderType;
+    private final String quantity;
+    private final String serialNo;
 }
 

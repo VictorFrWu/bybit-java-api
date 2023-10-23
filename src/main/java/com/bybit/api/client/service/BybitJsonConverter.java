@@ -9,9 +9,15 @@ import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.*;
+import com.bybit.api.client.domain.institution.LendingDataRequest;
+import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.account.request.*;
+import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
+import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
+import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
+import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.domain.user.IsUta;
 import com.bybit.api.client.domain.user.MemberType;
@@ -390,4 +396,43 @@ public class BybitJsonConverter {
                 .apikey(userDataRequest.getApikey())
                 .build();
     }
+
+    // Spot Margin Requests
+    public SpotLeverageTokenRequest mapToSpotLeverageTokenRequest(SpotMarginDataRequest spotMarginDataRequest) {
+        return SpotLeverageTokenRequest
+                .builder()
+                .ltCoin(spotMarginDataRequest.getLtCoin())
+                .quantity(spotMarginDataRequest.getQuantity())
+                .serialNo(spotMarginDataRequest.getSerialNo())
+                .ltAmount(spotMarginDataRequest.getLtAmount())
+                .build();
+    }
+
+    public SpotMarginTradeBorrowRequest mapToSpotMarginBorrowRequest(SpotMarginDataRequest spotMarginDataRequest) {
+        return SpotMarginTradeBorrowRequest
+                .builder()
+                .coin(spotMarginDataRequest.getCoin())
+                .qty(spotMarginDataRequest.getQty())
+                .build();
+    }
+
+    public SpotMarginTradeRePayRequest mapToSpotMarginRepayRequest(SpotMarginDataRequest spotMarginDataRequest) {
+        return SpotMarginTradeRePayRequest
+                .builder()
+                .coin(spotMarginDataRequest.getCoin())
+                .qty(spotMarginDataRequest.getQty())
+                .completeRepayment(spotMarginDataRequest.getCompleteRepayment() == null ? 0 : spotMarginDataRequest.getCompleteRepayment().getValue())
+                .build();
+    }
+
+    public ClientLendingFundsRequest mapToC2CLendingFundRequest(LendingDataRequest lendingDataRequest) {
+        return ClientLendingFundsRequest
+                .builder()
+                .coin(lendingDataRequest.getCoin())
+                .orderId(lendingDataRequest.getOrderId())
+                .quantity(lendingDataRequest.getQuantity())
+                .serialNo(lendingDataRequest.getSerialNo())
+                .build();
+    }
+
 }

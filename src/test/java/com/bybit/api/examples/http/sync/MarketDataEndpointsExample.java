@@ -3,7 +3,6 @@ package com.bybit.api.examples.http.sync;
 import com.bybit.api.client.domain.market.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
 import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.BybitApiRestClient;
 
 /**
  * Examples on how to get market data information such as the latest price of a symbol, etc.
