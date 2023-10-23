@@ -3479,9 +3479,6 @@ public interface BybitApiService {
     @GET("/v5/ins-loan/product-infos")
     Call<Object> getInsProductInfo(@Query("productId") String productId);
 
-    @GET("/v5/ins-loan/product-infos")
-    Call<Object> getInsProductInfo();
-
     /**
      * Get Margin Coin Info
      * TIP
@@ -3495,9 +3492,6 @@ public interface BybitApiService {
      */
     @GET("/v5/ins-loan/ensure-tokens-convert")
     Call<Object> getInsMarginCoinInfo(@Query("productId") String productId);
-
-    @GET("/v5/ins-loan/ensure-tokens-convert")
-    Call<Object> getInsMarginCoinInfo();
 
     /**
      * Get Loan Orders

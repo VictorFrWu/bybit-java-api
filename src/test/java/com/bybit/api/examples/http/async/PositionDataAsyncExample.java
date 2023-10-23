@@ -1,6 +1,5 @@
 package com.bybit.api.examples.http.async;
 
-import com.bybit.api.client.BybitApiAsyncRestClient;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.position.PositionDataRequest;
