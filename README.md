@@ -1,8 +1,6 @@
 # bybit-java-api
 [![Java 11](https://img.shields.io/badge/Java-11-brightgreen.svg)](https://github.com/wuhewuhe/bybit-java-api)   [![Contributor Victor](https://img.shields.io/badge/contributor-Victor-blue.svg)](https://github.com/wuhewuhe/bybit-java-api)   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/wuhewuhe/bybit-java-api/blob/main/LICENSE)
-
 ## Table of Contents
-
 - [About](#about)
 - [Development](#development)
 - [Installation](#installation)
@@ -10,7 +8,6 @@
 - [Contact](#contact)
 - [Contributors](#contributors)
 - [Donations](#donations)
-
 ## About
 The Official Java API connector for Bybit's HTTP and WebSocket APIs.
 

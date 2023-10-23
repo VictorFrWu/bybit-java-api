@@ -13,7 +13,6 @@ import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
-import com.bybit.api.client.domain.user.UserDataRequest;
 import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
