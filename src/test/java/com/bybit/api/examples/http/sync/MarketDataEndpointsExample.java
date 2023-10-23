@@ -11,7 +11,7 @@ import com.bybit.api.client.BybitApiRestClient;
 public class MarketDataEndpointsExample {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        BybitApiRestClient client = factory.newRestClient();
+        var client = factory.newMarketDataRestClient();
 
         var marketKLineRequest = MarketDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
         // Weekly market Kline
