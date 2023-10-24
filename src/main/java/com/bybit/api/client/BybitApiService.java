@@ -944,108 +944,117 @@ public interface BybitApiService {
     /**
      * Place Order
      * This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.
+     *
      * Unified account covers: Spot / USDT perpetual / USDC contract / Inverse contract / Options
      * Classic account covers: Spot / USDT perpetual / Inverse contract
+     *
      * INFO
      * Supported order type (orderType):
      * Limit order: orderType=Limit, it is necessary to specify order qty and price.
+     *
      * Market order: orderType=Market, execute at the best price in the Bybit market until the transaction is completed. When selecting a market order, the `price` is empty. In the futures trading system, in order to protect the serious slippage of the market order, the Bybit trading system will convert the market order into a limit order for matching. will be cancelled. The slippage threshold refers to the percentage that the order price deviates from the latest transaction price. The current threshold is set to 3% for BTC contracts and 5% for other contracts.
      * Supported timeInForce strategy:
      * GTC
      * IOC
      * FOK
-     * PostOnly: If the order would be filled immediately when submitted, it will be cancelled. The purpose of this is to protect your order during the submission process. If the matching system cannot entrust the order to the order book due to price changes on the market, it will be cancelled.
-     * For the PostOnly order type, the quantity that can be submitted in a single order is more than other types of orders, please refer to the parameter lotSizeFilter  &gt;  postOnlyMaxOrderQty in the instruments-info endpoint.
+     * PostOnly: If the order would be filled immediately when submitted, it will be cancelled. The purpose of this is to protect your order during the submission process. If the matching system cannot entrust the order to the order book due to price changes on the market, it will be cancelled. For the PostOnly order type, the quantity that can be submitted in a single order is more than other types of orders, please refer to the parameter lotSizeFilter &gt; postOnlyMaxOrderQty in the instruments-info endpoint.
+     *
      * How to create conditional order:
      * When submitting an order, if triggerPrice is set, the order will be automatically converted into a conditional order. In addition, the conditional order does not occupy the margin. If the margin is insufficient after the conditional order is triggered, the order will be cancelled.
+     *
      * Take profit / Stop loss: You can set TP/SL while placing orders. Besides, you could modify the position's TP/SL.
+     *
      * Order quantity: The quantity of perpetual contracts you are going to buy/sell. For the order quantity, Bybit only supports positive number at present.
-     * Order price: Place a limit order, this parameter is required. If you have position, the price should be higher than the liquidation price. For the minimum unit of the price change, please refer to the priceFilter  &gt;  tickSize field in the instruments-info endpoint.
+     *
+     * Order price: Place a limit order, this parameter is required. If you have position, the price should be higher than the liquidation price. For the minimum unit of the price change, please refer to the priceFilter &gt; tickSize field in the instruments-info endpoint.
+     *
      * orderLinkId: You can customize the active order ID. We can link this ID to the order ID in the system. Once the active order is successfully created, we will send the unique order ID in the system to you. Then, you can use this order ID to cancel active orders, and if both orderId and orderLinkId are entered in the parameter input, Bybit will prioritize the orderId to process the corresponding order. Meanwhile, your customized order ID should be no longer than 36 characters and should be unique.
+     *
      * Open orders up limit:
-     * Future: Each account can hold a maximum of 500 active orders simultaneously. This is contract-specific, so the following situation is allowed: the same account can hold 300 BTCUSD active orders and 280 ETHUSD active orders at the same time. For conditional orders, each account can hold a maximum of 10 active orders simultaneously. When the upper limit of orders is reached, you can still place orders with parameters of reduceOnly or closeOnTrigger.
+     * Futures: Each account can hold a maximum of 500 active orders simultaneously. This is contract-specific, so the following situation is allowed: the same account can hold 300 BTCUSD active orders and 280 ETHUSD active orders at the same time. For conditional orders, each account can hold a maximum of 10 active orders simultaneously. When the upper limit of orders is reached, you can still place orders with parameters of reduceOnly or closeOnTrigger.
      * Spot: 500 orders in total, including a maximum of 30 open TP/SL orders, a maximum of 30 open conditional orders
      * Option: a maximum of 100 open orders
+     *
      * Rate limit:
      * Please refer to rate limit table. If you need to raise the rate limit, please contact your client manager or submit an application via here
+     *
+     * Risk control limit notice:
+     * Bybit will monitor on your API requests. When the total number of orders of a single user (aggregated the number of orders across main account and sub-accounts) within a day (UTC 0 - UTC 24) exceeds a certain upper limit, the platform will reserve the right to remind, warn, and impose necessary restrictions. Customers who use API default to acceptance of these terms and have the obligation to cooperate with adjustments.
+     *
      * TIP
      * To margin trade on spot on a normal account, you need to go here to borrow margin first.
      *
-     * https://bybit-exchange.github.io/docs/v5/order/create-order
+     * https://bybit-exchange.github.io/docs/v5/order/create-order#http-request
      *
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: spot, linear, inverse, option
-     * Classic account: spot, linear, inverse
-     * symbol	true	string	Symbol name
-     * isLeverage	false	integer	Whether to borrow. Valid for Unified spot only. 0(default): false then spot trading, 1: true then margin trading
-     * side	true	string	Buy, Sell
-     * orderType	true	string	Market, Limit
-     * qty	true	string	Order quantity.
-     * For Spot Market Buy order, please note that qty should be quote curreny amount, and make sure it satisfies quotePrecision in Spot instrument spec
-     * For other cases, please make sure the input qty is the multiples of minOrderQty from instrument info endpoint
-     * In particular, for Futures and Perps, if you pass qty="0", you can close the whole position of current symbol
-     * price	false	string	Order price
-     * Market order will ignore this field
-     * Please check the min price and price precision from instrument info endpoint
-     * If you have position, price needs to be better than liquidation price
-     * triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
-     * 1: triggered when market price rises to triggerPrice
-     * 2: triggered when market price falls to triggerPrice
-     * Valid for linear and inverse
-     * orderFilter	false	string	If it is not passed, Order by default.
-     * Order
-     * tpslOrder: Spot TP/SL order, the assets are occupied even before the order is triggered
-     * StopOrder: Spot conditional order, the assets will not be occupied until the price of the underlying asset reaches the trigger price, and the required assets will be occupied after the Conditional order is triggered
-     * Valid for spot only
-     * triggerPrice	false	string
-     * For Perps and Futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice &gt; market price
-     * Else, triggerPrice &lt;  market price
-     * For spot, it is the TP/SL and Conditional order trigger price
-     * triggerBy	false	string	Trigger price type, Conditional order param for Perps and Futures. LastPrice, IndexPrice, MarkPrice
-     * Valid for linear and inverse
-     * orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
-     * timeInForce	false	string	Time in force
-     * Market order will use IOC directly
-     * If not passed, GTC is used by default
-     * positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps and Inverse contracts have hedge mode)
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     * orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
-     * Futures and Perps: orderLinkId rules:
-     * optional param
-     * always unique
-     * option orderLinkId rules:
-     * required param
-     * always unique
-     * takeProfit	false	string	Take profit price, valid for linear and inverse
-     * stopLoss	false	string	Stop loss price, valid for linear and inverse
-     * tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice. Valid for linear and inverse
-     * slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice. Valid for linear and inverse
-     * reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
-     * You must specify it as true when you are about to close/reduce the position
-     * When reduceOnly is true, take profit/stop loss cannot be set
-     * Valid for linear, inverse and option
-     * closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
-     * Valid for linear and inverse
-     * smpType	false	string	Smp execution type. What is SMP?
-     * mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
-     * tpslMode	false	string	TP/SL mode
-     * Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
-     * Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
-     * Valid for linear and inverse
-     * tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit.
-     * Valid for linear and inverse
-     * slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit.
-     * Valid for linear and inverse
-     * tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market.
-     * Valid for linear and inverse
-     * slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market.
-     * Valid for linear and inverse
-     * @param tradeOrderRequest
+     * @param tradeOrderRequest category	true	string	Product type
+     *                                                      Unified account: spot, linear, inverse, option
+     *                                                      Classic account: spot, linear, inverse
+     *                          symbol	true	string	Symbol name
+     *                          isLeverage	false	integer	Whether to borrow. Valid for Unified spot only. 0(default): false then spot trading, 1: true then margin trading
+     *                          side	true	string	Buy, Sell
+     *                          orderType	true	string	Market, Limit
+     *                          qty	true	string	Order quantity.
+     *                                              For Spot Market Buy order, please note that qty should be quote curreny amount, and make sure it satisfies quotePrecision in Spot instrument spec
+     *                                              For other cases, please make sure the input qty is the multiples of minOrderQty from instrument info endpoint
+     *                                              In particular, for Futures & Perps, if you pass qty="0", you can close the whole position of current symbol
+     *                          price	false	string	Order price
+     *                                                  Market order will ignore this field
+     *                                                  Please check the min price and price precision from instrument info endpoint
+     *                                                  If you have position, price needs to be better than liquidation price
+     *                          triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
+     *                                                              1: triggered when market price rises to triggerPrice
+     *                                                              2: triggered when market price falls to triggerPrice
+     *                                                              Valid for linear & inverse
+     *                          orderFilter	false	string	If it is not passed, Order by default.
+     *                                                          Order
+     *                                                          tpslOrder: Spot TP/SL order, the assets are occupied even before the order is triggered
+     *                                                          StopOrder: Spot conditional order, the assets will not be occupied until the price of the underlying asset reaches the trigger price, and the required assets will be occupied after the Conditional order is triggered
+     *                                                      Valid for spot only
+     *                          triggerPrice	false	string  For Perps & Futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
+     *                                                              triggerPrice &gt; market price
+     *                                                              Else, triggerPrice &lt; market price
+     *                                                          For spot, it is the TP/SL and Conditional order trigger price
+     *                          triggerBy	false	string	Trigger price type, Conditional order param for Perps & Futures. LastPrice, IndexPrice, MarkPrice
+     *                                                      Valid for linear & inverse
+     *                          orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
+     *                          timeInForce	false	string	Time in force
+     *                                                      Market order will use IOC directly
+     *                                                      If not passed, GTC is used by default
+     *                          positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps & Inverse contracts have hedge mode)
+     *                                                      0: one-way mode
+     *                                                      1: hedge-mode Buy side
+     *                                                      2: hedge-mode Sell side
+     *                          orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
+     *                                                          Futures & Perps: orderLinkId rules:
+     *                                                          optional param
+     *                                                          always unique
+     *                                                          option orderLinkId rules:
+     *                                                          required param
+     *                                                          always unique
+     *                          takeProfit	false	string	Take profit price, valid for linear & inverse
+     *                          stopLoss	false	string	Stop loss price, valid for linear & inverse
+     *                          tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice. Valid for linear & inverse
+     *                          slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice. Valid for linear & inverse
+     *                          reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
+     *                                                          You must specify it as true when you are about to close/reduce the position
+     *                                                          When reduceOnly is true, take profit/stop loss cannot be set
+     *                                                      Valid for linear, inverse & option
+     *                          closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
+     *                                                          Valid for linear & inverse
+     *                          smpType	false	string	Smp execution type. What is SMP?
+     *                          mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
+     *                          tpslMode	false	string	TP/SL mode
+     *                                                          Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
+     *                                                          Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
+     *                                                      Valid for linear & inverse
+     *                          tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit.
+     *                                                          Valid for linear & inverse
+     *                          slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit.
+     *                                                          Valid for linear & inverse
+     *                          tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market.
+     *                                                      Valid for linear & inverse
+     *                          slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market.
+     *                                                      Valid for linear & inverse
      * @return Response Parameters
      * Parameter	Type	Comments
      * orderId	string	Order ID
@@ -1058,77 +1067,80 @@ public interface BybitApiService {
     /**
      * Batch Place Order
      * Covers: Option (UTA, UTA Pro) / USDT Perpetual, UDSC Perpetual, USDC Futures (UTA Pro)
+     *
      * TIP
      * This endpoint allows you to place more than one order in a single request.
+     *
      * Make sure you have sufficient funds in your account when placing an order. Once an order is placed, according to the funds required by the order, the funds in your account will be frozen by the corresponding amount during the life cycle of the order.
-     * A maximum of 20 orders (option) and 10 orders (linear) can be placed per request. The returned data list is divided into two lists. The first list indicates whether or not the order creation was successful and the second list details the created order information. The structure of the two lists are completely consistent.
+     * A maximum of 20 orders (option) & 10 orders (linear) can be placed per request. The returned data list is divided into two lists. The first list indicates whether or not the order creation was successful and the second list details the created order information. The structure of the two lists are completely consistent.
      * INFO
      * Check the rate limit instruction when category=linear here
+     * Risk control limit notice:
+     * Bybit will monitor on your API requests. When the total number of orders of a single user (aggregated the number of orders across main account and sub-accounts) within a day (UTC 0 - UTC 24) exceeds a certain upper limit, the platform will reserve the right to remind, warn, and impose necessary restrictions. Customers who use API default to acceptance of these terms and have the obligation to cooperate with adjustments.
+     *
      * https://bybit-exchange.github.io/docs/v5/order/batch-place
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. linear, option
-     * request	true	array	Object
-     *  &gt;  symbol	true	string	Symbol name
-     *  &gt;  side	true	string	Buy, Sell
-     *  &gt;  orderType	true	string	Market, Limit
-     *  &gt;  qty	true	string	Order quantity
-     * In particular, for linear, if you pass qty="0", you can close the whole position of current symbol
-     *  &gt;  price	false	string	Order price
-     * Market order will ignore this field
-     * Please check the min price and price precision from instrument info endpoint
-     * If you have position, price needs to be better than liquidation price
-     *  &gt;  triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
-     * 1: triggered when market price rises to triggerPrice
-     * 2: triggered when market price falls to triggerPrice
-     * Valid for linear
-     *  &gt;  triggerPrice	false	string
-     * For futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice  &gt;  market price
-     * Else, triggerPrice &lt; market price
-     *  &gt;  triggerBy	false	string	Conditional order param. Trigger price type. LastPrice, IndexPrice, MarkPrice
-     *  &gt;  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
-     *  &gt;  timeInForce	false	string	Time in force
-     * Market order will use IOC directly
-     * If not passed, GTC is used by default
-     *  &gt;  positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps have hedge mode)
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     *  &gt;  orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
-     * Futures and Perps: orderLinkId rules:
-     * optional param
-     * always unique
-     * option orderLinkId rules:
-     * required param
-     * always unique
-     *  &gt;  takeProfit	false	string	Take profit price, valid for linear
-     *  &gt;  stopLoss	false	string	Stop loss price, valid for linear
-     *  &gt;  tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice.
-     * Valid for linear
-     *  &gt;  slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice
-     * Valid for linear
-     *  &gt;  reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
-     * You must specify it as true when you are about to close/reduce the position
-     * When reduceOnly is true, take profit/stop loss cannot be set
-     * Valid for linear, and option
-     *  &gt;  closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
-     * Valid for linear
-     *  &gt;  smpType	false	string	Smp execution type. What is SMP?
-     *  &gt;  mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
-     *  &gt;  tpslMode	false	string	TP/SL mode
-     * Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
-     * Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
-     * Valid for linear
-     *  &gt;  tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
-     * Valid for linear
-     *  &gt;  slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
-     * Valid for linear
-     *  &gt;  tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
-     * Valid for linear
-     *  &gt;  slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
-     * Valid for linear
-     * Request Parameters
+     *
+     * @param batchOrderRequest category	true	string	Product type. linear, option
+     *                          request	true	array	Object
+     *                           &gt;  symbol	true	string	Symbol name
+     *                           &gt;  side	true	string	Buy, Sell
+     *                           &gt;  orderType	true	string	Market, Limit
+     *                           &gt;  qty	true	string	Order quantity
+     *                                                      In particular, for linear, if you pass qty="0", you can close the whole position of current symbol
+     *                           &gt;  price	false	string	Order price
+     *                                                              Market order will ignore this field
+     *                                                              Please check the min price and price precision from instrument info endpoint
+     *                                                              If you have position, price needs to be better than liquidation price
+     *                           &gt;  triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
+     *                                                                      1: triggered when market price rises to triggerPrice
+     *                                                                      2: triggered when market price falls to triggerPrice
+     *                                                                  Valid for linear
+     *                           &gt;  triggerPrice	false	string  For futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
+     *                                                              triggerPrice  &gt;  market price
+     *                                                              Else, triggerPrice &lt; market price
+     *                           &gt;  triggerBy	false	string	Conditional order param. Trigger price type. LastPrice, IndexPrice, MarkPrice
+     *                           &gt;  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
+     *                           &gt;  timeInForce	false	string	Time in force
+     *                                                                  Market order will use IOC directly
+     *                                                                  If not passed, GTC is used by default
+     *                           &gt;  positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps have hedge mode)
+     *                                                                  0: one-way mode
+     *                                                                  1: hedge-mode Buy side
+     *                                                                  2: hedge-mode Sell side
+     *                           &gt;  orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
+     *                                                              Futures and Perps: orderLinkId rules:
+     *                                                                  optional param
+     *                                                                  always unique
+     *                                                                  option orderLinkId rules:
+     *                                                                  required param
+     *                                                                  always unique
+     *                           &gt;  takeProfit	false	string	Take profit price, valid for linear
+     *                           &gt;  stopLoss	false	string	Stop loss price, valid for linear
+     *                           &gt;  tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice.
+     *                                                              Valid for linear
+     *                           &gt;  slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice
+     *                                                              Valid for linear
+     *                           &gt;  reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
+     *                                                                  You must specify it as true when you are about to close/reduce the position
+     *                                                                  When reduceOnly is true, take profit/stop loss cannot be set
+     *                                                              Valid for linear, and option
+     *                           &gt;  closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
+     *                                                                  Valid for linear
+     *                           &gt;  smpType	false	string	Smp execution type. What is SMP?
+     *                           &gt;  mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
+     *                           &gt;  tpslMode	false	string	TP/SL mode
+     *                                                              Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
+     *                                                              Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
+     *                                                          Valid for linear
+     *                           &gt;  tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
+     *                                                              Valid for linear
+     *                           &gt;  slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
+     *                                                              Valid for linear
+     *                           &gt;  tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
+     *                                                              Valid for linear
+     *                           &gt;  slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
+     *                                                              Valid for linear
+     * @return Request Parameters
      * Parameter	Required	Type	Comments
      * category	true	string	Product type. linear, option
      * request	true	array	Object
@@ -1191,8 +1203,19 @@ public interface BybitApiService {
      * Valid for linear
      *  &gt;  slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
      * Valid for linear
-     * @param batchOrderRequest
-     * @return
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * result	Object
+     * &gt; list	array	Object
+     * &gt; &gt; category	string	Product type
+     * &gt; &gt; symbol	string	Symbol name
+     * &gt; &gt; orderId	string	Order ID
+     * &gt; &gt; orderLinkId	string	User customised order ID
+     * &gt; &gt; createAt	string	Order created time (ms)
+     * retExtInfo	Object
+     * &gt; list	array	Object
+     * &gt; &gt; code	number	Success/error code
+     * &gt; &gt; msg	string	Success/error message
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create-batch")
@@ -1233,22 +1256,34 @@ public interface BybitApiService {
     /**
      * Batch Cancel Order
      * This endpoint allows you to cancel more than one open order in a single request.
+     *
      * Covers: Option (UTA, UTA Pro) / USDT Perpetual, UDSC Perpetual, USDC Futures (UTA Pro)
+     *
      * IMPORTANT
      * You must specify orderId or orderLinkId.
      * If orderId and orderLinkId is not matched, the system will process orderId first.
      * You can cancel unfilled or partially filled orders.
-     * A maximum of 20 orders (option) and 10 orders (linear) can be cancelled per request.
-     * HTTP Request
-     * POST /v5/order/cancel-batch
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. linear, option
-     * request	true	array	Object
-     *  &gt;  symbol	true	string	Symbol name
-     *  &gt;  orderId	false	string	Order ID. Either orderId or orderLinkId is required
-     *  &gt;  orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
-     * https://bybit-exchange.github.io/docs/v5/order/batch-cancel
+     * A maximum of 20 orders (option) & 10 orders (linear) can be cancelled per request.
+     *
+     * https://bybit-exchange.github.io/docs/v5/order/batch-cancel#http-request
+     *
+     * @param batchOrderRequest category	true	string	Product type. linear, option
+     *                          request	true	array	Object
+     *                          &gt; symbol	true	string	Symbol name
+     *                          &gt; orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     *                          &gt; orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * result	Object
+     * &gt; list	array	Object
+     * &gt; &gt; category	string	Product type
+     * &gt; &gt; symbol	string	Symbol name
+     * &gt; &gt; orderId	string	Order ID
+     * &gt; &gt; orderLinkId	string	User customised order ID
+     * retExtInfo	Object
+     * &gt; list	array	Object
+     * &gt; &gt; code	number	Success/error code
+     * &gt; &gt; msg	string	Success/error message
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel-batch")
@@ -1355,16 +1390,35 @@ public interface BybitApiService {
                             @Query("slLimitPrice") String slLimitPrice);
 
     /**
-     * Batch Amend Order
+     * BBatch Amend Order
      * Covers: Option (UTA, UTA Pro) / USDT Perpetual, UDSC Perpetual, USDC Futures (UTA Pro)
+     *
      * TIP
      * This endpoint allows you to amend more than one open order in a single request.
+     *
      * You can modify unfilled or partially filled orders. Conditional orders are not supported.
-     * A maximum of 20 orders (option) and 10 orders (linear) can be amended per request.
-     * HTTP Request
-     * POST /v5/order/amend-batch
+     * A maximum of 20 orders (option) & 10 orders (linear) can be amended per request.
+     *
      * https://bybit-exchange.github.io/docs/v5/order/batch-amend
-     * Request Parameters
+     * @param batchOrderRequest category	true	string	Product type. linear, option
+     *                          request	true	array	Object
+     *                          &gt; symbol	true	string	Symbol name
+     *                          &gt; orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     *                          &gt; orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     *                          &gt; orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
+     *                          &gt; triggerPrice	false	string	If you expect the price to rise to trigger your conditional order, make sure:
+     *                                                          triggerPrice &gt; market price
+     *                                                          Else, triggerPrice &lt; market price
+     *                          &gt; qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
+     *                          &gt; price	false	string	Order price after modification. Do not pass it if not modify the price
+     *                          &gt; takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
+     *                          &gt; stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
+     *                          &gt; tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
+     *                          &gt; slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
+     *                          &gt; triggerBy	false	string	Trigger price type
+     *                          &gt; tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
+     *                          &gt; slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
+     * @return Request Parameters
      * Parameter	Required	Type	Comments
      * category	true	string	Product type. linear, option
      * request	true	array	Object
@@ -1543,27 +1597,26 @@ public interface BybitApiService {
     /**
      * Create Sub UID
      * Create a new sub user id. Use master user's api key only.
+     *
      * TIP
      * The API key must have one of the below permissions in order to call this endpoint..
+     *
      * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
-     * HTTP Request
-     * POST /v5/user/create-sub-member
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * username	true	string	Give a username of the new sub user id.
-     * 6-16 characters, must include both numbers and letters.
-     * cannot be the same as the exist or deleted one.
-     * password	false	string	Set the password for the new sub user id.
-     * 8-30 characters, must include numbers, upper and lowercase letters.
-     * memberType	true	integer	1: normal sub account, 6: custodial sub account
-     * switch	false	integer
-     * 0: turn off quick login (default)
-     * 1: turn on quick login.
-     * isUta	false	boolean
-     * true: create UTA account
-     * false(default): create classic account
-     * note	false	string	Set a remark
-     * Response Parameters
+     *
+     * https://bybit-exchange.github.io/docs/v5/user/create-subuid#http-request
+     *
+     * @param userSubMemberRequest username	true	string	Give a username of the new sub user id.
+     *                                                          6-16 characters, must include both numbers and letters.
+     *                                                          cannot be the same as the exist or deleted one.
+     *                             password	false	string	Set the password for the new sub user id.
+     *                                                          8-30 characters, must include numbers, upper and lowercase letters.
+     *                             memberType	true	integer	1: normal sub account, 6: custodial sub account
+     *                             switch	false	integer 0: turn off quick login (default)
+     *                                                      1: turn on quick login.
+     *                             isUta	false	boolean true: create UTA account
+     *                                                      false(default): create classic account
+     *                             note	false	string	Set a remark
+     * @return Response Parameters
      * Parameter	Type	Comments
      * uid	string	Sub user Id
      * username	string	Give a username of the new sub user id.
@@ -1575,47 +1628,56 @@ public interface BybitApiService {
      * 2: login banned
      * 4: frozen
      * remark	string	The remark
-     * https://bybit-exchange.github.io/docs/v5/user/create-subuid
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/create-sub-member")
     Call<Object> createSubMember(@Body UserSubMemberRequest userSubMemberRequest);
 
     /**
-     * Create Sub UID
-     * Create a new sub user id. Use master user's api key only.
+     * Create Sub UID API Key
+     * To create new API key for those newly created sub UID. Use master user's api key only.
+     *
      * TIP
      * The API key must have one of the below permissions in order to call this endpoint..
+     *
      * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
-     * HTTP Request
-     * POST /v5/user/create-sub-member
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * username	true	string	Give a username of the new sub user id.
-     * 6-16 characters, must include both numbers and letters.
-     * cannot be the same as the exist or deleted one.
-     * password	false	string	Set the password for the new sub user id.
-     * 8-30 characters, must include numbers, upper and lowercase letters.
-     * memberType	true	integer	1: normal sub account, 6: custodial sub account
-     * switch	false	integer
-     * 0: turn off quick login (default)
-     * 1: turn on quick login.
-     * isUta	false	boolean
-     * true: create UTA account
-     * false(default): create classic account
-     * note	false	string	Set a remark
-     * Response Parameters
+     *
+     * https://bybit-exchange.github.io/docs/v5/user/create-subuid-apikey#http-request
+     *
+     * @param createApiKeyRequest subuid	true	integer	Sub user Id
+     *                            note	false	string	Set a remark
+     *                            readOnly	true	integer	0：Read and Write. 1：Read only
+     *                            ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
+     *                                                      don't pass ips or pass with "*" means no bind
+     *                                                      No ip bound api key will be invalid after 90 days
+     *                                                      api key without IP bound will be invalid after 7 days once the account password is changed
+     *                            permissions	true	Object	Tick the types of permission.
+     *                                                              one of below types must be passed, otherwise the error is thrown
+     *                            &gt; ContractTrade	false	array	Contract Trade. ["Order","Position"]
+     *                            &gt; Spot	false	array	Spot Trade. ["SpotTrade"]
+     *                            &gt; Wallet	false	array	Wallet. ["AccountTransfer","SubMemberTransferList"]
+     *                            &gt; Options	false	array	USDC Contract. ["OptionsTrade"]
+     *                            &gt; Derivatives	false	array	This param is depreciated because system will automatically add this permission according to your account is UTA or Classic
+     *                            &gt; Exchange	false	array	Exchange. ["ExchangeHistory"]
+     *                            &gt; CopyTrading	false	array	Copytrade. ["CopyTrading"]
+     * @return Response Parameters
      * Parameter	Type	Comments
-     * uid	string	Sub user Id
-     * username	string	Give a username of the new sub user id.
-     * 6-16 characters, must include both numbers and letters.
-     * cannot be the same as the exist or deleted one.
-     * memberType	integer	1: normal sub account, 6: custodial sub account
-     * status	integer	The status of the user account
-     * 1: normal
-     * 2: login banned
-     * 4: frozen
-     * remark	string	The remark
+     * id	string	Unique id. Internal used
+     * note	string	The remark
+     * apiKey	string	Api key
+     * readOnly	integer	0：Read and Write. 1：Read only
+     * secret	string	The secret paired with api key.
+     * The secret can't be queried by GET api. Please keep it properly
+     * permissions	Object	The types of permission
+     * &gt; ContractTrade	array	Permisson of contract trade
+     * &gt; Spot	array	Permisson of spot
+     * &gt; Wallet	array	Permisson of wallet
+     * &gt; Options	array	Permission of USDC Contract. It supports trade option and usdc perpetual.
+     * &gt; Derivatives	array	Permission of Unified account
+     * &gt; CopyTrading	array	Permission of copytrade
+     * &gt; BlockTrade	array	Permission of blocktrade. Not applicable to sub account, always []
+     * &gt; Exchange	array	Permission of exchange
+     * &gt; NFT	array	Permission of NFT. Not applicable to sub account, always []
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/create-sub-api")
@@ -1624,34 +1686,35 @@ public interface BybitApiService {
     /**
      * Modify Master API Key
      * Modify the settings of master api key. Use the api key pending to be modified to call the endpoint. Use master user's api key only.
+     *
      * TIP
      * The API key must have one of the below permissions in order to call this endpoint..
+     *
      * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
      * INFO
      * Only the api key that calls this interface can be modified
-     * HTTP Request
-     * POST /v5/user/update-api
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * readOnly	false	integer	0 (default)：Read and Write. 1：Read only
-     * ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
-     * don't pass ips or pass with "*" means no bind
-     * No ip bound api key will be invalid after 90 days
-     * api key will be invalid after 7 days once the account password is changed
-     * permissions	false	Object	Tick the types of permission. Don't send this param if you don't want to change the permission
-     *  &gt;  ContractTrade	false	array	Contract Trade. ["Order","Position"]
-     *  &gt;  Spot	false	array	Spot Trade. ["SpotTrade"]
-     *  &gt;  Wallet	false	array	Wallet. ["AccountTransfer","SubMemberTransfer"]
-     *  &gt;  Options	false	array	USDC Contract. ["OptionsTrade"]
-     *  &gt;  Derivatives	false	array	This param is depreciated because system will automatically add this permission according to your account is UTA or Classic
-     *  &gt;  CopyTrading	false	array	Copytrade. ["CopyTrading"]
-     *  &gt;  BlockTrade	false	array	Blocktrade. ["BlockTrade"]
-     *  &gt;  Exchange	false	array	Exchange. ["ExchangeHistory"]
-     *  &gt;  NFT	false	array	NFT. ["NFTQueryProductList"]
-     *  &gt;  Affiliate	false	array	Affiliate. ["Affiliate"]
-     * This permission is only useful for affiliate
-     * If you need this permission, make sure you remove all other permissions
-     * Response Parameters
+     *
+     * https://bybit-exchange.github.io/docs/v5/user/modify-master-apikey#http-request
+     *
+     * @param modifyMasterApiKeyRequest readOnly	false	integer	0 (default)：Read and Write. 1：Read only
+     *                                  ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
+     *                                                          don't pass ips or pass with "*" means no bind
+     *                                                          No ip bound api key will be invalid after 90 days
+     *                                                          api key will be invalid after 7 days once the account password is changed
+     *                                  permissions	false	Object	Tick the types of permission. Don't send this param if you don't want to change the permission
+     *                                  &gt; ContractTrade	false	array	Contract Trade. ["Order","Position"]
+     *                                  &gt; Spot	false	array	Spot Trade. ["SpotTrade"]
+     *                                  &gt; Wallet	false	array	Wallet. ["AccountTransfer","SubMemberTransfer"]
+     *                                  &gt; Options	false	array	USDC Contract. ["OptionsTrade"]
+     *                                  &gt; Derivatives	false	array	This param is depreciated because system will automatically add this permission according to your account is UTA or Classic
+     *                                  &gt; CopyTrading	false	array	Copytrade. ["CopyTrading"]
+     *                                  &gt; BlockTrade	false	array	Blocktrade. ["BlockTrade"]
+     *                                  &gt; Exchange	false	array	Exchange. ["ExchangeHistory"]
+     *                                  &gt; NFT	false	array	NFT. ["NFTQueryProductList"]
+     *                                  &gt; Affiliate	false	array	Affiliate. ["Affiliate"]
+     *                                                                  This permission is only useful for affiliate
+     *                                                                  If you need this permission, make sure you remove all other permissions
+     * @return Response Parameters
      * Parameter	Type	Comments
      * id	string	Unique id. Internal used
      * note	string	The remark
@@ -1659,15 +1722,15 @@ public interface BybitApiService {
      * readOnly	integer	0：Read and Write. 1：Read only
      * secret	string	Always ""
      * permissions	Object	The types of permission
-     *  &gt;  ContractTrade	array	Permisson of contract trade
-     *  &gt;  Spot	array	Permisson of spot
-     *  &gt;  Wallet	array	Permisson of wallet
-     *  &gt;  Options	array	Permission of USDC Contract. It supports trade option and usdc perpetual.
-     *  &gt;  Derivatives	array	Permission of Unified account
-     *  &gt;  CopyTrading	array	Permission of copytrade. Not applicable to sub account, always []
-     *  &gt;  BlockTrade	array	Permission of blocktrade. Not applicable to sub account, always []
-     *  &gt;  Exchange	array	Permission of exchange
-     *  &gt;  NFT	array	Permission of NFT. Not applicable to sub account, always []
+     * &gt; ContractTrade	array	Permisson of contract trade
+     * &gt; Spot	array	Permisson of spot
+     * &gt; Wallet	array	Permisson of wallet
+     * &gt; Options	array	Permission of USDC Contract. It supports trade option and usdc perpetual.
+     * &gt; Derivatives	array	Permission of Unified account
+     * &gt; CopyTrading	array	Permission of copytrade. Not applicable to sub account, always []
+     * &gt; BlockTrade	array	Permission of blocktrade. Not applicable to sub account, always []
+     * &gt; Exchange	array	Permission of exchange
+     * &gt; NFT	array	Permission of NFT. Not applicable to sub account, always []
      * ips	array	IP bound
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
@@ -1677,31 +1740,32 @@ public interface BybitApiService {
     /**
      * Modify Sub API Key
      * Modify the settings of sub api key. Use the sub account api key pending to be modified to call the endpoint or use master account api key to manage its sub account api key.
+     *
      * TIP
      * The API key must have one of the below permissions in order to call this endpoint
+     *
      * sub API key: "Account Transfer", "Sub Member Transfer"
      * master API Key: "Account Transfer", "Sub Member Transfer", "Withdrawal"
-     * HTTP Request
-     * POST /v5/user/update-sub-api
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * apikey	false	string	Sub account api key
-     * You must pass this param when you use master account manage sub account api key settings
-     * If you use corresponding sub uid api key call this endpoint, apikey param cannot be passed, otherwise throwing an error
-     * readOnly	false	integer	0 (default)：Read and Write. 1：Read only
-     * ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
-     * don't pass ips or pass with "*" means no bind
-     * No ip bound api key will be invalid after 90 days
-     * api key will be invalid after 7 days once the account password is changed
-     * permissions	false	Object	Tick the types of permission. Don't send this param if you don't want to change the permission
-     *  &gt;  ContractTrade	false	array	Contract Trade. ["Order","Position"]
-     *  &gt;  Spot	false	array	Spot Trade. ["SpotTrade"]
-     *  &gt;  Wallet	false	array	Wallet. ["AccountTransfer", "SubMemberTransferList"]
-     *  &gt;  Options	false	array	USDC Contract. ["OptionsTrade"]
-     *  &gt;  Derivatives	false	array	This param is depreciated because system will automatically add this permission according to your account is UTA or Classic
-     *  &gt;  Exchange	false	array	Exchange. ["ExchangeHistory"]
-     *  &gt;  CopyTrading	false	array	Copytrade. ["CopyTrading"]
-     * Response Parameters
+     *
+     * https://bybit-exchange.github.io/docs/v5/user/modify-sub-apikey#http-request
+     *
+     * @param modifysubApiKeyRequest apikey	false	string	Sub account api key
+     *                                                          You must pass this param when you use master account manage sub account api key settings
+     *                                                          If you use corresponding sub uid api key call this endpoint, apikey param cannot be passed, otherwise throwing an error
+     *                               readOnly	false	integer	0 (default)：Read and Write. 1：Read only
+     *                               ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
+     *                                                          don't pass ips or pass with "*" means no bind
+     *                                                          No ip bound api key will be invalid after 90 days
+     *                                                          api key will be invalid after 7 days once the account password is changed
+     *                               permissions	false	Object	Tick the types of permission. Don't send this param if you don't want to change the permission
+     *                               &gt; ContractTrade	false	array	Contract Trade. ["Order","Position"]
+     *                               &gt; Spot	false	array	Spot Trade. ["SpotTrade"]
+     *                               &gt; Wallet	false	array	Wallet. ["AccountTransfer", "SubMemberTransferList"]
+     *                               &gt; Options	false	array	USDC Contract. ["OptionsTrade"]
+     *                               &gt; Derivatives	false	array	This param is depreciated because system will automatically add this permission according to your account is UTA or Classic
+     *                               &gt; Exchange	false	array	Exchange. ["ExchangeHistory"]
+     *                               &gt; CopyTrading	false	array	Copytrade. ["CopyTrading"]
+     * @return Response Parameters
      * Parameter	Type	Comments
      * id	string	Unique id. Internal used
      * note	string	The remark
@@ -1709,17 +1773,16 @@ public interface BybitApiService {
      * readOnly	integer	0：Read and Write. 1：Read only
      * secret	string	Always ""
      * permissions	Object	The types of permission
-     *  &gt;  ContractTrade	array	Permisson of contract trade
-     *  &gt;  Spot	array	Permisson of spot
-     *  &gt;  Wallet	array	Permisson of wallet
-     *  &gt;  Options	array	Permission of USDC Contract. It supports trade option and usdc perpetual.
-     *  &gt;  Derivatives	array	Permission of Unified account
-     *  &gt;  CopyTrading	array	Permission of copytrade
-     *  &gt;  BlockTrade	array	Permission of blocktrade. Not applicable to sub account, always []
-     *  &gt;  Exchange	array	Permission of exchange
-     *  &gt;  NFT	array	Permission of NFT. Not applicable to sub account, always []
+     * &gt; ContractTrade	array	Permisson of contract trade
+     * &gt; Spot	array	Permisson of spot
+     * &gt; Wallet	array	Permisson of wallet
+     * &gt; Options	array	Permission of USDC Contract. It supports trade option and usdc perpetual.
+     * &gt; Derivatives	array	Permission of Unified account
+     * &gt; CopyTrading	array	Permission of copytrade
+     * &gt; BlockTrade	array	Permission of blocktrade. Not applicable to sub account, always []
+     * &gt; Exchange	array	Permission of exchange
+     * &gt; NFT	array	Permission of NFT. Not applicable to sub account, always []
      * ips	array	IP bound
-     * https://bybit-exchange.github.io/docs/v5/user/modify-sub-apikey
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/update-sub-api")
@@ -1748,22 +1811,22 @@ public interface BybitApiService {
     /**
      * Delete Sub API Key
      * Delete the api key of sub account. Use the sub api key pending to be delete to call the endpoint or use the master api key to delete corresponding sub account api key
+     *
      * TIP
      * The API key must have one of the below permissions in order to call this endpoint.
+     *
      * sub API key: "Account Transfer", "Sub Member Transfer"
      * master API Key: "Account Transfer", "Sub Member Transfer", "Withdrawal"
      * DANGER
      * BE CAREFUL! The Sub account API key will be invalid immediately after calling the endpoint.
-     * HTTP Request
-     * POST /v5/user/delete-sub-api
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * apikey	false	string	Sub account api key
-     * You must pass this param when you use master account manage sub account api key settings
-     * If you use corresponding sub uid api key call this endpoint, apikey param cannot be passed, otherwise throwing an error
-     * Response Parameters
+     *
+     * https://bybit-exchange.github.io/docs/v5/user/rm-sub-apikey#http-request
+     *
+     * @param deleteSubUidRequest apikey	false	string	Sub account api key
+     *                                                          You must pass this param when you use master account manage sub account api key settings
+     *                                                          If you use corresponding sub uid api key call this endpoint, apikey param cannot be passed, otherwise throwing an error
+     * @return Response Parameters
      * None
-     * https://bybit-exchange.github.io/docs/v5/user/rm-sub-apikey
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/delete-sub-api")
@@ -1772,17 +1835,18 @@ public interface BybitApiService {
     /**
      * Freeze Sub UID
      * Freeze Sub UID. Use master user's api key only.
+     *
      * TIP
      * The API key must have one of the below permissions in order to call this endpoint..
+     *
      * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
-     * HTTP Request
-     * POST /v5/user/frozen-sub-member
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * subuid	true	integer	Sub user Id
-     * frozen	true	integer	0：unfreeze, 1：freeze
-     * https://bybit-exchange.github.io/docs/v5/user/froze-subuid
-     * @param freezeSubUIDRquest
+     *
+     * https://bybit-exchange.github.io/docs/v5/user/froze-subuid#http-request
+     *
+     * @param freezeSubUIDRquest subuid	true	integer	Sub user Id
+     *                           frozen	true	integer	0：unfreeze, 1：freeze
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/frozen-sub-member")
@@ -1869,23 +1933,24 @@ public interface BybitApiService {
     /**
      * Set Leverage
      * Set the leverage
+     *
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract
      * Classic account covers: USDT perpetual / Inverse contract
-     * HTTP Request
-     * POST /v5/position/set-leverage
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: linear, inverse
-     * Classic account: linear, inverse. Please note that category is not involved with business logic
-     * symbol	true	string	Symbol name
-     * buyLeverage	true	string	[1, max leverage of corresponding risk limit]
-     * Classic account: under one-way mode, buyLeverage must be the same as sellLeverage
-     * Unified account: buyLeverage must be the same as sellLeverage all the time
-     * sellLeverage	true	string	[1, max leverage of corresponding risk limit]
-     * Classic account: under one-way mode, buyLeverage must be the same as sellLeverage
-     * Unified account: buyLeverage must be the same as sellLeverage all the time
-     * https://bybit-exchange.github.io/docs/v5/position/leverage
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/leverage#http-request
+     *
+     * @param setLeverageRequest category	true	string	Product type
+     *                                                          Unified account: linear, inverse
+     *                                                          Classic account: linear, inverse. Please note that category is not involved with business logic
+     *                           symbol	true	string	Symbol name
+     *                           buyLeverage	true	string	[1, max leverage of corresponding risk limit]
+     *                                                              Classic account: under one-way mode, buyLeverage must be the same as sellLeverage
+     *                                                              Unified account: buyLeverage must be the same as sellLeverage all the time
+     *                           sellLeverage	true	string	[1, max leverage of corresponding risk limit]
+     *                                                              Classic account: under one-way mode, buyLeverage must be the same as sellLeverage
+     *                                                              Unified account: buyLeverage must be the same as sellLeverage all the time
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-leverage")
@@ -1895,20 +1960,21 @@ public interface BybitApiService {
     /**
      * Switch Cross/Isolated Margin
      * Select cross margin mode or isolated margin mode per symbol level
+     *
      * Unified account covers: Inverse contract
      * Classic account covers: USDT perpetual / Inverse contract
-     * HTTP Request
-     * POST /v5/position/switch-isolated
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: inverse
-     * Classic account: linear, inverse. Please note that category is not involved with business logic
-     * symbol	true	string	Symbol name
-     * tradeMode	true	integer	0: cross margin. 1: isolated margin
-     * buyLeverage	true	string	The value must be equal to sellLeverage value
-     * sellLeverage	true	string	The value must be equal to buyLeverage value
-     * https://bybit-exchange.github.io/docs/v5/position/cross-isolate
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/cross-isolate#http-request
+     *
+     * @param switchMarginRequest category	true	string	Product type
+     *                                                          Unified account: inverse
+     *                                                          Classic account: linear, inverse. Please note that category is not involved with business logic
+     *                            symbol	true	string	Symbol name
+     *                            tradeMode	true	integer	0: cross margin. 1: isolated margin
+     *                            buyLeverage	true	string	The value must be equal to sellLeverage value
+     *                            sellLeverage	true	string	The value must be equal to buyLeverage value
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/switch-isolated")
@@ -1918,10 +1984,12 @@ public interface BybitApiService {
     /**
      * Switch Position Mode
      * It supports to switch the position mode for USDT perpetual and Inverse futures. If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
+     *
      * Unified account covers: USDT perpetual / Inverse Futures
      * Classic account covers: USDT perpetual / Inverse Futures
+     *
      * TIP
-     * Priority for configuration to take effect: symbol  &gt;  coin  &gt;  system default
+     * Priority for configuration to take effect: symbol &gt; coin &gt; system default
      * System default: one-way mode
      * If the request is by coin (settleCoin), then all symbols based on this setteCoin that do not have position and open order will be batch switched, and new listed symbol based on this settleCoin will be the same mode you set.
      * Example
@@ -1938,22 +2006,22 @@ public interface BybitApiService {
      * Take effect result	AXSUSDT is one-way mode, other trading pairs have no change
      * list new symbol BITUSDT	BITUSDT is hedge-mode (Inherit coin rule)
      * The position-switch ability for each contract
-     * Classic account	Unified account
-     * USDT perpetual	Support one-way and hedge-mode	Support one-way and hedge-mode
-     * USDC perpetual	Support one-way only	Support one-way only
-     * Inverse perpetual	Support one-way only	Support one-way only
-     * Inverse future	Support one-way and hedge-mode	Support one-way and hedge-mode
-     * HTTP Request
-     * POST /v5/position/switch-mode
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: linear, USDT Perp; inverse, Inverse Futures
-     * Classic account: linear, USDT Perp; inverse, Inverse Futures. Please note that category is not involved with business logic
-     * symbol	false	string	Symbol name. Either symbol or coin is required. symbol has a higher priority
-     * coin	false	string	Coin
-     * mode	true	integer	Position mode. 0: Merged Single. 3: Both Sides
-     * https://bybit-exchange.github.io/docs/v5/position/position-mode
+     *                    Classic account	                Unified account
+     * USDT perpetual	  Support one-way & hedge-mode	    Support one-way & hedge-mode
+     * USDC perpetual	  Support one-way only	            Support one-way only
+     * Inverse perpetua   Support one-way only	            Support one-way only
+     * Inverse future	  Support one-way & hedge-mode	    Support one-way & hedge-mode
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/position-mode#http-request
+     *
+     * @param switchPositionModeRequest category	true	string	Product type
+     *                                                                  Unified account: linear, USDT Perp; inverse, Inverse Futures
+     *                                                                  Classic account: linear, USDT Perp; inverse, Inverse Futures. Please note that category is not involved with business logic
+     *                                  symbol	false	string	Symbol name. Either symbol or coin is required. symbol has a higher priority
+     *                                  coin	false	string	Coin
+     *                                  mode	true	integer	Position mode. 0: Merged Single. 3: Both Sides
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/switch-mode")
@@ -1964,22 +2032,27 @@ public interface BybitApiService {
      * Set TP/SL Mode
      * TIP
      * To some extent, this endpoint is depreciated because now tpsl is based on order level. This API was used for position level change before.
+     *
      * However, you still can use it to set an implicit tpsl mode for a certain symbol because when you don't pass "tpslMode" in the place order or trading stop request, system will get the tpslMode by the default setting.
+     *
      * Set TP/SL mode to Full or Partial
+     *
      * Unified account covers: USDT perpetual / Inverse contract
      * Classic account covers: USDT perpetual / Inverse contract
+     *
      * INFO
      * For partial TP/SL mode, you can set the TP/SL size smaller than position size.
-     * HTTP Request
-     * POST /v5/position/set-tpsl-mode
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: linear, inverse
-     * Classic account: linear, inverse. Please note that category is not involved with business logic
-     * symbol	true	string	Symbol name
-     * tpSlMode	true	string	TP/SL mode. Full,Partial
-     * https://bybit-exchange.github.io/docs/v5/position/tpsl-mode
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/tpsl-mode#http-request
+     *
+     * @param setTpSlModeRequest category	true	string	Product type
+     *                                                          Unified account: linear, inverse
+     *                                                          Classic account: linear, inverse. Please note that category is not involved with business logic
+     *                           symbol	true	string	Symbol name
+     *                           tpSlMode	true	string	TP/SL mode. Full,Partial
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * tpSlMode	string	Full,Partial
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-tpsl-mode")
@@ -1988,26 +2061,30 @@ public interface BybitApiService {
 
     /**
      * Set Risk Limit
-     * The risk limit will limit the maximum position value you can hold under different margin requirements. If you want to hold a bigger position size, you need more margin. This interface can set the risk limit of a single position. If the order exceeds the current risk limit when placing an order, it will be rejected.
-     * Click here to learn more about risk limit.
+     * The risk limit will limit the maximum position value you can hold under different margin requirements. If you want to hold a bigger position size, you need more margin. This interface can set the risk limit of a single position. If the order exceeds the current risk limit when placing an order, it will be rejected. Click here to learn more about risk limit.
+     *
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract
      * Classic account covers: USDT perpetual / Inverse contract
+     *
      * TIP
      * Set the risk limit of the position. You can get risk limit information for each symbol here.
-     * HTTP Request
-     * POST /v5/position/set-risk-limit
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: linear, inverse
-     * Classic account: linear, inverse. Please note that category is not involved with business logic
-     * symbol	true	string	Symbol name
-     * riskId	true	integer	Risk limit ID
-     * positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode, it is required
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     * https://bybit-exchange.github.io/docs/v5/position/set-risk-limit
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/set-risk-limit#http-request
+     *
+     * @param setRiskLimitRequest category	true	string	Product type
+     *                                                          Unified account: linear, inverse
+     *                                                          Classic account: linear, inverse. Please note that category is not involved with business logic
+     *                            symbol	true	string	Symbol name
+     *                            riskId	true	integer	Risk limit ID
+     *                            positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode, it is required
+     *                                                              0: one-way mode
+     *                                                              1: hedge-mode Buy side
+     *                                                              2: hedge-mode Sell side
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * category	string	Product type
+     * riskId	integer	Risk limit ID
+     * riskLimitValue	string	The position limit value corresponding to this risk ID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-risk-limit")
@@ -2017,44 +2094,46 @@ public interface BybitApiService {
     /**
      * Set Trading Stop
      * Set the take profit, stop loss or trailing stop for the position.
+     *
      * Unified account covers: USDT perpetual / USDC contract / Inverse contract
      * Classic account covers: USDT perpetual / Inverse contract
+     *
      * TIP
-     * Passing these parameters will create conditional orders by the system internally. The system will cancel these orders if the position is closed,
-     * and adjust the qty according to the size of the open position.
+     * Passing these parameters will create conditional orders by the system internally. The system will cancel these orders if the position is closed, and adjust the qty according to the size of the open position.
+     *
      * INFO
      * New version of TP/SL function supports both holding entire position TP/SL orders and holding partial position TP/SL orders.
+     *
      * Full position TP/SL orders: This API can be used to modify the parameters of existing TP/SL orders.
      * Partial position TP/SL orders: This API can only add partial position TP/SL orders.
      * NOTE
-     * Under the new version of Tp/SL function, when calling this API to perform one-sided take profit or stop loss modification on existing TP/SL orders on the holding position,
-     * it will cause the paired tp/sl orders to lose binding relationship. This means that when calling the cancel API through the tp/sl order ID, it will only cancel the corresponding one-sided take profit or stop loss order ID.
-     * HTTP Request
-     * POST /v5/position/trading-stop
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: linear, inverse
-     * Classic account: linear, inverse. Please note that category is not involved with business logic
-     * symbol	true	string	Symbol name
-     * takeProfit	false	string	Cannot be less than 0, 0 means cancel TP
-     * stopLoss	false	string	Cannot be less than 0, 0 means cancel SL
-     * trailingStop	false	string	Trailing stop by price distance. Cannot be less than 0, 0 means cancel TS
-     * tpTriggerBy	false	string	Take profit trigger price type
-     * slTriggerBy	false	string	Stop loss trigger price type
-     * activePrice	false	string	Trailing stop trigger price. Trailing stop will be triggered when this price is reached only
-     * tpslMode	false	string	TP/SL mode. Full: entire position TP/SL, Partial: partial position TP/SL. As each contract has an initial full TP/SL mode, if it has been modified before, it may be partial. Therefore, if not provided, the system will automatically retrieve the current TP/SL mode configuration for the contract.
-     * tpSize	false	string	Take profit size. Valid in TP/SL partial mode. Note: the value of tpSize and slSize must equal
-     * slSize	false	string	Stop loss size. Valid in TP/SL partial mode. Note: the value of tpSize and slSize must equal
-     * tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
-     * slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
-     * tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
-     * slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
-     * positionIdx	true	integer	Used to identify positions in different position modes.
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     * https://bybit-exchange.github.io/docs/v5/position/trading-stop
+     * Under the new version of Tp/SL function, when calling this API to perform one-sided take profit or stop loss modification on existing TP/SL orders on the holding position, it will cause the paired tp/sl orders to lose binding relationship. This means that when calling the cancel API through the tp/sl order ID, it will only cancel the corresponding one-sided take profit or stop loss order ID.
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/trading-stop#http-request
+     *
+     * @param tradingStopRequest category	true	string	Product type
+     *                                                          Unified account: linear, inverse
+     *                                                          Classic account: linear, inverse. Please note that category is not involved with business logic
+     *                           symbol	true	string	Symbol name
+     *                           takeProfit	false	string	Cannot be less than 0, 0 means cancel TP
+     *                           stopLoss	false	string	Cannot be less than 0, 0 means cancel SL
+     *                           trailingStop	false	string	Trailing stop by price distance. Cannot be less than 0, 0 means cancel TS
+     *                           tpTriggerBy	false	string	Take profit trigger price type
+     *                           slTriggerBy	false	string	Stop loss trigger price type
+     *                           activePrice	false	string	Trailing stop trigger price. Trailing stop will be triggered when this price is reached only
+     *                           tpslMode	false	string	TP/SL mode. Full: entire position TP/SL, Partial: partial position TP/SL. As each contract has an initial full TP/SL mode, if it has been modified before, it may be partial. Therefore, if not provided, the system will automatically retrieve the current TP/SL mode configuration for the contract.
+     *                           tpSize	false	string	Take profit size. Valid in TP/SL partial mode. Note: the value of tpSize and slSize must equal
+     *                           slSize	false	string	Stop loss size. Valid in TP/SL partial mode. Note: the value of tpSize and slSize must equal
+     *                           tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
+     *                           slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
+     *                           tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
+     *                           slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
+     *                           positionIdx	true	integer	Used to identify positions in different position modes.
+     *                                                              0: one-way mode
+     *                                                              1: hedge-mode Buy side
+     *                                                              2: hedge-mode Sell side
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/trading-stop")
@@ -2064,22 +2143,23 @@ public interface BybitApiService {
     /**
      * Set Auto Add Margin
      * Turn on/off auto-add-margin for isolated margin position
+     *
      * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
      * Classic account covers: USDT perpetual / Inverse contract
-     * HTTP Request
-     * POST /v5/position/set-auto-add-margin
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: linear, inverse
-     * Classic account: linear, inverse
-     * symbol	true	string	Symbol name
-     * autoAddMargin	true	integer	Turn on/off. 0: off. 1: on
-     * positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode position, this param is required
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     * https://bybit-exchange.github.io/docs/v5/position/auto-add-margin
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/auto-add-margin#http-request
+     *
+     * @param setAutoAddMarginRequest category	true	string	Product type
+     *                                                              Unified account: linear, inverse
+     *                                                              Classic account: linear, inverse
+     *                                symbol	true	string	Symbol name
+     *                                autoAddMargin	true	integer	Turn on/off. 0: off. 1: on
+     *                                positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode position, this param is required
+     *                                                                  0: one-way mode
+     *                                                                  1: hedge-mode Buy side
+     *                                                                  2: hedge-mode Sell side
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/set-auto-add-margin")
@@ -2089,22 +2169,49 @@ public interface BybitApiService {
     /**
      * Add Or Reduce Margin
      * Manually add or reduce margin for isolated margin position
+     *
      * Unified account covers: USDT perpetual / USDC perpetual / USDC futures / Inverse contract
      * Classic account covers: USDT perpetual / Inverse contract
-     * HTTP Request
-     * POST /v5/position/add-margin
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type
-     * Unified account: linear, inverse
-     * Classic account: linear, inverse
-     * symbol	true	string	Symbol name
-     * margin	true	string	Add or reduce. To add, then 10; To reduce, then -10. Support up to 4 decimal
-     * positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode position, this param is required
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     * https://bybit-exchange.github.io/docs/v5/position/manual-add-margin
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/manual-add-margin#http-request
+     *
+     * @param modifyMarginRequest category	true	string	Product type
+     *                                                          Unified account: linear, inverse
+     *                                                          Classic account: linear, inverse
+     *                            symbol	true	string	Symbol name
+     *                            margin	true	string	Add or reduce. To add, then 10; To reduce, then -10. Support up to 4 decimal
+     *                            positionIdx	false	integer	Used to identify positions in different position modes. For hedge mode position, this param is required
+     *                                                              0: one-way mode
+     *                                                              1: hedge-mode Buy side
+     *                                                              2: hedge-mode Sell side
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * category	string	Product type
+     * symbol	string	Symbol name
+     * positionIdx	integer	Position idx, used to identify positions in different position modes
+     * 0: One-Way Mode
+     * 1: Buy side of both side mode
+     * 2: Sell side of both side mode
+     * riskId	integer	Risk limit ID
+     * riskLimitValue	string	Risk limit value
+     * size	string	Position size
+     * avgPrice	string	Average entry price
+     * liqPrice	string	Liquidation price
+     * bustPrice	string	Bankruptcy price
+     * markPrice	string	Last mark price
+     * positionValue	string	Position value
+     * leverage	string	Position leverage
+     * autoAddMargin	integer	Whether to add margin automatically. 0: false, 1: true
+     * positionStatus	String	Position status. Normal, Liq, Adl
+     * positionIM	string	Initial margin
+     * positionMM	string	Maintenance margin
+     * takeProfit	string	Take profit price
+     * stopLoss	string	Stop loss price
+     * trailingStop	string	Trailing stop (The distance from market price)
+     * unrealisedPnl	string	Unrealised PnL
+     * cumRealisedPnl	string	Cumulative realised pnl
+     * createdTime	string	Position created timestamp (ms)
+     * updatedTime	string	Position updated timestamp (ms)
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/position/add-margin")
@@ -2689,15 +2796,15 @@ public interface BybitApiService {
     /**
      * Set Collateral Coin
      * You can decide whether the assets in the Unified account needs to be collateral coins.
-     * HTTP Request
-     * POST /v5/account/set-collateral-switch
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * coin	true	string	Coin name
-     * You can get collateral coin from here
-     * USDT, USDC cannot be switched off
-     * collateralSwitch	true	string	ON: switch on collateral, OFF: switch off collateral
-     * https://bybit-exchange.github.io/docs/v5/account/set-collateral
+     *
+     * https://bybit-exchange.github.io/docs/v5/account/set-collateral#http-request
+     *
+     * @param setCollateralCoinRequest coin	true	string	Coin name
+     *                                                          You can get collateral coin from here
+     *                                                          USDT, USDC cannot be switched off
+     *                                 collateralSwitch	true	string	ON: switch on collateral, OFF: switch off collateral
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/set-collateral-switch")
@@ -2855,20 +2962,19 @@ public interface BybitApiService {
     /**
      * Set Margin Mode
      * Default is regular margin mode
+     *
      * INFO
      * UTA account can be switched between these 3 kinds of margin modes, which is across UID level, working for USDT Perp, USDC Perp, USDC Futures and Options (Option does not support ISOLATED_MARGIN)
      * Classic account can be switched between REGULAR_MARGIN and PORTFOLIO_MARGIN, only work for USDC Perp and Options trading.
-     * HTTP Request
-     * POST /v5/account/set-margin-mode
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * setMarginMode	true	string	ISOLATED_MARGIN, REGULAR_MARGIN(i.e. Cross margin), PORTFOLIO_MARGIN
-     * Response Parameters
+     *
+     * https://bybit-exchange.github.io/docs/v5/account/set-margin-mode#http-request
+     *
+     * @param setMarginMode setMarginMode	true	string	ISOLATED_MARGIN, REGULAR_MARGIN(i.e. Cross margin), PORTFOLIO_MARGIN
+     * @return Response Parameters
      * Parameter	Type	Comments
      * reasons	array	Object. If requested successfully, it is an empty array
-     *  &gt;  reasonCode	string	Fail reason code
-     *  &gt;  reasonMsg	string	Fail reason msg
-     * https://bybit-exchange.github.io/docs/v5/account/set-margin-mode
+     * &gt; reasonCode	string	Fail reason code
+     * &gt; reasonMsg	string	Fail reason msg
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/set-margin-mode")
@@ -2879,8 +2985,10 @@ public interface BybitApiService {
      * INFO
      * What is MMP?
      * Market Maker Protection (MMP) is an automated mechanism designed to protect market makers (MM) against liquidity risks and over-exposure in the market. It prevents simultaneous trade executions on quotes provided by the MM within a short time span. The MM can automatically pull their quotes if the number of contracts traded for an underlying asset exceeds the configured threshold within a certain time frame. Once MMP is triggered, any pre-existing MMP orders will be automatically canceled, and new orders tagged as MMP will be rejected for a specific duration — known as the frozen period — so that MM can reassess the market and modify the quotes.
+     *
      * How to enable MMP
      * Send an email to Bybit (financial.inst@bybit.com) or contact your business development (BD) manager to apply for MMP. After processed, the default settings are as below table:
+     *
      * Parameter	Type	Comments	Default value
      * baseCoin	string	Base coin	BTC
      * window	string	Time window (millisecond)	5000
@@ -2889,32 +2997,32 @@ public interface BybitApiService {
      * deltaLimit	string	Delta limit	100
      * Applicable
      * Effective for options only. When you place an option order, set mmp=true, which means you mark this order as a mmp order.
-     * HTTP Request
-     * POST /v5/account/mmp-modify
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * baseCoin	true	string	Base coin
-     * window	true	string	Time window (ms)
-     * frozenPeriod	true	string	Frozen period (ms). "0" means the trade will remain frozen until manually reset
-     * qtyLimit	true	string	Trade qty limit (positive and up to 2 decimal places)
-     * deltaLimit	true	string	Delta limit (positive and up to 2 decimal places)
-     * https://bybit-exchange.github.io/docs/v5/account/set-mmp
+     *
+     * https://bybit-exchange.github.io/docs/v5/account/set-mmp#http-request
+     *
+     * @param setMMPRequest baseCoin	true	string	Base coin
+     *                      window	true	string	Time window (ms)
+     *                      frozenPeriod	true	string	Frozen period (ms). "0" means the trade will remain frozen until manually reset
+     *                      qtyLimit	true	string	Trade qty limit (positive and up to 2 decimal places)
+     *                      deltaLimit	true	string	Delta limit (positive and up to 2 decimal places)
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/mmp-modify")
     Call<Object> modifyAccountMMP(@Body SetMMPRequest setMMPRequest);
 
     /**
-     *Reset MMP
+     * Reset MMP
      * INFO
      * Once the mmp triggered, you can unfreeze the account by this endpoint, then qtyLimit and deltaLimit will be reset to 0.
      * If the account is not frozen, reset action can also remove previous accumulation, i.e., qtyLimit and deltaLimit will be reset to 0.
-     * HTTP Request
-     * POST /v5/account/mmp-reset
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * baseCoin	true	string	Base coin
+     *
      * https://bybit-exchange.github.io/docs/v5/account/reset-mmp
+     *
+     * @param resetMMPRequest baseCoin	true	string	Base coin
+     * @return Response Parameters
+     * None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/account/mmp-reset")
@@ -3168,9 +3276,22 @@ public interface BybitApiService {
     Call<Object> getAssetTransferableCoins(@Query("fromAccountType") String fromAccountType, @Query("toAccountType") String toAccountType);
 
     /**
-     * Get Internal Transfer Records
-     * Query the internal transfer records between different account types under the same UID.
-     * https://bybit-exchange.github.io/docs/v5/asset/inter-transfer-list
+     * Create Internal Transfer
+     * Create the internal transfer between different account types under the same UID.
+     *
+     * TIP
+     * Each account type has its own acceptable coins, e.g, you cannot transfer USDC from SPOT to CONTRACT. Please refer to transferable coin list API to find out more.
+     *
+     * https://bybit-exchange.github.io/docs/v5/asset/create-inter-transfer#http-request
+     *
+     * @param assetInternalTransferRequest transferId	true	string	UUID. Please manually generate a UUID
+     *                                     coin	true	string	Coin
+     *                                     amount	true	string	Amount
+     *                                     fromAccountType	true	string	From account type
+     *                                     toAccountType	true	string	To account type
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * transferId	string	UUID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/transfer/inter-transfer")
@@ -3197,13 +3318,26 @@ public interface BybitApiService {
     /**
      * Create Universal Transfer
      * Transfer between sub-sub or main-sub.
+     *
      * CAUTION
      * Can use master or sub acct api key to request
      * To use sub acct api key, it must have "SubMemberTransferList" permission
      * When use sub acct api key, it can only transfer to main account
      * If you encounter errorCode: 131228 and msg: your balance is not enough, please go to Get Single Coin Balance to check transfer safe amount.
      * You can not transfer between the same UID
-     * https://bybit-exchange.github.io/docs/v5/asset/unitransfer
+     *
+     * https://bybit-exchange.github.io/docs/v5/asset/unitransfer#http-request
+     *
+     * @param assetUniversalTransferRequest transferId	true	string	UUID. Please manually generate a UUID
+     *                                      coin	true	string	Coin
+     *                                      amount	true	string	Amount
+     *                                      fromMemberId	true	integer	From UID
+     *                                      toMemberId	true	integer	To UID
+     *                                      fromAccountType	true	string	From account type
+     *                                      toAccountType	true	string	To account type
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * transferId	string	UUID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/transfer/universal-transfer")
@@ -3287,11 +3421,28 @@ public interface BybitApiService {
                                                   @Query("cursor") String cursor);
 
     /**
-     * Get Allowed Deposit Coin Info
+     *Get Allowed Deposit Coin Info
      * Query allowed deposit coin information. To find out paired chain of coin, please refer coin info api.
+     *
      * TIP
      * This is an endpoint that does not need authentication
-     * https://bybit-exchange.github.io/docs/v5/asset/deposit-coin-
+     *
+     * https://bybit-exchange.github.io/docs/v5/asset/deposit-coin-spec
+     *
+     * @param coin	false	string	Coin. coin and chain must be paired if passed
+     * @param chain	false	string	Chain. coin and chain must be paired if passed
+     * @param limit	false	integer	Limit for data size per page. [1, 35]. Default: 10
+     * @param cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * configList	array	Object
+     * &gt; coin	string	Coin
+     * &gt; chain	string	Chain
+     * &gt; coinShowName	string	Coin name
+     * &gt; chainType	string	Chain type
+     * &gt; blockConfirmNumber	integer	Deposit confirmation number
+     * &gt; minDepositAmount	string	Minimum deposit amount
+     * nextPageCursor	string	Refer to the cursor request parameter
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/deposit/query-allowed-list")
@@ -3305,14 +3456,28 @@ public interface BybitApiService {
     /**
      * Set Deposit Account
      * Set auto transfer account after deposit. The same function as the setting for Deposit on web GUI
+     *
      * INFO
      * Your funds will be deposited into FUND wallet by default. You can set the wallet for auto-transfer after deposit by this API.
      * Only main UID can access.
      * TIP
      * Unified trading account has FUND, UNIFIED, CONTRACT(for inverse derivatives)
      * Unified margin account has FUND, UNIFIED, CONTRACT(for inverse derivatives), SPOT
-     * Normal account has FUND, OPTION(USDC account), CONTRACT(for inverse derivatives and derivatives), SPOT
+     * Classic account has FUND, OPTION(USDC account), CONTRACT(for inverse derivatives and derivatives), SPOT
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/set-deposit-acct
+     *
+     * @param setAssetDepositAccountRequest accountType	true	string	Account type
+     *                                                                  UNIFIED
+     *                                                                  SPOT
+     *                                                                  OPTION
+     *                                                                  CONTRACT
+     *                                                                  FUND
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * status	integer	Request result:
+     * 1: SUCCESS
+     * 0: FAIL
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/deposit/deposit-to-account")
@@ -3321,10 +3486,36 @@ public interface BybitApiService {
     /**
      * Get Deposit Records (on-chain)
      * Query deposit records.
+     *
      * TIP
      * endTime - startTime should be less than 30 days. Query last 30 days records by default.
      * Can use main or sub UID api key to query deposit records respectively.
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/deposit-record
+     *
+     * @param coin	false	string	Coin
+     * @param startTime	false	integer	The start timestamp (ms)
+     * @param endTime	false	integer	The end timestamp (ms)
+     * @param limit	false	integer	Limit for data size per page. [1, 50]. Default: 50
+     * @param cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * rows	array	Object
+     * &gt; coin	string	Coin
+     * &gt; chain	string	Chain
+     * &gt; amount	string	Amount
+     * &gt; txID	string	Transaction ID
+     * &gt; status	integer	Deposit status
+     * &gt; toAddress	string	Deposit target address
+     * &gt; tag	string	Tag of deposit target address
+     * &gt; depositFee	string	Deposit fee
+     * &gt; successAt	string	Last updated time
+     * &gt; confirmations	string	Number of confirmation blocks
+     * &gt; txIndex	string	Transaction sequence number
+     * &gt; blockHash	string	Hash number on the chain
+     * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
+     * &gt; depositType	integer	The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
+     * nextPageCursor	string	Refer to the cursor request parameter
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/deposit/query-record")
@@ -3338,9 +3529,36 @@ public interface BybitApiService {
     /**
      * Get Sub Deposit Records (on-chain)
      * Query subaccount's deposit records by main UID's API key.
+     *
      * TIP
      * endTime - startTime should be less than 30 days. Queries for the last 30 days worth of records by default.
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/sub-deposit-record
+     *
+     * @param subMemberId	true	string	Sub UID
+     * @param coin	false	string	Coin
+     * @param startTime	false	integer	The start timestamp (ms)
+     * @param endTime	false	integer	The end timestamp (ms)
+     * @param limit	false	integer	Limit for data size per page. [1, 50]. Default: 50
+     * @param cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * rows	array	Object
+     * &gt; coin	string	Coin
+     * &gt; chain	string	Chain
+     * &gt; amount	string	Amount
+     * &gt; txID	string	Transaction ID
+     * &gt; status	integer	Deposit status
+     * &gt; toAddress	string	Deposit target address
+     * &gt; tag	string	Tag of deposit target address
+     * &gt; depositFee	string	Deposit fee
+     * &gt; successAt	string	Last updated time
+     * &gt; confirmations	string	Number of confirmation blocks
+     * &gt; txIndex	string	Transaction sequence number
+     * &gt; blockHash	string	Hash number on the chain
+     * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
+     * &gt; depositType	integer	The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
+     * nextPageCursor	string	Refer to the cursor request parameter
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/deposit/query-sub-member-record")
@@ -3354,10 +3572,32 @@ public interface BybitApiService {
     /**
      * Get Internal Deposit Records (off-chain)
      * Query deposit records within the Bybit platform. These transactions are not on the blockchain.
+     *
      * RULES
      * The maximum difference between the start time and the end time is 30 days.
      * Support to get deposit records by Master or Sub Member Api Key
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/internal-deposit-record
+     *
+     * @param coin	false	string	Coin name: for example, BTC. Default value: all
+     * @param startTime	false	integer	Start time (ms). Default value: 30 days before the current time
+     * @param endTime	false	integer	End time (ms). Default value: current time
+     * @param limit	false	integer	Number of items per page, [1, 50]. Default value: 50
+     * @param cursor	false	string	Cursor, used for pagination
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * rows	array	Object
+     * &gt; id	string	ID
+     * &gt; type	integer	1: Internal deposit
+     * &gt; coin	string	Deposit coin
+     * &gt; amount	string	Deposit amount
+     * &gt; status	integer
+     * 1=Processing
+     * 2=Success
+     * 3=deposit failed
+     * &gt; address	string	Email address or phone number
+     * &gt; createdTime	string	Deposit created timestamp
+     * nextPageCursor	string	cursor information: used for pagination. Default value: ""
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/deposit/query-internal-record")
@@ -3370,7 +3610,20 @@ public interface BybitApiService {
     /**
      * Get Master Deposit Address
      * Query the deposit address information of MASTER account.
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/master-deposit-addr
+     *
+     * @param coin	true	string	Coin
+     * @param chainType	false	string	Chain, e.g.,ETH
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin
+     * chains	array	Object
+     * &gt; chainType	string	Chain type
+     * &gt; addressDeposit	string	The address for deposit
+     * &gt; tagDeposit	string	Tag of deposit
+     * &gt; chain	string	Chain
+     * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/deposit/query-address")
@@ -3380,9 +3633,24 @@ public interface BybitApiService {
     /**
      * Get Sub Deposit Address
      * Query the deposit address information of SUB account.
+     *
      * CAUTION
      * Can use master UID's api key only
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/sub-deposit-addr
+     *
+     * @param coin	true	string	Coin
+     * @param chainType	true	string	Chain, e.g.,ETH
+     * @param subMemberId	true	string	Sub user ID
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin
+     * chains	array	Object
+     * &gt; chainType	string	Chain type
+     * &gt; addressDeposit	string	The address for deposit
+     * &gt; tagDeposit	string	Tag of deposit
+     * &gt; chain	string	Chain
+     * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/deposit/query-sub-member-address")
@@ -3393,7 +3661,27 @@ public interface BybitApiService {
     /**
      * Get Coin Info
      * Query coin information, including chain information, withdraw and deposit status.
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/coin-info
+     *
+     * @param coin	false	string	Coin
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * rows	array	Object
+     * &gt; name	integer	Coin name
+     * &gt; coin	string	Coin
+     * &gt; remainAmount	string	Remaining amount
+     * &gt; chains	array	Object
+     * &gt; &gt; chain	string	Chain
+     * &gt; &gt; chainType	string	Chain type
+     * &gt; &gt; confirmation	string	The number of confirmation for deposit
+     * &gt; &gt; withdrawFee	string	withdraw fee. If withdraw fee is empty, It means that this coin does not support withdrawal
+     * &gt; &gt; depositMin	string	Min. deposit
+     * &gt; &gt; withdrawMin	string	Min. withdraw
+     * &gt; &gt; minAccuracy	string	The precision of withdraw or deposit
+     * &gt; &gt; chainDeposit	string	The chain status of deposit. 0: suspend. 1: normal
+     * &gt; &gt; chainWithdraw	string	The chain status of withdraw. 0: suspend. 1: normal
+     * &gt; &gt; withdrawPercentageFee	string	The withdraw fee percentage. It is a real figure, e.g., 0.022 means 2.2%
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/coin/query-info")
@@ -3403,9 +3691,25 @@ public interface BybitApiService {
      * Get Withdrawable Amount
      * INFO
      * How can partial funds be subject to delayed withdrawal requests?
+     *
      * On-chain deposit: If the number of on-chain confirmations has not reached a risk-controlled level, a portion of the funds will be frozen for a period of time until they are unfrozen.
      * Buying crypto: If there is a risk, the funds will be frozen for a certain period of time and cannot be withdrawn.
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/delay-amount
+     *
+     * @param coin	true	string	Coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * limitAmountUsd	string	The frozen amount due to risk, in USD
+     * withdrawableAmount	array	Object
+     * &gt; SPOT	Object	Spot wallet, it is not returned if spot wallet is removed
+     * &gt; &gt; coin	string	Coin name
+     * &gt; &gt; withdrawableAmount	string	Amount that can be withdrawn
+     * &gt; &gt; availableBalance	string	Available balance
+     * &gt; FUND	Object	Funding wallet
+     * &gt; &gt; coin	string	Coin name
+     * &gt; &gt; withdrawableAmount	string	Amount that can be withdrawn
+     * &gt; &gt; availableBalance	string	Available balance
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/withdraw/withdrawable-amount")
@@ -3415,10 +3719,36 @@ public interface BybitApiService {
     /**
      * Get Withdrawal Records
      * Query withdrawal records.
+     *
      * TIP
      * endTime - startTime should be less than 30 days. Query last 30 days records by default.
      * Can query by the master UID's api key only
+     *
      * https://bybit-exchange.github.io/docs/v5/asset/withdraw-record
+     *
+     * @param withdrawID	false	string	Withdraw ID
+     * @param coin	false	string	Coin
+     * @param withdrawType	false	integer	Withdraw type. 0(default): on chain. 1: off chain. 2: all.
+     * @param startTime	false	integer	The start timestamp (ms)
+     * @param endTime	false	integer	The end timestamp (ms)
+     * @param limit	false	integer	Limit for data size per page. [1, 50]. Default: 50
+     * @param cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * rows	array	Object
+     * &gt; withdrawId	string	Withdraw ID
+     * &gt; txID	string	Transaction ID. It returns "" when withdrawal failed, withdrawal cancelled or internal transfer
+     * &gt; withdrawType	string	Withdraw type. 0: on chain. 1: off chain
+     * &gt; coin	string	Coin
+     * &gt; chain	string	Chain
+     * &gt; amount	string	Amount
+     * &gt; withdrawFee	string	Withdraw fee
+     * &gt; status	string	Withdraw status
+     * &gt; toAddress	string	To withdrawal address. Shows an email or mobile number for internal transfers
+     * &gt; tag	string	Tag
+     * &gt; createTime	string	Withdraw created timestamp (ms)
+     * &gt; updateTime	string	Withdraw updated timestamp (ms)
+     * nextPageCursor	string	Cursor. Used for pagination
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/withdraw/query-record")
@@ -3434,8 +3764,16 @@ public interface BybitApiService {
     /**
      * Cancel Withdrawal
      * Cancel the withdrawal
+     *
      * CAUTION
      * Can query by the master UID's api key only
+     *
+     * https://bybit-exchange.github.io/docs/v5/asset/cancel-withdraw#http-request
+     *
+     * @param assetCancelWithdrawRequest id	true	string	Withdrawal ID
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * status	integer	0: fail. 1: success
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/withdraw/cancel")
@@ -3444,6 +3782,7 @@ public interface BybitApiService {
     /**
      * Withdraw
      * Withdraw assets from your Bybit account. You can make an off-chain transfer if the target wallet address is from Bybit. This means that no blockchain fee will be charged.
+     *
      * DANGER
      * UTA does not have SPOT account
      * How do I know if my account is a UTA account? Call this endpoint, and if uta=1, then it is a UTA account.
@@ -3452,29 +3791,107 @@ public interface BybitApiService {
      * Can query by the master UID's api key only
      * FORMULA
      * feeType=0:
+     *
      * withdrawPercentageFee != 0: handlingFee = inputAmount / (1 - withdrawPercentageFee) * withdrawPercentageFee + withdrawFee
      * withdrawPercentageFee = 0: handlingFee = withdrawFee
      * feeType=1:
+     *
      * withdrawPercentageFee != 0: handlingFee = withdrawFee + (inputAmount - withdrawFee) * withdrawPercentageFee
      * withdrawPercentageFee = 0: handlingFee = withdrawFee
+     *
+     * https://bybit-exchange.github.io/docs/v5/asset/withdraw#http-request
+     *
+     * @param assetWithdrawRequest coin	true	string	Coin
+     *                             chain	true	string	Chain
+     *                             address	true	string	Wallet address. Please note that the address is case sensitive, so use the exact same address added in address book
+     *                             tag	false	string	Tag
+     *                                                      Required if tag exists in the wallet address list.
+     *                                                      Note: please do not set a tag/memo in the address book if the chain does not support tag
+     *                             amount	true	string	Withdraw amount
+     *                             timestamp	true	integer	Current timestamp (ms). Used for preventing from withdraw replay
+     *                             forceChain	false	integer	Whether or not to force an on-chain withdrawal
+     *                                                              0(default): If the address is parsed out to be an internal address, then internal transfer
+     *                                                              1: Force the withdrawal to occur on-chain
+     *                             accountType	false	string	Select the wallet to be withdrawn from
+     *                                                              SPOT：spot wallet (default)
+     *                                                              FUND：Funding wallet
+     *                             feeType	false	integer	Handling fee option
+     *                                                          0(default): input amount is the actual amount received, so you have to calculate handling fee manually
+     *                                                          1: input amount is not the actual amount you received, the system will help to deduct the handling fee automatically
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * id	string	Withdrawal ID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/withdraw/create")
     Call<Object> createAssetWithdraw(@Body AssetWithdrawRequest assetWithdrawRequest);
 
     // Institution Endpoints
+
     /**
      * Get Product Info
      * TIP
      * This endpoint can be queried without api key and secret, then it returns public product data
      * If your uid is bound with OTC loan product, then you can get your private product data by calling the endpoint with api key and secret
      * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
-     * HTTP Request
-     * GET /v5/ins-loan/product-infos
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * productId	false	string	Product Id. If not passed, then return all products info
+     *
      * https://bybit-exchange.github.io/docs/v5/otc/margin-product-info
+     *
+     * @param productId	false	string	Product Id. If not passed, then return all products info
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * marginProductInfo	array	Object
+     * &gt; productId	string	Product Id
+     * &gt; leverage	string	The maximum leverage for this loan product
+     * &gt; supportSpot	integer	Whether to support Spot. 0:false; 1:true
+     * &gt; supportContract	integer	Whether to support USDT Perpetual. 0:false; 1:true
+     * &gt; supportMarginTrading	integer	Whether to support Spot margin trading. 0:false; 1:true
+     * &gt; withdrawLine	string	Restrict line for withdrawal
+     * &gt; transferLine	string	Restrict line for transfer
+     * &gt; spotBuyLine	string	Restrict line for Spot buy
+     * &gt; spotSellLine	string	Restrict line for Spot trading
+     * &gt; contractOpenLine	string	Restrict line for USDT Perpetual open position
+     * &gt; liquidationLine	string	Line for liquidation
+     * &gt; stopLiquidationLine	string	Line for stop liquidation
+     * &gt; contractLeverage	string	The allowed default leverage for USDT Perpetual
+     * &gt; transferRatio	string	The transfer ratio for loan funds to transfer from Spot wallet to Contract wallet
+     * &gt; spotSymbols	array	The whitelist of spot trading pairs
+     * If supportSpot="0", then it returns "[]"
+     * If empty array, then you can trade any symbols
+     * If not empty, then you can only trade listed symbols
+     * &gt; contractSymbols	array	The whitelist of contract trading pairs
+     * If supportContract="0", then it returns "[]"
+     * If empty array, then you can trade any symbols
+     * If not empty, then you can only trade listed symbols
+     * &gt; supportUSDCContract	integer	Whether to support USDC contract. '0':false; '1':true
+     * &gt; supportUSDCOptions	integer	Whether to support Option. '0':false; '1':true
+     * &gt; USDTPerpetualOpenLine	string	Restrict line to open USDT Perpetual position
+     * &gt; USDCContractOpenLine	string	Restrict line to open USDC Contract position
+     * &gt; USDCOptionsOpenLine	string	Restrict line to open Option position
+     * &gt; USDTPerpetualCloseLine	string	Restrict line to trade USDT Perpetual
+     * &gt; USDCContractCloseLine	string	Restrict line to trade USDC Contract
+     * &gt; USDCOptionsCloseLine	string	Restrict line to trade Option
+     * &gt; USDCContractSymbols	array	The whitelist of USDC contract trading pairs
+     * If supportContract="0", then it returns "[]"
+     * If no whitelist symbols, it is [], and you can trade any
+     * If supportUSDCContract="0", it is []
+     * &gt; USDCOptionsSymbols	array	The whitelist of Option symbols
+     * If supportContract="0", then it returns "[]"
+     * If no whitelisted, it is [], and you can trade any
+     * If supportUSDCOptions="0", it is []
+     * &gt; marginLeverage	string	The allowable maximum leverage for Spot margin trading. If supportMarginTrading=0, then it returns ""
+     * &gt; USDTPerpetualLeverage	array	Object
+     * If supportContract="0", it is []
+     * If no whitelist USDT perp symbols, it returns all trading symbols and leverage by default
+     * If there are whitelist symbols, it return those whitelist data
+     * &gt; &gt; symbol	string	Symbol name
+     * &gt; &gt; leverage	string	Maximum leverage
+     * &gt; USDCContractLeverage	array	Object
+     * If supportUSDCContract="0", it is []
+     * If no whitelist USDC contract symbols, it returns all trading symbols and leverage by default
+     * If there are whitelist symbols, it return those whitelist data
+     * &gt; &gt; symbol	string	Symbol name
+     * &gt; &gt; leverage	string	Maximum leverage
      */
     @GET("/v5/ins-loan/product-infos")
     Call<Object> getInsProductInfo(@Query("productId") String productId);
@@ -3485,10 +3902,19 @@ public interface BybitApiService {
      * This endpoint can be queried without api key and secret, then it returns public margin data
      * If your uid is bound with OTC loan product, then you can get your private margin data by calling the endpoint with api key and secret
      * If your uid is not bound with OTC loan product but api key and secret are also passed, it will return public data only
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * productId	false	string	ProductId. If not passed, then return all product margin coin. For spot, it returns coin that convertRation greater than 0.
+     *
      * https://bybit-exchange.github.io/docs/v5/otc/margin-coin-convert-info
+     *
+     * @param productId	false	string	ProductId. If not passed, then return all product margin coin. For spot, it returns coin that convertRation greater than 0.
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * marginToken	array	Object
+     * &gt; productId	string	Product Id
+     * &gt; tokenInfo	array	Spot margin coin
+     * &gt; &gt; token	string	Margin coin
+     * &gt; &gt; convertRatioList	array	Margin coin convert ratio List
+     * &gt; &gt; &gt; ladder	string	ladder
+     * &gt; &gt; &gt; convertRatio	string	Margin coin convert ratio
      */
     @GET("/v5/ins-loan/ensure-tokens-convert")
     Call<Object> getInsMarginCoinInfo(@Query("productId") String productId);
@@ -3496,21 +3922,80 @@ public interface BybitApiService {
     /**
      * Get Loan Orders
      * Get loan orders information
-     
+     *
      * TIP
      * Get the past 2 years data by default
      * Get up to the past 2 years of data
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * orderId	false	string	Loan order id. If not passed, then return all orders, sort by loanTime in descend
-     * startTime	false	integer	The start timestamp (ms)
-     * endTime	false	integer	The end timestamp (ms)
-     * limit	false	integer	Limit for data size. [1, 100], Default: 10
+     *
      * https://bybit-exchange.github.io/docs/v5/otc/loan-info
+     *
+     * @param orderId	false	string	Loan order id. If not passed, then return all orders, sort by loanTime in descend
+     * @param startTime	false	integer	The start timestamp (ms)
+     * @param endTime	false	integer	The end timestamp (ms)
+     * @param limit	false	integer	Limit for data size. [1, 100], Default: 10
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * loanInfo	array	Object
+     * &gt; orderId	string	Loan order ID
+     * &gt; orderProductId	string	Product ID
+     * &gt; parentUid	string	The uid that used to bind OTC loan product
+     * &gt; loanTime	string	Loan timestamp, in milliseconds
+     * &gt; loanCoin	string	Loan coin
+     * &gt; loanAmount	string	Loan amount
+     * &gt; unpaidAmount	string	Unpaid principal
+     * &gt; unpaidInterest	string	Unpaid interest
+     * &gt; repaidAmount	string	Repaid principal
+     * &gt; repaidInterest	string	Repaid interest
+     * &gt; interestRate	string	Daily interest rate
+     * &gt; status	string	1：outstanding; 2：paid off
+     * &gt; leverage	string	The maximum leverage for this loan product
+     * &gt; supportSpot	string	Whether to support spot. 0:false; 1:true
+     * &gt; supportContract	string	Whether to support contract . 0:false; 1:true
+     * &gt; withdrawLine	string	Restrict line for withdrawal
+     * &gt; transferLine	string	Restrict line for transfer
+     * &gt; spotBuyLine	string	Restrict line for SPOT buy
+     * &gt; spotSellLine	string	Restrict line for SPOT sell
+     * &gt; contractOpenLine	string	Restrict line for USDT Perpetual open position
+     * &gt; liquidationLine	string	Line for liquidation
+     * &gt; stopLiquidationLine	string	Line for stop liquidation
+     * &gt; contractLeverage	string	The allowed default leverage for USDT Perpetual
+     * &gt; transferRatio	string	The transfer ratio for loan funds to transfer from Spot wallet to Contract wallet
+     * &gt; spotSymbols	array	The whitelist of spot trading pairs. If there is no whitelist, then "[]"
+     * &gt; contractSymbols	array	The whitelist of contract trading pairs
+     * If supportContract="0", then this is "[]"
+     * If there is no whitelist, this is "[]"
+     * &gt; supportUSDCContract	string	Whether to support USDC contract. "0":false; "1":true
+     * &gt; supportUSDCOptions	string	Whether to support Option. "0":false; "1":true
+     * &gt; supportMarginTrading	string	Whether to support Spot margin trading. "0":false; "1":true
+     * &gt; USDTPerpetualOpenLine	string	Restrict line to open USDT Perpetual position
+     * &gt; USDCContractOpenLine	string	Restrict line to open USDC Contract position
+     * &gt; USDCOptionsOpenLine	string	Restrict line to open Option position
+     * &gt; USDTPerpetualCloseLine	string	Restrict line to trade USDT Perpetual position
+     * &gt; USDCContractCloseLine	string	Restrict line to trade USDC Contract position
+     * &gt; USDCOptionsCloseLine	string	Restrict line to trade Option position
+     * &gt; USDCContractSymbols	array	The whitelist of USDC contract trading pairs
+     * If no whitelist symbols, it is [], and you can trade any
+     * If supportUSDCContract="0", it is []
+     * &gt; USDCOptionsSymbols	array	The whitelist of Option symbols
+     * If no whitelisted, it is [], and you can trade any
+     * If supportUSDCOptions="0", it is []
+     * &gt; marginLeverage	string	The allowable maximum leverage for Spot margin
+     * &gt; USDTPerpetualLeverage	array	Object
+     * If supportContract="0", it is []
+     * If no whitelist USDT perp symbols, it returns all trading symbols and leverage by default
+     * If there are whitelist symbols, it return those whitelist data
+     * &gt; &gt; symbol	string	Symbol name
+     * &gt; &gt; leverage	string	Maximum leverage
+     * &gt; USDCContractLeverage	array	Object
+     * If supportUSDCContract="0", it is []
+     * If no whitelist USDC contract symbols, it returns all trading symbols and leverage by default
+     * If there are whitelist symbols, it return those whitelist data
+     * &gt; &gt; symbol	string	Symbol name
+     * &gt; &gt; leverage	string	Maximum leverage
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/loan-order")
-    Call<Object> getInsLoanOrders(@Query("productId") String productId,
+    Call<Object> getInsLoanOrders(@Query("orderId") String orderId,
                                   @Query("startTime") Long startTime,
                                   @Query("endTime") Long endTime,
                                   @Query("limit") Integer limit);
@@ -3518,17 +4003,26 @@ public interface BybitApiService {
     /**
      * Get Repay Orders
      * Get repaid order information
+     *
      * TIP
      * Get the past 2 years data by default
      * Get up to the past 2 years of data
-     * HTTP Request
-     * GET /v5/ins-loan/repaid-history
-     * Request Parameters
-     * Parameter	Required	Type	Comments
-     * startTime	false	integer	The start timestamp (ms)
-     * endTime	false	integer	The end timestamp (ms)
-     * limit	false	integer	Limit for data size. [1, 100]. Default: 100
+     *
      * https://bybit-exchange.github.io/docs/v5/otc/repay-info
+     *
+     * @param startTime	false	integer	The start timestamp (ms)
+     * @param endTime	false	integer	The end timestamp (ms)
+     * @param limit	false	integer	Limit for data size. [1, 100]. Default: 100
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * repayInfo	array	Object
+     * &gt; repayOrderId	string	Repaid order ID
+     * &gt; repaidTime	string	Repaid timestamp (ms)
+     * &gt; token	string	Repaid coin
+     * &gt; quantity	string	Repaid principle
+     * &gt; interest	string	Repaid interest
+     * &gt; businessType	string	Repaid type. 1：normal repayment; 2：repaid by liquidation
+     * &gt; status	string	1：outstanding; 2：paid off
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/repaid-history")
@@ -3538,9 +4032,27 @@ public interface BybitApiService {
 
     /**
      * Get LTV
-     * HTTP Request
-     * GET /v5/ins-loan/ltv-convert
+     * Get LTV
+     *
      * https://bybit-exchange.github.io/docs/v5/otc/ltv-convert
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * ltvInfo	array	Object
+     * &gt; ltv	string	Risk rate
+     * &gt; parentUid	string	The uid that used to bind OTC loan product
+     * &gt; subAccountUids	array	Bound user id
+     * &gt; unpaidAmount	string	Total debt(USDT)
+     * &gt; unpaidInfo	array	Debt details
+     * &gt; &gt; token	string	coin
+     * &gt; &gt; unpaidQty	string	Unpaid principle
+     * &gt; &gt; unpaidInterest	string	Useless field, please ignore this for now
+     * &gt; balance	string	Total asset. (margin coins converted to USDT). Please read here to understand the calculation
+     * &gt; balanceInfo	array	Asset details
+     * &gt; &gt; token	string	Margin coin
+     * &gt; &gt; price	string	Margin coin price
+     * &gt; &gt; qty	string	Margin coin quantity
+     * &gt; &gt; convertedAmount	string	Margin conversion amount
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/ins-loan/ltv-convert")
@@ -3548,22 +4060,136 @@ public interface BybitApiService {
 
     // Spot Data endpoints
     // Spot Leverage
+
+    /**
+     * Get Leverage Token Info
+     * Query leverage token information
+     *
+     * https://bybit-exchange.github.io/docs/v5/lt/leverage-token-info#http-request
+     *
+     * @param ltCoin	false	string	Abbreviation of the LT, such as BTC3L
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * &gt; ltCoin	string	Abbreviation
+     * &gt; ltName	string	Full name of leveraged token
+     * &gt; maxPurchase	string	Single maximum purchase amount
+     * &gt; minPurchase	string	Single minimum purchase amount
+     * &gt; maxPurchaseDaily	string	Maximum purchase amount in a single day
+     * &gt; maxRedeem	string	Single Maximum redemption quantity
+     * &gt; minRedeem	string	Single Minimum redemption quantity
+     * &gt; maxRedeemDaily	string	Maximum redemption quantity in a single day
+     * &gt; purchaseFeeRate	string	Purchase fee rate
+     * &gt; redeemFeeRate	string	Redeem fee rate
+     * &gt; ltStatus	string	Whether the leverage token can be purchased or redeemed
+     * &gt; fundFee	string	Funding fee charged daily for users holding leveraged token
+     * &gt; fundFeeTime	string	The time to charge funding fee
+     * &gt; manageFeeRate	string	Management fee rate
+     * &gt; manageFeeTime	string	The time to charge management fee
+     * &gt; value	string	Nominal asset value
+     * &gt; netValue	string	Net value
+     * &gt; total	string	Total purchase upper limit
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-lever-token/info")
     Call<Object> getSpotLeverageTokenInfo(@Query("ltCoin") String ltCoin);
 
+    /**
+     * Get Leveraged Token Market
+     * Get leverage token market information
+     *
+     * https://bybit-exchange.github.io/docs/v5/lt/leverage-token-reference
+     *
+     * @param ltCoin	true	string	Abbreviation of the LT, such as BTC3L
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * ltCoin	string	Abbreviation of the LT, such as BTC3L
+     * nav	string	net value
+     * navTime	string	Update time for net asset value (in milliseconds and UTC time zone)
+     * circulation	string	Circulating supply in the secondary market
+     * basket	string	basket
+     * leverage	string	Real leverage calculated by last traded price
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-lever-token/reference")
     Call<Object> getSpotLeverageTokenMarket(@Query("ltCoin") String ltCoin);
 
+    /**
+     * Purchase
+     * Purchase levearge token
+     *
+     * https://bybit-exchange.github.io/docs/v5/lt/purchase
+     *
+     * @param spotLeverageTokenRequest ltCoin	true	string	Abbreviation of the LT, such as BTC3L
+     *                                 ltAmount	true	string	Purchase amount
+     *                                 serialNo	false	string	Serial number
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * ltCoin	string	Abbreviation of the LT, such as BTC3L
+     * ltOrderStatus	string	Order status. 1: completed, 2: in progress, 3: failed
+     * execQty	string	Executed qty of LT
+     * execAmt	string	Executed amount of LT
+     * amount	string	Purchase amount
+     * purchaseId	string	Order ID
+     * serialNo	string	Serial number, customised order ID
+     * valueCoin	string	Quote coin
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-lever-token/purchase")
     Call<Object> purchaseSpotLeverageToken(@Body SpotLeverageTokenRequest spotLeverageTokenRequest);
 
+    /**
+     * Redeem
+     * Redeem leverage token
+     *
+     * https://bybit-exchange.github.io/docs/v5/lt/redeem
+     *
+     * @param spotLeverageTokenRequest ltCoin	true	string	Abbreviation of the LT, such as BTC3L
+     *                                 quantity	ture	string	Redeem quantity of LT
+     *                                 serialNo	false	string	Serial number
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * ltCoin	string	Abbreviation of the LT
+     * ltOrderStatus	string	Order status. 1: completed, 2: in progress, 3: failed
+     * quantity	string	Quantity
+     * execQty	string	LT quantity
+     * execAmt	string	Executed amount of LT
+     * redeemId	string	Order ID
+     * serialNo	string	Serial number
+     * valueCoin	string	Quote coin
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-lever-token/redeem")
     Call<Object> redeemSpotLeverageToken(@Body SpotLeverageTokenRequest spotLeverageTokenRequest);
 
+    /**
+     * Get Purchase/Redemption Records
+     * Get purchase or redeem history
+     *
+     * https://bybit-exchange.github.io/docs/v5/lt/order-record
+     *
+     * @param ltCoin	false	string	Abbreviation of the LT, such as BTC3L
+     * @param orderId	false	string	Order ID
+     * @param startTime	false	integer	The start timestamp (ms)
+     * @param endTime	false	integer	The end timestamp (ms)
+     * @param limit	false	integer	Limit for data size per page. [1, 500]. Default: 100
+     * @param ltOrderType	false	integer	LT order type. 1: purchase, 2: redemption
+     * @param serialNo	false	string	Serial number
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * &gt; ltCoin	string	Abbreviation of the LT, such as BTC3L
+     * &gt; orderId	string	Order ID
+     * &gt; ltOrderType	integer	LT order type. 1: purchase, 2: redeem
+     * &gt; orderTime	number	Order time
+     * &gt; updateTime	number	Last update time of the order status
+     * &gt; ltOrderStatus	string	Order status. 1: completed, 2: in progress, 3: failed
+     * &gt; fee	string	Trading fees
+     * &gt; amount	string	Order quantity of the LT
+     * &gt; value	string	Filled value
+     * &gt; valueCoin	string	Quote coin
+     * &gt; serialNo	string	Serial number
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-lever-token/order-record")
     Call<Object> getSpotLeverageRecords(@Query("ltCoin") String ltCoin,
@@ -3575,57 +4201,293 @@ public interface BybitApiService {
                                         @Query("serialNo") String serialNo);
 
     // Spot Margin UTA
+
+    /**
+     * Get VIP Margin Data
+     * This margin data is for Unified account in particular.
+     *
+     * INFO
+     * Do not need authentication
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-uta/vip-margin
+     *
+     * @param vipLevel	false	string	Vip level
+     * @param currency	false	string	Coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * vipCoinList	array	Object
+     * &gt; list	array	Object
+     * &gt; &gt; borrowable	boolean	Whether it is allowed to be borrowed
+     * &gt; &gt; collateralRatio	string	Collateral ratio
+     * &gt; &gt; currency	string	Coin name
+     * &gt; &gt; hourlyBorrowRate	string	Borrow interest rate per hour
+     * &gt; &gt; liquidationOrder	string	Liquidation order
+     * &gt; &gt; marginCollateral	boolean	Whether it can be used as a margin collateral currency
+     * &gt; &gt; maxBorrowingAmount	string	Max borrow amount
+     * &gt; vipLevel	string	Vip level
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-margin-trade/data")
     Call<Object> getUtaVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
                                               @Query("currency") String currency);
 
+    /**
+     * Toggle Margin Trade
+     * Turn on / off spot margin trade
+     *
+     * Covers: Margin trade (Unified Account)
+     *
+     * CAUTION
+     * Your account needs to activate spot margin first; i.e., you must have finished the quiz on web / app.
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-uta/switch-mode
+     *
+     * @param spotMarginMode spotMarginMode	true	string	1: on, 0: off
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * spotMarginMode	string	Spot margin status. 1: on, 0: off
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-margin-trade/switch-mode")
     Call<Object> setUTASpotMarginTrade(@Body String spotMarginMode);
 
+    /**
+     * Set Leverage
+     * Set the user's maximum leverage in spot cross margin
+     *
+     * Covers: Margin trade (Unified Account)
+     *
+     * CAUTION
+     * Your account needs to activate spot margin first; i.e., you must have finished the quiz on web / app.
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-uta/set-leverage
+     *
+     * @param leverage leverage	true	string	Leverage. [2, 10].
+     * @return Response Parameters
+     * None
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-margin-trade/set-leverage")
     Call<Object> setUTASpotMarginTradeLeverage(@Body String leverage);
 
+    /**
+     * Get Status And Leverage
+     * Query the Spot margin status and leverage of Unified account
+     *
+     * Covers: Margin trade (Unified Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-uta/status
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * spotLeverage	string	Spot margin leverage. Returns "" if the margin trade is turned off
+     * spotMarginMode	string	Spot margin status. 1: on, 0: off
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-margin-trade/state")
     Call<Object> getUTASpotMarginTradeLeverageState();
 
     // Spot Margin Normal
+
+    /**
+     * Get VIP Margin Data
+     * This margin data is for Classic account in particular.
+     *
+     * INFO
+     * Do not need authentication
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/vip-margin#http-request
+     *
+     * @param vipLevel	false	string	Vip level
+     * @param currency	false	string	Coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * vipCoinList	array	Object
+     * &gt; list	array	Object
+     * &gt; &gt; borrowable	boolean	Whether it is allowed to be borrowed
+     * &gt; &gt; collateralRatio	string	Collateral ratio
+     * &gt; &gt; currency	string	Coin name
+     * &gt; &gt; hourlyBorrowRate	string	Borrow interest rate per hour
+     * &gt; &gt; liquidationOrder	string	Liquidation order
+     * &gt; &gt; marginCollateral	boolean	Whether it can be used as a margin collateral currency
+     * &gt; &gt; maxBorrowingAmount	string	Max borrow amount
+     * &gt; vipLevel	string	Vip level
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/data")
     Call<Object> getNormalVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
                                                  @Query("currency") String currency);
 
+    /**
+     * Get Margin Coin Info
+     * INFO
+     * Do not need authentication
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/margin-data#http-request
+     *
+     * @param coin	false	string	Coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * &gt; coin	string	Coin name
+     * &gt; conversionRate	string	Convert ratio
+     * &gt; liquidationOrder	integer	Liquidation order
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/pledge-token")
     Call<Object> getNormalSpotMarginTradeCoinInfo(@Query("coin") String coin);
 
+    /**
+     * Get Borrowable Coin Info
+     * INFO
+     * Do not need authentication
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/borrowable-data
+     *
+     * @param coin	false	string	Coin name
+     * @return Request Parameters
+     * Parameter	Required	Type	Comments
+     * coin	false	string	Coin name
+     * Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * &gt; coin	string	Coin name
+     * &gt; borrowingPrecision	integer	Accuracy of loan amount
+     * &gt; repaymentPrecision	integer	Accuracy of repayment amount
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/borrow-token")
     Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
 
+    /**
+     * Get Interest & Quota
+     * Covers: Margin trade (Classic Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/interest-quota#http-request
+     *
+     * @param coin	true	string	Coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coin	string	Coin name
+     * interestRate	string	Daily interest rate
+     * loanAbleAmount	string	The estimated amount can be loaned
+     * maxLoanAmount	string	The fixed loanable amount per user on platform
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/loan-info")
     Call<Object> getNormalSpotMarginTradeInterestQuota(@Query("coin") String coin);
 
+    /**
+     * Get Loan Account Info
+     * Covers: Margin trade (Classic Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/account-info
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * acctBalanceSum	string	Total equity (BTC)
+     * debtBalanceSum	string	Total liability (BTC)
+     * loanAccountList	array	Object
+     * &gt; free	string	Available balance
+     * &gt; interest	string	Outstanding interest
+     * &gt; loan	string	Outstanding principle
+     * &gt; remainAmount	string	Remaining debt = interest + loan
+     * &gt; locked	string	Locked amount
+     * &gt; tokenId	string	Coin name
+     * &gt; total	string	Total
+     * riskRate	string	Risk rate
+     * status	integer	Loan account status
+     * 1: normal
+     * 2: withdrawal/transfer restricted
+     * 3: liquidation alert triggered
+     * 4: liquidated
+     * switchStatus	integer	0: margin trade off, 1: margin trade on
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/account")
     Call<Object> getNormalSpotMarginTradeAccountInfo();
 
+    /**
+     * Toggle Margin Trade
+     * Turn on / off spot margin trade
+     *
+     * Covers: Margin trade (Classic Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/switch-mode#http-request
+     *
+     * @param switchStatus switch	true	integer	1: on, 0: off
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * switchStatus	integer	Margin trade status. 1: on, 0: off
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/switch")
     Call<Object> setNormalSpotToggleMarginTrade(@Body int switchStatus);
 
+    /**
+     * Borrow
+     * Covers: Margin trade (Classic Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/borrow#http-request
+     *
+     * @param spotMarginTradeBorrowRequest coin	true	string	Coin name
+     *                                     qty	true	string	Amount to borrow
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * transactId	string	Borrow transaction ID
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/loan")
     Call<Object> loanNormalSpotMarginTrade(@Body SpotMarginTradeBorrowRequest spotMarginTradeBorrowRequest);
 
+    /**
+     * Repay
+     * Covers: Margin trade (Classic Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/repay#http-request
+     *
+     * @param spotMarginTradeRePayRequest coin	true	string	Coin name
+     *                                    qty	false	string	Amount to repay
+     *                                    qty is required when completeRepayment=0
+     *                                    qty is invalid when completeRepayment=1
+     *                                    completeRepayment	false	integer	Whether to pay off all debts. 0(default): false, 1: true
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * repayId	string	Repayment transaction ID
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/repay")
     Call<Object> repayNormalSpotMarginTrade(@Body SpotMarginTradeRePayRequest spotMarginTradeRePayRequest);
 
+    /**
+     * Get Borrow Order Detail
+     * Covers: Margin trade (Classic Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/borrow-order#http-request
+     *
+     * @param startTime	false	long	The start timestamp (ms)
+     * @param endTime	false	long	The end timestamp (ms)
+     * @param coin	false	string	Coin name
+     * @param status    false	integer	Status
+     * 0(default)：get all kinds of status
+     * 1：uncleared
+     * 2：cleared
+     * @param limit	false	integer	Limit for data size per page. [1, 500]. Default: 500
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * &gt; accountId	string	Account ID
+     * &gt; coin	string	Coin name
+     * &gt; createdTime	number	Borrow order created timestamp (ms)
+     * &gt; id	string	Borrow order ID
+     * &gt; interestAmount	string	Total interest
+     * &gt; interestBalance	string	Outstanding interest
+     * &gt; loanAmount	string	Principal amount
+     * &gt; loanBalance	string	Outstanding principal
+     * &gt; remainAmount	string	Remaining debt = interestBalance + loanBalance
+     * &gt; status	integer	Status 1：uncleared, 2：cleared
+     * &gt; type	integer	Order Type 1: manual loan, 2: auto loan
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/orders")
     Call<Object> getNormalMarginTradeBorrowOrders(@Query("startTime") Long startTime,
@@ -3634,6 +4496,31 @@ public interface BybitApiService {
                                                   @Query("status") Integer status,
                                                   @Query("limit") Integer limit);
 
+    /**
+     * Get Repayment Order Detail
+     * Covers: Margin trade (Classic Account)
+     *
+     * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/repay-order#http-request
+     *
+     * @param startTime	false	long	The start timestamp (ms)
+     * @param endTime	false	long	The end timestamp (ms)
+     * @param coin	false	string	Coin name
+     * @param limit	false	integer	Limit for data size per page. [1, 500], Default: 500
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * &gt; accountId	string	Account ID
+     * &gt; coin	string	Coin name
+     * &gt; repaidAmount	string	Repaid amount
+     * &gt; repayId	string	Repay ID
+     * &gt; repayMarginOrderId	string	Repay margin order ID
+     * &gt; repayTime	string	Repay timestamp (ms)
+     * &gt; transactIds	array	Object
+     * &gt; &gt; repaidInterest	string	Interest repaid
+     * &gt; &gt; repaidPrincipal	string	Principal repaid
+     * &gt; &gt; repaidSerialNumber	string	Repayment No. (Borrowing Order)
+     * &gt; &gt; transactId	string	Borrowing transaction ID
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/spot-cross-margin-trade/repay-history")
     Call<Object> getNormalMarginTradeRepayOrders(@Query("startTime") Long startTime,
@@ -3649,7 +4536,9 @@ public interface BybitApiService {
      * Use exchange broker master account to query
      * The data can support up to past 6 months until T-1
      * startTime & endTime are either entered at the same time or not entered
+     *
      * https://bybit-exchange.github.io/docs/v5/broker/earning
+     *
      * @param bizType	false	string	Business type. SPOT, DERIVATIVES, OPTIONS
      * @param startTime	false	integer	The start timestamp(ms)e
      * @param endTime	false	integer	The end timestamp(ms)
@@ -3658,13 +4547,13 @@ public interface BybitApiService {
      * @return Response Parameters
      * Parameter	Type	Comments
      * list	array	Object
-     * > userId	string	UID
-     * > bizType	string	Business type
-     * > symbol	string	Symbol name
-     * > coin	string	Coin name. The currency of earning
-     * > earning	string	Earning
-     * > orderId	string	Order ID
-     * > execTime	string	Execution timestamp (ms)
+     * &gt; userId	string	UID
+     * &gt; bizType	string	Business type
+     * &gt; symbol	string	Symbol name
+     * &gt; coin	string	Coin name. The currency of earning
+     * &gt; earning	string	Earning
+     * &gt; orderId	string	Order ID
+     * &gt; execTime	string	Execution timestamp (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
@@ -3682,18 +4571,20 @@ public interface BybitApiService {
      *
      * INFO
      * All v5/lending APIs need SPOT permission.
+     *
      * https://bybit-exchange.github.io/docs/v5/c2c-lend/coin-info
+     *
      * @param coin false	string	Coin name. Return all currencies by default
      * @return Response Parameters
      * Parameter	Type	Comments
      * list	array	Object
-     * > coin	string	Coin name
-     * > maxRedeemQty	string	The maximum redeemable qty per day (measured from 0 - 24 UTC)
-     * > minPurchaseQty	string	The minimum qty that can be deposited per request
-     * > precision	string	Deposit quantity accuracy
-     * > rate	string	Annualized interest rate. e.g. 0.0002 means 0.02%
-     * > loanToPoolRatio	string	Capital utilization rate. e.g. 0.0004 means 0.04%
-     * > actualApy	string	The actual annualized interest rate
+     * &gt; coin	string	Coin name
+     * &gt; maxRedeemQty	string	The maximum redeemable qty per day (measured from 0 - 24 UTC)
+     * &gt; minPurchaseQty	string	The minimum qty that can be deposited per request
+     * &gt; precision	string	Deposit quantity accuracy
+     * &gt; rate	string	Annualized interest rate. e.g. 0.0002 means 0.02%
+     * &gt; loanToPoolRatio	string	Capital utilization rate. e.g. 0.0004 means 0.04%
+     * &gt; actualApy	string	The actual annualized interest rate
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/lending/info")
@@ -3706,7 +4597,9 @@ public interface BybitApiService {
      * INFO
      * normal & UMA account: deduct funds from Spot wallet
      * UTA account: deduct funds from Unified wallet
+     *
      * https://bybit-exchange.github.io/docs/v5/c2c-lend/deposit
+     *
      * @param depositFundRequest    coin	true	string	Coin name
      *                              quantity	true	string	Deposit quantity
      *                              serialNo	false	string	Customised ID. If not passed, system will create one by default
@@ -3730,7 +4623,9 @@ public interface BybitApiService {
      *
      * TIP
      * There will be two redemption records: one for the redeemed quantity, and the other one is for the total interest occurred.
+     *
      * https://bybit-exchange.github.io/docs/v5/c2c-lend/redeem
+     *
      * @param depositFundRequest    coin	true	string	Coin name
      *                              quantity	ture	string	Redemption quantity
      *                              serialNo	false	string	Serial no. A customised ID, and it will automatically generated if not passed
@@ -3749,8 +4644,11 @@ public interface BybitApiService {
     Call<Object> C2cLendingRedeemFunds(@Body ClientLendingFundsRequest depositFundRequest);
 
     /**
+     * Cancel Redeem
      * Cancel the withdrawal operation.
+     *
      * https://bybit-exchange.github.io/docs/v5/c2c-lend/cancel-redeem
+     *
      * @param depositFundRequest    coin	false	string	Coin name
      *                              orderId	false	string	The order ID of redemption
      *                              serialNo	false	string	Serial no. The customised ID of redemption
@@ -3766,23 +4664,26 @@ public interface BybitApiService {
 
     /**
      * Get Order Records
+     * Get lending or redeem history
+     *
      * https://bybit-exchange.github.io/docs/v5/c2c-lend/order-record
-     * @param coin coin	false	string	Coin name
-     * @param orderId orderId	false	string	Order ID
-     * @param startTime startTime	false	long	The start timestamp (ms)
-     * @param endTime endTime	false	long	The end timestamp (ms)
-     * @param limit limit	false	integer	Limit for data size per page. [1, 500]. Default: 50
-     * @param orderType orderType	false	string	Order type. 1: deposit, 2: redemption, 3: Payment of proceeds
+     *
+     * @param coin	false	string	Coin name
+     * @param orderId	false	string	Order ID
+     * @param startTime	false	long	The start timestamp (ms)
+     * @param endTime	false	long	The end timestamp (ms)
+     * @param limit	false	integer	Limit for data size per page. [1, 500]. Default: 50
+     * @param orderType	false	string	Order type. 1: deposit, 2: redemption, 3: Payment of proceeds
      * @return Response Parameters
      * Parameter	Type	Comments
      * list	array	Object
-     * > coin	string	Coin name
-     * > createdTime	string	Created timestamp (ms)
-     * > orderId	string	Order ID
-     * > quantity	string	quantity
-     * > serialNo	string	Serial No
-     * > status	string	Order status. 0: Initial, 1: Processing, 2: Success, 10: Failed, 11: Cancelled
-     * > updatedTime	string	Updated timestamp (ms)
+     * &gt; coin	string	Coin name
+     * &gt; createdTime	string	Created timestamp (ms)
+     * &gt; orderId	string	Order ID
+     * &gt; quantity	string	quantity
+     * &gt; serialNo	string	Serial No
+     * &gt; status	string	Order status. 0: Initial, 1: Processing, 2: Success, 10: Failed, 11: Cancelled
+     * &gt; updatedTime	string	Updated timestamp (ms)
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/lending/history-order")
@@ -3795,10 +4696,10 @@ public interface BybitApiService {
 
     /**
      * Get Lending Account Info
-     * @param coin true	string	Coin name
      *
      * https://bybit-exchange.github.io/docs/v5/c2c-lend/account-info
      *
+     * @param coin	true	string	Coin name
      * @return Response Parameters
      * Parameter	Type	Comments
      * coin	string	Coin name
@@ -3814,11 +4715,14 @@ public interface BybitApiService {
     // Announcement
     /**
      * Get Announcement
-     * @param locale true	string	Language symbol
-     * @param type false	string	Announcement type
-     * @param tag false	string	Announcement tag
-     * @param page false	integer	Page number. Default: 1
-     * @param limit false	integer	Limit for data size per page. Default: 20
+     *
+     * https://bybit-exchange.github.io/docs/v5/announcement#http-request
+     *
+     * @param locale	true	string	Language symbol
+     * @param type	false	string	Announcement type
+     * @param tag	false	string	Announcement tag
+     * @param page	false	integer	Page number. Default: 1
+     * @param limit	false	integer	Limit for data size per page. Default: 20
      * @return Response Parameters
      * Parameter	Type	Comments
      * total	integer	Total records
