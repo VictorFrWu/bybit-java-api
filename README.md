@@ -54,7 +54,7 @@ Maven Example
 
         // Place an order
         var newOrderRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).symbol("XRPUSDT")
-                .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.ImmediateOrCancel)
+                .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.IMMEDIATE_OR_CANCEL)
                 .positionIdx(PositionIdx.ONE_WAY_MODE).build();
         client.createOrder(newOrderRequest, System.out::println);
 ```
@@ -63,9 +63,9 @@ Maven Example
 ```java
         // Create a batch order
         var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
-                .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
+                .price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
                 TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
-                .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
+                .price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
                 var createBatchOrders = BatchOrderRequest.builder().category(ProductType.OPTION).request(orderRequests).build();
         client.createBatchOrder(createBatchOrders, System.out::println);
 ```
@@ -78,7 +78,7 @@ Maven Example
         var positionListRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
         client.getPositionInfo(positionListRequest, System.out::println);
 ```
-### Http Async Examples
+### Http Sync Examples
 - Place Batch Order
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
@@ -134,6 +134,23 @@ Maven Example
         var walletBalanceRequest = AccountDataRequest.builder().accountType(AccountType.UNIFIED).build();
         var walletBalanceData = client.getWalletBalance(walletBalanceRequest);
         System.out.println(walletBalanceData);
+```
+
+- User Management
+```java
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        var client = factory.newUserRestClient();
+
+        // create a new sub user
+        var subUserRequest = UserDataRequest.builder().username("VictorWuTest3")
+        .password("Password123")
+        .memberType(MemberType.NORMAL_SUB_ACCOUNT)
+        .note("Some note")
+        .switchOption(SwitchOption.TURN_OFF)
+        .isUta(IsUta.CLASSIC_ACCOUNT)
+        .build();
+        var subUser = client.createSubMember(subUserRequest);
+        System.out.println(subUser);
 ```
 
 ### Websocket public channel
