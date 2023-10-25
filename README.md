@@ -78,7 +78,7 @@ Maven Example
         var positionListRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
         client.getPositionInfo(positionListRequest, System.out::println);
 ```
--- Asset Info
+- Asset Info
 ```java 
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         var client = factory.newAsyncAssetRestClient();
