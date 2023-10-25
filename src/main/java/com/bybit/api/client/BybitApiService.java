@@ -300,7 +300,7 @@ public interface BybitApiService {
      * @param symbol	true	string	Symbol name
      * @param limit    false	integer	Limit size for each bid and ask
      * spot: [1, 200]. Default: 1.
-     * linear&inverse: [1, 200]. Default: 25.
+     * linear and inverse: [1, 200]. Default: 25.
      * option: [1, 25]. Default: 1.
      * @return Response Parameters
      * Parameter	Type	Comments
@@ -996,7 +996,7 @@ public interface BybitApiService {
      *                          qty	true	string	Order quantity.
      *                                              For Spot Market Buy order, please note that qty should be quote curreny amount, and make sure it satisfies quotePrecision in Spot instrument spec
      *                                              For other cases, please make sure the input qty is the multiples of minOrderQty from instrument info endpoint
-     *                                              In particular, for Futures & Perps, if you pass qty="0", you can close the whole position of current symbol
+     *                                              In particular, for Futures and  Perps, if you pass qty="0", you can close the whole position of current symbol
      *                          price	false	string	Order price
      *                                                  Market order will ignore this field
      *                                                  Please check the min price and price precision from instrument info endpoint
@@ -1004,57 +1004,57 @@ public interface BybitApiService {
      *                          triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
      *                                                              1: triggered when market price rises to triggerPrice
      *                                                              2: triggered when market price falls to triggerPrice
-     *                                                              Valid for linear & inverse
+     *                                                              Valid for linear and  inverse
      *                          orderFilter	false	string	If it is not passed, Order by default.
      *                                                          Order
      *                                                          tpslOrder: Spot TP/SL order, the assets are occupied even before the order is triggered
      *                                                          StopOrder: Spot conditional order, the assets will not be occupied until the price of the underlying asset reaches the trigger price, and the required assets will be occupied after the Conditional order is triggered
      *                                                      Valid for spot only
-     *                          triggerPrice	false	string  For Perps & Futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
+     *                          triggerPrice	false	string  For Perps and  Futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
      *                                                              triggerPrice &gt; market price
      *                                                              Else, triggerPrice &lt; market price
      *                                                          For spot, it is the TP/SL and Conditional order trigger price
-     *                          triggerBy	false	string	Trigger price type, Conditional order param for Perps & Futures. LastPrice, IndexPrice, MarkPrice
-     *                                                      Valid for linear & inverse
+     *                          triggerBy	false	string	Trigger price type, Conditional order param for Perps and  Futures. LastPrice, IndexPrice, MarkPrice
+     *                                                      Valid for linear and  inverse
      *                          orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
      *                          timeInForce	false	string	Time in force
      *                                                      Market order will use IOC directly
      *                                                      If not passed, GTC is used by default
-     *                          positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps & Inverse contracts have hedge mode)
+     *                          positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps and  Inverse contracts have hedge mode)
      *                                                      0: one-way mode
      *                                                      1: hedge-mode Buy side
      *                                                      2: hedge-mode Sell side
      *                          orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
-     *                                                          Futures & Perps: orderLinkId rules:
+     *                                                          Futures and  Perps: orderLinkId rules:
      *                                                          optional param
      *                                                          always unique
      *                                                          option orderLinkId rules:
      *                                                          required param
      *                                                          always unique
-     *                          takeProfit	false	string	Take profit price, valid for linear & inverse
-     *                          stopLoss	false	string	Stop loss price, valid for linear & inverse
-     *                          tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice. Valid for linear & inverse
-     *                          slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice. Valid for linear & inverse
+     *                          takeProfit	false	string	Take profit price, valid for linear and  inverse
+     *                          stopLoss	false	string	Stop loss price, valid for linear and  inverse
+     *                          tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice. Valid for linear and  inverse
+     *                          slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice. Valid for linear and  inverse
      *                          reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
      *                                                          You must specify it as true when you are about to close/reduce the position
      *                                                          When reduceOnly is true, take profit/stop loss cannot be set
-     *                                                      Valid for linear, inverse & option
+     *                                                      Valid for linear, inverse and  option
      *                          closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
-     *                                                          Valid for linear & inverse
+     *                                                          Valid for linear and  inverse
      *                          smpType	false	string	Smp execution type. What is SMP?
      *                          mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
      *                          tpslMode	false	string	TP/SL mode
      *                                                          Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
      *                                                          Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
-     *                                                      Valid for linear & inverse
+     *                                                      Valid for linear and  inverse
      *                          tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit.
-     *                                                          Valid for linear & inverse
+     *                                                          Valid for linear and  inverse
      *                          slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit.
-     *                                                          Valid for linear & inverse
+     *                                                          Valid for linear and  inverse
      *                          tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market.
-     *                                                      Valid for linear & inverse
+     *                                                      Valid for linear and  inverse
      *                          slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market.
-     *                                                      Valid for linear & inverse
+     *                                                      Valid for linear and  inverse
      * @return Response Parameters
      * Parameter	Type	Comments
      * orderId	string	Order ID
@@ -1072,7 +1072,7 @@ public interface BybitApiService {
      * This endpoint allows you to place more than one order in a single request.
      *
      * Make sure you have sufficient funds in your account when placing an order. Once an order is placed, according to the funds required by the order, the funds in your account will be frozen by the corresponding amount during the life cycle of the order.
-     * A maximum of 20 orders (option) & 10 orders (linear) can be placed per request. The returned data list is divided into two lists. The first list indicates whether or not the order creation was successful and the second list details the created order information. The structure of the two lists are completely consistent.
+     * A maximum of 20 orders (option) and  10 orders (linear) can be placed per request. The returned data list is divided into two lists. The first list indicates whether or not the order creation was successful and the second list details the created order information. The structure of the two lists are completely consistent.
      * INFO
      * Check the rate limit instruction when category=linear here
      * Risk control limit notice:
@@ -1263,7 +1263,7 @@ public interface BybitApiService {
      * You must specify orderId or orderLinkId.
      * If orderId and orderLinkId is not matched, the system will process orderId first.
      * You can cancel unfilled or partially filled orders.
-     * A maximum of 20 orders (option) & 10 orders (linear) can be cancelled per request.
+     * A maximum of 20 orders (option) and  10 orders (linear) can be cancelled per request.
      *
      * https://bybit-exchange.github.io/docs/v5/order/batch-cancel#http-request
      *
@@ -1397,7 +1397,7 @@ public interface BybitApiService {
      * This endpoint allows you to amend more than one open order in a single request.
      *
      * You can modify unfilled or partially filled orders. Conditional orders are not supported.
-     * A maximum of 20 orders (option) & 10 orders (linear) can be amended per request.
+     * A maximum of 20 orders (option) and  10 orders (linear) can be amended per request.
      *
      * https://bybit-exchange.github.io/docs/v5/order/batch-amend
      * @param batchOrderRequest category	true	string	Product type. linear, option
@@ -1910,8 +1910,8 @@ public interface BybitApiService {
      * &gt; trailingStop	string	Trailing stop (The distance from market price)
      * &gt; unrealisedPnl	string	Unrealised PnL
      * &gt; cumRealisedPnl	string	Cumulative realised pnl
-     * Futures and Perp: it is the all time cumulative realised P&L
-     * Option: it is the realised P&L when you hold that position
+     * Futures and Perp: it is the all time cumulative realised  pnl  
+     * Option: it is the realised  pnl   when you hold that position
      * &gt; adlRankIndicator	integer	Auto-deleverage rank indicator. What is Auto-Deleveraging?
      * &gt; createdTime	string	Position created timestamp (ms)
      * &gt; updatedTime	string	Position updated timestamp (ms)
@@ -2007,10 +2007,10 @@ public interface BybitApiService {
      * list new symbol BITUSDT	BITUSDT is hedge-mode (Inherit coin rule)
      * The position-switch ability for each contract
      *                    Classic account	                Unified account
-     * USDT perpetual	  Support one-way & hedge-mode	    Support one-way & hedge-mode
+     * USDT perpetual	  Support one-way and  hedge-mode	    Support one-way and  hedge-mode
      * USDC perpetual	  Support one-way only	            Support one-way only
      * Inverse perpetua   Support one-way only	            Support one-way only
-     * Inverse future	  Support one-way & hedge-mode	    Support one-way & hedge-mode
+     * Inverse future	  Support one-way and  hedge-mode	    Support one-way and  hedge-mode
      *
      * https://bybit-exchange.github.io/docs/v5/position/position-mode#http-request
      *
@@ -2686,7 +2686,7 @@ public interface BybitApiService {
      * &gt; totalWalletBalance	string	Wallet Balance of account converted to usd：∑ Asset Wallet Balance By USD value of each asset。In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
      * &gt; totalMarginBalance	string	Margin Balance of account converted to usd：totalWalletBalance + totalPerpUPL. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
      * &gt; totalAvailableBalance	string	Available Balance of account converted to usd：Regular mode：totalMarginBalance - totalInitialMargin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
-     * &gt; totalPerpUPL	string	Unrealised P&L of Perpetuals and USDC Futures of account converted to usd：∑ Each Perp and USDC Futures upl by base coin. In non-unified mode and unified (inverse), the field will be returned as an empty string.
+     * &gt; totalPerpUPL	string	Unrealised  pnl   of Perpetuals and USDC Futures of account converted to usd：∑ Each Perp and USDC Futures upl by base coin. In non-unified mode and unified (inverse), the field will be returned as an empty string.
      * &gt; totalInitialMargin	string	Initial Margin of account converted to usd：∑ Asset Total Initial Margin Base Coin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
      * &gt; totalMaintenanceMargin	string	Maintenance Margin of account converted to usd: ∑ Asset Total Maintenance Margin Base Coin. In non-unified mode and unified (inverse) and unified (isolated_margin), the field will be returned as an empty string.
      * &gt; coin	array	Object
@@ -2703,8 +2703,8 @@ public interface BybitApiService {
      * &gt; &gt; totalOrderIM	string	Pre-occupied margin for order. For portfolio margin mode, it returns ""
      * &gt; &gt; totalPositionIM	string	Sum of initial margin of all positions + Pre-occupied liquidation fee. For portfolio margin mode, it returns ""
      * &gt; &gt; totalPositionMM	string	Sum of maintenance margin for all positions. For portfolio margin mode, it returns ""
-     * &gt; &gt; unrealisedPnl	string	Unrealised P&L
-     * &gt; &gt; cumRealisedPnl	string	Cumulative Realised P&L
+     * &gt; &gt; unrealisedPnl	string	Unrealised  pnl  
+     * &gt; &gt; cumRealisedPnl	string	Cumulative Realised  pnl  
      * &gt; &gt; bonus	string	Bonus. This is a unique field for UNIFIED account
      * &gt; &gt; collateralSwitch	boolean	Whether it can be used as a margin collateral currency (platform)
      * When marginCollateral=false, then collateralSwitch is meaningless
@@ -3308,8 +3308,8 @@ public interface BybitApiService {
      *
      * @return Response Parameters
      * Parameter	Type	Comments
-     * subMemberIds	array<string>	All sub UIDs under the main UID
-     * transferableSubMemberIds	array<string>	All sub UIDs that have universal transfer enabled
+     * subMemberIds	array string	All sub UIDs under the main UID
+     * transferableSubMemberIds	array string	All sub UIDs that have universal transfer enabled
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
     @GET("/v5/asset/transfer/query-sub-member-list")
@@ -4360,7 +4360,7 @@ public interface BybitApiService {
     Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
 
     /**
-     * Get Interest & Quota
+     * Get Interest and  Quota
      * Covers: Margin trade (Classic Account)
      *
      * https://bybit-exchange.github.io/docs/v5/spot-margin-normal/interest-quota#http-request
@@ -4535,7 +4535,7 @@ public interface BybitApiService {
      * INFO
      * Use exchange broker master account to query
      * The data can support up to past 6 months until T-1
-     * startTime & endTime are either entered at the same time or not entered
+     * startTime and  endTime are either entered at the same time or not entered
      *
      * https://bybit-exchange.github.io/docs/v5/broker/earning
      *
@@ -4595,7 +4595,7 @@ public interface BybitApiService {
      * Lending funds to Bybit asset pool
      *
      * INFO
-     * normal & UMA account: deduct funds from Spot wallet
+     * normal and  UMA account: deduct funds from Spot wallet
      * UTA account: deduct funds from Unified wallet
      *
      * https://bybit-exchange.github.io/docs/v5/c2c-lend/deposit
@@ -4732,7 +4732,7 @@ public interface BybitApiService {
      * &gt; type	Object
      * &gt; &gt; title	string	The title of announcement type
      * &gt; &gt; key	string	The key of announcement type
-     * &gt; tags	array<string>	The tag of announcement
+     * &gt; tags	array string	The tag of announcement
      * &gt; url	string	Announcement url
      * &gt; dateTimestamp	number	Publish timestamp (ms) of announcement
      * &gt; startDataTimestamp	number	The start timestamp (ms) of the event, only valid when list.type.key == "latest_activities"

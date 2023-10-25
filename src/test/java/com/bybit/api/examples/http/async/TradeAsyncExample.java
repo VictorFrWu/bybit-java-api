@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class TradeAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
         BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
 
         // Place an order
