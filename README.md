@@ -78,6 +78,15 @@ Maven Example
         var positionListRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
         client.getPositionInfo(positionListRequest, System.out::println);
 ```
+-- Asset Info
+```java 
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        var client = factory.newAsyncAssetRestClient();
+
+        // Get Coin Exchange Records
+        var coinExchangeRecordsRequest = AssetDataRequest.builder().build();
+        client.getAssetCoinExchangeRecords(coinExchangeRecordsRequest, System.out::println);
+```
 ### Http Sync Examples
 - Place Batch Order
 ```java
