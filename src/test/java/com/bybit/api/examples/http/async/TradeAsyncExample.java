@@ -1,6 +1,6 @@
 package com.bybit.api.examples.http.async;
 
-import com.bybit.api.client.BybitApiAsyncTradeRestClient;
+import com.bybit.api.client.restApi.BybitApiAsyncTradeRestClient;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.trade.PositionIdx;
@@ -9,12 +9,11 @@ import com.bybit.api.client.domain.trade.TimeInForce;
 import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class TradeAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
         BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
 
         // Place an order

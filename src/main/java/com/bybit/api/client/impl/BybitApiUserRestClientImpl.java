@@ -1,7 +1,7 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiService;
-import com.bybit.api.client.BybitApiUserRestClient;
+import com.bybit.api.client.restApi.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiUserRestClient;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.bybit.api.client.domain.user.UserDataRequest;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;

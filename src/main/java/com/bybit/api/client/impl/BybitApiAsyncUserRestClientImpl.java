@@ -1,8 +1,8 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiAsyncUserRestClient;
-import com.bybit.api.client.BybitApiCallback;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiAsyncUserRestClient;
+import com.bybit.api.client.restApi.BybitApiCallback;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.bybit.api.client.domain.user.UserDataRequest;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;

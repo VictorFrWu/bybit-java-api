@@ -1,13 +1,11 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiAsyncAssetRestClient;
-import com.bybit.api.client.BybitApiAsyncPositionRestClient;
-import com.bybit.api.client.BybitApiCallback;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiAsyncAssetRestClient;
+import com.bybit.api.client.restApi.BybitApiCallback;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.AssetCancelWithdrawRequest;
 import com.bybit.api.client.domain.asset.request.SetAssetDepositAccountRequest;
-import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;

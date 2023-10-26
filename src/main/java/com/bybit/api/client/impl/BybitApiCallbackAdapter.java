@@ -1,6 +1,6 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiCallback;
+import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.exception.BybitApiException;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
 package com.bybit.api.examples.http.async;
 
-import com.bybit.api.client.BybitApiAsyncTradeRestClient;
+import com.bybit.api.client.restApi.BybitApiAsyncTradeRestClient;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.trade.*;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class BatchOrderAsyncExampleAsync {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
         BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
 
         // Create a batch order

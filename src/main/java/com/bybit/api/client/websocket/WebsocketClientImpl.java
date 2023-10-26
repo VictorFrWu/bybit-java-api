@@ -6,7 +6,6 @@ import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.security.HmacSHA256Signer;
 import lombok.Getter;
 import okhttp3.*;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -24,22 +23,50 @@ public class WebsocketClientImpl implements WebsocketClient {
     private static final String PING_DATA = "{\"op\":\"ping\"}";
     private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketClientImpl.class);
     private final WebsocketMessageHandler messageHandler;
+    private final WebSocketHttpClientSingleton webSocketHttpClientSingleton;
 
     private final String apikey;
     private final String secret;
     private final String baseUrl;
     private List<String> argNames;
     private String path;
-    private String acctState;
+    private boolean debugMode = false;
 
     public WebsocketClientImpl(String apikey, String secret, String baseUrl, WebsocketMessageHandler messageHandler) {
         this.messageHandler = messageHandler;
         this.apikey = apikey;
         this.secret = secret;
         this.baseUrl = baseUrl;
+        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(false);
     }
 
-    private void setupOrderBookStream(List<String> argNames, String path) {
+    public WebsocketClientImpl(String apikey, String secret, String baseUrl, WebsocketMessageHandler messageHandler, Boolean debugMode) {
+        this.messageHandler = messageHandler;
+        this.apikey = apikey;
+        this.secret = secret;
+        this.baseUrl = baseUrl;
+        this.debugMode = debugMode;
+        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode);
+    }
+
+    public WebsocketClientImpl(String apikey, String secret, String baseUrl, Boolean debugMode) {
+        this.messageHandler = null;
+        this.apikey = apikey;
+        this.secret = secret;
+        this.baseUrl = baseUrl;
+        this.debugMode = debugMode;
+        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode);
+    }
+
+    public WebsocketClientImpl(String apikey, String secret, String baseUrl) {
+        this.messageHandler = null;
+        this.apikey = apikey;
+        this.secret = secret;
+        this.baseUrl = baseUrl;
+        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(false);
+    }
+
+    private void setupPublicChannelStream(List<String> argNames, String path) {
         this.argNames = new ArrayList<>(argNames);
         this.path = path;
     }
@@ -141,11 +168,9 @@ public class WebsocketClientImpl implements WebsocketClient {
     public void onMessage(String msg) {
         if (messageHandler != null) {
             messageHandler.handleMessage(msg);
+        } else {
+            LOGGER.info(msg);
         }
-        if (acctState != null) {
-            LOGGER.info("-----" + acctState + "-----");
-        }
-        LOGGER.info(msg);
     }
 
     @Override
@@ -181,90 +206,18 @@ public class WebsocketClientImpl implements WebsocketClient {
 
     @Override
     public void connect() {
-        WebSocketHttpClientSingleton.createWebSocket(baseUrl + path, createWebSocketListener());
+        webSocketHttpClientSingleton.createWebSocket(baseUrl + path, createWebSocketListener());
     }
 
     @Override
-    public void getOrderBookStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
+    public void getPublicChannelStream(List<String> argNames, String path) {
+        setupPublicChannelStream(argNames, path);
         connect();
     }
 
     @Override
-    public void getTradeStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getTickerStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getMarketKlineStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getLiquidationStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getLeverageKlineStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getLeverageTickerStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getLeverageNavStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getPositionStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getExecutionStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getOrderStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getWalletStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getGreekStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
-        connect();
-    }
-
-    @Override
-    public void getDcpStream(List<String> argNames, String path) {
-        setupOrderBookStream(argNames, path);
+    public void getPrivateChannelStream(List<String> argNames, String path) {
+        setupPublicChannelStream(argNames, path);
         connect();
     }
 }

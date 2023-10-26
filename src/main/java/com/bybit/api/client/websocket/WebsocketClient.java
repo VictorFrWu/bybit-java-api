@@ -42,8 +42,8 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/orderbook
 
      */
-    void getOrderBookStream(List<String> argNames, String path);
-
+    void getPublicChannelStream(List<String> argNames, String path);
+    void getPrivateChannelStream(List<String> argNames, String path);
     /**
      * Trade
      * Subscribe to the recent trades stream.
@@ -58,7 +58,7 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/trade
 
      */
-    void getTradeStream(List<String> argNames, String path);
+
 
     /**
      * Ticker
@@ -74,7 +74,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/ticker
 
      */
-    void getTickerStream(List<String> argNames, String path);
 
     /**
      * Kline
@@ -97,7 +96,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/kline
 
      */
-    void getMarketKlineStream(List<String> argNames, String path);
 
     /**
      * Liquidation
@@ -110,7 +108,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/liquidation
 
      */
-    void getLiquidationStream(List<String> argNames, String path);
 
     /**
      * LT Kline
@@ -133,7 +130,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/etp-kline
 
      */
-    void getLeverageKlineStream(List<String> argNames, String path);
 
     /**
      * LT Ticker
@@ -146,7 +142,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/etp-ticker
 
      */
-    void getLeverageTickerStream(List<String> argNames, String path);
 
     /**
      * LT Nav
@@ -159,7 +154,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/etp-nav
 
      */
-    void getLeverageNavStream(List<String> argNames, String path);
 
     /**
      * Position
@@ -175,7 +169,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/private/position
 
      */
-    void getPositionStream(List<String> argNames, String path);
 
     /**
      * Execution
@@ -194,7 +187,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/private/execution
 
      */
-    void getExecutionStream(List<String> argNames, String path);
 
     /**
      * Order
@@ -210,7 +202,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/private/order
 
      */
-    void getOrderStream(List<String> argNames, String path);
 
     /**
      * Wallet
@@ -220,7 +211,6 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/private/wallet
 
      */
-    void getWalletStream(List<String> argNames, String path);
 
     /**
      * Greek
@@ -229,7 +219,6 @@ public interface WebsocketClient {
      * Topic: greeks
      * https://bybit-exchange.github.io/docs/v5/websocket/private/greek
      */
-    void getGreekStream(List<String> argNames, String path);
 
     /**
      * Dcp
@@ -245,5 +234,4 @@ public interface WebsocketClient {
      * Topic: dcp
      * https://bybit-exchange.github.io/docs/v5/websocket/private/dcp
      */
-    void getDcpStream(List<String> argNames, String path);
 }

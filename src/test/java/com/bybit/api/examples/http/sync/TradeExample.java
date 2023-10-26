@@ -1,6 +1,6 @@
 package com.bybit.api.examples.http.sync;
 
-import com.bybit.api.client.BybitApiTradeRestClient;
+import com.bybit.api.client.restApi.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.*;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.service.BybitApiClientFactory;

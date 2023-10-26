@@ -9,7 +9,7 @@ import com.bybit.api.client.domain.ProductType;
  */
 public class MarketDataEndpointsExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance(true);
         var client = factory.newMarketDataRestClient();
 
         var marketKLineRequest = MarketDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();

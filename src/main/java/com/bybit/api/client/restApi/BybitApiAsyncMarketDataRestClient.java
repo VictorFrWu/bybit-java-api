@@ -1,12 +1,7 @@
-package com.bybit.api.client;
+package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.domain.market.MarketDataRequest;
-import com.bybit.api.client.domain.trade.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
-
-import java.io.IOException;
-import java.util.Map;
 
 public interface BybitApiAsyncMarketDataRestClient {
     // Market endpoints

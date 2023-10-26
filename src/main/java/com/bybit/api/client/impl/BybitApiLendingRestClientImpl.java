@@ -1,8 +1,8 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiLendingRestClient;
+import com.bybit.api.client.restApi.BybitApiLendingRestClient;
 import com.bybit.api.client.domain.institution.LendingDataRequest;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;

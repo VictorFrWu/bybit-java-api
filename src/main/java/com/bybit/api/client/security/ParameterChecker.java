@@ -10,9 +10,6 @@ public final class ParameterChecker {
     private ParameterChecker() {
     }
 
-    private static final int countStart = 0;
-    private static final int countFinal = 1;
-
     public static void checkParameter(Map<String, Object> parameters, String parameter, Class<?> t) {
         checkRequiredParameter(parameters, parameter);
         checkParameterType(parameters.get(parameter), t, parameter);

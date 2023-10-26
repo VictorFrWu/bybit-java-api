@@ -1,7 +1,7 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiService;
-import com.bybit.api.client.BybitApiTradeRestClient;
+import com.bybit.api.client.restApi.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.service.BybitJsonConverter;
 
