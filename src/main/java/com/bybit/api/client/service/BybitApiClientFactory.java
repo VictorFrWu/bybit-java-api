@@ -44,8 +44,7 @@ public class BybitApiClientFactory {
      */
     private BybitApiClientFactory(String apiKey, String secret, boolean useTestnet) {
         this(apiKey, secret);
-        if (useTestnet)
-            BybitApiConfig.useTestnet = true;
+        BybitApiConfig.useTestnet = useTestnet;
     }
 
     /**

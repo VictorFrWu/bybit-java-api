@@ -7,8 +7,11 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 public class WebsocketPublicChannelExamples {
     public static void main(String[] args) {
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        // var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message), true);
         var client = factory.newWebsocketClient(true);
+
+        // Subscribe Orderbook more than one args
+        client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+
         // Orderbook
         // client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 
@@ -25,7 +28,7 @@ public class WebsocketPublicChannelExamples {
         // client.getPublicChannelStream(List.of("liquidation.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 
         // LT Kline
-        client.getPublicChannelStream(List.of("kline_lt.1.EOS3LUSDT"), BybitApiConfig.V5_PUBLIC_SPOT);
+        // client.getPublicChannelStream(List.of("kline_lt.1.EOS3LUSDT"), BybitApiConfig.V5_PUBLIC_SPOT);
 
         // LT Ticker
         // client.getPublicChannelStream(List.of("tickers_lt.1.EOS3LUSDT"), BybitApiConfig.V5_PUBLIC_SPOT);
