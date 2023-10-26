@@ -45,7 +45,7 @@ Maven Example
 ```
 Gradle Example
 ```java
-    implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.0.8'
+    implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.0.9'
 ```
 Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.0.9)
 ## Usage
