@@ -47,8 +47,9 @@ Gradle Example
 ```java
     implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.0.8'
 ```
+Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.0.9)
 ## Usage
-
+Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
 ### Http Async Examples
 - Create Factory 
 ```java
@@ -241,5 +242,3 @@ List of other contributors
 
 ## Donations
 Your donations keep our development active and our community growing. Donate USDT to our [ERC20 Wallet Address](0x238bbb45af1254e2fd76564c9b56042c452f3d6e).
-
-Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
