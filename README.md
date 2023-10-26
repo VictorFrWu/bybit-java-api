@@ -36,16 +36,20 @@ Ensure you have Java 11 or higher. You can include bybit-java-api in your projec
 
 Maven Example
 ```java
-<!-- Maven -->
-<dependency>
-    <groupId>com.bybit.api</groupId>
-    <artifactId>bybit-java-api</artifactId>
-    <version>1.0.9</version>
-</dependency>
+    <!-- Maven -->
+    <dependency>
+        <groupId>com.bybit.api</groupId>
+        <artifactId>bybit-java-api</artifactId>
+        <version>1.0.9</version>
+    </dependency>
 ```
-
+Gradle Example
+```java
+    implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.0.9'
+```
+Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.0.9)
 ## Usage
-
+Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
 ### Http Async Examples
 - Create Factory 
 ```java
@@ -172,14 +176,14 @@ Maven Example
 ### Websocket public channel
 - Create Websocket Client
 ```java
-// new websocket client in debug mode
-var client = factory.newWebsocketClient(true);
-// new websocket client with message handler
-var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
-// new websocket client with message handler and debug mode
-var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message), true);
-// new websocket client without message handler and debug mode
-var client = factory.newWebsocketClient();
+        // new websocket client in debug mode
+        var client = factory.newWebsocketClient(true);
+        // new websocket client with message handler
+        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
+        // new websocket client with message handler and debug mode
+        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message), true);
+        // new websocket client without message handler and debug mode
+        var client = factory.newWebsocketClient();
 ```
 - Order book Subscribe
 ```java
@@ -188,6 +192,9 @@ var client = factory.newWebsocketClient();
 
         // Orderbook
         client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+        
+        // Subscribe Orderbook more than one args
+        client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 
 ### Websocket private channel
@@ -235,5 +242,3 @@ List of other contributors
 
 ## Donations
 Your donations keep our development active and our community growing. Donate USDT to our [ERC20 Wallet Address](0x238bbb45af1254e2fd76564c9b56042c452f3d6e).
-
-Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.

@@ -17,7 +17,18 @@
         </license>
     </licenses>
 
-    <description>Bybit Open API SDK implemented HTTP Sync Async Request and Websocket Subscribe</description>
+    <description>The Official Java API connector for Bybit's HTTP and WebSocket APIs.
+
+        Dive into a plethora of functionalities:
+        - Market Data Retrieval
+        - Trade Execution
+        - Position Management
+        - Account and Asset Info Retrieval
+        - User and Upgrade Management
+        - Public Websocket Streaming
+        - Private Websocket Streaming
+        - Lending Institution and Client
+        - Broker Earning Data</description>
 
     <developers>
         <developer>

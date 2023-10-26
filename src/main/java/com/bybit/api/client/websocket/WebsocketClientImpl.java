@@ -101,7 +101,7 @@ public class WebsocketClientImpl implements WebsocketClient {
                     if (ws != null) { // check if the WebSocket is still valid
                         ws.send(PING_DATA);
                         LOGGER.info(PING_DATA);
-                        TimeUnit.SECONDS.sleep(2); // waits for 5 seconds before the next iteration
+                        TimeUnit.SECONDS.sleep(10); // waits for 10 seconds before the next iteration
                     } else {
                         break;
                     }

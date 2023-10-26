@@ -42,4 +42,13 @@ public class PublicChannelTest {
         var client = factory.newWebsocketClient();
         client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
     }
+
+    @Test
+    public void Test_GetOrderBookStream5()
+    {
+        // Subscribe more than one args
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance(false);
+        var client = factory.newWebsocketClient(true);
+        client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+    }
 }
