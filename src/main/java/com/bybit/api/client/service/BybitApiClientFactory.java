@@ -1,9 +1,9 @@
 package com.bybit.api.client.service;
 
 
-import com.bybit.api.client.*;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.impl.*;
+import com.bybit.api.client.restApi.*;
 import com.bybit.api.client.websocket.WebsocketClient;
 import com.bybit.api.client.websocket.WebsocketClientImpl;
 import com.bybit.api.client.websocket.WebsocketMessageHandler;
@@ -32,7 +32,7 @@ public class BybitApiClientFactory {
     private BybitApiClientFactory(String apiKey, String secret) {
         this.apiKey = apiKey;
         this.secret = secret;
-        BybitApiConfig.useTestnet = true;
+        BybitApiConfig.useTestnet = false;
     }
 
     /**
@@ -161,10 +161,31 @@ public class BybitApiClientFactory {
     }
 
     /**
-     * Access to public and private websocket
+     * Access to public and private websocket with message handler and debug mode
+     */
+    public WebsocketClient newWebsocketClient(WebsocketMessageHandler messageHandler, Boolean debugMode) {
+        return new WebsocketClientImpl(apiKey, secret, BybitApiConfig.useTestnet ? BybitApiConfig.STREAM_TESTNET_DOMAIN : BybitApiConfig.STREAM_MAINNET_DOMAIN, messageHandler, debugMode);
+    }
+
+    /**
+     * Access to public and private websocket with message handler
      */
     public WebsocketClient newWebsocketClient(WebsocketMessageHandler messageHandler) {
         return new WebsocketClientImpl(apiKey, secret, BybitApiConfig.useTestnet ? BybitApiConfig.STREAM_TESTNET_DOMAIN : BybitApiConfig.STREAM_MAINNET_DOMAIN, messageHandler);
+    }
+
+    /**
+     * Access to public and private websocket in debug mode without message handler
+     */
+    public WebsocketClient newWebsocketClient(Boolean debugMode) {
+        return new WebsocketClientImpl(apiKey, secret, BybitApiConfig.useTestnet ? BybitApiConfig.STREAM_TESTNET_DOMAIN : BybitApiConfig.STREAM_MAINNET_DOMAIN, debugMode);
+    }
+
+    /**
+     * Access to public and private websocket without message handler and debug mode
+     */
+    public WebsocketClient newWebsocketClient() {
+        return new WebsocketClientImpl(apiKey, secret, BybitApiConfig.useTestnet ? BybitApiConfig.STREAM_TESTNET_DOMAIN : BybitApiConfig.STREAM_MAINNET_DOMAIN);
     }
 
     /**

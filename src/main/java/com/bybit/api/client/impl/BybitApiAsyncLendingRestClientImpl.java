@@ -1,13 +1,12 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiAsyncLendingRestClient;
-import com.bybit.api.client.BybitApiCallback;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiAsyncLendingRestClient;
+import com.bybit.api.client.restApi.BybitApiCallback;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.institution.LendingDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
-import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
 public class BybitApiAsyncLendingRestClientImpl implements BybitApiAsyncLendingRestClient {
     private final BybitApiService bybitApiService;

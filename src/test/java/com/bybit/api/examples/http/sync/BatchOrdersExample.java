@@ -1,6 +1,6 @@
 package com.bybit.api.examples.http.sync;
 
-import com.bybit.api.client.BybitApiTradeRestClient;
+import com.bybit.api.client.restApi.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.trade.*;
@@ -11,7 +11,7 @@ import java.util.*;
 
 public class BatchOrdersExample {
     public static void main(String[] args) throws IOException {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", true);
         BybitApiTradeRestClient client = factory.newTradeRestClient();
 
         // Create a batch order

@@ -1,4 +1,4 @@
-package com.bybit.api.client;
+package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.trade.BatchOrderRequest;
 import com.bybit.api.client.domain.trade.TradeOrderRequest;

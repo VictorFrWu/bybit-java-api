@@ -43,11 +43,4 @@ public class BybitApiConfig {
     public static final String V3_UNIFIED_PRIVATE = "/unified/private/v3";
     public static final String V3_CONTRACT_USDT_PUBLIC = "/contract/usdt/public/v3";
     public static final String V3_SPOT_PRIVATE = "/spot/private/v3";
-    public static final String V1_SPOT_PRIVATE = "/spot/ws";
-
-    public static final String V2_USDT_PRIVATE = "/realtime_private";
-
-    public static final String V2_USDT_PUBLIC = "/realtime_public";
-
-    public static final String USDC_V1_PRIVATE = "/trade/option/usdc/private/v1";
 }

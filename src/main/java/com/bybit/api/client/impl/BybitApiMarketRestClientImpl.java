@@ -1,8 +1,8 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiMarketRestClient;
+import com.bybit.api.client.restApi.BybitApiMarketRestClient;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.market.MarketDataRequest;
 import lombok.Getter;
 

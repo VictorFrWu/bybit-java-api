@@ -1,6 +1,6 @@
 package com.bybit.api.client.service;
 
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.exception.BybitApiException;
@@ -63,7 +63,7 @@ public class BybitApiServiceGenerator {
      * @return a new implementation of the API endpoints for the Bybit API service.
      */
     public static <S> S createService(Class<S> serviceClass, String apiKey, String secret) {
-        String baseUrl = null;
+        String baseUrl;
         if (!BybitApiConfig.useTestnet) {
             baseUrl = BybitApiConfig.MAINNET_DOMAIN;
         } else {
@@ -77,7 +77,7 @@ public class BybitApiServiceGenerator {
         if (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(secret)) {
             retrofitBuilder.client(sharedClient);
         } else {
-            // `adaptedClient` will use its own interceptor, but share thread pool etc with the 'parent' client
+            // `adaptedClient` will use its own interceptor, but share thread pool etc. with the 'parent' client
             AuthenticationInterceptor interceptor = new AuthenticationInterceptor(apiKey, secret);
             OkHttpClient adaptedClient = sharedClient.newBuilder().addInterceptor(interceptor).build();
             retrofitBuilder.client(adaptedClient);

@@ -1,7 +1,5 @@
-package com.bybit.api.client;
+package com.bybit.api.client.restApi;
 
-import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
-import com.bybit.api.client.domain.market.MarketDataRequest;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 
 public interface BybitApiAsyncPositionRestClient {

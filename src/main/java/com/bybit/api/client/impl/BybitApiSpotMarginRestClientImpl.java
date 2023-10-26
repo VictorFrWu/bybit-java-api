@@ -1,8 +1,8 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiSpotMarginRestClient;
+import com.bybit.api.client.restApi.BybitApiSpotMarginRestClient;
 import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.service.BybitJsonConverter;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;

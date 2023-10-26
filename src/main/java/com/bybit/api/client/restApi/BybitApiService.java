@@ -1,4 +1,4 @@
-package com.bybit.api.client;
+package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.TriggerBy;

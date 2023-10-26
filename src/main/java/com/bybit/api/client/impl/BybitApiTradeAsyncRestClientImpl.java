@@ -1,8 +1,8 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiAsyncTradeRestClient;
-import com.bybit.api.client.BybitApiCallback;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiAsyncTradeRestClient;
+import com.bybit.api.client.restApi.BybitApiCallback;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.trade.BatchOrderRequest;
 import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.service.BybitJsonConverter;

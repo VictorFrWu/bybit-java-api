@@ -1,4 +1,4 @@
-package com.bybit.api.client;
+package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.preupgrade.PreUpgradeDataRequest;
 import com.bybit.api.client.domain.user.UserDataRequest;

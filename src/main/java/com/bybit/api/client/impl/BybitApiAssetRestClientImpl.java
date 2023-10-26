@@ -1,7 +1,7 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.BybitApiAssetRestClient;
-import com.bybit.api.client.BybitApiService;
+import com.bybit.api.client.restApi.BybitApiAssetRestClient;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.AssetCancelWithdrawRequest;
 import com.bybit.api.client.domain.asset.request.SetAssetDepositAccountRequest;

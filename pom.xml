@@ -6,7 +6,7 @@
 
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <name>bybit-java-api</name>
     <url>https://github.com/wuhewuhe/bybit-java-api</url>
 
@@ -40,7 +40,7 @@
     </scm>
 
     <properties>
-        <com.squareup.retrofit2.version>2.9.0</com.squareup.retrofit2.version>
+        <com.squareup.retrofit2.version>2.7.2</com.squareup.retrofit2.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

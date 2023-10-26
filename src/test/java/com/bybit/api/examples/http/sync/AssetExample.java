@@ -38,8 +38,8 @@ public class AssetExample {
 
         // Get Single Coin Balance
         var SingleCoinBalanceRequest = AssetDataRequest.builder().accountType(AccountType.UNIFIED).coin("USDT").build();
-        var SingleCoinBalanc = client.getAssetSingleCoinBalance(SingleCoinBalanceRequest);
-        System.out.println(SingleCoinBalanc);
+        var SingleCoinBalance = client.getAssetSingleCoinBalance(SingleCoinBalanceRequest);
+        System.out.println(SingleCoinBalance);
 
         // Get Transferable Coin
         var transferableCoinsRequest = AssetDataRequest.builder().fromAccountType(AccountType.UNIFIED).toAccountType(AccountType.FUND).build();
@@ -122,7 +122,7 @@ public class AssetExample {
         var coinInfo = client.getAssetCoinInfo(coinInfoRequest);
         System.out.println(coinInfo);
 
-        // Get Withdrawable Amount
+        // Get Withdrawal Amount
         var withdrawAmountRequest =AssetDataRequest.builder().coin("USDT").build();
         var withdrawalAmount = client.getAssetWithdrawalAmount(withdrawAmountRequest);
         System.out.println(withdrawalAmount);
