@@ -40,14 +40,14 @@ Maven Example
     <dependency>
         <groupId>com.bybit.api</groupId>
         <artifactId>bybit-java-api</artifactId>
-        <version>1.0.9</version>
+        <version>1.1.0</version>
     </dependency>
 ```
 Gradle Example
 ```java
-    implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.0.9'
+    implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.0'
 ```
-Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.0.9)
+Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.0)
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
 ### Http Async Examples
