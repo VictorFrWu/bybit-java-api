@@ -1,4 +1,4 @@
-package com.bybit.api.client.logging;
+package com.bybit.api.client.websocket;
 
 import okhttp3.Headers;
 import okhttp3.Interceptor;
@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 
-public class LoggingInterceptor implements Interceptor {
+public class WebsocketLoggingInterceptor implements Interceptor {
     private final Logger LOGGER;
-    public LoggingInterceptor(Logger logger) {
+    public WebsocketLoggingInterceptor(Logger logger) {
         this.LOGGER = logger;
     }
 
