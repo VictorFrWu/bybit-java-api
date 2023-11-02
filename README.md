@@ -38,7 +38,7 @@ Maven Example
 ```java
     <!-- Maven -->
     <dependency>
-        <groupId>com.bybit.api</groupId>
+        <groupId>io.github.wuhewuhe</groupId>
         <artifactId>bybit-java-api</artifactId>
         <version>1.1.0</version>
     </dependency>
