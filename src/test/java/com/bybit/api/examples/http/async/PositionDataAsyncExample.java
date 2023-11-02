@@ -29,5 +29,10 @@ public class PositionDataAsyncExample {
         // Switch Cross/Isolated Margin
         var switchMarginRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTC-31MAR23").tradeMode(MarginMode.CROSS_MARGIN).buyLeverage("5").sellLeverage("5").build();
         client.swithMarginRequest(switchMarginRequest, System.out::println);
+
+        // Confirm new position risk limit
+        var confirmNewRiskRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
+        client.confirmPositionRiskLimit(confirmNewRiskRequest, System.out::println);
+
     }
 }

@@ -105,4 +105,10 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
                 closePnlHistoryRequest.getCursor()
         ));
     }
+
+    @Override
+    public Object confirmPositionRiskLimit(PositionDataRequest positionDataRequest) {
+        var confirmNewRiskLimitRequest = converter.mapToConfirmNewRiskLimitRequest(positionDataRequest);
+        return executeSync(bybitApiService.confirmPositionRiskLimit(confirmNewRiskLimitRequest));
+    }
 }

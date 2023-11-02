@@ -11,6 +11,7 @@ import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.institution.LendingDataRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
+import com.bybit.api.client.domain.position.ConfirmNewRiskLimitRequest;
 import com.bybit.api.client.domain.position.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.account.request.*;
@@ -435,4 +436,11 @@ public class BybitJsonConverter {
                 .build();
     }
 
+    public ConfirmNewRiskLimitRequest mapToConfirmNewRiskLimitRequest(PositionDataRequest positionDataRequest) {
+        return ConfirmNewRiskLimitRequest
+                .builder()
+                .category(positionDataRequest.getCategory() == null ? null : positionDataRequest.getCategory().getProductTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .build();
+    }
 }

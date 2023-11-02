@@ -1,11 +1,6 @@
 package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.position.PositionDataRequest;
-import com.bybit.api.client.domain.trade.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
-
-import java.io.IOException;
-import java.util.Map;
 
 public interface BybitApiPositionRestClient {
     // Position Data
@@ -20,4 +15,5 @@ public interface BybitApiPositionRestClient {
     Object modifyPositionMargin(PositionDataRequest modifyMarginRequest);
     Object getExecutionList(PositionDataRequest executionHistoryRequest);
     Object getClosePnlList(PositionDataRequest closePnlHistoryRequest);
+    Object confirmPositionRiskLimit(PositionDataRequest confirmNewRiskLimitRequest);
 }

@@ -15,4 +15,5 @@ public interface BybitApiAsyncPositionRestClient {
     void modifyPositionMargin(PositionDataRequest modifyMarginRequest, BybitApiCallback<Object> callback);
     void getExecutionList(PositionDataRequest executionHistoryRequest, BybitApiCallback<Object> callback);
     void getClosePnlList(PositionDataRequest closePnlHistoryRequest, BybitApiCallback<Object> callback);
+    void confirmPositionRiskLimit(PositionDataRequest confirmNewRiskLimitRequest, BybitApiCallback<Object> callback);
 }

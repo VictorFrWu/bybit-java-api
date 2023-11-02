@@ -33,5 +33,9 @@ public class TradeAsyncExample {
                 "orderLinkId", "test_orderLinkId_1"
         );
         client.createOrder(order, System.out::println);
+
+        // Cancel All order
+        var cancelAllOrdersRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).baseCoin("USDT").build();
+        client.cancelAllOrder(cancelAllOrdersRequest, System.out::println);
     }
 }

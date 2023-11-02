@@ -108,4 +108,10 @@ public class BybitApiAsyncPositionRestClientImpl implements BybitApiAsyncPositio
                 closePnlHistoryRequest.getCursor()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
+
+    @Override
+    public void confirmPositionRiskLimit(PositionDataRequest positionDataRequest, BybitApiCallback<Object> callback) {
+        var confirmNewRiskLimitRequest = converter.mapToConfirmNewRiskLimitRequest(positionDataRequest);
+        bybitApiService.confirmPositionRiskLimit(confirmNewRiskLimitRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
 }

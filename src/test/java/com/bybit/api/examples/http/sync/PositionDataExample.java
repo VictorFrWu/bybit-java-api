@@ -7,7 +7,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class PositionDataExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj",true);
         var client = factory.newPositionRestClient();
 
         // Get Position Info
@@ -34,5 +34,10 @@ public class PositionDataExample {
         var switchMarginRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTC-31MAR23").tradeMode(MarginMode.CROSS_MARGIN).buyLeverage("5").sellLeverage("5").build();
         var switchMarginResult = client.swithMarginRequest(switchMarginRequest);
         System.out.println(switchMarginResult);
+
+        // Confirm new position risk limit
+        var confirmNewRiskRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
+        var confirmRiskLimitResult = client.confirmPositionRiskLimit(confirmNewRiskRequest);
+        System.out.println(confirmRiskLimitResult);
     }
 }
