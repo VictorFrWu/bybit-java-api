@@ -8,7 +8,6 @@ import com.bybit.api.client.domain.trade.Side;
 import com.bybit.api.client.domain.trade.TimeInForce;
 import com.bybit.api.client.domain.trade.TradeOrderRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
-
 import java.util.Map;
 
 public class TradeAsyncExample {
