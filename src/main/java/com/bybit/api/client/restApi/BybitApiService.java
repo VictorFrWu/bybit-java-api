@@ -8,6 +8,7 @@ import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
+import com.bybit.api.client.domain.position.ConfirmNewRiskLimitRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
@@ -1956,6 +1957,26 @@ public interface BybitApiService {
     @POST("/v5/position/set-leverage")
     Call<Object> setPositionLeverage(
             @Body SetLeverageRequest setLeverageRequest);
+
+    /**
+     * Confirm New Risk Limit
+     * It is only applicable when the user is marked as only reducing positions (please see the isReduceOnly field in the Get Position Info interface). After the user actively adjusts the risk level, this interface is called to try to calculate the adjusted risk level, and if it passes (retCode=0), the system will remove the position reduceOnly mark. You are recommended to call Get Position Info to check isReduceOnly field.
+     *
+     * Unified account covers: USDT perpetual / USDC contract / Inverse contract
+     * Classic account covers: USDT perpetual / Inverse contract
+     *
+     * https://bybit-exchange.github.io/docs/v5/position/confirm-mmr
+     * @param confirmNewRiskLimitRequest    category	true	string	Product type
+     *                                      Unified account: linear, inverse
+     *                                      Classic account: linear, inverse
+     *                                      symbol	true	string	Symbol name
+     * @return Response Parameters
+     * None
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/position/confirm-pending-mmr")
+    Call<Object> confirmPositionRiskLimit(
+            @Body ConfirmNewRiskLimitRequest confirmNewRiskLimitRequest);
 
     /**
      * Switch Cross/Isolated Margin

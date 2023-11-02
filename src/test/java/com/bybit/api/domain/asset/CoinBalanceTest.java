@@ -8,7 +8,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 import org.junit.Test;
 
 public class CoinBalanceTest {
-    BybitApiClientFactory factory = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj");
+    BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
     BybitApiAssetRestClient client = factory.newAssetRestClient();
     @Test
     public void Test_GetSingleCoinBalance()
