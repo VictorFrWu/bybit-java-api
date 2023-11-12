@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.bybit.api.client.constant.Util.listToString;
 
@@ -312,7 +313,7 @@ public class BybitJsonConverter {
     // Asset request
     public AssetInternalTransferRequest mapToAssetInternalTransferRequest(AssetDataRequest assetDataRequest) {
         return AssetInternalTransferRequest.builder()
-                .transferId(assetDataRequest.getTransferId())
+                .transferId(assetDataRequest.getTransferId() == null ? UUID.randomUUID().toString() : assetDataRequest.getTransferId())
                 .coin(assetDataRequest.getCoin())
                 .amount(assetDataRequest.getAmount())
                 .fromAccountType(assetDataRequest.getFromAccountType().getAccountTypeValue())  // Assuming fromAccountType is an enum and you want to store its name as String in AssetInternalTransferRequest
@@ -322,7 +323,7 @@ public class BybitJsonConverter {
 
     public AssetUniversalTransferRequest mapToAssetUniversalTransferRequest(AssetDataRequest assetDataRequest) {
         return AssetUniversalTransferRequest.builder()
-                .transferId(assetDataRequest.getTransferId())
+                .transferId(assetDataRequest.getTransferId() == null ? UUID.randomUUID().toString() : assetDataRequest.getTransferId())
                 .coin(assetDataRequest.getCoin())
                 .amount(assetDataRequest.getAmount())
                 .fromMemberId(assetDataRequest.getFromMemberId())  // Assuming memberId in AssetDataRequest is a String and you want to convert it to Integer in AssetUniversalTransferRequest
