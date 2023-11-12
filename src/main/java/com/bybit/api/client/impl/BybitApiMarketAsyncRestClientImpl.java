@@ -4,7 +4,7 @@ import com.bybit.api.client.restApi.BybitApiAsyncMarketDataRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
-import com.bybit.api.client.domain.market.MarketDataRequest;
+import com.bybit.api.client.domain.market.request.MarketDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;

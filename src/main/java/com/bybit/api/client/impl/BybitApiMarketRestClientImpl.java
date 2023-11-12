@@ -3,7 +3,7 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.restApi.BybitApiMarketRestClient;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.market.MarketDataRequest;
+import com.bybit.api.client.domain.market.request.MarketDataRequest;
 import lombok.Getter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
