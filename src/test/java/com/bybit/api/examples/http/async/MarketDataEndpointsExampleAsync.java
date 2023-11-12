@@ -3,7 +3,7 @@ package com.bybit.api.examples.http.async;
 import com.bybit.api.client.domain.ProductType;
 import com.bybit.api.client.domain.market.DataRecordingPeriod;
 import com.bybit.api.client.domain.market.InstrumentStatus;
-import com.bybit.api.client.domain.market.MarketDataRequest;
+import com.bybit.api.client.domain.market.request.MarketDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 import com.bybit.api.client.domain.market.MarketInterval;
 

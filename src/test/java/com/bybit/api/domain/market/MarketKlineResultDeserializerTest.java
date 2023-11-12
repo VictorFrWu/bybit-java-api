@@ -1,8 +1,8 @@
 package com.bybit.api.domain.market;
 
 import com.bybit.api.client.domain.GenericResponse;
-import com.bybit.api.client.domain.market.MarketKlineEntry;
-import com.bybit.api.client.domain.market.MarketKlineResult;
+import com.bybit.api.client.domain.market.response.kline.MarketKlineEntry;
+import com.bybit.api.client.domain.market.response.kline.MarketKlineResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
@@ -75,6 +75,7 @@ public class MarketKlineResultDeserializerTest {
             assertEquals(entries.get(1).getVolume(), "7519.172778");
             assertEquals(entries.get(1).getTurnover(), "188453792.2371207168");
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             fail();
         }
     }
