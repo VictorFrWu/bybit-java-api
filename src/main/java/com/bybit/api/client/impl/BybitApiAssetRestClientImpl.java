@@ -7,6 +7,8 @@ import com.bybit.api.client.domain.asset.request.AssetCancelWithdrawRequest;
 import com.bybit.api.client.domain.asset.request.SetAssetDepositAccountRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
+import java.util.UUID;
+
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
