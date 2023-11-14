@@ -20,7 +20,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -76,7 +75,7 @@ public class BybitApiServiceGenerator {
         }
         if (debugMode) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             clientBuilder.addInterceptor(loggingInterceptor);
         }
         retrofitBuilder.client(clientBuilder.build());

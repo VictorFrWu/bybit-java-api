@@ -1,6 +1,5 @@
 package com.bybit.api.client.websocket;
 
-
 import com.alibaba.fastjson.JSON;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.security.HmacSHA256Signer;
