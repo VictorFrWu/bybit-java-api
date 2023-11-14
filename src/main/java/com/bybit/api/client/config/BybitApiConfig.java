@@ -27,8 +27,11 @@ public class BybitApiConfig {
     /**
      * bybit Spot Test Network option:
      * true if endpoint is spot test network URL; false if endpoint is production spot API URL.
+     * @deprecated use base url to instead
      */
+    @Deprecated
     public static boolean useTestnet;
+    public static boolean useSlf4j = false;
 
     // V5
     public static final String V5_PUBLIC_SPOT = "/v5/public/spot";

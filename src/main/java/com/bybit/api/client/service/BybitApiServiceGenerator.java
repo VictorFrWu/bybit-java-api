@@ -1,5 +1,7 @@
 package com.bybit.api.client.service;
 
+import com.bybit.api.client.config.BybitApiConfig;
+import com.bybit.api.client.log.Slf4jLoggingInterceptor;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.exception.BybitApiException;
@@ -10,7 +12,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
 import retrofit2.Converter;
@@ -22,11 +23,12 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.TimeUnit;
 
+import static com.bybit.api.client.log.Slf4jLoggingInterceptor.HandleLoggingInterceptor;
+
 /**
  * Generates a Bybit API implementation based on @see {@link BybitApiService}.
  */
 public class BybitApiServiceGenerator {
-
     /**
      * -- GETTER --
      * Returns the shared OkHttpClient instance.
@@ -74,14 +76,13 @@ public class BybitApiServiceGenerator {
             clientBuilder.addInterceptor(interceptor);
         }
         if (debugMode) {
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            clientBuilder.addInterceptor(loggingInterceptor);
+            HandleLoggingInterceptor(clientBuilder);
         }
         retrofitBuilder.client(clientBuilder.build());
         Retrofit retrofit = retrofitBuilder.build();
         return retrofit.create(serviceClass);
     }
+
 
     /**
      * Execute a REST call and block until the response is received.
