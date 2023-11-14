@@ -10,6 +10,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
 import retrofit2.Converter;
 import retrofit2.Response;
@@ -44,7 +46,9 @@ public class BybitApiServiceGenerator {
                 .build();
     }
 
+
     @SuppressWarnings("unchecked")
+    @Nullable
     private static final Converter<ResponseBody, BybitApiError> errorBodyConverter =
             (Converter<ResponseBody, BybitApiError>) converterFactory.responseBodyConverter(
                     BybitApiError.class, new Annotation[0], null);
@@ -101,9 +105,11 @@ public class BybitApiServiceGenerator {
      * Extracts and converts the response error body into an object.
      */
     public static BybitApiError getBybitApiError(Response<?> response) throws IOException, BybitApiException {
-        if (errorBodyConverter != null) {
-            return errorBodyConverter.convert(Objects.requireNonNull(response.errorBody()));
+        ResponseBody errorBody = response.errorBody();
+        if (errorBody != null && errorBodyConverter != null) {
+            return errorBodyConverter.convert(errorBody);
         }
-        return new BybitApiError();
+        // Handle the case where there is no error converter or error body.
+        throw new BybitApiException("Response error body was null or couldn't be converted.");
     }
 }
