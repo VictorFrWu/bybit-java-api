@@ -12,8 +12,8 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiAccountRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiAccountRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
     // Account endpoints
     @Override
@@ -61,7 +61,7 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
     @Override
     public Object getAccountFreeRate(AccountDataRequest getFeeRateRequest) {
         return executeSync(bybitApiService.getAccountFreeRate(
-                getFeeRateRequest.getCategory().getProductTypeId(),
+                getFeeRateRequest.getCategory().getCategoryTypeId(),
                 getFeeRateRequest.getSymbol(),
                 getFeeRateRequest.getBaseCoin()
         ));
@@ -77,7 +77,7 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
     public Object getTransactionLog(AccountDataRequest getTransactionLogRequest) {
         return executeSync(bybitApiService.getTransactionLog(
                 getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
-                getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getProductTypeId(),
+                getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getCategoryTypeId(),
                 getTransactionLogRequest.getCurrency(),
                 getTransactionLogRequest.getBaseCoin(),
                 getTransactionLogRequest.getTransactionType() == null ? null : getTransactionLogRequest.getTransactionType().getTransactionTypeId(),

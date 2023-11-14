@@ -1,7 +1,7 @@
 package com.bybit.api.client.domain.trade;
 
-import com.bybit.api.client.domain.ProductType;
-import com.bybit.api.client.service.ProductTypeSerializer;
+import com.bybit.api.client.domain.CategoryType;
+import com.bybit.api.client.service.CategoryTypeSerializer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @ToString
 public class BatchOrderRequest {
-    @JsonSerialize(using = ProductTypeSerializer.class)
-    private ProductType category;
+    @JsonSerialize(using = CategoryTypeSerializer.class)
+    private CategoryType category;
     private List<TradeOrderRequest> request;
 }

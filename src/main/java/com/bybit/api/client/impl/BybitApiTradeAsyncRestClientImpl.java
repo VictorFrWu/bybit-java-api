@@ -16,25 +16,25 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiTradeAsyncRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiTradeAsyncRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
 
     @Override
     public void getHistoryOrderResult(TradeOrderRequest orderHistoryRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getHistoryOrderResult(
-                orderHistoryRequest.getCategory().getProductTypeId(),
-                orderHistoryRequest.getSymbol(),
-                orderHistoryRequest.getBaseCoin(),
-                orderHistoryRequest.getSettleCoin(),
-                orderHistoryRequest.getOrderId(),
-                orderHistoryRequest.getOrderLinkId(),
-                orderHistoryRequest.getOrderFilter(),
-                orderHistoryRequest.getOrderStatus(),
-                orderHistoryRequest.getStartTime(),
-                orderHistoryRequest.getEndTime(),
-                orderHistoryRequest.getLimit(),
-                orderHistoryRequest.getCursor())
+                        orderHistoryRequest.getCategory().getCategoryTypeId(),
+                        orderHistoryRequest.getSymbol(),
+                        orderHistoryRequest.getBaseCoin(),
+                        orderHistoryRequest.getSettleCoin(),
+                        orderHistoryRequest.getOrderId(),
+                        orderHistoryRequest.getOrderLinkId(),
+                        orderHistoryRequest.getOrderFilter(),
+                        orderHistoryRequest.getOrderStatus(),
+                        orderHistoryRequest.getStartTime(),
+                        orderHistoryRequest.getEndTime(),
+                        orderHistoryRequest.getLimit(),
+                        orderHistoryRequest.getCursor())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
@@ -46,25 +46,25 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
     @Override
     public void getBorrowQuota(TradeOrderRequest borrowQuotaRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getBorrowQuota(
-                borrowQuotaRequest.getCategory().getProductTypeId(),
-                borrowQuotaRequest.getSymbol(),
-                borrowQuotaRequest.getSide() == null ? null : borrowQuotaRequest.getSide().getTransactionSide())
+                        borrowQuotaRequest.getCategory().getCategoryTypeId(),
+                        borrowQuotaRequest.getSymbol(),
+                        borrowQuotaRequest.getSide() == null ? null : borrowQuotaRequest.getSide().getTransactionSide())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void getOpenOrders(TradeOrderRequest order, BybitApiCallback<Object> callback) {
         bybitApiService.getOpenOrders(
-                order.getCategory().getProductTypeId(),
-                order.getSymbol(),
-                order.getBaseCoin(),
-                order.getSettleCoin(),
-                order.getOrderId(),
-                order.getOrderLinkId(),
-                order.getOpenOnly(),
-                order.getOrderFilter(),
-                order.getLimit(),
-                order.getCursor())
+                        order.getCategory().getCategoryTypeId(),
+                        order.getSymbol(),
+                        order.getBaseCoin(),
+                        order.getSettleCoin(),
+                        order.getOrderId(),
+                        order.getOrderLinkId(),
+                        order.getOpenOnly(),
+                        order.getOrderFilter(),
+                        order.getLimit(),
+                        order.getCursor())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
@@ -139,44 +139,44 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
     @Override
     public void cancelOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
         bybitApiService.cancelOrder(
-                order.getCategory().getProductTypeId(),
-                order.getSymbol(),
-                order.getOrderId(),
-                order.getOrderLinkId(),
-                order.getOrderFilter())
+                        order.getCategory().getCategoryTypeId(),
+                        order.getSymbol(),
+                        order.getOrderId(),
+                        order.getOrderLinkId(),
+                        order.getOrderFilter())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void cancelAllOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
         bybitApiService.cancelAllOrder(
-                order.getCategory().getProductTypeId(),
-                order.getSymbol(),
-                order.getBaseCoin(),
-                order.getSettleCoin(),
-                order.getOrderFilter(),
-                order.getStopOrderType() == null ? null : order.getStopOrderType().getDescription())
+                        order.getCategory().getCategoryTypeId(),
+                        order.getSymbol(),
+                        order.getBaseCoin(),
+                        order.getSettleCoin(),
+                        order.getOrderFilter(),
+                        order.getStopOrderType() == null ? null : order.getStopOrderType().getDescription())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void amendOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
         bybitApiService.amendOrder(
-                order.getCategory().getProductTypeId(),
-                order.getSymbol(),
-                order.getOrderId(),
-                order.getOrderLinkId(),
-                order.getOrderIv(),
-                order.getTriggerPrice(),
-                order.getQty(),
-                order.getPrice(),
-                order.getTakeProfit(),
-                order.getStopLoss(),
-                order.getTpTriggerBy(),
-                order.getSlTriggerBy(),
-                order.getTriggerBy(),
-                order.getTpLimitPrice(),
-                order.getSlLimitPrice())
+                        order.getCategory().getCategoryTypeId(),
+                        order.getSymbol(),
+                        order.getOrderId(),
+                        order.getOrderLinkId(),
+                        order.getOrderIv(),
+                        order.getTriggerPrice(),
+                        order.getQty(),
+                        order.getPrice(),
+                        order.getTakeProfit(),
+                        order.getStopLoss(),
+                        order.getTpTriggerBy(),
+                        order.getSlTriggerBy(),
+                        order.getTriggerBy(),
+                        order.getTpLimitPrice(),
+                        order.getSlLimitPrice())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 }

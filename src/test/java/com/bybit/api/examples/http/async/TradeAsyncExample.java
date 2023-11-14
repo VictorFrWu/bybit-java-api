@@ -1,7 +1,8 @@
 package com.bybit.api.examples.http.async;
 
+import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.restApi.BybitApiAsyncTradeRestClient;
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.trade.PositionIdx;
 import com.bybit.api.client.domain.trade.Side;
@@ -12,11 +13,11 @@ import java.util.Map;
 
 public class TradeAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
         BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
 
         // Place an order
-        var newOrderRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).symbol("XRPUSDT")
+        var newOrderRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT")
                 .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.IMMEDIATE_OR_CANCEL)
                 .positionIdx(PositionIdx.ONE_WAY_MODE).build();
         client.createOrder(newOrderRequest, System.out::println);
@@ -35,7 +36,7 @@ public class TradeAsyncExample {
         client.createOrder(order, System.out::println);
 
         // Cancel All order
-        var cancelAllOrdersRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).baseCoin("USDT").build();
+        var cancelAllOrdersRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).baseCoin("USDT").build();
         client.cancelAllOrder(cancelAllOrdersRequest, System.out::println);
     }
 }

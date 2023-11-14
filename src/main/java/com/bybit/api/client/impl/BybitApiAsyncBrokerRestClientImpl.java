@@ -12,8 +12,8 @@ public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRes
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiAsyncBrokerRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class);
+    public BybitApiAsyncBrokerRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, baseUrl, debugMode);
     }
 
     @Override

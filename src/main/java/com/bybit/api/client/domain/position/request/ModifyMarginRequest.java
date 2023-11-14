@@ -13,7 +13,7 @@
  */
 package com.bybit.api.client.domain.position.request;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.trade.PositionIdx;
 import lombok.Builder;
 import lombok.Getter;

@@ -10,6 +10,7 @@ public class BybitApiConfig {
      * Mainnet domain for URLs.
      */
     public static final String MAINNET_DOMAIN = "https://api.bybit.com";
+    public static final String MAINNET_DOMAIN_BACKUP = "https://api.bytick.com";
     /**
      * Testnet Network URL.
      */

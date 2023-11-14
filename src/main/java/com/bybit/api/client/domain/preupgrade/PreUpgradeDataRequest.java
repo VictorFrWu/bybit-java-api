@@ -1,6 +1,6 @@
 package com.bybit.api.client.domain.preupgrade;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.position.ExecType;
 import com.bybit.api.client.domain.trade.OrderStatus;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class PreUpgradeDataRequest {
-    private ProductType category;
+    private CategoryType category;
     private String symbol;
     private Long startTime;
     private Long endTime;

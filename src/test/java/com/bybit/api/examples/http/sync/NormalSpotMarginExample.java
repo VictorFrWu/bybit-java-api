@@ -3,9 +3,6 @@ package com.bybit.api.examples.http.sync;
 import com.bybit.api.client.domain.spot.CompleteRepayment;
 import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
 import com.bybit.api.client.domain.spot.SwitchStatus;
-import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
-import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
-import com.bybit.api.client.domain.spot.marginTrade.VIPMarginDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class NormalSpotMarginExample {

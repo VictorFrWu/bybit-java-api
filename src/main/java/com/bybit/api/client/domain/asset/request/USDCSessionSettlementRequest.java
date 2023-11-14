@@ -23,7 +23,7 @@
  */
 package com.bybit.api.client.domain.asset.request;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import lombok.*;
 
 @Getter

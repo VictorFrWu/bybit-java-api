@@ -12,8 +12,8 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiPositionRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiPositionRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
 
     // Position endpoints
@@ -21,7 +21,7 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     @Override
     public Object getPositionInfo(PositionDataRequest positionListRequest) {
         return executeSync(bybitApiService.getPositionInfo(
-                positionListRequest.getCategory().getProductTypeId(),
+                positionListRequest.getCategory().getCategoryTypeId(),
                 positionListRequest.getSymbol(),
                 positionListRequest.getBaseCoin(),
                 positionListRequest.getSettleCoin(),
@@ -81,7 +81,7 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     @Override
     public Object getExecutionList(PositionDataRequest executionHistoryRequest) {
         return executeSync(bybitApiService.getExecutionList(
-                executionHistoryRequest.getCategory().getProductTypeId(),
+                executionHistoryRequest.getCategory().getCategoryTypeId(),
                 executionHistoryRequest.getSymbol(),
                 executionHistoryRequest.getOrderId(),
                 executionHistoryRequest.getOrderLinkId(),
@@ -97,7 +97,7 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     @Override
     public Object getClosePnlList(PositionDataRequest closePnlHistoryRequest) {
         return executeSync(bybitApiService.getClosePnlList(
-                closePnlHistoryRequest.getCategory().getProductTypeId(),
+                closePnlHistoryRequest.getCategory().getCategoryTypeId(),
                 closePnlHistoryRequest.getSymbol(),
                 closePnlHistoryRequest.getStartTime(),
                 closePnlHistoryRequest.getEndTime(),

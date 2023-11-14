@@ -1,6 +1,6 @@
 package com.bybit.api.client.service;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.domain.account.AccountDataRequest;
@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.bybit.api.client.constant.Util.generateTransferID;
 import static com.bybit.api.client.constant.Util.listToString;
 
 public class BybitJsonConverter {
@@ -58,7 +59,7 @@ public class BybitJsonConverter {
         TimeInForce defaultTimeInForce = (currentOrderType == TradeOrderType.MARKET) ? TimeInForce.IMMEDIATE_OR_CANCEL : TimeInForce.GOOD_TILL_CANCEL;
 
         return TradeOrderRequest.builder()
-                .category(ProductType.valueOf(category.toUpperCase()))
+                .category(CategoryType.valueOf(category.toUpperCase()))
                 .symbol((String) orderMap.get("symbol"))                          // Required
                 .side(Side.valueOf(orderMap.get("side").toString().toUpperCase())) // Required
                 .orderType(currentOrderType)   // Required
@@ -97,7 +98,7 @@ public class BybitJsonConverter {
 
     private TradeOrderRequest getTradeOrderRequest(JsonNode requestNode, String category) {
         return TradeOrderRequest.builder()
-                .category(ProductType.valueOf(category.toUpperCase()))
+                .category(CategoryType.valueOf(category.toUpperCase()))
                 .symbol(requestNode.get("symbol").asText())
                 .orderType(TradeOrderType.valueOf(requestNode.get("orderType").asText().toUpperCase()))
                 .side(Side.valueOf(requestNode.get("side").asText().toUpperCase()))
@@ -139,9 +140,9 @@ public class BybitJsonConverter {
         throw new BybitApiException("Position index invalid");
     }
 
-    private ProductType getProductTypeFromString(String category) {
-        for (ProductType type : ProductType.values()) {
-            if (type.getProductTypeId().equalsIgnoreCase(category)) {
+    private CategoryType getCategoryTypeFromString(String category) {
+        for (CategoryType type : CategoryType.values()) {
+            if (type.getCategoryTypeId().equalsIgnoreCase(category)) {
                 return type;
             }
         }
@@ -163,7 +164,7 @@ public class BybitJsonConverter {
         JsonNode rootNode = mapper.readTree(json);
         String category = rootNode.has("category") ? rootNode.get("category").asText() : null;
         if (StringUtils.isEmpty(category)) throw new BybitApiException("Please set category for your order");
-        var productType = getProductTypeFromString(category);
+        var CategoryType = getCategoryTypeFromString(category);
         List<TradeOrderRequest> requestList = new ArrayList<>();
 
         JsonNode requestArrayNode = rootNode.get("request");
@@ -173,7 +174,7 @@ public class BybitJsonConverter {
         }
 
         return BatchOrderRequest.builder()
-                .category(productType)
+                .category(CategoryType)
                 .request(requestList)
                 .build();
     }
@@ -181,7 +182,7 @@ public class BybitJsonConverter {
     public BatchOrderRequest convertMapToBatchOrderRequest(Map<String, Object> payload) {
         String category = payload.containsKey("category") ? payload.get("category").toString() : null; // Required
         if (StringUtils.isEmpty(category)) throw new BybitApiException("Please set category for your order");
-        var productType = getProductTypeFromString(category);
+        var CategoryType = getCategoryTypeFromString(category);
         List<Map<String, Object>> orderMaps = (List<Map<String, Object>>) payload.get("request");
         List<TradeOrderRequest> orders = new ArrayList<>();
         for (Map<String, Object> orderMap : orderMaps) {
@@ -190,7 +191,7 @@ public class BybitJsonConverter {
         }
 
         return BatchOrderRequest.builder()
-                .category(productType)
+                .category(CategoryType)
                 .request(orders)
                 .build();
     }
@@ -198,7 +199,7 @@ public class BybitJsonConverter {
     // Position Request
     public SetLeverageRequest mapToSetLeverageRequest(PositionDataRequest positionDataRequest) {
         return SetLeverageRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .buyLeverage(positionDataRequest.getBuyLeverage())
                 .sellLeverage(positionDataRequest.getSellLeverage())
@@ -207,7 +208,7 @@ public class BybitJsonConverter {
 
     public SetAutoAddMarginRequest mapToSetAutoAddMarginRequest(PositionDataRequest positionDataRequest) {
         return SetAutoAddMarginRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .autoAddMargin(positionDataRequest.getAutoAddMargin().getValue())
                 .positionIdx(positionDataRequest.getPositionIdx().getIndex())
@@ -216,7 +217,7 @@ public class BybitJsonConverter {
 
     public ModifyMarginRequest mapToModifyMarginRequest(PositionDataRequest positionDataRequest) {
         return ModifyMarginRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .margin(positionDataRequest.getMargin())
                 .positionIdx(positionDataRequest.getPositionIdx().getIndex())
@@ -225,7 +226,7 @@ public class BybitJsonConverter {
 
     public SetRiskLimitRequest mapToSetRiskLimitRequest(PositionDataRequest positionDataRequest) {
         return SetRiskLimitRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .riskId(positionDataRequest.getRiskId())
                 .positionIdx(positionDataRequest.getPositionIdx().getIndex())
@@ -234,7 +235,7 @@ public class BybitJsonConverter {
 
     public SetTpSlModeRequest mapToSetTpSlModeRequest(PositionDataRequest positionDataRequest) {
         return SetTpSlModeRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .tpSlMode(positionDataRequest.getTpslMode().getDescription())
                 .build();
@@ -242,7 +243,7 @@ public class BybitJsonConverter {
 
     public SwitchPositionModeRequest mapToSwitchPositionModeRequest(PositionDataRequest positionDataRequest) {
         return SwitchPositionModeRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .coin(positionDataRequest.getBaseCoin())
                 .positionMode(positionDataRequest.getPositionMode().getValue())
@@ -251,7 +252,7 @@ public class BybitJsonConverter {
 
     public TradingStopRequest mapToTradingStopRequest(PositionDataRequest positionDataRequest) {
         return TradingStopRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .takeProfit(positionDataRequest.getTakeProfit())
                 .stopLoss(positionDataRequest.getStopLoss())
@@ -272,7 +273,7 @@ public class BybitJsonConverter {
 
     public SwitchMarginRequest mapToSwitchMarginRequest(PositionDataRequest positionDataRequest) {
         return SwitchMarginRequest.builder()
-                .category(positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .tradeMode(positionDataRequest.getTradeMode().getValue())
                 .buyLeverage(positionDataRequest.getBuyLeverage())
@@ -313,7 +314,7 @@ public class BybitJsonConverter {
     // Asset request
     public AssetInternalTransferRequest mapToAssetInternalTransferRequest(AssetDataRequest assetDataRequest) {
         return AssetInternalTransferRequest.builder()
-                .transferId(assetDataRequest.getTransferId() == null ? UUID.randomUUID().toString() : assetDataRequest.getTransferId())
+                .transferId(assetDataRequest.getTransferId() == null ? generateTransferID() : assetDataRequest.getTransferId())
                 .coin(assetDataRequest.getCoin())
                 .amount(assetDataRequest.getAmount())
                 .fromAccountType(assetDataRequest.getFromAccountType().getAccountTypeValue())  // Assuming fromAccountType is an enum and you want to store its name as String in AssetInternalTransferRequest
@@ -323,7 +324,7 @@ public class BybitJsonConverter {
 
     public AssetUniversalTransferRequest mapToAssetUniversalTransferRequest(AssetDataRequest assetDataRequest) {
         return AssetUniversalTransferRequest.builder()
-                .transferId(assetDataRequest.getTransferId() == null ? UUID.randomUUID().toString() : assetDataRequest.getTransferId())
+                .transferId(assetDataRequest.getTransferId() == null ? generateTransferID() : assetDataRequest.getTransferId())
                 .coin(assetDataRequest.getCoin())
                 .amount(assetDataRequest.getAmount())
                 .fromMemberId(assetDataRequest.getFromMemberId())  // Assuming memberId in AssetDataRequest is a String and you want to convert it to Integer in AssetUniversalTransferRequest
@@ -440,7 +441,7 @@ public class BybitJsonConverter {
     public ConfirmNewRiskLimitRequest mapToConfirmNewRiskLimitRequest(PositionDataRequest positionDataRequest) {
         return ConfirmNewRiskLimitRequest
                 .builder()
-                .category(positionDataRequest.getCategory() == null ? null : positionDataRequest.getCategory().getProductTypeId())
+                .category(positionDataRequest.getCategory() == null ? null : positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .build();
     }

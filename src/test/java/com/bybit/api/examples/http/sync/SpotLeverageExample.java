@@ -1,8 +1,6 @@
 package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
-import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageOrdersRecordRequest;
-import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class SpotLeverageExample {

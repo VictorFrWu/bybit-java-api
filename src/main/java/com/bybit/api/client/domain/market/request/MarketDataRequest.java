@@ -1,6 +1,6 @@
 package com.bybit.api.client.domain.market.request;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.market.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class MarketDataRequest {
-    private ProductType category; // always required
+    private CategoryType category; // always required
     private String coin;
     private String symbol;
     private String baseCoin;

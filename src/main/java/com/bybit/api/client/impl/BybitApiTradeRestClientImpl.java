@@ -15,8 +15,8 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiTradeRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiTradeRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
 
     // Trade Data endpoints
@@ -28,7 +28,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     @Override
     public Object getBorrowQuota(TradeOrderRequest borrowQuotaRequest) {
         return executeSync(bybitApiService.getBorrowQuota(
-                borrowQuotaRequest.getCategory().getProductTypeId(),
+                borrowQuotaRequest.getCategory().getCategoryTypeId(),
                 borrowQuotaRequest.getSymbol(),
                 borrowQuotaRequest.getSide() == null ? null : borrowQuotaRequest.getSide().getTransactionSide()
         ));
@@ -37,7 +37,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     @Override
     public Object getHistoryOrderResult(TradeOrderRequest orderHistoryRequest) {
         return executeSync(bybitApiService.getHistoryOrderResult(
-                orderHistoryRequest.getCategory().getProductTypeId(),
+                orderHistoryRequest.getCategory().getCategoryTypeId(),
                 orderHistoryRequest.getSymbol(),
                 orderHistoryRequest.getBaseCoin(),
                 orderHistoryRequest.getSettleCoin(),
@@ -104,7 +104,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     @Override
     public Object amendOrder(TradeOrderRequest order) {
         return executeSync(bybitApiService.amendOrder(
-                order.getCategory().getProductTypeId(),
+                order.getCategory().getCategoryTypeId(),
                 order.getSymbol(),
                 order.getOrderId(),
                 order.getOrderLinkId(),
@@ -125,7 +125,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     @Override
     public Object cancelOrder(TradeOrderRequest order) {
         return executeSync(bybitApiService.cancelOrder(
-                order.getCategory().getProductTypeId(),
+                order.getCategory().getCategoryTypeId(),
                 order.getSymbol(),
                 order.getOrderId(),
                 order.getOrderLinkId(),
@@ -154,7 +154,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     @Override
     public Object cancelAllOrder(TradeOrderRequest order) {
         return executeSync(bybitApiService.cancelAllOrder(
-                order.getCategory().getProductTypeId(),
+                order.getCategory().getCategoryTypeId(),
                 order.getSymbol(),
                 order.getBaseCoin(),
                 order.getSettleCoin(),
@@ -166,7 +166,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     @Override
     public Object getOpenOrders(TradeOrderRequest order) {
         return executeSync(bybitApiService.getOpenOrders(
-                order.getCategory().getProductTypeId(),
+                order.getCategory().getCategoryTypeId(),
                 order.getSymbol(),
                 order.getBaseCoin(),
                 order.getSettleCoin(),

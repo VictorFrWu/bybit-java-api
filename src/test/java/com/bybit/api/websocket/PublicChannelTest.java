@@ -12,7 +12,7 @@ public class PublicChannelTest {
     {
         // create websocket with message handler and in debug mode
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message),true);
+        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
         client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
     }
 
@@ -30,7 +30,7 @@ public class PublicChannelTest {
     {
         // create websocket without message handler and in debug mode
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        var client = factory.newWebsocketClient(true);
+        var client = factory.newWebsocketClient();
         client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
     }
 
@@ -48,7 +48,7 @@ public class PublicChannelTest {
     {
         // Subscribe more than one args
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance(false);
-        var client = factory.newWebsocketClient(true);
+        var client = factory.newWebsocketClient();
         client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
     }
 }

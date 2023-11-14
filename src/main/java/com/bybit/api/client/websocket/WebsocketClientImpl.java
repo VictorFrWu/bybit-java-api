@@ -15,6 +15,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.bybit.api.client.constant.Util.generateTransferID;
+
 @Getter
 public class WebsocketClientImpl implements WebsocketClient {
     private static final String THREAD_PUBLIC_PING = "thread-public-ping";
@@ -28,26 +30,10 @@ public class WebsocketClientImpl implements WebsocketClient {
     private final String apikey;
     private final String secret;
     private final String baseUrl;
+    private final Boolean debugMode;
     private List<String> argNames;
     private String path;
-    private boolean debugMode = false;
 
-    public WebsocketClientImpl(String apikey, String secret, String baseUrl, WebsocketMessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
-        this.apikey = apikey;
-        this.secret = secret;
-        this.baseUrl = baseUrl;
-        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(false);
-    }
-
-    public WebsocketClientImpl(String apikey, String secret, String baseUrl, WebsocketMessageHandler messageHandler, Boolean debugMode) {
-        this.messageHandler = messageHandler;
-        this.apikey = apikey;
-        this.secret = secret;
-        this.baseUrl = baseUrl;
-        this.debugMode = debugMode;
-        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode);
-    }
 
     public WebsocketClientImpl(String apikey, String secret, String baseUrl, Boolean debugMode) {
         this.messageHandler = null;
@@ -58,12 +44,13 @@ public class WebsocketClientImpl implements WebsocketClient {
         webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode);
     }
 
-    public WebsocketClientImpl(String apikey, String secret, String baseUrl) {
-        this.messageHandler = null;
+    public WebsocketClientImpl(String apikey, String secret, String baseUrl, Boolean debugMode, WebsocketMessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
         this.apikey = apikey;
         this.secret = secret;
         this.baseUrl = baseUrl;
-        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(false);
+        this.debugMode = debugMode;
+        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode);
     }
 
     private void setupPublicChannelStream(List<String> argNames, String path) {
@@ -81,7 +68,7 @@ public class WebsocketClientImpl implements WebsocketClient {
     private Map<String, Object> createSubscribeMessage() {
         Map<String, Object> subscribeMsg = new LinkedHashMap<>();
         subscribeMsg.put("op", "subscribe");
-        subscribeMsg.put("req_id", UUID.randomUUID().toString());
+        subscribeMsg.put("req_id", generateTransferID());
         subscribeMsg.put("args", argNames);
         return subscribeMsg;
     }
@@ -118,7 +105,7 @@ public class WebsocketClientImpl implements WebsocketClient {
         String signature = HmacSHA256Signer.auth(val, secret);
 
         var args = List.of(apikey, expires, signature);
-        var authMap = Map.of("req_id", UUID.randomUUID().toString(), "op", "auth", "args", args);
+        var authMap = Map.of("req_id", generateTransferID(), "op", "auth", "args", args);
         return JSON.toJSONString(authMap);
     }
 
