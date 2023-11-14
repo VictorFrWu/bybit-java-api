@@ -150,7 +150,6 @@ public class BybitJsonConverter {
     }
 
     // Trade Mapper
-
     public TradeOrderRequest convertMapToSingleOrderRequest(Map<String, Object> orderMap) {
         return getTradeOrderRequest(orderMap);
     }

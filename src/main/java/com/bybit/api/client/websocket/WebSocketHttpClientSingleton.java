@@ -4,12 +4,11 @@ import lombok.Getter;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocketListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static com.bybit.api.client.log.Slf4jLoggingInterceptor.HandleLoggingInterceptor;
 
 @Getter
 public final class WebSocketHttpClientSingleton {
-    private final Logger LOGGER = LoggerFactory.getLogger(WebSocketHttpClientSingleton.class);
     private final boolean debugMode;
 
     private WebSocketHttpClientSingleton(boolean debugMode) {
@@ -21,12 +20,11 @@ public final class WebSocketHttpClientSingleton {
     }
 
     public OkHttpClient createOkHttpClient(boolean debugMode) {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         if (debugMode) {
-            LOGGER.info("Debug Mode Actived, Trace Request Header and Response Header");
-            builder.addInterceptor(new WebsocketLoggingInterceptor(LOGGER));
+            HandleLoggingInterceptor(clientBuilder);
         }
-        return builder.build();
+        return clientBuilder.build();
     }
 
     public void createWebSocket(String url, WebSocketListener listener) {

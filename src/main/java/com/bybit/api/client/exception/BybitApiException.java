@@ -1,13 +1,17 @@
 package com.bybit.api.client.exception;
 
+import lombok.Getter;
+
 /**
  * An exception which can occur while invoking methods of the Bybit API.
  */
+@Getter
 public class BybitApiException extends RuntimeException {
 
     private static final long serialVersionUID = 3788669840036201041L;
     /**
      * Error response object returned by Bybit API.
+     * -- GETTER --
      */
     private BybitApiError error;
 
@@ -53,13 +57,6 @@ public class BybitApiException extends RuntimeException {
      */
     public BybitApiException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    /**
-     * @return the response error object from Bybit API, or null if no response object was returned (e.g. server returned 500).
-     */
-    public BybitApiError getError() {
-        return error;
     }
 
     @Override
