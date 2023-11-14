@@ -16,8 +16,8 @@ public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiAssetRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiAssetRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
 
     // Asset Endpoints
@@ -34,7 +34,7 @@ public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
     @Override
     public Object getAssetDeliveryRecords(AssetDataRequest deliveryRecordsRequest) {
         return executeSync(bybitApiService.getAssetDeliveryRecords(
-                deliveryRecordsRequest.getCategory() == null ? null : deliveryRecordsRequest.getCategory().getProductTypeId(),
+                deliveryRecordsRequest.getCategory() == null ? null : deliveryRecordsRequest.getCategory().getCategoryTypeId(),
                 deliveryRecordsRequest.getSymbol(),
                 deliveryRecordsRequest.getExpDate(),
                 deliveryRecordsRequest.getLimit(),
@@ -45,7 +45,7 @@ public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
     @Override
     public Object getAssetUSDCSettlementRecords(AssetDataRequest usdcSettlementRequest) {
         return executeSync(bybitApiService.getAssetUSDCSettlementRecords(
-                usdcSettlementRequest.getCategory() == null ? null : usdcSettlementRequest.getCategory().getProductTypeId(),
+                usdcSettlementRequest.getCategory() == null ? null : usdcSettlementRequest.getCategory().getCategoryTypeId(),
                 usdcSettlementRequest.getSymbol(),
                 usdcSettlementRequest.getLimit(),
                 usdcSettlementRequest.getCursor())

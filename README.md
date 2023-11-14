@@ -55,7 +55,7 @@ Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the
         // Client Factory in Mainnet with API key and Secret
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
         // Client Factory in Testnet, with API key and Secret
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", true);
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
         // Client Factory in Mainnet without API key and Secret
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance()
         // Client Factory in Testnet without API key and Secret
@@ -64,10 +64,10 @@ Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the
 
 - Place Single Order
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", true);
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
         BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
         // Place an order
-        var newOrderRequest = TradeOrderRequest.builder().category(ProductType.LINEAR).symbol("XRPUSDT")
+        var newOrderRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT")
                 .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.IMMEDIATE_OR_CANCEL)
                 .positionIdx(PositionIdx.ONE_WAY_MODE).build();
         client.createOrder(newOrderRequest, System.out::println);
@@ -78,11 +78,11 @@ Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
         BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
         // Create a batch order
-        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
                 .price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
-                TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+                TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
                 .price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
-                var createBatchOrders = BatchOrderRequest.builder().category(ProductType.OPTION).request(orderRequests).build();
+                var createBatchOrders = BatchOrderRequest.builder().category(CategoryType.OPTION).request(orderRequests).build();
         client.createBatchOrder(createBatchOrders, System.out::println);
 ```
 - Position Info
@@ -90,7 +90,7 @@ Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
         var client = factory.newAsyncPositionRestClient();
         // Get Position Info
-        var positionListRequest = PositionDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").build();
+        var positionListRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").build();
         client.getPositionInfo(positionListRequest, System.out::println);
 ```
 - Asset Info
@@ -104,14 +104,14 @@ Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the
 ### Http Sync Examples
 - Place Batch Order
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", true);
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
         BybitApiTradeRestClient client = factory.newTradeRestClient();
         // Create a batch order
-        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
                         .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
-                TradeOrderRequest.builder().category(ProductType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+                TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
                         .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
-        var createBatchOrders = BatchOrderRequest.builder().category(ProductType.OPTION).request(orderRequests).build();
+        var createBatchOrders = BatchOrderRequest.builder().category(CategoryType.OPTION).request(orderRequests).build();
         var createBatchRequestResponse = client.createBatchOrder(createBatchOrders);
         System.out.println(createBatchRequestResponse);
 
@@ -141,7 +141,7 @@ Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the
 ```java
         BybitApiClientFactory factory = BybitApiClientFactory.newInstance(true);
         var client = factory.newMarketDataRestClient();
-        var marketKLineRequest = MarketDataRequest.builder().category(ProductType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
+        var marketKLineRequest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
         // Weekly market Kline
         var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
         System.out.println(marketKlineResult);

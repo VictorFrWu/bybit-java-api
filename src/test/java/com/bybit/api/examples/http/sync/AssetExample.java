@@ -1,7 +1,7 @@
 package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.constant.Util;
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
@@ -17,12 +17,12 @@ public class AssetExample {
         System.out.println(coinExchangeRecords);
 
         // Get Delivery Records
-        var deliveryRecordsRequest = AssetDataRequest.builder().category(ProductType.LINEAR).build();
+        var deliveryRecordsRequest = AssetDataRequest.builder().category(CategoryType.LINEAR).build();
         var deliveryRecords = client.getAssetDeliveryRecords(deliveryRecordsRequest);
         System.out.println(deliveryRecords);
 
         // Get USDC settlement
-        var usdcSettlementRequest = AssetDataRequest.builder().category(ProductType.LINEAR).build();
+        var usdcSettlementRequest = AssetDataRequest.builder().category(CategoryType.LINEAR).build();
         var usdcSettlement = client.getAssetUSDCSettlementRecords(usdcSettlementRequest);
         System.out.println(usdcSettlement);
 

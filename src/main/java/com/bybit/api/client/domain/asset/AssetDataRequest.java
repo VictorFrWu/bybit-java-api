@@ -1,6 +1,6 @@
 package com.bybit.api.client.domain.asset;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.request.WithTransferSafeAmount;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class AssetDataRequest {
     private Integer toMemberId;
     private AccountType accountType;
     private WithBonus withBonus;
-    private ProductType category;
+    private CategoryType category;
     private String symbol;
     private String expDate;
     private String subMemberId; // required = true to Get Sub Deposit Records (on-chain)

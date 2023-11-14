@@ -8,7 +8,7 @@
  */
 package com.bybit.api.client.domain.position.request;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.position.TpslMode;
 import lombok.Builder;
 import lombok.Getter;

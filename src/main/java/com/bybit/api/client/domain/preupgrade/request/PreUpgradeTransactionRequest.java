@@ -9,7 +9,7 @@
  */
 package com.bybit.api.client.domain.preupgrade.request;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.preupgrade.TransactionType;
 import lombok.Builder;
 import lombok.Getter;

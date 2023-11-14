@@ -1,14 +1,15 @@
 package com.bybit.api.examples.http.async;
 
+import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.constant.Util;
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.AssetDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class AssetAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
+        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
         var client = factory.newAsyncAssetRestClient();
 
         // Get Coin Exchange Records
@@ -16,11 +17,11 @@ public class AssetAsyncExample {
         client.getAssetCoinExchangeRecords(coinExchangeRecordsRequest, System.out::println);
 
         // Get Delivery Records
-        var deliveryRecordsRequest = AssetDataRequest.builder().category(ProductType.LINEAR).build();
+        var deliveryRecordsRequest = AssetDataRequest.builder().category(CategoryType.LINEAR).build();
         client.getAssetDeliveryRecords(deliveryRecordsRequest, System.out::println);
 
         // Get USDC settlement
-        var usdcSettlementRequest = AssetDataRequest.builder().category(ProductType.LINEAR).build();
+        var usdcSettlementRequest = AssetDataRequest.builder().category(CategoryType.LINEAR).build();
         client.getAssetUSDCSettlementRecords(usdcSettlementRequest, System.out::println);
 
         // Get Asset Info

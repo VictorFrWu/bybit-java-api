@@ -16,15 +16,15 @@ public class BybitApiAsyncPositionRestClientImpl implements BybitApiAsyncPositio
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiAsyncPositionRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiAsyncPositionRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
 
     // Position Data
     @Override
     public void getPositionInfo(PositionDataRequest positionListRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getPositionInfo(
-                positionListRequest.getCategory().getProductTypeId(),
+                positionListRequest.getCategory().getCategoryTypeId(),
                 positionListRequest.getSymbol(),
                 positionListRequest.getBaseCoin(),
                 positionListRequest.getSettleCoin(),
@@ -84,7 +84,7 @@ public class BybitApiAsyncPositionRestClientImpl implements BybitApiAsyncPositio
     @Override
     public void getExecutionList(PositionDataRequest executionHistoryRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getExecutionList(
-                executionHistoryRequest.getCategory().getProductTypeId(),
+                executionHistoryRequest.getCategory().getCategoryTypeId(),
                 executionHistoryRequest.getSymbol(),
                 executionHistoryRequest.getOrderId(),
                 executionHistoryRequest.getOrderLinkId(),
@@ -100,7 +100,7 @@ public class BybitApiAsyncPositionRestClientImpl implements BybitApiAsyncPositio
     @Override
     public void getClosePnlList(PositionDataRequest closePnlHistoryRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getClosePnlList(
-                closePnlHistoryRequest.getCategory().getProductTypeId(),
+                closePnlHistoryRequest.getCategory().getCategoryTypeId(),
                 closePnlHistoryRequest.getSymbol(),
                 closePnlHistoryRequest.getStartTime(),
                 closePnlHistoryRequest.getEndTime(),

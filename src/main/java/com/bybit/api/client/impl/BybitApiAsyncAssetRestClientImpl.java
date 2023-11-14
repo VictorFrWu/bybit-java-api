@@ -18,8 +18,8 @@ public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestC
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiAsyncAssetRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiAsyncAssetRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
 
     // Asset endpoints
@@ -36,7 +36,7 @@ public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestC
     @Override
     public void getAssetDeliveryRecords(AssetDataRequest deliveryRecordsRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getAssetDeliveryRecords(
-                deliveryRecordsRequest.getCategory() == null ? null : deliveryRecordsRequest.getCategory().getProductTypeId(),
+                deliveryRecordsRequest.getCategory() == null ? null : deliveryRecordsRequest.getCategory().getCategoryTypeId(),
                 deliveryRecordsRequest.getSymbol(),
                 deliveryRecordsRequest.getExpDate(),
                 deliveryRecordsRequest.getLimit(),
@@ -47,7 +47,7 @@ public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestC
     @Override
     public void getAssetUSDCSettlementRecords(AssetDataRequest usdcSettlementRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getAssetUSDCSettlementRecords(
-                usdcSettlementRequest.getCategory() == null ? null : usdcSettlementRequest.getCategory().getProductTypeId(),
+                usdcSettlementRequest.getCategory() == null ? null : usdcSettlementRequest.getCategory().getCategoryTypeId(),
                 usdcSettlementRequest.getSymbol(),
                 usdcSettlementRequest.getLimit(),
                 usdcSettlementRequest.getCursor()

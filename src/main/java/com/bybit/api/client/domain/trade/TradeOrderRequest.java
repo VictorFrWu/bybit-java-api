@@ -1,6 +1,6 @@
 package com.bybit.api.client.domain.trade;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.service.*;
@@ -15,8 +15,8 @@ import lombok.ToString;
 @ToString
 @Builder
 public class TradeOrderRequest {
-    @JsonSerialize(using = ProductTypeSerializer.class)
-    private ProductType category;  // always Required
+    @JsonSerialize(using = CategoryTypeSerializer.class)
+    private CategoryType category;  // always Required
 
     private String symbol;
 

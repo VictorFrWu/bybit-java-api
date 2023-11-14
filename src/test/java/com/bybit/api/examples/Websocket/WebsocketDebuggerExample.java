@@ -7,8 +7,7 @@ import java.util.List;
 
 public class WebsocketDebuggerExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        var client = factory.newWebsocketClient(true);
+        var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_TESTNET_DOMAIN, true).newWebsocketClient();
 
         // Orderbook
         client.getPublicChannelStream(List.of("orderbook.50.MATICUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);

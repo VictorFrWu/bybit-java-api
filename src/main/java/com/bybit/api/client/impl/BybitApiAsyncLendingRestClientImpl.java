@@ -12,8 +12,8 @@ public class BybitApiAsyncLendingRestClientImpl implements BybitApiAsyncLendingR
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiAsyncLendingRestClientImpl() {
-        bybitApiService = createService(BybitApiService.class);
+    public BybitApiAsyncLendingRestClientImpl(String apiKey, String apiSecret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, apiSecret, baseUrl, debugMode);
     }
 
     // Institution Lending

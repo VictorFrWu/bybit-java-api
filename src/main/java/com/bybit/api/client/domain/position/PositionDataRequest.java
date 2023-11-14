@@ -1,6 +1,6 @@
 package com.bybit.api.client.domain.position;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.domain.trade.PositionIdx;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class PositionDataRequest {
-    private ProductType category;
+    private CategoryType category;
     private String symbol;
     private String baseCoin;
     private String settleCoin;

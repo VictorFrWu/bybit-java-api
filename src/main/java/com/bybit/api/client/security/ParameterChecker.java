@@ -5,6 +5,8 @@ import com.bybit.api.client.exception.BybitApiException;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.bybit.api.client.constant.Util.generateTransferID;
+
 public final class ParameterChecker {
 
     private ParameterChecker() {
@@ -33,7 +35,7 @@ public final class ParameterChecker {
         if (!(id instanceof Integer || id instanceof String || id == null)) {
             throw new BybitApiException(name + " must be of Int or String type.");
         } else if (id == null || (id instanceof String && ((String) id).isEmpty())) {
-            return UUID.randomUUID().toString();
+            return generateTransferID();
         }
         return id;
     }

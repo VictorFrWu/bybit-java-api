@@ -1,5 +1,6 @@
 package com.bybit.api.examples.http.sync;
 
+import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.domain.user.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
@@ -7,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 public class UserExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
-        var client = factory.newUserRestClient();
+        var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
 
         // create a new sub user
         var subUserRequest = UserDataRequest.builder().username("VictorWuTest3")

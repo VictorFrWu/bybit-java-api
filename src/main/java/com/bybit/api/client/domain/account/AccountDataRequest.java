@@ -1,6 +1,6 @@
 package com.bybit.api.client.domain.account;
 
-import com.bybit.api.client.domain.ProductType;
+import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.preupgrade.TransactionType;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @Builder
 public class AccountDataRequest {
     private AccountType accountType;
-    private ProductType category;
+    private CategoryType category;
     private String currency;
     private String baseCoin;
     private TransactionType transactionType;

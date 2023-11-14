@@ -6,8 +6,7 @@ import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.service.BybitApiClientFactory;
 public class WebsocketPublicChannelExamples {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        var client = factory.newWebsocketClient(true);
+        var client = BybitApiClientFactory.newInstance().newWebsocketClient();
 
         // Subscribe Orderbook more than one args
         client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);

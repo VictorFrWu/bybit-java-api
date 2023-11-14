@@ -13,8 +13,8 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     private final BybitApiService bybitApiService;
 
-    public BybitApiMarketRestClientImpl() {
-        bybitApiService = createService(BybitApiService.class);
+    public BybitApiMarketRestClientImpl(String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, baseUrl, debugMode);
     }
 
     // Market Data endpoints
@@ -39,7 +39,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     public Object getMarketLinesData(MarketDataRequest marketKlineRequest) {
         return executeSync(
                 bybitApiService.getMarketLinesData(
-                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getCategory().getCategoryTypeId(),
                         marketKlineRequest.getSymbol(),
                         marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
                         marketKlineRequest.getStart(),
@@ -53,7 +53,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     public Object getMarketPriceLinesData(MarketDataRequest marketKlineRequest) {
         return executeSync(
                 bybitApiService.getMarketPriceLinesData(
-                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getCategory().getCategoryTypeId(),
                         marketKlineRequest.getSymbol(),
                         marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
                         marketKlineRequest.getStart(),
@@ -67,7 +67,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     public Object getIndexPriceLinesData(MarketDataRequest marketKlineRequest) {
         return executeSync(
                 bybitApiService.getIndexPriceLinesData(
-                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getCategory().getCategoryTypeId(),
                         marketKlineRequest.getSymbol(),
                         marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
                         marketKlineRequest.getStart(),
@@ -81,7 +81,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     public Object getPremiumIndexPriceLinesData(MarketDataRequest marketKlineRequest) {
         return executeSync(
                 bybitApiService.getPremiumIndexPriceLinesData(
-                        marketKlineRequest.getCategory().getProductTypeId(),
+                        marketKlineRequest.getCategory().getCategoryTypeId(),
                         marketKlineRequest.getSymbol(),
                         marketKlineRequest.getMarketInterval() == null ? null : marketKlineRequest.getMarketInterval().getIntervalId(),
                         marketKlineRequest.getStart(),
@@ -94,7 +94,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getInstrumentsInfo(MarketDataRequest instrumentInfoRequest) {
         return executeSync(bybitApiService.getInstrumentsInfo(
-                instrumentInfoRequest.getCategory().getProductTypeId(),
+                instrumentInfoRequest.getCategory().getCategoryTypeId(),
                 instrumentInfoRequest.getSymbol(),
                 instrumentInfoRequest.getInstrumentStatus() == null ? null : instrumentInfoRequest.getInstrumentStatus().getStatus(),
                 instrumentInfoRequest.getBaseCoin(),
@@ -106,7 +106,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getMarketOrderBook(MarketDataRequest marketOrderBookRequest) {
         return executeSync(bybitApiService.getMarketOrderBook(
-                marketOrderBookRequest.getCategory().getProductTypeId(),
+                marketOrderBookRequest.getCategory().getCategoryTypeId(),
                 marketOrderBookRequest.getSymbol(),
                 marketOrderBookRequest.getLimit()
         ));
@@ -115,7 +115,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getMarketTickers(MarketDataRequest marketDataTickerRequest) {
         return executeSync(bybitApiService.getMarketTickers(
-                marketDataTickerRequest.getCategory().getProductTypeId(),
+                marketDataTickerRequest.getCategory().getCategoryTypeId(),
                 marketDataTickerRequest.getSymbol(),
                 marketDataTickerRequest.getBaseCoin(),
                 marketDataTickerRequest.getExpDate()
@@ -125,7 +125,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getFundingHistory(MarketDataRequest fundingHistoryRequest) {
         return executeSync(bybitApiService.getFundingHistory(
-                fundingHistoryRequest.getCategory().getProductTypeId(),
+                fundingHistoryRequest.getCategory().getCategoryTypeId(),
                 fundingHistoryRequest.getSymbol(),
                 fundingHistoryRequest.getStartTime(),
                 fundingHistoryRequest.getEndTime(),
@@ -136,7 +136,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getRecentTradeData(MarketDataRequest recentTradeRequest) {
         return executeSync(bybitApiService.getRecentTradeData(
-                recentTradeRequest.getCategory().getProductTypeId(),
+                recentTradeRequest.getCategory().getCategoryTypeId(),
                 recentTradeRequest.getBaseCoin(),
                 recentTradeRequest.getOptionType() == null ? null : recentTradeRequest.getOptionType().getOpType(),
                 recentTradeRequest.getSymbol(),
@@ -147,7 +147,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getOpenInterest(MarketDataRequest openInterestRequest) {
         return executeSync(bybitApiService.getOpenInterest(
-                openInterestRequest.getCategory().getProductTypeId(),
+                openInterestRequest.getCategory().getCategoryTypeId(),
                 openInterestRequest.getSymbol(),
                 openInterestRequest.getMarketIntervalTime() == null ? null : openInterestRequest.getMarketIntervalTime().getInterval(),
                 openInterestRequest.getStartTime(),
@@ -160,7 +160,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getHistoricalVolatility(MarketDataRequest historicalVolatilityRequest) {
         return executeSync(bybitApiService.getHistoricalVolatility(
-                historicalVolatilityRequest.getCategory().getProductTypeId(),
+                historicalVolatilityRequest.getCategory().getCategoryTypeId(),
                 historicalVolatilityRequest.getBaseCoin(),
                 historicalVolatilityRequest.getOptionPeriod(),
                 historicalVolatilityRequest.getStartTime(),
@@ -171,7 +171,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     @Override
     public Object getRiskLimit(MarketDataRequest marketRiskLimitRequest) {
         return executeSync(bybitApiService.getRiskLimit(
-                marketRiskLimitRequest.getCategory().getProductTypeId(),
+                marketRiskLimitRequest.getCategory().getCategoryTypeId(),
                 marketRiskLimitRequest.getSymbol()));
     }
 
@@ -187,7 +187,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
 
     @Override
     public Object getDeliveryPrice(MarketDataRequest deliveryPriceRequest) {
-        return executeSync(bybitApiService.getDeliveryPrice(deliveryPriceRequest.getCategory().getProductTypeId(),
+        return executeSync(bybitApiService.getDeliveryPrice(deliveryPriceRequest.getCategory().getCategoryTypeId(),
                 deliveryPriceRequest.getSymbol(),
                 deliveryPriceRequest.getBaseCoin(),
                 deliveryPriceRequest.getLimit(),
@@ -197,7 +197,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
 
     @Override
     public Object getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest) {
-        return executeSync(bybitApiService.getMarketAccountRatio(marketAccountRatioRequest.getCategory().getProductTypeId(),
+        return executeSync(bybitApiService.getMarketAccountRatio(marketAccountRatioRequest.getCategory().getCategoryTypeId(),
                 marketAccountRatioRequest.getSymbol(),
                 marketAccountRatioRequest.getDataRecordingPeriod() == null ? null : marketAccountRatioRequest.getDataRecordingPeriod().getPeriod(),
                 marketAccountRatioRequest.getLimit()

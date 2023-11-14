@@ -11,8 +11,8 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.createServic
 public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
-    public BybitApiAsyncAccountRestClientImpl(String apiKey, String secret) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret);
+    public BybitApiAsyncAccountRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
     }
 
     // Account Endpoints
@@ -61,7 +61,7 @@ public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountR
     @Override
     public void getAccountFreeRate(AccountDataRequest getFeeRateRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getAccountFreeRate(
-                getFeeRateRequest.getCategory().getProductTypeId(),
+                getFeeRateRequest.getCategory().getCategoryTypeId(),
                 getFeeRateRequest.getSymbol(),
                 getFeeRateRequest.getBaseCoin()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
@@ -76,7 +76,7 @@ public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountR
     public void getTransactionLog(AccountDataRequest getTransactionLogRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getTransactionLog(
                 getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
-                getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getProductTypeId(),
+                getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getCategoryTypeId(),
                 getTransactionLogRequest.getCurrency(),
                 getTransactionLogRequest.getBaseCoin(),
                 getTransactionLogRequest.getTransactionType() == null ? null : getTransactionLogRequest.getTransactionType().getTransactionTypeId(),
