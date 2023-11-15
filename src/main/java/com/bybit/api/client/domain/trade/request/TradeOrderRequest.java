@@ -1,8 +1,9 @@
-package com.bybit.api.client.domain.trade;
+package com.bybit.api.client.domain.trade.request;
 
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
+import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.service.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;

@@ -20,6 +20,8 @@ import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
+import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.domain.user.IsUta;
 import com.bybit.api.client.domain.user.MemberType;
 import com.bybit.api.client.domain.user.SwitchOption;
@@ -37,7 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.bybit.api.client.constant.Util.generateTransferID;
 import static com.bybit.api.client.constant.Util.listToString;

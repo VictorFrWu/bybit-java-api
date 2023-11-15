@@ -7,21 +7,20 @@ import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.trade.PositionIdx;
 import com.bybit.api.client.domain.trade.Side;
 import com.bybit.api.client.domain.trade.TimeInForce;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
+import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 import java.util.Map;
 
 public class TradeAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
-        BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
+        var client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN).newAsyncTradeRestClient();
 
         // Place an order
         var newOrderRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT")
-                .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.IMMEDIATE_OR_CANCEL)
+                .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.GOOD_TILL_CANCEL)
                 .positionIdx(PositionIdx.ONE_WAY_MODE).build();
         client.createOrder(newOrderRequest, System.out::println);
-
+/*
         // Place an order by map
         Map<String, Object> order =Map.of(
                 "category", "option",
@@ -30,13 +29,13 @@ public class TradeAsyncExample {
                 "orderType", "Limit",
                 "orderIv", "0.1",
                 "qty", "0.1",
-                "price", "5",
-                "orderLinkId", "test_orderLinkId_1"
+                "price", "5"
         );
         client.createOrder(order, System.out::println);
 
         // Cancel All order
         var cancelAllOrdersRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).baseCoin("USDT").build();
         client.cancelAllOrder(cancelAllOrdersRequest, System.out::println);
+*/
     }
 }

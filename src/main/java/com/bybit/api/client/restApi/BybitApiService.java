@@ -14,6 +14,8 @@ import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
+import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
@@ -929,7 +931,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Order created timestamp (ms)
      * &gt; updatedTime	string	Order updated timestamp (ms)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/order/realtime")
     Call<Object> getOpenOrders(@Query("category") String category,
                                @Query("symbol") String symbol,
@@ -1234,25 +1236,22 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/cancel-order
      *
-     * @param category    true	string	Product type
+     * @param tradeOrderRequest
+     * category    true	string	Product type
      * Unified account: spot, linear, inverse, option
      * Classic account: spot, linear, inverse
-     * @param symbol	true	string	Symbol name
-     * @param orderId	false	string	Order ID. Either orderId or orderLinkId is required
-     * @param orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
-     * @param orderFilter	false	string	Valid for spot only. Order,tpslOrder,StopOrder. If not passed, Order by default
+     * symbol	true	string	Symbol name
+     * orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     * orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     * orderFilter	false	string	Valid for spot only. Order,tpslOrder,StopOrder. If not passed, Order by default
      * @return Response Parameters
-     * Parameter	Type	Comments
-     * orderId	string	Order ID
-     * orderLinkId	string	User customised order ID
+     *      * Parameter	Type	Comments
+     *      * orderId	string	Order ID
+     *      * orderLinkId	string	User customised order ID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel")
-    Call<Object> cancelOrder(@Query("category") String category,
-                             @Query("symbol") String symbol,
-                             @Query("orderId") String orderId,
-                             @Query("orderLinkId") String orderLinkId,
-                             @Query("orderFilter") String orderFilter);
+    Call<Object> cancelOrder(@Body TradeOrderRequest tradeOrderRequest);
 
     /**
      * Batch Cancel Order
@@ -1490,7 +1489,7 @@ public interface BybitApiService {
      * kycLevel	string	Personal account kyc level. LEVEL_DEFAULT, LEVEL_1， LEVEL_2
      * kycRegion	string	Personal account kyc region
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/query-api")
     Call<Object> getCurrentAPIKeyInfo();
 
@@ -1521,7 +1520,7 @@ public interface BybitApiService {
      * 3: UTA
      * &gt; remark	string	The remark
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/query-sub-members")
     Call<Object> getSubUIDList();
 
@@ -1555,7 +1554,7 @@ public interface BybitApiService {
      * &gt; uid	string	Master/Sub user Id
      * &gt; accountType	array	Wallets array. SPOT, CONTRACT, FUND, OPTION, UNIFIED. Please check above practice to understand the value
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/get-member-type")
     Call<Object> getUIDWalletType(@Query("memberIds") String memberIds);
 
@@ -1591,7 +1590,7 @@ public interface BybitApiService {
      * depositUpdateTime	string	The update date time (UTC) of deposit data
      * volUpdateTime	string	The update date of volume data time (UTC)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/aff-customer-info")
     Call<Object> getAffiliateUserInfo(@Query("uid") String uid);
 
@@ -1922,7 +1921,7 @@ public interface BybitApiService {
      * Returns the seq updated by the last transaction when there are settings like leverage, risk limit
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/position/list")
     Call<Object> getPositionInfo(@Query("category") String category,
                                  @Query("symbol") String symbol,
@@ -2300,7 +2299,7 @@ public interface BybitApiService {
      * Classic account Spot trade does not have this field
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/execution/list")
     Call<Object> getExecutionList(@Query("category") String category,
                                   @Query("symbol") String symbol,
@@ -2353,7 +2352,7 @@ public interface BybitApiService {
      * &gt; updatedTime	string	The updated time (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/position/closed-pnl")
     Call<Object> getClosePnlList(@Query("category") String category,
                                  @Query("symbol") String symbol,
@@ -2401,7 +2400,7 @@ public interface BybitApiService {
      * &gt; updatedTime	string	The updated time (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/position/closed-pnl")
     Call<Object> getPreUpgradeClosePnl(@Query("category") String category,
                                        @Query("symbol") String symbol,
@@ -2435,7 +2434,7 @@ public interface BybitApiService {
      * &gt; deliveryRpl	string	Realized PnL of the delivery
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/asset/delivery-record")
     Call<Object> getPreUpgradeOptionDelivery(@Query("category") String category,
                                              @Query("symbol") String symbol,
@@ -2512,7 +2511,7 @@ public interface BybitApiService {
      * &gt; updatedTime	string	Order updated timestamp (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/order/history")
     Call<Object> getPreUpgradeOrderHistory(@Query("category") String category,
                                            @Query("symbol") String symbol,
@@ -2580,7 +2579,7 @@ public interface BybitApiService {
      * &gt; closedSize	string	Closed position size
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/execution/list")
     Call<Object> getPreUpgradeTradeHistory(@Query("category") String category,
                                            @Query("symbol") String symbol,
@@ -2638,7 +2637,7 @@ public interface BybitApiService {
      * &gt; orderLinkId	string	User customised order ID
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/account/transaction-log")
     Call<Object> getPreUpgradeTransaction(@Query("category") String category,
                                           @Query("baseCoin") String baseCoin,
@@ -2671,7 +2670,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Created time (ms)
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/asset/settlement-record")
     Call<Object> getPreUpgradeUsdcSettlement(@Query("category") String category,
                                              @Query("symbol") String symbol,
@@ -2734,7 +2733,7 @@ public interface BybitApiService {
      * When marginCollateral=true, then collateralSwitch is meaningful
      * This is a unique field for UNIFIED account
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/wallet-balance")
     Call<Object> getWalletBalance(@Query("accountType") String accountType,
                                   @Query("coin") String coin);
@@ -2806,7 +2805,7 @@ public interface BybitApiService {
      * &gt; freeBorrowedAmount	string	The borrowed amount for interest free
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/borrow-history")
     Call<Object> getAccountBorrowHistory(@Query("currency") String currency,
                                          @Query("startTime") Long startTime,
@@ -2857,7 +2856,7 @@ public interface BybitApiService {
      * When marginCollateral=true, then collateralSwitch is meaningful
      * &gt; collateralRatio	string	Collateral ratio
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/collateral-info")
     Call<Object> getAccountCollateralInfo(@Query("currency") String currency);
 
@@ -2877,7 +2876,7 @@ public interface BybitApiService {
      * &gt; totalVega	string	Vega value
      * &gt; totalTheta	string	Theta value
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/coin-greeks")
     Call<Object> getAccountCoinGeeks(@Query("baseCoin") String baseCoin);
 
@@ -2903,7 +2902,7 @@ public interface BybitApiService {
      * &gt; takerFeeRate	string	Taker fee rate
      * &gt; makerFeeRate	string	Maker fee rate
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/fee-rate")
     Call<Object> getAccountFreeRate(@Query("category") String category,
                                     @Query("symbol") String symbol,
@@ -2918,7 +2917,7 @@ public interface BybitApiService {
      * @return Request Parameters
      * None
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/info")
     Call<Object> getAccountInfo();
 
@@ -2968,7 +2967,7 @@ public interface BybitApiService {
      * &gt; orderLinkId	string	User customised order ID
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/transaction-log")
     Call<Object> getTransactionLog(@Query("accountType") String accountType,
                                    @Query("category") String category,
@@ -3069,7 +3068,7 @@ public interface BybitApiService {
      * true: mmpFrozenUntil is meaningful
      * false: please ignore the value of mmpFrozenUntil
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/mmp-state")
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
 
@@ -3103,7 +3102,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Exchange created timestamp (sec)
      * &gt; exchangeTxId	string	Exchange transaction ID
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/exchange/order-record")
     Call<Object> getAssetCoinExchangeRecords(@Query("fromCoin") String fromCoin,
                                              @Query("toCoin") String toCoin,
@@ -3135,7 +3134,7 @@ public interface BybitApiService {
      * &gt; deliveryRpl	string	Realized PnL of the delivery
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/delivery-record")
     Call<Object> getAssetDeliveryRecords(@Query("category") String category,
                                          @Query("symbol") String symbol,
@@ -3166,7 +3165,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Created time (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/settlement-record")
     Call<Object> getAssetUSDCSettlementRecords(@Query("category") String category,
                                                @Query("symbol") String symbol,
@@ -3194,7 +3193,7 @@ public interface BybitApiService {
      * &gt; &gt; free	string	Free balance
      * &gt; &gt; withdraw	string	Amount in withdrawing
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-asset-info")
     Call<Object> getAssetInfo(@Query("accountType") String accountType,
                               @Query("coin") String coin);
@@ -3225,7 +3224,7 @@ public interface BybitApiService {
      * &gt; transferBalance	string	Transferable balance
      * &gt; bonus	string	The bonus
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-account-coins-balance")
     Call<Object> getAssetAllCoinsBalance(@Query("accountType") String accountType,
                                          @Query("memberId") String memberId,
@@ -3269,7 +3268,7 @@ public interface BybitApiService {
      * &gt; transferSafeAmount	string	Safe amount to transfer. Keep "" if not query
      * &gt; ltvTransferSafeAmount	string	Transferable amount for ins loan account. Keep "" if not query
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-account-coin-balance")
     Call<Object> getAssetSingleCoinBalance(@Query("accountType") String accountType,
                                            @Query("toAccountType") String toAccountType,
@@ -3292,7 +3291,7 @@ public interface BybitApiService {
      * Parameter	Type	Comments
      * list	array	A list of coins (as strings)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-transfer-coin-list")
     Call<Object> getAssetTransferableCoins(@Query("fromAccountType") String fromAccountType, @Query("toAccountType") String toAccountType);
 
@@ -3332,7 +3331,7 @@ public interface BybitApiService {
      * subMemberIds	array string	All sub UIDs under the main UID
      * transferableSubMemberIds	array string	All sub UIDs that have universal transfer enabled
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-sub-member-list")
     Call<Object> getAssetTransferSubUidList();
 
@@ -3389,7 +3388,7 @@ public interface BybitApiService {
      * &gt; status	string	Transfer status
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-inter-transfer-list")
     Call<Object> getAssetInternalTransferRecords(@Query("transferId") String transferId,
                                                  @Query("coin") String coin,
@@ -3431,7 +3430,7 @@ public interface BybitApiService {
      * &gt; status	string	Transfer status
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-universal-transfer-list")
     Call<Object> getAssetUniversalTransferRecords(@Query("transferId") String transferId,
                                                   @Query("coin") String coin,
@@ -3465,7 +3464,7 @@ public interface BybitApiService {
      * &gt; minDepositAmount	string	Minimum deposit amount
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-allowed-list")
     Call<Object> getAssetAllowedDepositCoinInfo(
             @Query("coin") String coin,
@@ -3538,7 +3537,7 @@ public interface BybitApiService {
      * &gt; depositType	integer	The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-record")
     Call<Object> getAssetDepositRecords(
             @Query("coin") String coin,
@@ -3581,7 +3580,7 @@ public interface BybitApiService {
      * &gt; depositType	integer	The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-sub-member-record")
     Call<Object> getAssetSubMembersDepositRecords(@Query("subMemberId") String subMemberId,
                                                   @Query("coin") String coin,
@@ -3620,7 +3619,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Deposit created timestamp
      * nextPageCursor	string	cursor information: used for pagination. Default value: ""
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-internal-record")
     Call<Object> getAssetInternalDepositRecords(@Query("coin") String coin,
                                                 @Query("startTime") Long startTime,
@@ -3646,7 +3645,7 @@ public interface BybitApiService {
      * &gt; chain	string	Chain
      * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-address")
     Call<Object> getAssetMasterDepositAddress(@Query("coin") String coin, @Query("chainType") String chainType);
 
@@ -3673,7 +3672,7 @@ public interface BybitApiService {
      * &gt; chain	string	Chain
      * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-sub-member-address")
     Call<Object> getAssetSubMemberDepositAddress(@Query("coin") String coin,
                                                  @Query("chainType") String chainType,
@@ -3704,7 +3703,7 @@ public interface BybitApiService {
      * &gt; &gt; chainWithdraw	string	The chain status of withdraw. 0: suspend. 1: normal
      * &gt; &gt; withdrawPercentageFee	string	The withdraw fee percentage. It is a real figure, e.g., 0.022 means 2.2%
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/coin/query-info")
     Call<Object> getAssetCoinInfo(@Query("coin") String coin);
 
@@ -3732,7 +3731,7 @@ public interface BybitApiService {
      * &gt; &gt; withdrawableAmount	string	Amount that can be withdrawn
      * &gt; &gt; availableBalance	string	Available balance
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/withdraw/withdrawable-amount")
     Call<Object> getAssetWithdrawalAmount(@Query("coin") String coin);
 
@@ -3771,7 +3770,7 @@ public interface BybitApiService {
      * &gt; updateTime	string	Withdraw updated timestamp (ms)
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/withdraw/query-record")
     Call<Object> getAssetWithdrawalRecords(
             @Query("withdrawID") String withdrawID,
@@ -4014,7 +4013,7 @@ public interface BybitApiService {
      * &gt; &gt; symbol	string	Symbol name
      * &gt; &gt; leverage	string	Maximum leverage
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/ins-loan/loan-order")
     Call<Object> getInsLoanOrders(@Query("orderId") String orderId,
                                   @Query("startTime") Long startTime,
@@ -4045,7 +4044,7 @@ public interface BybitApiService {
      * &gt; businessType	string	Repaid type. 1：normal repayment; 2：repaid by liquidation
      * &gt; status	string	1：outstanding; 2：paid off
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/ins-loan/repaid-history")
     Call<Object> getInsRepayOrders(@Query("startTime") Long startTime,
                                    @Query("endTime") Long endTime,
@@ -4075,7 +4074,7 @@ public interface BybitApiService {
      * &gt; &gt; qty	string	Margin coin quantity
      * &gt; &gt; convertedAmount	string	Margin conversion amount
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/ins-loan/ltv-convert")
     Call<Object> getInsLoanToValue();
 
@@ -4111,7 +4110,7 @@ public interface BybitApiService {
      * &gt; netValue	string	Net value
      * &gt; total	string	Total purchase upper limit
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-lever-token/info")
     Call<Object> getSpotLeverageTokenInfo(@Query("ltCoin") String ltCoin);
 
@@ -4131,7 +4130,7 @@ public interface BybitApiService {
      * basket	string	basket
      * leverage	string	Real leverage calculated by last traded price
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-lever-token/reference")
     Call<Object> getSpotLeverageTokenMarket(@Query("ltCoin") String ltCoin);
 
@@ -4211,7 +4210,7 @@ public interface BybitApiService {
      * &gt; valueCoin	string	Quote coin
      * &gt; serialNo	string	Serial number
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-lever-token/order-record")
     Call<Object> getSpotLeverageRecords(@Query("ltCoin") String ltCoin,
                                         @Query("orderId") String orderId,
@@ -4247,7 +4246,7 @@ public interface BybitApiService {
      * &gt; &gt; maxBorrowingAmount	string	Max borrow amount
      * &gt; vipLevel	string	Vip level
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-margin-trade/data")
     Call<Object> getUtaVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
                                               @Query("currency") String currency);
@@ -4304,7 +4303,7 @@ public interface BybitApiService {
      * spotLeverage	string	Spot margin leverage. Returns "" if the margin trade is turned off
      * spotMarginMode	string	Spot margin status. 1: on, 0: off
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-margin-trade/state")
     Call<Object> getUTASpotMarginTradeLeverageState();
 
@@ -4334,7 +4333,7 @@ public interface BybitApiService {
      * &gt; &gt; maxBorrowingAmount	string	Max borrow amount
      * &gt; vipLevel	string	Vip level
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/data")
     Call<Object> getNormalVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
                                                  @Query("currency") String currency);
@@ -4354,7 +4353,7 @@ public interface BybitApiService {
      * &gt; conversionRate	string	Convert ratio
      * &gt; liquidationOrder	integer	Liquidation order
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/pledge-token")
     Call<Object> getNormalSpotMarginTradeCoinInfo(@Query("coin") String coin);
 
@@ -4376,7 +4375,7 @@ public interface BybitApiService {
      * &gt; borrowingPrecision	integer	Accuracy of loan amount
      * &gt; repaymentPrecision	integer	Accuracy of repayment amount
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/borrow-token")
     Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
 
@@ -4394,7 +4393,7 @@ public interface BybitApiService {
      * loanAbleAmount	string	The estimated amount can be loaned
      * maxLoanAmount	string	The fixed loanable amount per user on platform
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/loan-info")
     Call<Object> getNormalSpotMarginTradeInterestQuota(@Query("coin") String coin);
 
@@ -4424,7 +4423,7 @@ public interface BybitApiService {
      * 4: liquidated
      * switchStatus	integer	0: margin trade off, 1: margin trade on
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/account")
     Call<Object> getNormalSpotMarginTradeAccountInfo();
 
@@ -4509,7 +4508,7 @@ public interface BybitApiService {
      * &gt; status	integer	Status 1：uncleared, 2：cleared
      * &gt; type	integer	Order Type 1: manual loan, 2: auto loan
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/orders")
     Call<Object> getNormalMarginTradeBorrowOrders(@Query("startTime") Long startTime,
                                                   @Query("endTime") Long endTime,
@@ -4542,7 +4541,7 @@ public interface BybitApiService {
      * &gt; &gt; repaidSerialNumber	string	Repayment No. (Borrowing Order)
      * &gt; &gt; transactId	string	Borrowing transaction ID
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/repay-history")
     Call<Object> getNormalMarginTradeRepayOrders(@Query("startTime") Long startTime,
                                                  @Query("endTime") Long endTime,
@@ -4577,7 +4576,7 @@ public interface BybitApiService {
      * &gt; execTime	string	Execution timestamp (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/broker/earning-record")
     Call<Object> getBrokerEarningData(@Query("bizType") String bizType,
                                       @Query("startTime") Long startTime,
@@ -4607,7 +4606,7 @@ public interface BybitApiService {
      * &gt; loanToPoolRatio	string	Capital utilization rate. e.g. 0.0004 means 0.04%
      * &gt; actualApy	string	The actual annualized interest rate
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/info")
     Call<Object> getC2CLendingCoinInfo(@Query("coin") String coin);
 
@@ -4706,7 +4705,7 @@ public interface BybitApiService {
      * &gt; status	string	Order status. 0: Initial, 1: Processing, 2: Success, 10: Failed, 11: Cancelled
      * &gt; updatedTime	string	Updated timestamp (ms)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/history-order")
     Call<Object> getC2cOrdersRecords(@Query("coin") String coin,
                                      @Query("orderId") String orderId,
@@ -4729,7 +4728,7 @@ public interface BybitApiService {
      * principalTotal	string	Total amount redeemable by user
      * quantity	string	Current deposit quantity
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/account")
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 

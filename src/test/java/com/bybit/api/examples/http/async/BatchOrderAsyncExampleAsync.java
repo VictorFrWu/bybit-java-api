@@ -1,6 +1,8 @@
 package com.bybit.api.examples.http.async;
 
 import com.bybit.api.client.config.BybitApiConfig;
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
+import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.restApi.BybitApiAsyncTradeRestClient;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;

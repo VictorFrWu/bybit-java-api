@@ -4,39 +4,17 @@ import com.bybit.api.client.constant.BybitApiConstants;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonPropertyOrder()
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class OrderResponse {
     @JsonProperty("orderId")
     private String orderId;
     @JsonProperty("orderLinkId")
     private String orderLinkId;
-
-    public OrderResponse() {}
-
-    public OrderResponse(String orderId, String orderLinkId) {
-        this.orderId = orderId;
-        this.orderLinkId = orderLinkId;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public String getOrderLinkId() {
-        return orderLinkId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public void setOrderLinkId(String orderLinkId) {
-        this.orderLinkId = orderLinkId;
-    }
-
     @Override
     public String toString() {
         return  new ToStringBuilder(this, BybitApiConstants.TO_STRING_BUILDER_STYLE)

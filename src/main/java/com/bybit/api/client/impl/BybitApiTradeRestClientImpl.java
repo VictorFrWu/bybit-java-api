@@ -1,8 +1,9 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
+import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.restApi.BybitApiTradeRestClient;
-import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import java.io.IOException;
@@ -124,13 +125,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
 
     @Override
     public Object cancelOrder(TradeOrderRequest order) {
-        return executeSync(bybitApiService.cancelOrder(
-                order.getCategory().getCategoryTypeId(),
-                order.getSymbol(),
-                order.getOrderId(),
-                order.getOrderLinkId(),
-                order.getOrderFilter()
-        ));
+        return executeSync(bybitApiService.cancelOrder(order));
     }
 
     @Override

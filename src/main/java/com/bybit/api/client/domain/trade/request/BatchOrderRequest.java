@@ -1,9 +1,7 @@
-package com.bybit.api.client.domain.trade;
+package com.bybit.api.client.domain.trade.request;
 
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.service.CategoryTypeSerializer;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 

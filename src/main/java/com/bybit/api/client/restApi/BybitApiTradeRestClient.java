@@ -1,7 +1,7 @@
 package com.bybit.api.client.restApi;
 
-import com.bybit.api.client.domain.trade.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.TradeOrderRequest;
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
+import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 
 import java.io.IOException;
 import java.util.Map;
