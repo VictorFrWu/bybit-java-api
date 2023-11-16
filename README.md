@@ -4,6 +4,7 @@
 - [About](#about)
 - [Development](#development)
 - [Installation](#installation)
+- [Release Notes](#release-notes)
 - [Usage](#usage)
 - [Contact](#contact)
 - [Contributors](#contributors)
@@ -47,6 +48,32 @@ Gradle Example
 implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.1'
 ```
 Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.1)
+
+## Release-Notes
+### HTTP Sync & Async Request
+- Receive Window Parameter: Added by default (5 seconds).
+- Debug Mode Parameter: Added by default (false) to print request and response headers.
+- Base URL Setting: Allows setting to testnet or mainnet.
+- Log Option Interceptor Parameter: Currently supports SLF4J and OkHttp3; planning to support customized messaging in the next version.
+- Trade API: For create/amend/cancel single & batch orders, now supports dedicated class, map, and JSON.
+- Asset API: Deposit and withdrawal operations will automatically generate a transfer ID.
+
+### WebSocket
+- Ping Pong Interval Parameter: Added by default (20 seconds).
+- Max Alive Time Parameter: Only supports private channel, ranging from 30s to 600s (also supports minutes).
+- Log Option Interceptor for WebSocket: Currently supports SLF4J and OkHttp3; planning to support customized messaging in the next version.
+
+### Improvements
+- Class Mapping for POST Requests: Each POST request will have a class mapped and converted to JSON for the request body.
+- Enhanced Unit Tests: Added more tests for serialization and deserialization of data.
+- Performance Tests for WebSocket: Added tests for maximum argument limits.
+- POST Request Handling: Parameters not supported in query string will be reset to the body.
+- Security Enhancements: Secure check for signed requests implemented.
+### Change Log
+- CategoryType: Renamed from ProductType.
+- Deprecated useTestnet: This function is now deprecated.
+- Serialization Optimization: No reserialization of data before sending POST requests, using conversion instead.
+
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
 ### HttP Client Factory & Websocket Client
@@ -193,7 +220,7 @@ System.out.println(subUser);
 ```java
 private final Integer pingInterval;
 private final WebsocketMessageHandler messageHandler;
-private final String maxAliveTime; // Only valid for private channel
+private final String maxAliveTime; // Only valid for private channel, timeunit in seconds or minutes
 ```
 
 ### Websocket public channel

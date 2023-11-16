@@ -40,7 +40,7 @@ public class BybitApiConstants {
     /**
      * Default Ping Pong Heart Beat Request Interval
      */
-    public static final int DEFAULT_PING_INTERVAL = 15;
+    public static final int DEFAULT_PING_INTERVAL = 20;
     /**
      * Default Maximum Alive Time
      */
