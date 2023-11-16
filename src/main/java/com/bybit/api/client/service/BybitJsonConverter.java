@@ -20,6 +20,7 @@ import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
+import com.bybit.api.client.domain.trade.request.*;
 import com.bybit.api.client.domain.user.IsUta;
 import com.bybit.api.client.domain.user.MemberType;
 import com.bybit.api.client.domain.user.SwitchOption;
@@ -37,7 +38,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.bybit.api.client.constant.Util.generateTransferID;
 import static com.bybit.api.client.constant.Util.listToString;
@@ -67,7 +67,7 @@ public class BybitJsonConverter {
                 .orderId((String) orderMap.getOrDefault("orderId", null))              // Amend Order ID. Either orderId or orderLinkId is required
                 .orderLinkId((String) orderMap.getOrDefault("orderLinkId", null))              // Amend Order ID. Either orderId or orderLinkId is required
                 .triggerDirection((Integer) orderMap.getOrDefault("triggerDirection", null)) // Optional
-                .orderFilter((String) orderMap.getOrDefault("orderFilter", null))  // Optional
+                .orderFilter(orderMap.containsKey("orderFilter") ? OrderFilter.valueOf(orderMap.get("orderFilter").toString().toUpperCase()) : null)  // Optional
                 .triggerPrice((String) orderMap.getOrDefault("triggerPrice", null)) // Optional
                 .triggerBy(orderMap.containsKey("triggerBy") ? TriggerBy.valueOf(orderMap.get("triggerBy").toString().toUpperCase()) : null) // Optional
                 .orderIv((String) orderMap.getOrDefault("orderIv", null))        // Optional
@@ -85,8 +85,8 @@ public class BybitJsonConverter {
                 .tpslMode((String) orderMap.getOrDefault("tpslMode", null))      // Optional
                 .tpLimitPrice((String) orderMap.getOrDefault("tpLimitPrice", null)) // Optional
                 .slLimitPrice((String) orderMap.getOrDefault("slLimitPrice", null)) // Optional
-                .tpOrderType((String) orderMap.getOrDefault("tpOrderType", "null"))  // Optional, default to Market
-                .slOrderType((String) orderMap.getOrDefault("slOrderType", "null"))  // Optional, default to Market
+                .tpOrderType(orderMap.containsKey("tpOrderType") ? TradeOrderType.valueOf(orderMap.get("tpOrderType").toString().toUpperCase()) : null)  // Optional, default to Market
+                .slOrderType(orderMap.containsKey("slOrderType") ? TradeOrderType.valueOf(orderMap.get("slOrderType").toString().toUpperCase()) : null)  // Optional, default to Market
                 .build();
     }
 
@@ -96,7 +96,7 @@ public class BybitJsonConverter {
         return getTradeOrderRequest(requestNode, category);
     }
 
-    private TradeOrderRequest getTradeOrderRequest(JsonNode requestNode, String category) {
+    public TradeOrderRequest getTradeOrderRequest(JsonNode requestNode, String category) {
         return TradeOrderRequest.builder()
                 .category(CategoryType.valueOf(category.toUpperCase()))
                 .symbol(requestNode.get("symbol").asText())
@@ -107,7 +107,7 @@ public class BybitJsonConverter {
                 .triggerDirection(requestNode.has("triggerDirection") ? requestNode.get("triggerDirection").asInt() : null) // Amend Order ID. Either orderId or orderLinkId is required
                 .orderId(requestNode.has("orderId") ? requestNode.get("orderId").asText() : null) // Amend Order ID. Either orderId or orderLinkId is required
                 .orderLinkId(requestNode.has("orderLinkId") ? requestNode.get("orderLinkId").asText() : null)
-                .orderFilter(requestNode.has("orderFilter") ? requestNode.get("orderFilter").asText() : null)
+                .orderFilter(requestNode.has("orderFilter") ? OrderFilter.valueOf(requestNode.get("orderFilter").asText().toUpperCase()) : null)
                 .triggerPrice(requestNode.has("triggerPrice") ? requestNode.get("triggerPrice").asText() : null)
                 .triggerBy(requestNode.has("triggerBy") ? TriggerBy.valueOf(requestNode.get("triggerBy").asText().toUpperCase()) : null)
                 .orderIv(requestNode.has("orderIv") ? requestNode.get("orderIv").asText() : null)
@@ -125,12 +125,12 @@ public class BybitJsonConverter {
                 .tpslMode(requestNode.has("tpslMode") ? requestNode.get("tpslMode").asText() : null)
                 .tpLimitPrice(requestNode.has("tpLimitPrice") ? requestNode.get("tpLimitPrice").asText() : null)
                 .slLimitPrice(requestNode.has("slLimitPrice") ? requestNode.get("slLimitPrice").asText() : null)
-                .tpOrderType(requestNode.has("tpOrderType") ? requestNode.get("tpOrderType").asText() : "Market")
-                .slOrderType(requestNode.has("slOrderType") ? requestNode.get("slOrderType").asText() : "Market")
+                .tpOrderType(requestNode.has("tpOrderType") ? TradeOrderType.valueOf(requestNode.get("tpOrderType").asText().toUpperCase()) : null)
+                .slOrderType(requestNode.has("slOrderType") ? TradeOrderType.valueOf(requestNode.get("slOrderType").asText().toUpperCase()) : null)
                 .build();
     }
 
-    private PositionIdx getOrderPositionIndexFromString(String positionIdxValue) {
+    public PositionIdx getOrderPositionIndexFromString(String positionIdxValue) {
         int index = Integer.parseInt(positionIdxValue);
         for (PositionIdx positionIdx : PositionIdx.values()) {
             if (positionIdx.getIndex() == index) {
@@ -140,7 +140,7 @@ public class BybitJsonConverter {
         throw new BybitApiException("Position index invalid");
     }
 
-    private CategoryType getCategoryTypeFromString(String category) {
+    public CategoryType getCategoryTypeFromString(String category) {
         for (CategoryType type : CategoryType.values()) {
             if (type.getCategoryTypeId().equalsIgnoreCase(category)) {
                 return type;
@@ -193,6 +193,117 @@ public class BybitJsonConverter {
                 .category(CategoryType)
                 .request(orders)
                 .build();
+    }
+
+    public PlaceBatchOrderRequest convertToPlaceBatchOrderRequest(BatchOrderRequest batchOrderRequest) {
+        List<PlaceOrderRequest> list = new ArrayList<>();
+        for (TradeOrderRequest tradeOrderRequest : batchOrderRequest.getRequest()) {
+            list.add(convertTradeToPlaceOrderRequest(tradeOrderRequest));
+        }
+        return PlaceBatchOrderRequest.builder()
+                .category(batchOrderRequest.getCategory())
+                .request(list)
+                .build();
+    }
+
+    public AmendBatchOrderRequest convertToAmendBatchOrderRequest(BatchOrderRequest batchOrderRequest) {
+        List<AmendOrderRequest> list = new ArrayList<>();
+        for (TradeOrderRequest tradeOrderRequest : batchOrderRequest.getRequest()) {
+            list.add(convertTradeToAmendOrderRequest(tradeOrderRequest));
+        }
+        return AmendBatchOrderRequest.builder()
+                .category(batchOrderRequest.getCategory())
+                .request(list)
+                .build();
+    }
+
+    public CancelBatchOrderRequest convertToCancelBatchOrderRequest(BatchOrderRequest batchOrderRequest) {
+        List<CancelOrderRequest> list = new ArrayList<>();
+        for (TradeOrderRequest tradeOrderRequest : batchOrderRequest.getRequest()) {
+            list.add(convertTradeToCancelOrderRequest(tradeOrderRequest));
+        }
+        return CancelBatchOrderRequest.builder()
+                .category(batchOrderRequest.getCategory())
+                .request(list)
+                .build();
+    }
+
+    public CancelOrderRequest convertTradeToCancelOrderRequest(TradeOrderRequest tradeOrderRequest) {
+        return CancelOrderRequest.builder()
+                .category(tradeOrderRequest.getCategory() == null ? null : tradeOrderRequest.getCategory().getCategoryTypeId())
+                .symbol(tradeOrderRequest.getSymbol())
+                .orderId(tradeOrderRequest.getOrderId())
+                .orderLinkId(tradeOrderRequest.getOrderLinkId()) // Optional
+                .orderFilter(tradeOrderRequest.getOrderFilter() == null ? null : tradeOrderRequest.getOrderFilter().getOrderFilterType())
+                .build();
+    }
+
+    public CancelAllOrdersRequest convertTradeToCancelAllOrdersRequest(TradeOrderRequest tradeOrderRequest) {
+        return CancelAllOrdersRequest.builder()
+                .category(tradeOrderRequest.getCategory() == null ? null : tradeOrderRequest.getCategory().getCategoryTypeId())
+                .symbol(tradeOrderRequest.getSymbol())
+                .baseCoin(tradeOrderRequest.getBaseCoin())
+                .settleCoin(tradeOrderRequest.getSettleCoin())
+                .orderFilter(tradeOrderRequest.getOrderFilter() == null ? null : tradeOrderRequest.getOrderFilter().getOrderFilterType())
+                .stopOrderType(tradeOrderRequest.getStopOrderType() == null ? null : tradeOrderRequest.getStopOrderType().getDescription())
+                .build();
+    }
+
+    public AmendOrderRequest convertTradeToAmendOrderRequest(TradeOrderRequest tradeOrderRequest) {
+        return AmendOrderRequest.builder()
+                .category(tradeOrderRequest.getCategory() == null ? null : tradeOrderRequest.getCategory().getCategoryTypeId())
+                .symbol(tradeOrderRequest.getSymbol())
+                .qty(tradeOrderRequest.getQty())
+                .price(tradeOrderRequest.getPrice())
+                .triggerPrice(tradeOrderRequest.getTriggerPrice()) // Optional
+                .triggerBy(tradeOrderRequest.getTriggerBy() == null ? null : tradeOrderRequest.getTriggerBy().getTrigger()) // Optional
+                .orderIv(tradeOrderRequest.getOrderIv())        // Optional
+                .orderId(tradeOrderRequest.getOrderId())
+                .orderLinkId(tradeOrderRequest.getOrderLinkId()) // Optional
+                .takeProfit(tradeOrderRequest.getTakeProfit())  // Optional
+                .stopLoss(tradeOrderRequest.getStopLoss())      // Optional
+                .tpTriggerBy(tradeOrderRequest.getTpTriggerBy() == null ? null : TriggerBy.LAST_PRICE.getTrigger()) // Optional, default to LastPrice
+                .slTriggerBy(tradeOrderRequest.getSlTriggerBy() == null ? null : TriggerBy.LAST_PRICE.getTrigger()) // Optional, default to LastPrice
+                .tpslMode(tradeOrderRequest.getTpslMode())      // Optional
+                .tpLimitPrice(tradeOrderRequest.getTpLimitPrice()) // Optional
+                .slLimitPrice(tradeOrderRequest.getSlLimitPrice()) // Optional
+                .build();
+    }
+
+    public PlaceOrderRequest convertTradeToPlaceOrderRequest(TradeOrderRequest tradeOrderRequest) {
+        return PlaceOrderRequest.builder()
+                .category(tradeOrderRequest.getCategory() == null ? null : tradeOrderRequest.getCategory().getCategoryTypeId())
+                .symbol(tradeOrderRequest.getSymbol())
+                .isLeverage(tradeOrderRequest.getIsLeverage())
+                .side(tradeOrderRequest.getSide().getTransactionSide())
+                .orderType(tradeOrderRequest.getOrderType().getOType())
+                .qty(tradeOrderRequest.getQty())
+                .triggerDirection(tradeOrderRequest.getTriggerDirection()) // Optional
+                .orderFilter(tradeOrderRequest.getOrderFilter() == null ? null : tradeOrderRequest.getOrderFilter().getOrderFilterType())  // Optional
+                .triggerPrice(tradeOrderRequest.getTriggerPrice()) // Optional
+                .triggerBy(tradeOrderRequest.getTriggerBy() == null ? null : tradeOrderRequest.getTriggerBy().getTrigger()) // Optional
+                .orderIv(tradeOrderRequest.getOrderIv())        // Optional
+                .timeInForce(tradeOrderRequest.getTimeInForce() == null ? null : tradeOrderRequest.getTimeInForce().getDescription()) // Optional and default value depends on order type
+                .positionIdx(tradeOrderRequest.getPositionIdx() == null ? null : tradeOrderRequest.getPositionIdx().getIndex()) // Optional
+                .orderLinkId(tradeOrderRequest.getOrderLinkId()) // Optional
+                .takeProfit(tradeOrderRequest.getTakeProfit())  // Optional
+                .stopLoss(tradeOrderRequest.getStopLoss())      // Optional
+                .tpTriggerBy(tradeOrderRequest.getTpTriggerBy() == null ? null : TriggerBy.LAST_PRICE.getTrigger()) // Optional, default to LastPrice
+                .slTriggerBy(tradeOrderRequest.getSlTriggerBy() == null ? null : TriggerBy.LAST_PRICE.getTrigger()) // Optional, default to LastPrice
+                .reduceOnly(tradeOrderRequest.getReduceOnly())  // Optional, default to false
+                .closeOnTrigger(tradeOrderRequest.getCloseOnTrigger())  // Optional, default to false
+                .smpType(tradeOrderRequest.getSmpType() == null ? null : tradeOrderRequest.getSmpType().getDescription()) // Optional, replace DEFAULT_SMP_TYPE_VALUE with a real default if needed
+                .mmp(tradeOrderRequest.getMmp())               // Optional, default to false
+                .tpslMode(tradeOrderRequest.getTpslMode())      // Optional
+                .tpLimitPrice(tradeOrderRequest.getTpLimitPrice()) // Optional
+                .slLimitPrice(tradeOrderRequest.getSlLimitPrice()) // Optional
+                .tpOrderType(tradeOrderRequest.getTpOrderType() == null ? null : tradeOrderRequest.getTpOrderType().getOType())  // Optional, default to Market
+                .slOrderType(tradeOrderRequest.getSlOrderType() == null ? null : tradeOrderRequest.getSlOrderType().getOType())  // Optional, default to Market
+                .build();
+    }
+
+    public SetDcpRequest convertMapToDcpRequest(TradeOrderRequest tradeOrderRequest) {
+        return SetDcpRequest.builder().timeWindow(tradeOrderRequest.getTimeWindow()).build();
     }
 
     // Position Request
@@ -264,8 +375,8 @@ public class BybitJsonConverter {
                 .slSize(positionDataRequest.getSlSize())
                 .tpLimitPrice(positionDataRequest.getTpLimitPrice())
                 .slLimitPrice(positionDataRequest.getSlLimitPrice())
-                .tpOrderType(positionDataRequest.getTpOrderType().getOType())
-                .slOrderType(positionDataRequest.getSlOrderType().getOType())
+                .tpOrderType(positionDataRequest.getTpOrderType() == null ? null : positionDataRequest.getTpOrderType().getOType())
+                .slOrderType(positionDataRequest.getSlOrderType() == null ? null : positionDataRequest.getSlOrderType().getOType())
                 .positionIdx(positionDataRequest.getPositionIdx().getIndex())
                 .build();
     }

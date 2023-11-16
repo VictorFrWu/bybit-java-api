@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.bybit.api.client.security.HmacSHA256Signer.sign;
@@ -33,10 +32,7 @@ public class AuthenticationInterceptor implements Interceptor {
         Request original = chain.request();
         Request.Builder newRequestBuilder = original.newBuilder();
 
-        boolean isApiKeyRequired = original.header(BybitApiConstants.API_KEY_HEADER) != null;
-        boolean isSignatureRequired = original.header(BybitApiConstants.SIGN_HEADER) != null;
-        newRequestBuilder.removeHeader(BybitApiConstants.API_KEY_HEADER)
-                .removeHeader(BybitApiConstants.SIGN_HEADER);
+        boolean isSignatureRequired = original.header(BybitApiConstants.SIGN_TYPE_HEADER) != null;
 
         // Endpoint requires signing the payload
         String payload = "";
@@ -52,12 +48,11 @@ public class AuthenticationInterceptor implements Interceptor {
             newRequestBuilder.post(body);
         }
 
-        if (isApiKeyRequired || isSignatureRequired) {
+        if (isSignatureRequired) {
             long timestamp = Util.generateTimestamp();
             String signature = sign(apiKey, secret, StringUtils.isEmpty(payload) ? ""  : payload, timestamp, BybitApiConstants.DEFAULT_RECEIVING_WINDOW);
             newRequestBuilder.addHeader(BybitApiConstants.API_KEY_HEADER, apiKey);
             newRequestBuilder.addHeader(BybitApiConstants.SIGN_HEADER, signature);
-            newRequestBuilder.addHeader(BybitApiConstants.SIGN_TYPE_HEADER, BybitApiConstants.DEFAULT_SIGNATURE_TYPE);
             newRequestBuilder.addHeader(BybitApiConstants.TIMESTAMP_HEADER, String.valueOf(timestamp));
             newRequestBuilder.addHeader(BybitApiConstants.RECV_WINDOW_HEADER, String.valueOf(BybitApiConstants.DEFAULT_RECEIVING_WINDOW));
             newRequestBuilder.addHeader(BybitApiConstants.API_CONTENT_TYPE, BybitApiConstants.DEFAULT_CONTENT_TYPE);

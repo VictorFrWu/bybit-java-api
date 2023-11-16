@@ -14,6 +14,7 @@ import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
+import com.bybit.api.client.domain.trade.request.*;
 import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
@@ -816,36 +817,6 @@ public interface BybitApiService {
                                 @Query("side") String side);
 
     /**
-     * Set Disconnect Cancel All
-     * Covers: Option (Unified Account)
-     *
-     * INFO
-     * What is Disconnection Protect (DCP)?
-     * Based on the websocket private connection and heartbeat mechanism, Bybit provides disconnection protection function. The timing starts from the first disconnection. If the Bybit server does not receive the reconnection from the client for more than 10 (default) seconds and resumes the heartbeat "ping", then the client is in the state of "disconnection protect", all active option orders of the client will be cancelled automatically. If within 10 seconds, the client reconnects and resumes the heartbeat "ping", the timing will be reset and restarted at the next disconnection.
-     *
-     * How to enable DCP
-     * If you need to turn it on/off, you can contact your client manager for consultation and application. The default time window is 10 seconds.
-     *
-     * Applicable
-     * Effective for options only.
-     *
-     * TIP
-     * After the request is successfully sent, the system needs a certain time to take effect. It is recommended to query or set again after 10 seconds
-     *
-     * You can use this endpoint to get your current DCP configuration.
-     * Your private websocket connection must subscribe "dcp" topic in order to trigger DCP successfully
-     *
-     * https://bybit-exchange.github.io/docs/v5/order/dcp
-     *
-     * @param timeWindow	true	integer	Disconnection timing window time. [3, 300], unit: second
-     * @return Response Parameters
-     * None
-     */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/order/disconnected-cancel-all")
-    Call<Object> setDisconnectCancelAllTime(@Query("timeWindow") Integer timeWindow);
-
-    /**
      * Get Open Orders
      * Query unfilled or partially filled orders in real-time. To query older order records, please use the order history interface.
      *
@@ -929,7 +900,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Order created timestamp (ms)
      * &gt; updatedTime	string	Order updated timestamp (ms)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/order/realtime")
     Call<Object> getOpenOrders(@Query("category") String category,
                                @Query("symbol") String symbol,
@@ -941,6 +912,36 @@ public interface BybitApiService {
                                @Query("orderFilter") String orderFilter,
                                @Query("limit") Integer limit,
                                @Query("cursor") String cursor);
+
+    /**
+     * Set Disconnect Cancel All
+     * Covers: Option (Unified Account)
+     *
+     * INFO
+     * What is Disconnection Protect (DCP)?
+     * Based on the websocket private connection and heartbeat mechanism, Bybit provides disconnection protection function. The timing starts from the first disconnection. If the Bybit server does not receive the reconnection from the client for more than 10 (default) seconds and resumes the heartbeat "ping", then the client is in the state of "disconnection protect", all active option orders of the client will be cancelled automatically. If within 10 seconds, the client reconnects and resumes the heartbeat "ping", the timing will be reset and restarted at the next disconnection.
+     *
+     * How to enable DCP
+     * If you need to turn it on/off, you can contact your client manager for consultation and application. The default time window is 10 seconds.
+     *
+     * Applicable
+     * Effective for options only.
+     *
+     * TIP
+     * After the request is successfully sent, the system needs a certain time to take effect. It is recommended to query or set again after 10 seconds
+     *
+     * You can use this endpoint to get your current DCP configuration.
+     * Your private websocket connection must subscribe "dcp" topic in order to trigger DCP successfully
+     *
+     * https://bybit-exchange.github.io/docs/v5/order/dcp
+     *
+     * @param setDcpRequest timeWindow	true	integer	Disconnection timing window time. [3, 300], unit: second
+     * @return Response Parameters
+     * None
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/order/disconnected-cancel-all")
+    Call<Object> setDisconnectCancelAllTime(@Body SetDcpRequest setDcpRequest);
 
     /**
      * Place Order
@@ -987,7 +988,7 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/create-order#http-request
      *
-     * @param tradeOrderRequest category	true	string	Product type
+     * @param placeOrderRequest category	true	string	Product type
      *                                                      Unified account: spot, linear, inverse, option
      *                                                      Classic account: spot, linear, inverse
      *                          symbol	true	string	Symbol name
@@ -1063,7 +1064,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create")
-    Call<Object> createOrder(@Body TradeOrderRequest tradeOrderRequest);
+    Call<Object> createOrder(@Body PlaceOrderRequest placeOrderRequest);
 
     /**
      * Batch Place Order
@@ -1081,7 +1082,7 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/batch-place
      *
-     * @param batchOrderRequest category	true	string	Product type. linear, option
+     * @param placeBatchOrderRequest category	true	string	Product type. linear, option
      *                          request	true	array	Object
      *                           &gt;  symbol	true	string	Symbol name
      *                           &gt;  side	true	string	Buy, Sell
@@ -1141,69 +1142,6 @@ public interface BybitApiService {
      *                                                              Valid for linear
      *                           &gt;  slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
      *                                                              Valid for linear
-     * @return Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. linear, option
-     * request	true	array	Object
-     *  &gt;  symbol	true	string	Symbol name
-     *  &gt;  side	true	string	Buy, Sell
-     *  &gt;  orderType	true	string	Market, Limit
-     *  &gt;  qty	true	string	Order quantity
-     * In particular, for linear, if you pass qty="0", you can close the whole position of current symbol
-     *  &gt;  price	false	string	Order price
-     * Market order will ignore this field
-     * Please check the min price and price precision from instrument info endpoint
-     * If you have position, price needs to be better than liquidation price
-     *  &gt;  triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
-     * 1: triggered when market price rises to triggerPrice
-     * 2: triggered when market price falls to triggerPrice
-     * Valid for linear
-     *  &gt;  triggerPrice	false	string
-     * For futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice  &gt;  market price
-     * Else, triggerPrice  &gt; market price
-     *  &gt;  triggerBy	false	string	Conditional order param. Trigger price type. LastPrice, IndexPrice, MarkPrice
-     *  &gt;  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
-     *  &gt;  timeInForce	false	string	Time in force
-     * Market order will use IOC directly
-     * If not passed, GTC is used by default
-     *  &gt;  positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps have hedge mode)
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     *  &gt;  orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
-     * Futures and Perps: orderLinkId rules:
-     * optional param
-     * always unique
-     * option orderLinkId rules:
-     * required param
-     * always unique
-     *  &gt;  takeProfit	false	string	Take profit price, valid for linear
-     *  &gt;  stopLoss	false	string	Stop loss price, valid for linear
-     *  &gt;  tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice.
-     * Valid for linear
-     *  &gt;  slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice
-     * Valid for linear
-     *  &gt;  reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
-     * You must specify it as true when you are about to close/reduce the position
-     * When reduceOnly is true, take profit/stop loss cannot be set
-     * Valid for linear, and option
-     *  &gt;  closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
-     * Valid for linear
-     *  &gt;  smpType	false	string	Smp execution type. What is SMP?
-     *  &gt;  mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
-     *  &gt;  tpslMode	false	string	TP/SL mode
-     * Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
-     * Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
-     * Valid for linear
-     *  &gt;  tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
-     * Valid for linear
-     *  &gt;  slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
-     * Valid for linear
-     *  &gt;  tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
-     * Valid for linear
-     *  &gt;  slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
-     * Valid for linear
      * @return Response Parameters
      * Parameter	Type	Comments
      * result	Object
@@ -1220,7 +1158,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create-batch")
-    Call<Object> createBatchOrder(@Body BatchOrderRequest batchOrderRequest);
+    Call<Object> createBatchOrder(@Body PlaceBatchOrderRequest placeBatchOrderRequest);
 
     /**
      * Cancel Order
@@ -1234,25 +1172,22 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/cancel-order
      *
-     * @param category    true	string	Product type
+     * @param cancelOrderRequest
+     * category    true	string	Product type
      * Unified account: spot, linear, inverse, option
      * Classic account: spot, linear, inverse
-     * @param symbol	true	string	Symbol name
-     * @param orderId	false	string	Order ID. Either orderId or orderLinkId is required
-     * @param orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
-     * @param orderFilter	false	string	Valid for spot only. Order,tpslOrder,StopOrder. If not passed, Order by default
+     * symbol	true	string	Symbol name
+     * orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     * orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     * orderFilter	false	string	Valid for spot only. Order,tpslOrder,StopOrder. If not passed, Order by default
      * @return Response Parameters
-     * Parameter	Type	Comments
-     * orderId	string	Order ID
-     * orderLinkId	string	User customised order ID
+     *      * Parameter	Type	Comments
+     *      * orderId	string	Order ID
+     *      * orderLinkId	string	User customised order ID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel")
-    Call<Object> cancelOrder(@Query("category") String category,
-                             @Query("symbol") String symbol,
-                             @Query("orderId") String orderId,
-                             @Query("orderLinkId") String orderLinkId,
-                             @Query("orderFilter") String orderFilter);
+    Call<Object> cancelOrder(@Body CancelOrderRequest cancelOrderRequest);
 
     /**
      * Batch Cancel Order
@@ -1268,7 +1203,7 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/batch-cancel#http-request
      *
-     * @param batchOrderRequest category	true	string	Product type. linear, option
+     * @param cancelBatchOrderRequest category	true	string	Product type. linear, option
      *                          request	true	array	Object
      *                          &gt; symbol	true	string	Symbol name
      *                          &gt; orderId	false	string	Order ID. Either orderId or orderLinkId is required
@@ -1288,7 +1223,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel-batch")
-    Call<Object> cancelBatchOrder(@Body BatchOrderRequest batchOrderRequest);
+    Call<Object> cancelBatchOrder(@Body CancelBatchOrderRequest cancelBatchOrderRequest);
 
     /**
      * Cancel All Orders
@@ -1303,24 +1238,24 @@ public interface BybitApiService {
      * NOTE: category=spot, you can cancel all spot open orders (normal order by default) without passing other params.
      *
      * https://bybit-exchange.github.io/docs/v5/order/cancel-all
-     *
-     * @param category    true	string	Product type
-     * Unified account: spot, linear, inverse, option
-     * Classic account: spot, linear, inverse
-     * @param symbol	false	string	Symbol name. linear and inverse: Required if not passing baseCoin or settleCoin
-     * @param baseCoin    false	string	Base coin
-     * linear and inverse(Classic account): If cancel all by baseCoin, it will cancel all linear and inverse orders. Required if not passing symbol or settleCoin
-     * linear and inverse(Unified account): If cancel all by baseCoin, it will cancel all corresponding category orders. Required if not passing symbol or settleCoin
-     * Classic spot: invalid
-     * @param settleCoin    false	string	Settle coin
-     * linear and inverse: Required if not passing symbol or baseCoin
-     * Does not support spot
-     * @param orderFilter    false	string
-     * category=spot, you can pass Order, tpslOrder, StopOrder. If not passed, Order by default
-     * category=linear or inverse, you can pass Order, StopOrder. If not passed, all kinds of orders will be cancelled, like active order, conditional order, TP/SL order and trailing stop order
-     * category=option, you can pass Order. No matter it is passed or not, always cancel all orders
-     * @param stopOrderType    false	string	Stop order type, Stop
-     * Only used for category=linear or inverse and orderFilter=StopOrder,you can cancel conditional orders except TP/SL order and Trailing stop orders with this param
+     * @param cancelAllOrdersRequest
+     * category    true	string	Product type
+     *       Unified account: spot, linear, inverse, option
+     *       Classic account: spot, linear, inverse
+     * symbol	false	string	Symbol name. linear and inverse: Required if not passing baseCoin or settleCoin
+     * baseCoin    false	string	Base coin
+     *   linear and inverse(Classic account): If cancel all by baseCoin, it will cancel all linear and inverse orders. Required if not passing symbol or settleCoin
+     *   linear and inverse(Unified account): If cancel all by baseCoin, it will cancel all corresponding category orders. Required if not passing symbol or settleCoin
+     *   Classic spot: invalid
+     * settleCoin    false	string	Settle coin
+     *   linear and inverse: Required if not passing symbol or baseCoin
+     *   Does not support spot
+     * orderFilter    false	string
+     *   category=spot, you can pass Order, tpslOrder, StopOrder. If not passed, Order by default
+     *   category=linear or inverse, you can pass Order, StopOrder. If not passed, all kinds of orders will be cancelled, like active order, conditional order, TP/SL order and trailing stop order
+     *   category=option, you can pass Order. No matter it is passed or not, always cancel all orders
+     * stopOrderType    false	string	Stop order type, Stop
+     *          Only used for category=linear or inverse and orderFilter=StopOrder,you can cancel conditional orders except TP/SL order and Trailing stop orders with this param
      * @return Response Parameters
      * Linear/Inverse/Option
      * Parameter	Type	Comments
@@ -1334,12 +1269,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel-all")
-    Call<Object> cancelAllOrder(@Query("category") String category,
-                                @Query("symbol") String symbol,
-                                @Query("baseCoin") String baseCoin,
-                                @Query("settleCoin") String settleCoin,
-                                @Query("orderFilter") String orderFilter,
-                                @Query("stopOrderType") String stopOrderType);
+    Call<Object> cancelAllOrder(@Body CancelAllOrdersRequest cancelAllOrdersRequest);
 
     /**
      * Amend Order
@@ -1351,44 +1281,34 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/amend-order
      *
-     * @param category    true	string	Product type
-     * Unified account: linear, inverse, option
-     * Classic account: linear, inverse. Please note that category is not involved with business logic
-     * @param symbol	true	string	Symbol name
-     * @param orderId	false	string	Order ID. Either orderId or orderLinkId is required
-     * @param orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
-     * @param orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
-     * @param triggerPrice    false	string	If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice &gt; market price
-     * Else, triggerPrice &lt;  market price
-     * @param qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
-     * @param price	false	string	Order price after modification. Do not pass it if not modify the price
-     * @param takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
-     * @param stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
-     * @param tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
-     * @param slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
-     * @param triggerBy	false	string	Trigger price type
-     * @param tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
-     * @param slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
-     * @return
+     * @param amendOrderRequest
+     *  category    true	string	Product type
+     *    Unified account: linear, inverse, option
+     *    Classic account: linear, inverse. Please note that category is not involved with business logic
+     *  symbol	true	string	Symbol name
+     *  orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     *  orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     *  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
+     *  triggerPrice    false	string	If you expect the price to rise to trigger your conditional order, make sure:
+     *    triggerPrice &gt; market price
+     *    Else, triggerPrice &lt;  market price
+     *  qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
+     *  price	false	string	Order price after modification. Do not pass it if not modify the price
+     *  takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
+     *  stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
+     *  tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
+     *  slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
+     *  triggerBy	false	string	Trigger price type
+     *  tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
+     *  slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * orderId	string	Order ID
+     * orderLinkId	string	User customised order ID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/amend")
-    Call<Object> amendOrder(@Query("category") String category,
-                            @Query("symbol") String symbol,
-                            @Query("orderId") String orderId,
-                            @Query("orderLinkId") String orderLinkId,
-                            @Query("orderIv") String orderIv,
-                            @Query("triggerPrice") String triggerPrice,
-                            @Query("qty") String qty,
-                            @Query("price") String price,
-                            @Query("takeProfit") String takeProfit,
-                            @Query("stopLoss") String stopLoss,
-                            @Query("tpTriggerBy") TriggerBy tpTriggerBy,
-                            @Query("slTriggerBy") TriggerBy slTriggerBy,
-                            @Query("triggerBy") TriggerBy triggerBy,
-                            @Query("tpLimitPrice") String tpLimitPrice,
-                            @Query("slLimitPrice") String slLimitPrice);
+    Call<Object> amendOrder(@Body AmendOrderRequest amendOrderRequest);
 
     /**
      * BBatch Amend Order
@@ -1419,33 +1339,24 @@ public interface BybitApiService {
      *                          &gt; triggerBy	false	string	Trigger price type
      *                          &gt; tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
      *                          &gt; slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
-     * @return Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. linear, option
-     * request	true	array	Object
-     *  &gt;  symbol	true	string	Symbol name
-     *  &gt;  orderId	false	string	Order ID. Either orderId or orderLinkId is required
-     *  &gt;  orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
-     *  &gt;  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
-     *  &gt;  triggerPrice	false	string	If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice  &gt;  market price
-     * Else, triggerPrice  &gt; market price
-     *  &gt;  qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
-     *  &gt;  price	false	string	Order price after modification. Do not pass it if not modify the price
-     *  &gt;  takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
-     *  &gt;  stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
-     *  &gt;  tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
-     *  &gt;  slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
-     *  &gt;  triggerBy	false	string	Trigger price type
-     *  &gt;  tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
-     *  &gt;  slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * result	Object
+     * > list	array	Object
+     * >> category	string	Product type
+     * >> symbol	string	Symbol name
+     * >> orderId	string	Order ID
+     * >> orderLinkId	string	User customised order ID
+     * retExtInfo	Object
+     * > list	array	Object
+     * >> code	number	Success/error code
+     * >> msg	string	Success/error message
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/amend-batch")
-    Call<Object> amendBatchOrder(@Body BatchOrderRequest batchOrderRequest);
+    Call<Object> amendBatchOrder(@Body AmendBatchOrderRequest batchOrderRequest);
 
     // User
-
     /**
      * Get API Key Information
      * Get the information of the api key. Use the api key pending to be checked to call the endpoint. Both master and sub user's api key are applicable.
@@ -1490,7 +1401,7 @@ public interface BybitApiService {
      * kycLevel	string	Personal account kyc level. LEVEL_DEFAULT, LEVEL_1， LEVEL_2
      * kycRegion	string	Personal account kyc region
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/query-api")
     Call<Object> getCurrentAPIKeyInfo();
 
@@ -1521,7 +1432,7 @@ public interface BybitApiService {
      * 3: UTA
      * &gt; remark	string	The remark
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/query-sub-members")
     Call<Object> getSubUIDList();
 
@@ -1555,7 +1466,7 @@ public interface BybitApiService {
      * &gt; uid	string	Master/Sub user Id
      * &gt; accountType	array	Wallets array. SPOT, CONTRACT, FUND, OPTION, UNIFIED. Please check above practice to understand the value
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/get-member-type")
     Call<Object> getUIDWalletType(@Query("memberIds") String memberIds);
 
@@ -1591,7 +1502,7 @@ public interface BybitApiService {
      * depositUpdateTime	string	The update date time (UTC) of deposit data
      * volUpdateTime	string	The update date of volume data time (UTC)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/user/aff-customer-info")
     Call<Object> getAffiliateUserInfo(@Query("uid") String uid);
 
@@ -1922,7 +1833,7 @@ public interface BybitApiService {
      * Returns the seq updated by the last transaction when there are settings like leverage, risk limit
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/position/list")
     Call<Object> getPositionInfo(@Query("category") String category,
                                  @Query("symbol") String symbol,
@@ -2300,7 +2211,7 @@ public interface BybitApiService {
      * Classic account Spot trade does not have this field
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/execution/list")
     Call<Object> getExecutionList(@Query("category") String category,
                                   @Query("symbol") String symbol,
@@ -2353,7 +2264,7 @@ public interface BybitApiService {
      * &gt; updatedTime	string	The updated time (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/position/closed-pnl")
     Call<Object> getClosePnlList(@Query("category") String category,
                                  @Query("symbol") String symbol,
@@ -2401,7 +2312,7 @@ public interface BybitApiService {
      * &gt; updatedTime	string	The updated time (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/position/closed-pnl")
     Call<Object> getPreUpgradeClosePnl(@Query("category") String category,
                                        @Query("symbol") String symbol,
@@ -2435,7 +2346,7 @@ public interface BybitApiService {
      * &gt; deliveryRpl	string	Realized PnL of the delivery
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/asset/delivery-record")
     Call<Object> getPreUpgradeOptionDelivery(@Query("category") String category,
                                              @Query("symbol") String symbol,
@@ -2512,7 +2423,7 @@ public interface BybitApiService {
      * &gt; updatedTime	string	Order updated timestamp (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/order/history")
     Call<Object> getPreUpgradeOrderHistory(@Query("category") String category,
                                            @Query("symbol") String symbol,
@@ -2580,7 +2491,7 @@ public interface BybitApiService {
      * &gt; closedSize	string	Closed position size
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/execution/list")
     Call<Object> getPreUpgradeTradeHistory(@Query("category") String category,
                                            @Query("symbol") String symbol,
@@ -2638,7 +2549,7 @@ public interface BybitApiService {
      * &gt; orderLinkId	string	User customised order ID
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/account/transaction-log")
     Call<Object> getPreUpgradeTransaction(@Query("category") String category,
                                           @Query("baseCoin") String baseCoin,
@@ -2671,7 +2582,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Created time (ms)
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/pre-upgrade/asset/settlement-record")
     Call<Object> getPreUpgradeUsdcSettlement(@Query("category") String category,
                                              @Query("symbol") String symbol,
@@ -2734,7 +2645,7 @@ public interface BybitApiService {
      * When marginCollateral=true, then collateralSwitch is meaningful
      * This is a unique field for UNIFIED account
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/wallet-balance")
     Call<Object> getWalletBalance(@Query("accountType") String accountType,
                                   @Query("coin") String coin);
@@ -2806,7 +2717,7 @@ public interface BybitApiService {
      * &gt; freeBorrowedAmount	string	The borrowed amount for interest free
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/borrow-history")
     Call<Object> getAccountBorrowHistory(@Query("currency") String currency,
                                          @Query("startTime") Long startTime,
@@ -2857,7 +2768,7 @@ public interface BybitApiService {
      * When marginCollateral=true, then collateralSwitch is meaningful
      * &gt; collateralRatio	string	Collateral ratio
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/collateral-info")
     Call<Object> getAccountCollateralInfo(@Query("currency") String currency);
 
@@ -2877,7 +2788,7 @@ public interface BybitApiService {
      * &gt; totalVega	string	Vega value
      * &gt; totalTheta	string	Theta value
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/coin-greeks")
     Call<Object> getAccountCoinGeeks(@Query("baseCoin") String baseCoin);
 
@@ -2903,7 +2814,7 @@ public interface BybitApiService {
      * &gt; takerFeeRate	string	Taker fee rate
      * &gt; makerFeeRate	string	Maker fee rate
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/fee-rate")
     Call<Object> getAccountFreeRate(@Query("category") String category,
                                     @Query("symbol") String symbol,
@@ -2918,7 +2829,7 @@ public interface BybitApiService {
      * @return Request Parameters
      * None
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/info")
     Call<Object> getAccountInfo();
 
@@ -2968,7 +2879,7 @@ public interface BybitApiService {
      * &gt; orderLinkId	string	User customised order ID
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/transaction-log")
     Call<Object> getTransactionLog(@Query("accountType") String accountType,
                                    @Query("category") String category,
@@ -3069,7 +2980,7 @@ public interface BybitApiService {
      * true: mmpFrozenUntil is meaningful
      * false: please ignore the value of mmpFrozenUntil
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/mmp-state")
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
 
@@ -3103,7 +3014,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Exchange created timestamp (sec)
      * &gt; exchangeTxId	string	Exchange transaction ID
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/exchange/order-record")
     Call<Object> getAssetCoinExchangeRecords(@Query("fromCoin") String fromCoin,
                                              @Query("toCoin") String toCoin,
@@ -3135,7 +3046,7 @@ public interface BybitApiService {
      * &gt; deliveryRpl	string	Realized PnL of the delivery
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/delivery-record")
     Call<Object> getAssetDeliveryRecords(@Query("category") String category,
                                          @Query("symbol") String symbol,
@@ -3166,7 +3077,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Created time (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/settlement-record")
     Call<Object> getAssetUSDCSettlementRecords(@Query("category") String category,
                                                @Query("symbol") String symbol,
@@ -3194,7 +3105,7 @@ public interface BybitApiService {
      * &gt; &gt; free	string	Free balance
      * &gt; &gt; withdraw	string	Amount in withdrawing
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-asset-info")
     Call<Object> getAssetInfo(@Query("accountType") String accountType,
                               @Query("coin") String coin);
@@ -3225,7 +3136,7 @@ public interface BybitApiService {
      * &gt; transferBalance	string	Transferable balance
      * &gt; bonus	string	The bonus
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-account-coins-balance")
     Call<Object> getAssetAllCoinsBalance(@Query("accountType") String accountType,
                                          @Query("memberId") String memberId,
@@ -3269,7 +3180,7 @@ public interface BybitApiService {
      * &gt; transferSafeAmount	string	Safe amount to transfer. Keep "" if not query
      * &gt; ltvTransferSafeAmount	string	Transferable amount for ins loan account. Keep "" if not query
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-account-coin-balance")
     Call<Object> getAssetSingleCoinBalance(@Query("accountType") String accountType,
                                            @Query("toAccountType") String toAccountType,
@@ -3292,7 +3203,7 @@ public interface BybitApiService {
      * Parameter	Type	Comments
      * list	array	A list of coins (as strings)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-transfer-coin-list")
     Call<Object> getAssetTransferableCoins(@Query("fromAccountType") String fromAccountType, @Query("toAccountType") String toAccountType);
 
@@ -3332,7 +3243,7 @@ public interface BybitApiService {
      * subMemberIds	array string	All sub UIDs under the main UID
      * transferableSubMemberIds	array string	All sub UIDs that have universal transfer enabled
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-sub-member-list")
     Call<Object> getAssetTransferSubUidList();
 
@@ -3389,7 +3300,7 @@ public interface BybitApiService {
      * &gt; status	string	Transfer status
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-inter-transfer-list")
     Call<Object> getAssetInternalTransferRecords(@Query("transferId") String transferId,
                                                  @Query("coin") String coin,
@@ -3431,7 +3342,7 @@ public interface BybitApiService {
      * &gt; status	string	Transfer status
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/transfer/query-universal-transfer-list")
     Call<Object> getAssetUniversalTransferRecords(@Query("transferId") String transferId,
                                                   @Query("coin") String coin,
@@ -3465,7 +3376,7 @@ public interface BybitApiService {
      * &gt; minDepositAmount	string	Minimum deposit amount
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-allowed-list")
     Call<Object> getAssetAllowedDepositCoinInfo(
             @Query("coin") String coin,
@@ -3538,7 +3449,7 @@ public interface BybitApiService {
      * &gt; depositType	integer	The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-record")
     Call<Object> getAssetDepositRecords(
             @Query("coin") String coin,
@@ -3581,7 +3492,7 @@ public interface BybitApiService {
      * &gt; depositType	integer	The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-sub-member-record")
     Call<Object> getAssetSubMembersDepositRecords(@Query("subMemberId") String subMemberId,
                                                   @Query("coin") String coin,
@@ -3620,7 +3531,7 @@ public interface BybitApiService {
      * &gt; createdTime	string	Deposit created timestamp
      * nextPageCursor	string	cursor information: used for pagination. Default value: ""
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-internal-record")
     Call<Object> getAssetInternalDepositRecords(@Query("coin") String coin,
                                                 @Query("startTime") Long startTime,
@@ -3646,7 +3557,7 @@ public interface BybitApiService {
      * &gt; chain	string	Chain
      * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-address")
     Call<Object> getAssetMasterDepositAddress(@Query("coin") String coin, @Query("chainType") String chainType);
 
@@ -3673,7 +3584,7 @@ public interface BybitApiService {
      * &gt; chain	string	Chain
      * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/deposit/query-sub-member-address")
     Call<Object> getAssetSubMemberDepositAddress(@Query("coin") String coin,
                                                  @Query("chainType") String chainType,
@@ -3704,7 +3615,7 @@ public interface BybitApiService {
      * &gt; &gt; chainWithdraw	string	The chain status of withdraw. 0: suspend. 1: normal
      * &gt; &gt; withdrawPercentageFee	string	The withdraw fee percentage. It is a real figure, e.g., 0.022 means 2.2%
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/coin/query-info")
     Call<Object> getAssetCoinInfo(@Query("coin") String coin);
 
@@ -3732,7 +3643,7 @@ public interface BybitApiService {
      * &gt; &gt; withdrawableAmount	string	Amount that can be withdrawn
      * &gt; &gt; availableBalance	string	Available balance
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/withdraw/withdrawable-amount")
     Call<Object> getAssetWithdrawalAmount(@Query("coin") String coin);
 
@@ -3771,7 +3682,7 @@ public interface BybitApiService {
      * &gt; updateTime	string	Withdraw updated timestamp (ms)
      * nextPageCursor	string	Cursor. Used for pagination
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/asset/withdraw/query-record")
     Call<Object> getAssetWithdrawalRecords(
             @Query("withdrawID") String withdrawID,
@@ -4014,7 +3925,7 @@ public interface BybitApiService {
      * &gt; &gt; symbol	string	Symbol name
      * &gt; &gt; leverage	string	Maximum leverage
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/ins-loan/loan-order")
     Call<Object> getInsLoanOrders(@Query("orderId") String orderId,
                                   @Query("startTime") Long startTime,
@@ -4045,7 +3956,7 @@ public interface BybitApiService {
      * &gt; businessType	string	Repaid type. 1：normal repayment; 2：repaid by liquidation
      * &gt; status	string	1：outstanding; 2：paid off
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/ins-loan/repaid-history")
     Call<Object> getInsRepayOrders(@Query("startTime") Long startTime,
                                    @Query("endTime") Long endTime,
@@ -4075,7 +3986,7 @@ public interface BybitApiService {
      * &gt; &gt; qty	string	Margin coin quantity
      * &gt; &gt; convertedAmount	string	Margin conversion amount
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/ins-loan/ltv-convert")
     Call<Object> getInsLoanToValue();
 
@@ -4111,7 +4022,7 @@ public interface BybitApiService {
      * &gt; netValue	string	Net value
      * &gt; total	string	Total purchase upper limit
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-lever-token/info")
     Call<Object> getSpotLeverageTokenInfo(@Query("ltCoin") String ltCoin);
 
@@ -4131,7 +4042,7 @@ public interface BybitApiService {
      * basket	string	basket
      * leverage	string	Real leverage calculated by last traded price
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-lever-token/reference")
     Call<Object> getSpotLeverageTokenMarket(@Query("ltCoin") String ltCoin);
 
@@ -4211,7 +4122,7 @@ public interface BybitApiService {
      * &gt; valueCoin	string	Quote coin
      * &gt; serialNo	string	Serial number
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-lever-token/order-record")
     Call<Object> getSpotLeverageRecords(@Query("ltCoin") String ltCoin,
                                         @Query("orderId") String orderId,
@@ -4247,7 +4158,7 @@ public interface BybitApiService {
      * &gt; &gt; maxBorrowingAmount	string	Max borrow amount
      * &gt; vipLevel	string	Vip level
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-margin-trade/data")
     Call<Object> getUtaVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
                                               @Query("currency") String currency);
@@ -4304,7 +4215,7 @@ public interface BybitApiService {
      * spotLeverage	string	Spot margin leverage. Returns "" if the margin trade is turned off
      * spotMarginMode	string	Spot margin status. 1: on, 0: off
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-margin-trade/state")
     Call<Object> getUTASpotMarginTradeLeverageState();
 
@@ -4334,7 +4245,7 @@ public interface BybitApiService {
      * &gt; &gt; maxBorrowingAmount	string	Max borrow amount
      * &gt; vipLevel	string	Vip level
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/data")
     Call<Object> getNormalVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
                                                  @Query("currency") String currency);
@@ -4354,7 +4265,7 @@ public interface BybitApiService {
      * &gt; conversionRate	string	Convert ratio
      * &gt; liquidationOrder	integer	Liquidation order
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/pledge-token")
     Call<Object> getNormalSpotMarginTradeCoinInfo(@Query("coin") String coin);
 
@@ -4376,7 +4287,7 @@ public interface BybitApiService {
      * &gt; borrowingPrecision	integer	Accuracy of loan amount
      * &gt; repaymentPrecision	integer	Accuracy of repayment amount
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/borrow-token")
     Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
 
@@ -4394,7 +4305,7 @@ public interface BybitApiService {
      * loanAbleAmount	string	The estimated amount can be loaned
      * maxLoanAmount	string	The fixed loanable amount per user on platform
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/loan-info")
     Call<Object> getNormalSpotMarginTradeInterestQuota(@Query("coin") String coin);
 
@@ -4424,7 +4335,7 @@ public interface BybitApiService {
      * 4: liquidated
      * switchStatus	integer	0: margin trade off, 1: margin trade on
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/account")
     Call<Object> getNormalSpotMarginTradeAccountInfo();
 
@@ -4509,7 +4420,7 @@ public interface BybitApiService {
      * &gt; status	integer	Status 1：uncleared, 2：cleared
      * &gt; type	integer	Order Type 1: manual loan, 2: auto loan
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/orders")
     Call<Object> getNormalMarginTradeBorrowOrders(@Query("startTime") Long startTime,
                                                   @Query("endTime") Long endTime,
@@ -4542,7 +4453,7 @@ public interface BybitApiService {
      * &gt; &gt; repaidSerialNumber	string	Repayment No. (Borrowing Order)
      * &gt; &gt; transactId	string	Borrowing transaction ID
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/repay-history")
     Call<Object> getNormalMarginTradeRepayOrders(@Query("startTime") Long startTime,
                                                  @Query("endTime") Long endTime,
@@ -4577,7 +4488,7 @@ public interface BybitApiService {
      * &gt; execTime	string	Execution timestamp (ms)
      * nextPageCursor	string	Refer to the cursor request parameter
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/broker/earning-record")
     Call<Object> getBrokerEarningData(@Query("bizType") String bizType,
                                       @Query("startTime") Long startTime,
@@ -4607,7 +4518,7 @@ public interface BybitApiService {
      * &gt; loanToPoolRatio	string	Capital utilization rate. e.g. 0.0004 means 0.04%
      * &gt; actualApy	string	The actual annualized interest rate
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/info")
     Call<Object> getC2CLendingCoinInfo(@Query("coin") String coin);
 
@@ -4706,7 +4617,7 @@ public interface BybitApiService {
      * &gt; status	string	Order status. 0: Initial, 1: Processing, 2: Success, 10: Failed, 11: Cancelled
      * &gt; updatedTime	string	Updated timestamp (ms)
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/history-order")
     Call<Object> getC2cOrdersRecords(@Query("coin") String coin,
                                      @Query("orderId") String orderId,
@@ -4729,7 +4640,7 @@ public interface BybitApiService {
      * principalTotal	string	Total amount redeemable by user
      * quantity	string	Current deposit quantity
      */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_APIKEY_HEADER)
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/account")
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 

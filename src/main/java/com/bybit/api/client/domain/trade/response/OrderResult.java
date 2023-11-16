@@ -3,6 +3,9 @@ package com.bybit.api.client.domain.trade.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -11,6 +14,7 @@ import java.util.List;
  */
 @JsonPropertyOrder()
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class OrderResult {
     @JsonProperty("nextPageCursor")
     private String nextPageCursor;
@@ -18,30 +22,6 @@ public class OrderResult {
     private String category;
     @JsonProperty("list")
     private List<OrderEntry> orderEntries;
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public List<OrderEntry> getOrderEntries() {
-        return orderEntries;
-    }
-
-    public void setOrderEntries(List<OrderEntry> orderEntries) {
-        this.orderEntries = orderEntries;
-    }
-
-    public String getNextPageCursor() {
-        return nextPageCursor;
-    }
-
-    public void setNextPageCursor(String nextPageCursor) {
-        this.nextPageCursor = nextPageCursor;
-    }
 
     @Override
     public String toString() {

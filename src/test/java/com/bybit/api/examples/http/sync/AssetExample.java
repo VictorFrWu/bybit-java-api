@@ -8,8 +8,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class AssetExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        var client = factory.newAssetRestClient();
+        var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET").newAssetRestClient();
 
         // Get Coin Exchange Records
         var coinExchangeRecordsRequest = AssetDataRequest.builder().build();

@@ -14,21 +14,11 @@ public class BybitApiConstants {
      * HTTP Header to be used for API-KEY authentication.
      */
     public static final String API_KEY_HEADER = "X-BAPI-API-KEY";
-    /**
-     * Decorator to indicate that an endpoint requires an API key.
-     */
-    public static final String ENDPOINT_SECURITY_TYPE_APIKEY_HEADER = API_KEY_HEADER + ": #";
 
     /**
      * HTTP Header to be used for signature.
      */
     public static final String SIGN_HEADER = "X-BAPI-SIGN";
-    /**
-     * Decorator to indicate that an endpoint requires a signature.
-     */
-    public static final String ENDPOINT_SECURITY_TYPE_SIGNED_HEADER = SIGN_HEADER + ": #";
-
-
     /**
      * HTTP Header to be used for signature type.
      */
@@ -46,7 +36,7 @@ public class BybitApiConstants {
     /**
      * Default receiving window.
      */
-    public static final long DEFAULT_RECEIVING_WINDOW = 50000L;
+    public static final long DEFAULT_RECEIVING_WINDOW = 5000;
 
     /**
      * Default content type.
@@ -54,9 +44,9 @@ public class BybitApiConstants {
     public static final String DEFAULT_CONTENT_TYPE = "application/json";
 
     /**
-     * Default signature type.
+     * Decorator to indicate that an endpoint requires a signature.
      */
-    public static final String DEFAULT_SIGNATURE_TYPE = "2";
+    public static final String ENDPOINT_SECURITY_TYPE_SIGNED_HEADER = SIGN_TYPE_HEADER + ": 2";
     /**
      * Default ToStringStyle used by toString methods.
      * Override this to change the output format of the overridden toString methods.

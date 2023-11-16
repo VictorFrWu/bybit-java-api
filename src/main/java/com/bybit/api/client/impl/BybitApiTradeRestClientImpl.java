@@ -1,8 +1,9 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
+import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.restApi.BybitApiTradeRestClient;
-import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import java.io.IOException;
@@ -21,8 +22,9 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
 
     // Trade Data endpoints
     @Override
-    public Object setDisconnectCancelAllTime(Integer timeWindow) {
-        return executeSync(bybitApiService.setDisconnectCancelAllTime(timeWindow));
+    public Object setDisconnectCancelAllTime(TradeOrderRequest tradeOrderRequest) {
+        var setDcpRequest = converter.convertMapToDcpRequest(tradeOrderRequest);
+        return executeSync(bybitApiService.setDisconnectCancelAllTime(setDcpRequest));
     }
 
     @Override
@@ -43,7 +45,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
                 orderHistoryRequest.getSettleCoin(),
                 orderHistoryRequest.getOrderId(),
                 orderHistoryRequest.getOrderLinkId(),
-                orderHistoryRequest.getOrderFilter(),
+                orderHistoryRequest.getOrderFilter() == null ? null : orderHistoryRequest.getOrderFilter().getOrderFilterType(),
                 orderHistoryRequest.getOrderStatus(),
                 orderHistoryRequest.getStartTime(),
                 orderHistoryRequest.getEndTime(),
@@ -51,116 +53,102 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
                 orderHistoryRequest.getCursor()));
     }
 
-    public Object createOrder(TradeOrderRequest order) {
-        return executeSync(bybitApiService.createOrder(order));
+    public Object createOrder(TradeOrderRequest tradeOrderRequest) {
+        var singleOrderRequest = converter.convertTradeToPlaceOrderRequest(tradeOrderRequest);
+        return executeSync(bybitApiService.createOrder(singleOrderRequest));
     }
 
     @Override
     public Object createOrder(Map<String, Object> payload) {
         var singleOrderRequest = converter.convertMapToSingleOrderRequest(payload);
-        return executeSync(bybitApiService.createOrder(singleOrderRequest));
+        var placeOrderRequest = converter.convertTradeToPlaceOrderRequest(singleOrderRequest);
+        return executeSync(bybitApiService.createOrder(placeOrderRequest));
     }
 
     @Override
     public Object createOrder(String json) throws IOException {
         var singleOrderRequest = converter.convertJsonToSingleOrderRequest(json);
-        return executeSync(bybitApiService.createOrder(singleOrderRequest));
+        var placeOrderRequest = converter.convertTradeToPlaceOrderRequest(singleOrderRequest);
+        return executeSync(bybitApiService.createOrder(placeOrderRequest));
     }
 
     @Override
     public Object createBatchOrder(BatchOrderRequest batchOrderRequest) {
-        return executeSync(bybitApiService.createBatchOrder(batchOrderRequest));
+        var placeBatchOrderRequest = converter.convertToPlaceBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.createBatchOrder(placeBatchOrderRequest));
     }
 
     @Override
     public Object createBathOrder(Map<String, Object> payload) {
         var batchOrderRequest = converter.convertMapToBatchOrderRequest(payload);
-        return executeSync(bybitApiService.createBatchOrder(batchOrderRequest));
+        var placeBatchOrderRequest = converter.convertToPlaceBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.createBatchOrder(placeBatchOrderRequest));
     }
 
     @Override
     public Object createBathOrder(String jsonRequest) throws IOException {
-        BatchOrderRequest batchOrderRequest = converter.jsonToBatchOrderRequest(jsonRequest);
-        return executeSync(bybitApiService.createBatchOrder(batchOrderRequest));
+        var batchOrderRequest = converter.jsonToBatchOrderRequest(jsonRequest);
+        var placeBatchOrderRequest = converter.convertToPlaceBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.createBatchOrder(placeBatchOrderRequest));
     }
 
     @Override
     public Object amendBatchOrder(BatchOrderRequest batchOrderRequest) {
-        return executeSync(bybitApiService.amendBatchOrder(batchOrderRequest));
+        var amendBatchOrderRequest = converter.convertToAmendBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.amendBatchOrder(amendBatchOrderRequest));
     }
 
     @Override
     public Object amendBatchOrder(Map<String, Object> payload) {
         var batchOrderRequest = converter.convertMapToBatchOrderRequest(payload);
-        return executeSync(bybitApiService.amendBatchOrder(batchOrderRequest));
+        var amendBatchOrderRequest = converter.convertToAmendBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.amendBatchOrder(amendBatchOrderRequest));
     }
 
     @Override
     public Object amendBatchOrder(String jsonRequest) throws IOException {
-        BatchOrderRequest batchOrderRequest = converter.jsonToBatchOrderRequest(jsonRequest);
-        return executeSync(bybitApiService.amendBatchOrder(batchOrderRequest));
+        var batchOrderRequest = converter.jsonToBatchOrderRequest(jsonRequest);
+        var amendBatchOrderRequest = converter.convertToAmendBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.amendBatchOrder(amendBatchOrderRequest));
     }
 
     @Override
     public Object amendOrder(TradeOrderRequest order) {
-        return executeSync(bybitApiService.amendOrder(
-                order.getCategory().getCategoryTypeId(),
-                order.getSymbol(),
-                order.getOrderId(),
-                order.getOrderLinkId(),
-                order.getOrderIv(),
-                order.getTriggerPrice(),
-                order.getQty(),
-                order.getPrice(),
-                order.getTakeProfit(),
-                order.getStopLoss(),
-                order.getTpTriggerBy(),
-                order.getSlTriggerBy(),
-                order.getTriggerBy(),
-                order.getTpLimitPrice(),
-                order.getSlLimitPrice()
-        ));
+        var amendOrderRequest = converter.convertTradeToAmendOrderRequest(order);
+        return executeSync(bybitApiService.amendOrder(amendOrderRequest));
     }
 
     @Override
     public Object cancelOrder(TradeOrderRequest order) {
-        return executeSync(bybitApiService.cancelOrder(
-                order.getCategory().getCategoryTypeId(),
-                order.getSymbol(),
-                order.getOrderId(),
-                order.getOrderLinkId(),
-                order.getOrderFilter()
-        ));
+        var cancelOrderRequest = converter.convertTradeToCancelOrderRequest(order);
+        return executeSync(bybitApiService.cancelOrder(cancelOrderRequest));
     }
 
     @Override
     public Object cancelBatchOrder(BatchOrderRequest batchOrderRequest) {
-        return executeSync(bybitApiService.cancelBatchOrder(batchOrderRequest));
+        var cancelBatchOrderRequest = converter.convertToCancelBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.cancelBatchOrder(cancelBatchOrderRequest));
     }
 
     @Override
     public Object cancelBatchOrder(Map<String, Object> payload) {
         var batchOrderRequest = converter.convertMapToBatchOrderRequest(payload);
-        return executeSync(bybitApiService.cancelBatchOrder(batchOrderRequest));
+        var cancelBatchOrderRequest = converter.convertToCancelBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.cancelBatchOrder(cancelBatchOrderRequest));
     }
 
     @Override
     public Object cancelBatchOrder(String json) throws IOException {
-        BatchOrderRequest batchOrderRequest = converter.jsonToBatchOrderRequest(json);
-        return executeSync(bybitApiService.cancelBatchOrder(batchOrderRequest));
+        var batchOrderRequest = converter.jsonToBatchOrderRequest(json);
+        var cancelBatchOrderRequest = converter.convertToCancelBatchOrderRequest(batchOrderRequest);
+        return executeSync(bybitApiService.cancelBatchOrder(cancelBatchOrderRequest));
     }
 
 
     @Override
     public Object cancelAllOrder(TradeOrderRequest order) {
-        return executeSync(bybitApiService.cancelAllOrder(
-                order.getCategory().getCategoryTypeId(),
-                order.getSymbol(),
-                order.getBaseCoin(),
-                order.getSettleCoin(),
-                order.getOrderFilter(),
-                order.getStopOrderType() == null ? null : order.getStopOrderType().getDescription()
-        ));
+        var cancelAllOrderRequest = converter.convertTradeToCancelAllOrdersRequest(order);
+        return executeSync(bybitApiService.cancelAllOrder(cancelAllOrderRequest));
     }
 
     @Override
@@ -173,7 +161,7 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
                 order.getOrderId(),
                 order.getOrderLinkId(),
                 order.getOpenOnly(),
-                order.getOrderFilter(),
+                order.getOrderFilter() == null ? null : order.getOrderFilter().getOrderFilterType(),
                 order.getLimit(),
                 order.getCursor()
         ));
