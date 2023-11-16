@@ -14,8 +14,7 @@ import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
-import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
-import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
+import com.bybit.api.client.domain.trade.request.*;
 import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
@@ -818,36 +817,6 @@ public interface BybitApiService {
                                 @Query("side") String side);
 
     /**
-     * Set Disconnect Cancel All
-     * Covers: Option (Unified Account)
-     *
-     * INFO
-     * What is Disconnection Protect (DCP)?
-     * Based on the websocket private connection and heartbeat mechanism, Bybit provides disconnection protection function. The timing starts from the first disconnection. If the Bybit server does not receive the reconnection from the client for more than 10 (default) seconds and resumes the heartbeat "ping", then the client is in the state of "disconnection protect", all active option orders of the client will be cancelled automatically. If within 10 seconds, the client reconnects and resumes the heartbeat "ping", the timing will be reset and restarted at the next disconnection.
-     *
-     * How to enable DCP
-     * If you need to turn it on/off, you can contact your client manager for consultation and application. The default time window is 10 seconds.
-     *
-     * Applicable
-     * Effective for options only.
-     *
-     * TIP
-     * After the request is successfully sent, the system needs a certain time to take effect. It is recommended to query or set again after 10 seconds
-     *
-     * You can use this endpoint to get your current DCP configuration.
-     * Your private websocket connection must subscribe "dcp" topic in order to trigger DCP successfully
-     *
-     * https://bybit-exchange.github.io/docs/v5/order/dcp
-     *
-     * @param timeWindow	true	integer	Disconnection timing window time. [3, 300], unit: second
-     * @return Response Parameters
-     * None
-     */
-    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @POST("/v5/order/disconnected-cancel-all")
-    Call<Object> setDisconnectCancelAllTime(@Query("timeWindow") Integer timeWindow);
-
-    /**
      * Get Open Orders
      * Query unfilled or partially filled orders in real-time. To query older order records, please use the order history interface.
      *
@@ -945,6 +914,36 @@ public interface BybitApiService {
                                @Query("cursor") String cursor);
 
     /**
+     * Set Disconnect Cancel All
+     * Covers: Option (Unified Account)
+     *
+     * INFO
+     * What is Disconnection Protect (DCP)?
+     * Based on the websocket private connection and heartbeat mechanism, Bybit provides disconnection protection function. The timing starts from the first disconnection. If the Bybit server does not receive the reconnection from the client for more than 10 (default) seconds and resumes the heartbeat "ping", then the client is in the state of "disconnection protect", all active option orders of the client will be cancelled automatically. If within 10 seconds, the client reconnects and resumes the heartbeat "ping", the timing will be reset and restarted at the next disconnection.
+     *
+     * How to enable DCP
+     * If you need to turn it on/off, you can contact your client manager for consultation and application. The default time window is 10 seconds.
+     *
+     * Applicable
+     * Effective for options only.
+     *
+     * TIP
+     * After the request is successfully sent, the system needs a certain time to take effect. It is recommended to query or set again after 10 seconds
+     *
+     * You can use this endpoint to get your current DCP configuration.
+     * Your private websocket connection must subscribe "dcp" topic in order to trigger DCP successfully
+     *
+     * https://bybit-exchange.github.io/docs/v5/order/dcp
+     *
+     * @param setDcpRequest timeWindow	true	integer	Disconnection timing window time. [3, 300], unit: second
+     * @return Response Parameters
+     * None
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/order/disconnected-cancel-all")
+    Call<Object> setDisconnectCancelAllTime(@Body SetDcpRequest setDcpRequest);
+
+    /**
      * Place Order
      * This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.
      *
@@ -989,7 +988,7 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/create-order#http-request
      *
-     * @param tradeOrderRequest category	true	string	Product type
+     * @param placeOrderRequest category	true	string	Product type
      *                                                      Unified account: spot, linear, inverse, option
      *                                                      Classic account: spot, linear, inverse
      *                          symbol	true	string	Symbol name
@@ -1065,7 +1064,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create")
-    Call<Object> createOrder(@Body TradeOrderRequest tradeOrderRequest);
+    Call<Object> createOrder(@Body PlaceOrderRequest placeOrderRequest);
 
     /**
      * Batch Place Order
@@ -1083,7 +1082,7 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/batch-place
      *
-     * @param batchOrderRequest category	true	string	Product type. linear, option
+     * @param placeBatchOrderRequest category	true	string	Product type. linear, option
      *                          request	true	array	Object
      *                           &gt;  symbol	true	string	Symbol name
      *                           &gt;  side	true	string	Buy, Sell
@@ -1143,69 +1142,6 @@ public interface BybitApiService {
      *                                                              Valid for linear
      *                           &gt;  slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
      *                                                              Valid for linear
-     * @return Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. linear, option
-     * request	true	array	Object
-     *  &gt;  symbol	true	string	Symbol name
-     *  &gt;  side	true	string	Buy, Sell
-     *  &gt;  orderType	true	string	Market, Limit
-     *  &gt;  qty	true	string	Order quantity
-     * In particular, for linear, if you pass qty="0", you can close the whole position of current symbol
-     *  &gt;  price	false	string	Order price
-     * Market order will ignore this field
-     * Please check the min price and price precision from instrument info endpoint
-     * If you have position, price needs to be better than liquidation price
-     *  &gt;  triggerDirection	false	integer	Conditional order param. Used to identify the expected direction of the conditional order.
-     * 1: triggered when market price rises to triggerPrice
-     * 2: triggered when market price falls to triggerPrice
-     * Valid for linear
-     *  &gt;  triggerPrice	false	string
-     * For futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice  &gt;  market price
-     * Else, triggerPrice  &gt; market price
-     *  &gt;  triggerBy	false	string	Conditional order param. Trigger price type. LastPrice, IndexPrice, MarkPrice
-     *  &gt;  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed. orderIv has a higher priority when price is passed as well
-     *  &gt;  timeInForce	false	string	Time in force
-     * Market order will use IOC directly
-     * If not passed, GTC is used by default
-     *  &gt;  positionIdx	false	integer	Used to identify positions in different position modes. Under hedge-mode, this param is required (USDT perps have hedge mode)
-     * 0: one-way mode
-     * 1: hedge-mode Buy side
-     * 2: hedge-mode Sell side
-     *  &gt;  orderLinkId	false	string	User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.
-     * Futures and Perps: orderLinkId rules:
-     * optional param
-     * always unique
-     * option orderLinkId rules:
-     * required param
-     * always unique
-     *  &gt;  takeProfit	false	string	Take profit price, valid for linear
-     *  &gt;  stopLoss	false	string	Stop loss price, valid for linear
-     *  &gt;  tpTriggerBy	false	string	The price type to trigger take profit. MarkPrice, IndexPrice, default: LastPrice.
-     * Valid for linear
-     *  &gt;  slTriggerBy	false	string	The price type to trigger stop loss. MarkPrice, IndexPrice, default: LastPrice
-     * Valid for linear
-     *  &gt;  reduceOnly	false	boolean	What is a reduce-only order? true means your position can only reduce in size if this order is triggered.
-     * You must specify it as true when you are about to close/reduce the position
-     * When reduceOnly is true, take profit/stop loss cannot be set
-     * Valid for linear, and option
-     *  &gt;  closeOnTrigger	false	boolean	What is a close on trigger order? For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin.
-     * Valid for linear
-     *  &gt;  smpType	false	string	Smp execution type. What is SMP?
-     *  &gt;  mmp	false	boolean	Market maker protection. option only. true means set the order as a market maker protection order. What is mmp?
-     *  &gt;  tpslMode	false	string	TP/SL mode
-     * Full: entire position for TP/SL. Then, tpOrderType or slOrderType must be Market
-     * Partial: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is required and it must be Partial
-     * Valid for linear
-     *  &gt;  tpLimitPrice	false	string	The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit
-     * Valid for linear
-     *  &gt;  slLimitPrice	false	string	The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit
-     * Valid for linear
-     *  &gt;  tpOrderType	false	string	The order type when take profit is triggered. Market(default), Limit. For tpslMode=Full, it only supports tpOrderType=Market
-     * Valid for linear
-     *  &gt;  slOrderType	false	string	The order type when stop loss is triggered. Market(default), Limit. For tpslMode=Full, it only supports slOrderType=Market
-     * Valid for linear
      * @return Response Parameters
      * Parameter	Type	Comments
      * result	Object
@@ -1222,7 +1158,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/create-batch")
-    Call<Object> createBatchOrder(@Body BatchOrderRequest batchOrderRequest);
+    Call<Object> createBatchOrder(@Body PlaceBatchOrderRequest placeBatchOrderRequest);
 
     /**
      * Cancel Order
@@ -1236,7 +1172,7 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/cancel-order
      *
-     * @param tradeOrderRequest
+     * @param cancelOrderRequest
      * category    true	string	Product type
      * Unified account: spot, linear, inverse, option
      * Classic account: spot, linear, inverse
@@ -1251,7 +1187,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel")
-    Call<Object> cancelOrder(@Body TradeOrderRequest tradeOrderRequest);
+    Call<Object> cancelOrder(@Body CancelOrderRequest cancelOrderRequest);
 
     /**
      * Batch Cancel Order
@@ -1267,7 +1203,7 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/batch-cancel#http-request
      *
-     * @param batchOrderRequest category	true	string	Product type. linear, option
+     * @param cancelBatchOrderRequest category	true	string	Product type. linear, option
      *                          request	true	array	Object
      *                          &gt; symbol	true	string	Symbol name
      *                          &gt; orderId	false	string	Order ID. Either orderId or orderLinkId is required
@@ -1287,7 +1223,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel-batch")
-    Call<Object> cancelBatchOrder(@Body BatchOrderRequest batchOrderRequest);
+    Call<Object> cancelBatchOrder(@Body CancelBatchOrderRequest cancelBatchOrderRequest);
 
     /**
      * Cancel All Orders
@@ -1302,24 +1238,24 @@ public interface BybitApiService {
      * NOTE: category=spot, you can cancel all spot open orders (normal order by default) without passing other params.
      *
      * https://bybit-exchange.github.io/docs/v5/order/cancel-all
-     *
-     * @param category    true	string	Product type
-     * Unified account: spot, linear, inverse, option
-     * Classic account: spot, linear, inverse
-     * @param symbol	false	string	Symbol name. linear and inverse: Required if not passing baseCoin or settleCoin
-     * @param baseCoin    false	string	Base coin
-     * linear and inverse(Classic account): If cancel all by baseCoin, it will cancel all linear and inverse orders. Required if not passing symbol or settleCoin
-     * linear and inverse(Unified account): If cancel all by baseCoin, it will cancel all corresponding category orders. Required if not passing symbol or settleCoin
-     * Classic spot: invalid
-     * @param settleCoin    false	string	Settle coin
-     * linear and inverse: Required if not passing symbol or baseCoin
-     * Does not support spot
-     * @param orderFilter    false	string
-     * category=spot, you can pass Order, tpslOrder, StopOrder. If not passed, Order by default
-     * category=linear or inverse, you can pass Order, StopOrder. If not passed, all kinds of orders will be cancelled, like active order, conditional order, TP/SL order and trailing stop order
-     * category=option, you can pass Order. No matter it is passed or not, always cancel all orders
-     * @param stopOrderType    false	string	Stop order type, Stop
-     * Only used for category=linear or inverse and orderFilter=StopOrder,you can cancel conditional orders except TP/SL order and Trailing stop orders with this param
+     * @param cancelAllOrdersRequest
+     * category    true	string	Product type
+     *       Unified account: spot, linear, inverse, option
+     *       Classic account: spot, linear, inverse
+     * symbol	false	string	Symbol name. linear and inverse: Required if not passing baseCoin or settleCoin
+     * baseCoin    false	string	Base coin
+     *   linear and inverse(Classic account): If cancel all by baseCoin, it will cancel all linear and inverse orders. Required if not passing symbol or settleCoin
+     *   linear and inverse(Unified account): If cancel all by baseCoin, it will cancel all corresponding category orders. Required if not passing symbol or settleCoin
+     *   Classic spot: invalid
+     * settleCoin    false	string	Settle coin
+     *   linear and inverse: Required if not passing symbol or baseCoin
+     *   Does not support spot
+     * orderFilter    false	string
+     *   category=spot, you can pass Order, tpslOrder, StopOrder. If not passed, Order by default
+     *   category=linear or inverse, you can pass Order, StopOrder. If not passed, all kinds of orders will be cancelled, like active order, conditional order, TP/SL order and trailing stop order
+     *   category=option, you can pass Order. No matter it is passed or not, always cancel all orders
+     * stopOrderType    false	string	Stop order type, Stop
+     *          Only used for category=linear or inverse and orderFilter=StopOrder,you can cancel conditional orders except TP/SL order and Trailing stop orders with this param
      * @return Response Parameters
      * Linear/Inverse/Option
      * Parameter	Type	Comments
@@ -1333,12 +1269,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/cancel-all")
-    Call<Object> cancelAllOrder(@Query("category") String category,
-                                @Query("symbol") String symbol,
-                                @Query("baseCoin") String baseCoin,
-                                @Query("settleCoin") String settleCoin,
-                                @Query("orderFilter") String orderFilter,
-                                @Query("stopOrderType") String stopOrderType);
+    Call<Object> cancelAllOrder(@Body CancelAllOrdersRequest cancelAllOrdersRequest);
 
     /**
      * Amend Order
@@ -1350,44 +1281,34 @@ public interface BybitApiService {
      *
      * https://bybit-exchange.github.io/docs/v5/order/amend-order
      *
-     * @param category    true	string	Product type
-     * Unified account: linear, inverse, option
-     * Classic account: linear, inverse. Please note that category is not involved with business logic
-     * @param symbol	true	string	Symbol name
-     * @param orderId	false	string	Order ID. Either orderId or orderLinkId is required
-     * @param orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
-     * @param orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
-     * @param triggerPrice    false	string	If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice &gt; market price
-     * Else, triggerPrice &lt;  market price
-     * @param qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
-     * @param price	false	string	Order price after modification. Do not pass it if not modify the price
-     * @param takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
-     * @param stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
-     * @param tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
-     * @param slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
-     * @param triggerBy	false	string	Trigger price type
-     * @param tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
-     * @param slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
-     * @return
+     * @param amendOrderRequest
+     *  category    true	string	Product type
+     *    Unified account: linear, inverse, option
+     *    Classic account: linear, inverse. Please note that category is not involved with business logic
+     *  symbol	true	string	Symbol name
+     *  orderId	false	string	Order ID. Either orderId or orderLinkId is required
+     *  orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
+     *  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
+     *  triggerPrice    false	string	If you expect the price to rise to trigger your conditional order, make sure:
+     *    triggerPrice &gt; market price
+     *    Else, triggerPrice &lt;  market price
+     *  qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
+     *  price	false	string	Order price after modification. Do not pass it if not modify the price
+     *  takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
+     *  stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
+     *  tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
+     *  slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
+     *  triggerBy	false	string	Trigger price type
+     *  tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
+     *  slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * orderId	string	Order ID
+     * orderLinkId	string	User customised order ID
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/amend")
-    Call<Object> amendOrder(@Query("category") String category,
-                            @Query("symbol") String symbol,
-                            @Query("orderId") String orderId,
-                            @Query("orderLinkId") String orderLinkId,
-                            @Query("orderIv") String orderIv,
-                            @Query("triggerPrice") String triggerPrice,
-                            @Query("qty") String qty,
-                            @Query("price") String price,
-                            @Query("takeProfit") String takeProfit,
-                            @Query("stopLoss") String stopLoss,
-                            @Query("tpTriggerBy") TriggerBy tpTriggerBy,
-                            @Query("slTriggerBy") TriggerBy slTriggerBy,
-                            @Query("triggerBy") TriggerBy triggerBy,
-                            @Query("tpLimitPrice") String tpLimitPrice,
-                            @Query("slLimitPrice") String slLimitPrice);
+    Call<Object> amendOrder(@Body AmendOrderRequest amendOrderRequest);
 
     /**
      * BBatch Amend Order
@@ -1418,33 +1339,24 @@ public interface BybitApiService {
      *                          &gt; triggerBy	false	string	Trigger price type
      *                          &gt; tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
      *                          &gt; slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
-     * @return Request Parameters
-     * Parameter	Required	Type	Comments
-     * category	true	string	Product type. linear, option
-     * request	true	array	Object
-     *  &gt;  symbol	true	string	Symbol name
-     *  &gt;  orderId	false	string	Order ID. Either orderId or orderLinkId is required
-     *  &gt;  orderLinkId	false	string	User customised order ID. Either orderId or orderLinkId is required
-     *  &gt;  orderIv	false	string	Implied volatility. option only. Pass the real value, e.g for 10%, 0.1 should be passed
-     *  &gt;  triggerPrice	false	string	If you expect the price to rise to trigger your conditional order, make sure:
-     * triggerPrice  &gt;  market price
-     * Else, triggerPrice  &gt; market price
-     *  &gt;  qty	false	string	Order quantity after modification. Do not pass it if not modify the qty
-     *  &gt;  price	false	string	Order price after modification. Do not pass it if not modify the price
-     *  &gt;  takeProfit	false	string	Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit
-     *  &gt;  stopLoss	false	string	Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss
-     *  &gt;  tpTriggerBy	false	string	The price type to trigger take profit. When set a take profit, this param is required if no initial value for the order
-     *  &gt;  slTriggerBy	false	string	The price type to trigger stop loss. When set a take profit, this param is required if no initial value for the order
-     *  &gt;  triggerBy	false	string	Trigger price type
-     *  &gt;  tpLimitPrice	false	string	Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl
-     *  &gt;  slLimitPrice	false	string	Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * result	Object
+     * > list	array	Object
+     * >> category	string	Product type
+     * >> symbol	string	Symbol name
+     * >> orderId	string	Order ID
+     * >> orderLinkId	string	User customised order ID
+     * retExtInfo	Object
+     * > list	array	Object
+     * >> code	number	Success/error code
+     * >> msg	string	Success/error message
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/amend-batch")
-    Call<Object> amendBatchOrder(@Body BatchOrderRequest batchOrderRequest);
+    Call<Object> amendBatchOrder(@Body AmendBatchOrderRequest batchOrderRequest);
 
     // User
-
     /**
      * Get API Key Information
      * Get the information of the api key. Use the api key pending to be checked to call the endpoint. Both master and sub user's api key are applicable.

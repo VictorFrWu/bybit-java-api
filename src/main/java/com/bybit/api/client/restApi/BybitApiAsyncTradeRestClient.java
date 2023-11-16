@@ -1,6 +1,7 @@
 package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
 import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.Map;
 public interface BybitApiAsyncTradeRestClient {
     // Trade
     void getHistoryOrderResult(TradeOrderRequest orderHistoryRequest, BybitApiCallback<Object> callback);
-    void setDisconnectCancelAllTime(Integer timeWindow, BybitApiCallback<Object> callback);
+    void setDisconnectCancelAllTime(TradeOrderRequest tradeOrderRequest, BybitApiCallback<Object> callback);
     void getBorrowQuota(TradeOrderRequest borrowQuotaRequest, BybitApiCallback<Object> callback);
     void getOpenOrders(TradeOrderRequest order, BybitApiCallback<Object> callback);
     void createOrder(TradeOrderRequest order, BybitApiCallback<Object> callback);

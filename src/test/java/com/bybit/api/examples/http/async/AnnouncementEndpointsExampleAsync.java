@@ -6,8 +6,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class AnnouncementEndpointsExampleAsync {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        var client = factory.newAsyncMarketDataRestClient();
+        var client = BybitApiClientFactory.newInstance().newAsyncMarketDataRestClient();
 
         // Get Announcement
         var announcementInfoRequest = AnnouncementInfoRequest.builder().locale(LanguageSymbol.EN_US).build();

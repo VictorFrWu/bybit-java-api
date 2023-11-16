@@ -4,14 +4,18 @@ import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.service.CategoryTypeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
-public class BatchOrderRequest {
+@ToString
+public class CancelBatchOrderRequest {
     @JsonSerialize(using = CategoryTypeSerializer.class)
     private CategoryType category;
-    private List<TradeOrderRequest> request;
+    private List<CancelOrderRequest> request;
 }

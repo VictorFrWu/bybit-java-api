@@ -3,15 +3,16 @@ package com.bybit.api.client.domain.trade.request;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.service.CategoryTypeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
-public class BatchOrderRequest {
+@ToString
+public class PlaceBatchOrderRequest {
     @JsonSerialize(using = CategoryTypeSerializer.class)
     private CategoryType category;
-    private List<TradeOrderRequest> request;
+    private List<PlaceOrderRequest> request;
 }

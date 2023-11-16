@@ -13,14 +13,14 @@ import java.util.Map;
 
 public class TradeAsyncExample {
     public static void main(String[] args) {
-        var client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN).newAsyncTradeRestClient();
+        var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN, true).newAsyncTradeRestClient();
 
         // Place an order
         var newOrderRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT")
                 .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.GOOD_TILL_CANCEL)
                 .positionIdx(PositionIdx.ONE_WAY_MODE).build();
         client.createOrder(newOrderRequest, System.out::println);
-/*
+
         // Place an order by map
         Map<String, Object> order =Map.of(
                 "category", "option",
@@ -34,8 +34,7 @@ public class TradeAsyncExample {
         client.createOrder(order, System.out::println);
 
         // Cancel All order
-        var cancelAllOrdersRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).baseCoin("USDT").build();
+        var cancelAllOrdersRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).settleCoin("USDT").build();
         client.cancelAllOrder(cancelAllOrdersRequest, System.out::println);
-*/
     }
 }

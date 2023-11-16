@@ -32,8 +32,7 @@ public class AuthenticationInterceptor implements Interceptor {
         Request original = chain.request();
         Request.Builder newRequestBuilder = original.newBuilder();
 
-        boolean isSignatureRequired = original.header(BybitApiConstants.SIGN_HEADER) != null;
-        newRequestBuilder.removeHeader(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER);
+        boolean isSignatureRequired = original.header(BybitApiConstants.SIGN_TYPE_HEADER) != null;
 
         // Endpoint requires signing the payload
         String payload = "";
@@ -54,7 +53,6 @@ public class AuthenticationInterceptor implements Interceptor {
             String signature = sign(apiKey, secret, StringUtils.isEmpty(payload) ? ""  : payload, timestamp, BybitApiConstants.DEFAULT_RECEIVING_WINDOW);
             newRequestBuilder.addHeader(BybitApiConstants.API_KEY_HEADER, apiKey);
             newRequestBuilder.addHeader(BybitApiConstants.SIGN_HEADER, signature);
-            newRequestBuilder.addHeader(BybitApiConstants.SIGN_TYPE_HEADER, BybitApiConstants.DEFAULT_SIGNATURE_TYPE);
             newRequestBuilder.addHeader(BybitApiConstants.TIMESTAMP_HEADER, String.valueOf(timestamp));
             newRequestBuilder.addHeader(BybitApiConstants.RECV_WINDOW_HEADER, String.valueOf(BybitApiConstants.DEFAULT_RECEIVING_WINDOW));
             newRequestBuilder.addHeader(BybitApiConstants.API_CONTENT_TYPE, BybitApiConstants.DEFAULT_CONTENT_TYPE);

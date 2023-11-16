@@ -10,7 +10,7 @@ public interface BybitApiTradeRestClient {
 
     // Trade
     Object getHistoryOrderResult(TradeOrderRequest orderHistoryRequest);
-    Object setDisconnectCancelAllTime(Integer timeWindow);
+    Object setDisconnectCancelAllTime(TradeOrderRequest setDcpRequest);
     Object getBorrowQuota(TradeOrderRequest borrowQuotaRequest);
     Object getOpenOrders(TradeOrderRequest order);
     Object createOrder(TradeOrderRequest order);

@@ -8,10 +8,10 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
 @Builder
-public class BatchOrderRequest {
+@Data
+public class AmendBatchOrderRequest {
     @JsonSerialize(using = CategoryTypeSerializer.class)
     private CategoryType category;
-    private List<TradeOrderRequest> request;
+    private List<AmendOrderRequest> request;
 }

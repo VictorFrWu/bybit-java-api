@@ -36,7 +36,7 @@ public class BybitApiConstants {
     /**
      * Default receiving window.
      */
-    public static final long DEFAULT_RECEIVING_WINDOW = 50000L;
+    public static final long DEFAULT_RECEIVING_WINDOW = 5000;
 
     /**
      * Default content type.
@@ -44,13 +44,9 @@ public class BybitApiConstants {
     public static final String DEFAULT_CONTENT_TYPE = "application/json";
 
     /**
-     * Default signature type.
-     */
-    public static final String DEFAULT_SIGNATURE_TYPE = "2";
-    /**
      * Decorator to indicate that an endpoint requires a signature.
      */
-    public static final String ENDPOINT_SECURITY_TYPE_SIGNED_HEADER = SIGN_HEADER + ": signed";
+    public static final String ENDPOINT_SECURITY_TYPE_SIGNED_HEADER = SIGN_TYPE_HEADER + ": 2";
     /**
      * Default ToStringStyle used by toString methods.
      * Override this to change the output format of the overridden toString methods.

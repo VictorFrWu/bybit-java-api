@@ -8,8 +8,7 @@ import java.util.Map;
 
 public class UserAsyncExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        var client = factory.newAsyncUserRestClient();
+        var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET").newAsyncUserRestClient();
 
         // create a new sub user
         var subUserRequest = UserDataRequest.builder().username("VictorWuTest3")

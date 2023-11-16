@@ -5,8 +5,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class InstituionExample {
     public static void main(String[] args) {
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        var client = factory.newLendingRestClient();
+        var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET").newLendingRestClient();
 
         // Get Product info
         var insProductInfoRequest = LendingDataRequest.builder().build();

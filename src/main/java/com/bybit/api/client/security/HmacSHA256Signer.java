@@ -34,7 +34,7 @@ public class HmacSHA256Signer {
             throw new BybitApiException("Authenticated endpoints require keys.");
         }
 
-        String message = Long.toString(timestamp) + apiKey + Long.toString(recvWindow) + payload;
+        String message = timestamp + apiKey + recvWindow + payload;
         Mac sha256_HMAC = null;
         try {
             sha256_HMAC = Mac.getInstance("HmacSHA256");

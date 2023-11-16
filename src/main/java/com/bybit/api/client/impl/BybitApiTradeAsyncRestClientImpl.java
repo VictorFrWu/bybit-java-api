@@ -1,9 +1,9 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
 import com.bybit.api.client.restApi.BybitApiAsyncTradeRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
 import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
@@ -29,7 +29,7 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
                         orderHistoryRequest.getSettleCoin(),
                         orderHistoryRequest.getOrderId(),
                         orderHistoryRequest.getOrderLinkId(),
-                        orderHistoryRequest.getOrderFilter(),
+                        orderHistoryRequest.getOrderFilter() == null ? null : orderHistoryRequest.getOrderFilter().getOrderFilterType(),
                         orderHistoryRequest.getOrderStatus(),
                         orderHistoryRequest.getStartTime(),
                         orderHistoryRequest.getEndTime(),
@@ -39,8 +39,9 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
     }
 
     @Override
-    public void setDisconnectCancelAllTime(Integer timeWindow, BybitApiCallback<Object> callback) {
-        bybitApiService.setDisconnectCancelAllTime(timeWindow).enqueue(new BybitApiCallbackAdapter<>(callback));
+    public void setDisconnectCancelAllTime(TradeOrderRequest orderRequest, BybitApiCallback<Object> callback) {
+        var setDcpRequest = converter.convertMapToDcpRequest(orderRequest);
+        bybitApiService.setDisconnectCancelAllTime(setDcpRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
                         order.getOrderId(),
                         order.getOrderLinkId(),
                         order.getOpenOnly(),
-                        order.getOrderFilter(),
+                        order.getOrderFilter() == null ? null : order.getOrderFilter().getOrderFilterType(),
                         order.getLimit(),
                         order.getCursor())
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
@@ -70,107 +71,99 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
 
     @Override
     public void createOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
-        bybitApiService.createOrder(order).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var placeOrderRequest = converter.convertTradeToPlaceOrderRequest(order);
+        bybitApiService.createOrder(placeOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void createOrder(Map<String, Object> order, BybitApiCallback<Object> callback) {
         var singleOrderRequest = converter.convertMapToSingleOrderRequest(order);
-        bybitApiService.createOrder(singleOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var placeOrderRequest = converter.convertTradeToPlaceOrderRequest(singleOrderRequest);
+        bybitApiService.createOrder(placeOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void createOrder(String order, BybitApiCallback<Object> callback) throws IOException {
         var singleOrderRequest = converter.convertJsonToSingleOrderRequest(order);
-        bybitApiService.createOrder(singleOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var placeOrderRequest = converter.convertTradeToPlaceOrderRequest(singleOrderRequest);
+        bybitApiService.createOrder(placeOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void createBatchOrder(BatchOrderRequest batchOrderRequest, BybitApiCallback<Object> callback) {
-        bybitApiService.createBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var placeBatchOrderRequest = converter.convertToPlaceBatchOrderRequest(batchOrderRequest);
+        bybitApiService.createBatchOrder(placeBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void createBathOrder(Map<String, Object> payload, BybitApiCallback<Object> callback) {
         var batchOrderRequest = converter.convertMapToBatchOrderRequest(payload);
-        bybitApiService.createBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var placeBatchOrderRequest = converter.convertToPlaceBatchOrderRequest(batchOrderRequest);
+        bybitApiService.createBatchOrder(placeBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void createBathOrder(String json, BybitApiCallback<Object> callback) throws IOException {
-        BatchOrderRequest batchOrderRequest = converter.jsonToBatchOrderRequest(json);
-        bybitApiService.createBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var batchOrderRequest = converter.jsonToBatchOrderRequest(json);
+        var placeBatchOrderRequest = converter.convertToPlaceBatchOrderRequest(batchOrderRequest);
+        bybitApiService.createBatchOrder(placeBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void amendBatchOrder(BatchOrderRequest batchOrderRequest, BybitApiCallback<Object> callback) {
-        bybitApiService.amendBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var amendBatchOrderRequest = converter.convertToAmendBatchOrderRequest(batchOrderRequest);
+        bybitApiService.amendBatchOrder(amendBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void amendBatchOrder(Map<String, Object> payload, BybitApiCallback<Object> callback) {
         var batchOrderRequest = converter.convertMapToBatchOrderRequest(payload);
-        bybitApiService.amendBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var amendBatchOrderRequest = converter.convertToAmendBatchOrderRequest(batchOrderRequest);
+        bybitApiService.amendBatchOrder(amendBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void amendBatchOrder(String json, BybitApiCallback<Object> callback) throws IOException {
-        BatchOrderRequest batchOrderRequest = converter.jsonToBatchOrderRequest(json);
-        bybitApiService.amendBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var batchOrderRequest = converter.jsonToBatchOrderRequest(json);
+        var amendBatchOrderRequest = converter.convertToAmendBatchOrderRequest(batchOrderRequest);
+        bybitApiService.amendBatchOrder(amendBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void cancelBatchOrder(BatchOrderRequest batchOrderRequest, BybitApiCallback<Object> callback) {
-        bybitApiService.cancelBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var cancelBatchOrderRequest = converter.convertToCancelBatchOrderRequest(batchOrderRequest);
+        bybitApiService.cancelBatchOrder(cancelBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void cancelBatchOrder(Map<String, Object> payload, BybitApiCallback<Object> callback) {
         var batchOrderRequest = converter.convertMapToBatchOrderRequest(payload);
-        bybitApiService.cancelBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var cancelBatchOrderRequest = converter.convertToCancelBatchOrderRequest(batchOrderRequest);
+        bybitApiService.cancelBatchOrder(cancelBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void cancelBatchOrder(String json, BybitApiCallback<Object> callback) throws IOException {
-        BatchOrderRequest batchOrderRequest = converter.jsonToBatchOrderRequest(json);
-        bybitApiService.cancelBatchOrder(batchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var batchOrderRequest = converter.jsonToBatchOrderRequest(json);
+        var cancelBatchOrderRequest = converter.convertToCancelBatchOrderRequest(batchOrderRequest);
+        bybitApiService.cancelBatchOrder(cancelBatchOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void cancelOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
-        bybitApiService.cancelOrder(order).enqueue(new BybitApiCallbackAdapter<>(callback));
+        var cancelOrderRequest = converter.convertTradeToCancelOrderRequest(order);
+        bybitApiService.cancelOrder(cancelOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void cancelAllOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
-        bybitApiService.cancelAllOrder(
-                        order.getCategory().getCategoryTypeId(),
-                        order.getSymbol(),
-                        order.getBaseCoin(),
-                        order.getSettleCoin(),
-                        order.getOrderFilter(),
-                        order.getStopOrderType() == null ? null : order.getStopOrderType().getDescription())
-                .enqueue(new BybitApiCallbackAdapter<>(callback));
+        var cancelAllOrderRequest = converter.convertTradeToCancelAllOrdersRequest(order);
+        bybitApiService.cancelAllOrder(cancelAllOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
     public void amendOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
-        bybitApiService.amendOrder(
-                        order.getCategory().getCategoryTypeId(),
-                        order.getSymbol(),
-                        order.getOrderId(),
-                        order.getOrderLinkId(),
-                        order.getOrderIv(),
-                        order.getTriggerPrice(),
-                        order.getQty(),
-                        order.getPrice(),
-                        order.getTakeProfit(),
-                        order.getStopLoss(),
-                        order.getTpTriggerBy(),
-                        order.getSlTriggerBy(),
-                        order.getTriggerBy(),
-                        order.getTpLimitPrice(),
-                        order.getSlLimitPrice())
-                .enqueue(new BybitApiCallbackAdapter<>(callback));
+        var amendOrderRequest = converter.convertTradeToAmendOrderRequest(order);
+        bybitApiService.amendOrder(amendOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 }
