@@ -4,8 +4,6 @@ import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.GenericResponse;
 import com.bybit.api.client.domain.market.response.openInterests.OpenInterestEntry;
 import com.bybit.api.client.domain.market.response.openInterests.OpenInterestResult;
-import com.bybit.api.client.domain.market.response.tickers.TickerEntry;
-import com.bybit.api.client.domain.market.response.tickers.TickersResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;

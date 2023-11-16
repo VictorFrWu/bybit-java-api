@@ -283,7 +283,7 @@ public class BybitJsonConverter {
                 .triggerPrice(tradeOrderRequest.getTriggerPrice()) // Optional
                 .triggerBy(tradeOrderRequest.getTriggerBy() == null ? null : tradeOrderRequest.getTriggerBy().getTrigger()) // Optional
                 .orderIv(tradeOrderRequest.getOrderIv())        // Optional
-                .timeInForce(tradeOrderRequest.getTimeInForce() == null ? null : tradeOrderRequest.getTimeInForce().getDescription()) // Optional and default value depends on order type
+                .timeInForce(tradeOrderRequest.getTimeInForce() == null ? null : tradeOrderRequest.getTimeInForce().getDescription()[0]) // Optional and default value depends on order type
                 .positionIdx(tradeOrderRequest.getPositionIdx() == null ? null : tradeOrderRequest.getPositionIdx().getIndex()) // Optional
                 .orderLinkId(tradeOrderRequest.getOrderLinkId()) // Optional
                 .takeProfit(tradeOrderRequest.getTakeProfit())  // Optional

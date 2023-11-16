@@ -41,11 +41,11 @@ public class Slf4jLoggingInterceptor implements Interceptor {
     }
 
 
-    public static void HandleLoggingInterceptor(OkHttpClient.Builder clientBuilder) {
+    public static void HandleLoggingInterceptor(OkHttpClient.Builder clientBuilder, String logOption) {
         LOGGER.info("Debug Mode Activated, Trace Request in body level");
-        if(BybitApiConfig.useSlf4j)
+        if(LogOption.SLF4J.getLogOptionType().equals(logOption.trim().toLowerCase()))
             clientBuilder.addInterceptor(new Slf4jLoggingInterceptor());
-        else{
+        else if(LogOption.OKHTTP3.getLogOptionType().equals(logOption.trim().toLowerCase())){
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(LOGGER::info);
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             clientBuilder.addInterceptor(loggingInterceptor);

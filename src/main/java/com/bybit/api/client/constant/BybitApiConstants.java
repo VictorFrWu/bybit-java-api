@@ -37,7 +37,14 @@ public class BybitApiConstants {
      * Default receiving window.
      */
     public static final long DEFAULT_RECEIVING_WINDOW = 5000;
-
+    /**
+     * Default Ping Pong Heart Beat Request Interval
+     */
+    public static final int DEFAULT_PING_INTERVAL = 15;
+    /**
+     * Default Maximum Alive Time
+     */
+    public static final String DEFAULT_MAX_ALIVE_TIME = "-1";
     /**
      * Default content type.
      */

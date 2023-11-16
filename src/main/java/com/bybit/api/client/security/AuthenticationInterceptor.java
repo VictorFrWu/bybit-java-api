@@ -21,9 +21,12 @@ public class AuthenticationInterceptor implements Interceptor {
 
     private final String secret;
 
-    public AuthenticationInterceptor(String apiKey, String secret) {
+    private final Long recvWindow;
+
+    public AuthenticationInterceptor(String apiKey, String secret, Long recvWindow) {
         this.apiKey = apiKey;
         this.secret = secret;
+        this.recvWindow = recvWindow;
     }
 
     @NotNull
@@ -50,11 +53,11 @@ public class AuthenticationInterceptor implements Interceptor {
 
         if (isSignatureRequired) {
             long timestamp = Util.generateTimestamp();
-            String signature = sign(apiKey, secret, StringUtils.isEmpty(payload) ? ""  : payload, timestamp, BybitApiConstants.DEFAULT_RECEIVING_WINDOW);
+            String signature = sign(apiKey, secret, StringUtils.isEmpty(payload) ? ""  : payload, timestamp, recvWindow);
             newRequestBuilder.addHeader(BybitApiConstants.API_KEY_HEADER, apiKey);
             newRequestBuilder.addHeader(BybitApiConstants.SIGN_HEADER, signature);
             newRequestBuilder.addHeader(BybitApiConstants.TIMESTAMP_HEADER, String.valueOf(timestamp));
-            newRequestBuilder.addHeader(BybitApiConstants.RECV_WINDOW_HEADER, String.valueOf(BybitApiConstants.DEFAULT_RECEIVING_WINDOW));
+            newRequestBuilder.addHeader(BybitApiConstants.RECV_WINDOW_HEADER, String.valueOf(recvWindow));
             newRequestBuilder.addHeader(BybitApiConstants.API_CONTENT_TYPE, BybitApiConstants.DEFAULT_CONTENT_TYPE);
         }
         Request newRequest = newRequestBuilder.build();

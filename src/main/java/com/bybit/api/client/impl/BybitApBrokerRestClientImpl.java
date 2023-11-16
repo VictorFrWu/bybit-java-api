@@ -10,8 +10,8 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 public class BybitApBrokerRestClientImpl implements BybitApiBrokerRestClient {
     private final BybitApiService bybitApiService;
 
-    public BybitApBrokerRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
+    public BybitApBrokerRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
     // Broker
     @Override

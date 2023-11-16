@@ -1,18 +1,12 @@
 package com.bybit.api.client.security;
 
-import com.alibaba.fastjson.JSON;
 import com.bybit.api.client.exception.BybitApiException;
-import okhttp3.WebSocket;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Utility class to sign messages using HMAC-SHA256.
@@ -35,7 +29,7 @@ public class HmacSHA256Signer {
         }
 
         String message = timestamp + apiKey + recvWindow + payload;
-        Mac sha256_HMAC = null;
+        Mac sha256_HMAC;
         try {
             sha256_HMAC = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKeySpec = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
@@ -44,22 +38,6 @@ public class HmacSHA256Signer {
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * To convert bytes to hex
-     *
-     * @param hash
-     * @return hex string
-     */
-    private static String bytesToHex(byte[] hash) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-        return hexString.toString();
     }
 
     public static String auth(String data, String apiSecret) {

@@ -2,8 +2,6 @@ package com.bybit.api.domain.market;
 
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.GenericResponse;
-import com.bybit.api.client.domain.market.response.orderbook.OrderbookBidEntry;
-import com.bybit.api.client.domain.market.response.orderbook.OrderbookResult;
 import com.bybit.api.client.domain.market.response.tickers.TickerEntry;
 import com.bybit.api.client.domain.market.response.tickers.TickersResult;
 import com.fasterxml.jackson.core.type.TypeReference;

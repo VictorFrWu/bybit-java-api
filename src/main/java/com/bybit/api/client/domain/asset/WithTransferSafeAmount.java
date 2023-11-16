@@ -1,4 +1,4 @@
-package com.bybit.api.client.domain.asset.request;
+package com.bybit.api.client.domain.asset;
 
 import lombok.Getter;
 

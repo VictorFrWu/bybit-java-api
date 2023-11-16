@@ -23,7 +23,7 @@ Dive into a plethora of functionalities:
 
 bybit-java-api provides an official, robust, and high-performance Java connector to Bybit's trading APIs. 
 
-Initially conceptualized by esteemed Java developer Victor, this module is now maintained by Bybit's in-house Java experts. 
+Initially conceptualized by Java developer Victor, this module is now maintained by Bybit's in-house Java experts. 
 
 Your contributions are most welcome!
 
@@ -35,175 +35,188 @@ Ensure you have Java 11 or higher. You can include bybit-java-api in your projec
 
 Maven Example
 ```java
-    <!-- Maven -->
-    <dependency>
-        <groupId>io.github.wuhewuhe</groupId>
-        <artifactId>bybit-java-api</artifactId>
-        <version>1.1.0</version>
-    </dependency>
+<!-- Maven -->
+<dependency>
+    <groupId>io.github.wuhewuhe</groupId>
+    <artifactId>bybit-java-api</artifactId>
+    <version>1.1.1</version>
+</dependency>
 ```
 Gradle Example
 ```java
-    implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.0'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.1'
 ```
-Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.0)
+Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.1)
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
-### Http Async Examples
-- Create Factory 
+### HttP Client Factory & Websocket Client
+#### Client Factory Option
 ```java
-        // Client Factory in Mainnet with API key and Secret
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET");
-        // Client Factory in Testnet, with API key and Secret
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
-        // Client Factory in Mainnet without API key and Secret
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance()
-        // Client Factory in Testnet without API key and Secret
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance(true)
+private final String apiKey;
+private final String secret;
+private final String baseUrl;
+private final Boolean debugMode;
+private final String logOption;
+private final Long recvWindow;
 ```
 
-- Place Single Order
+### Http Async Examples
+- Place Single Order By Object
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
-        BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
-        // Place an order
-        var newOrderRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT")
-                .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.IMMEDIATE_OR_CANCEL)
-                .positionIdx(PositionIdx.ONE_WAY_MODE).build();
-        client.createOrder(newOrderRequest, System.out::println);
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN, true).newAsyncTradeRestClient();
+        Map<String, Object> order =Map.of(
+        "category", "option",
+        "symbol", "BTC-29DEC23-10000-P",
+        "side", "Buy",
+        "orderType", "Limit",
+        "orderIv", "0.1",
+        "qty", "0.1",
+        "price", "5"
+        );
+        client.createOrder(order, System.out::println);
+```
+
+- Place Single Order By Map
+```java
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN, true).newAsyncTradeRestClient();
+var newOrderRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT")
+.side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.GOOD_TILL_CANCEL)
+.positionIdx(PositionIdx.ONE_WAY_MODE).build();
+client.createOrder(newOrderRequest, System.out::println);
 ```
 
 - Place Batch Order
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
-        BybitApiAsyncTradeRestClient client = factory.newAsyncTradeRestClient();
-        // Create a batch order
-        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
-                .price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
-                TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
-                .price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
-                var createBatchOrders = BatchOrderRequest.builder().category(CategoryType.OPTION).request(orderRequests).build();
-        client.createBatchOrder(createBatchOrders, System.out::println);
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newAsyncTradeRestClient();
+var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+.price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
+TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
+.price("5").orderIv("0.1").timeInForce(TimeInForce.GOOD_TILL_CANCEL).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
+var createBatchOrders = BatchOrderRequest.builder().category(CategoryType.OPTION).request(orderRequests).build();
+client.createBatchOrder(createBatchOrders, System.out::println);
 ```
 - Position Info
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
-        var client = factory.newAsyncPositionRestClient();
-        // Get Position Info
-        var positionListRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").build();
-        client.getPositionInfo(positionListRequest, System.out::println);
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newAsyncPositionRestClient();
+var positionListRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").build();
+client.getPositionInfo(positionListRequest, System.out::println);
 ```
 - Asset Info
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
-        var client = factory.newAsyncAssetRestClient();
-        // Get Coin Exchange Records
-        var coinExchangeRecordsRequest = AssetDataRequest.builder().build();
-        client.getAssetCoinExchangeRecords(coinExchangeRecordsRequest, System.out::println);
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newAsyncAssetRestClient();
+var coinExchangeRecordsRequest = AssetDataRequest.builder().build();
+client.getAssetCoinExchangeRecords(coinExchangeRecordsRequest, System.out::println);
 ```
 ### Http Sync Examples
+- Amend Order
+```java
+var amendOrderRequest = TradeOrderRequest.builder().orderId("1523347543495541248").category(CategoryType.LINEAR).symbol("XRPUSDT")
+        .price("0.5")  // setting a new price, for example
+        .qty("15")  // and a new quantity
+        .build();
+var amendedOrder = client.amendOrder(amendOrderRequest);
+System.out.println(amendedOrder);
+```
 - Place Batch Order
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
-        BybitApiTradeRestClient client = factory.newTradeRestClient();
-        // Create a batch order
-        var orderRequests = Arrays.asList(TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
-                        .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("9b381bb1-401").mmp(false).reduceOnly(false).build(),
-                TradeOrderRequest.builder().category(CategoryType.OPTION).symbol("BTC-10FEB23-24000-C").side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("0.1")
-                        .price("5").orderIv("0.1").timeInForce(TimeInForce.GoodTillCancel).orderLinkId("82ee86dd-001").mmp(false).reduceOnly(false).build());
-        var createBatchOrders = BatchOrderRequest.builder().category(CategoryType.OPTION).request(orderRequests).build();
-        var createBatchRequestResponse = client.createBatchOrder(createBatchOrders);
-        System.out.println(createBatchRequestResponse);
-
-        // Create a batch order by map
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("category", "option");
-        List<Map<String, Object>> orders = new ArrayList<>();
-        List<Integer> prices = Arrays.asList(15000, 15500, 16000, 16500, 16600);
-        for (Integer price : prices) {
-            Map<String, Object> order = new HashMap<>();
-            order.put("symbol", "BTC-30JUN23-20000-C");
-            order.put("side", "Buy");
-            order.put("orderType", "Limit");
-            order.put("qty", "0.1");
-            order.put("price", price.toString());
-            orders.add(order);
-        }
-        payload.put("request", orders);
-        var createBatchResponse = client.createBathOrder(payload);
-        System.out.println(createBatchResponse);
-        
-        var batchOrderRequest = client.createBathOrder(jsonRequest);
-        System.out.println(batchOrderRequest);
+String jsonRequest = """
+{
+  "category":"option", 
+  "request": [ 
+  {  
+  "category":"option", 
+  "symbol":"BTC-10FEB23-24000-C", 
+  "orderType":"Limit", 
+  "side":"Buy",   
+  "qty":"0.1", 
+  "price":"5", 
+  "orderIv":"0.1", 
+  "timeInForce":"GTC", 
+  "orderLinkId":"9b381bb1-401", 
+  "mmp":false, 
+  "reduceOnly":false  
+  },
+  {  
+  "category":"option", 
+  "symbol":"BTC-10FEB23-24000-C", 
+  "orderType":"Limit", 
+  "side":"Buy",   
+  "qty":"0.1", 
+  "price":"5", 
+  "orderIv":"0.1", 
+  "timeInForce":"GTC", 
+  "orderLinkId":"82ee86dd-001", 
+  "mmp":false, 
+  "reduceOnly":false  
+  } 
+ ]
+}
+""";
+var batchOrderRequest = client.createBathOrder(jsonRequest);
+System.out.println(batchOrderRequest);
 ```
 
 - Market Data Info 
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance(true);
-        var client = factory.newMarketDataRestClient();
-        var marketKLineRequest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
-        // Weekly market Kline
-        var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
-        System.out.println(marketKlineResult);
-```
-- Account Data Info
-```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
-        var client = factory.newAccountRestClient();
-        // Get wallet balance
-        var walletBalanceRequest = AccountDataRequest.builder().accountType(AccountType.UNIFIED).build();
-        var walletBalanceData = client.getWalletBalance(walletBalanceRequest);
-        System.out.println(walletBalanceData);
+var client = BybitApiClientFactory.newInstance(BybitApiConfig.TESTNET_DOMAIN,true).newMarketDataRestClient();
+var marketKLineRequest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
+// Weekly market Kline
+var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
+System.out.println(marketKlineResult);
+
+// Weekly market price Kline for a symbol
+var marketPriceKlineResult = client.getMarketPriceLinesData(marketKLineRequest);
+System.out.println(marketPriceKlineResult);
+
+// Weekly index price Kline for a symbol
+var indexPriceKlineResult = client.getIndexPriceLinesData(marketKLineRequest);
+System.out.println(indexPriceKlineResult);
+
+// Weekly premium index price Kline for a symbol
+var indexPremiumPriceKlineResult = client.getPremiumIndexPriceLinesData(marketKLineRequest);
+System.out.println(indexPremiumPriceKlineResult);
+
+// Get server time
+var serverTime = client.getServerTime();
+System.out.println(serverTime);
 ```
 
 - User Management
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET",true);
-        var client = factory.newUserRestClient();
-        // create a new sub user
-        var subUserRequest = UserDataRequest.builder().username("VictorWuTest3")
-        .password("Password123")
-        .memberType(MemberType.NORMAL_SUB_ACCOUNT)
-        .note("Some note")
-        .switchOption(SwitchOption.TURN_OFF)
-        .isUta(IsUta.CLASSIC_ACCOUNT)
-        .build();
-        var subUser = client.createSubMember(subUserRequest);
-        System.out.println(subUser);
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
+var subUserRequest = UserDataRequest.builder().username("VictorWuTest3").password("Password123").memberType(MemberType.NORMAL_SUB_ACCOUNT).note("Some note").switchOption(SwitchOption.TURN_OFF).isUta(IsUta.CLASSIC_ACCOUNT).build();
+var subUser = client.createSubMember(subUserRequest);
+System.out.println(subUser);
+```
+
+#### Websocket Client
+```java
+private final Integer pingInterval;
+private final WebsocketMessageHandler messageHandler;
+private final String maxAliveTime; // Only valid for private channel
 ```
 
 ### Websocket public channel
-- Create Websocket Client
-```java
-        // new websocket client in debug mode
-        var client = factory.newWebsocketClient(true);
-        // new websocket client with message handler
-        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message));
-        // new websocket client with message handler and debug mode
-        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message), true);
-        // new websocket client without message handler and debug mode
-        var client = factory.newWebsocketClient();
-```
 - Order book Subscribe
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance();
-        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message), true);
+var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_TESTNET_DOMAIN, true, "okhttp3").newWebsocketClient(20);
 
-        // Orderbook
-        client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
-        
-        // Subscribe Orderbook more than one args
-        client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+// Orderbook
+client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+
+// Subscribe Orderbook more than one args
+client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 
 ### Websocket private channel
 - Order Subscribe
 ```java
-        BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY","YOUR_API_SECRET",true);
-        var client = factory.newWebsocketClient((message) -> System.out.println("Handle message :" + message), true);
+var client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.STREAM_TESTNET_DOMAIN).newWebsocketClient(5, "60s", (message) -> System.out.println("Handle message :" + message));
+// Position
+// client.getOrderBookStream(List.of("position.linear"), BybitApiConfig.V5_PRIVATE);
 
-        // Order
-        client.getPrivateChannelStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
+// Order
+client.getPrivateChannelStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
 ```
 ## Contact
 For support, join our Bybit API community on [Telegram](https://t.me/Bybitapi).

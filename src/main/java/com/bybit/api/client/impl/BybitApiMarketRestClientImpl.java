@@ -13,8 +13,8 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     private final BybitApiService bybitApiService;
 
-    public BybitApiMarketRestClientImpl(String baseUrl, boolean debugMode) {
-        bybitApiService = createService(BybitApiService.class, baseUrl, debugMode);
+    public BybitApiMarketRestClientImpl(String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        bybitApiService = createService(BybitApiService.class, baseUrl, debugMode, recvWindow, logOption);
     }
 
     // Market Data endpoints

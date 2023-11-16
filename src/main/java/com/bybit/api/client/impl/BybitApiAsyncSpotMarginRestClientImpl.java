@@ -16,8 +16,8 @@ public class BybitApiAsyncSpotMarginRestClientImpl implements BybitApiAsyncSpotM
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiAsyncSpotMarginRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
+    public BybitApiAsyncSpotMarginRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     // Spots

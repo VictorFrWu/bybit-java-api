@@ -1,12 +1,15 @@
 package com.bybit.api.client.service;
 
 
-import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.impl.*;
+import com.bybit.api.client.log.LogOption;
 import com.bybit.api.client.restApi.*;
 import com.bybit.api.client.websocket.WebsocketClient;
 import com.bybit.api.client.websocket.WebsocketClientImpl;
 import com.bybit.api.client.websocket.WebsocketMessageHandler;
+
+import static com.bybit.api.client.config.BybitApiConfig.MAINNET_DOMAIN;
+import static com.bybit.api.client.constant.BybitApiConstants.*;
 
 /**
  * A factory for creating BybitApi client objects.
@@ -31,7 +34,17 @@ public class BybitApiClientFactory {
     /**
      * DebugMode to print request and response header
      */
-    private final boolean debugMode;
+    private final Boolean debugMode;
+
+    /**
+     * DebugMode log option to print request and response header
+     */
+    private final String logOption;
+
+    /**
+     * recvWindow to print request and response header
+     */
+    private final Long recvWindow;
 
     /**
      * Instantiates a new Bybit api client factory.
@@ -41,32 +54,13 @@ public class BybitApiClientFactory {
      * @param baseUrl   base url
      * @param debugMode debugMode
      */
-    private BybitApiClientFactory(String apiKey, String secret, String baseUrl, boolean debugMode) {
+    private BybitApiClientFactory(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
         this.apiKey = apiKey;
         this.secret = secret;
         this.baseUrl = baseUrl;
         this.debugMode = debugMode;
-    }
-
-    private BybitApiClientFactory(String apiKey, String secret, boolean debugMode) {
-        this.apiKey = apiKey;
-        this.secret = secret;
-        this.baseUrl = BybitApiConfig.MAINNET_DOMAIN;
-        this.debugMode = debugMode;
-    }
-
-    private BybitApiClientFactory(String apiKey, String secret, String baseUrl) {
-        this.apiKey = apiKey;
-        this.secret = secret;
-        this.baseUrl = baseUrl;
-        this.debugMode = false;
-    }
-
-    private BybitApiClientFactory(String apiKey, String secret) {
-        this.apiKey = apiKey;
-        this.secret = secret;
-        this.baseUrl = BybitApiConfig.MAINNET_DOMAIN;
-        this.debugMode = false;
+        this.recvWindow = recvWindow;
+        this.logOption = logOption;
     }
 
     /**
@@ -77,20 +71,24 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory
      */
     public static BybitApiClientFactory newInstance(String apiKey, String secret) {
-        return new BybitApiClientFactory(apiKey, secret);
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
     }
 
 
     /**
      * New instance of Api Mainnet Client with url
      *
-     * @param apiKey    the API key
-     * @param secret    the Secret
-     * @param baseUrl    the baseUrl
+     * @param apiKey  the API key
+     * @param secret  the Secret
+     * @param baseUrl the baseUrl
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl) {
-        return new BybitApiClientFactory(apiKey, secret, baseUrl);
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+    }
+
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, long recvWindow) {
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, false, recvWindow, LogOption.SLF4J.getLogOptionType());
     }
 
     /**
@@ -102,7 +100,19 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode) {
-        return new BybitApiClientFactory(apiKey, secret, debugMode);
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+    }
+
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, String logOption) {
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, logOption);
+    }
+
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, long recvWindow) {
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, recvWindow, LogOption.SLF4J.getLogOptionType());
+    }
+
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, long recvWindow, String logOption) {
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, recvWindow, logOption);
     }
 
     /**
@@ -114,7 +124,11 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory
      */
     public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl, boolean debugMode) {
-        return new BybitApiClientFactory(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+    }
+
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl, long recvWindow) {
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, false, recvWindow, LogOption.SLF4J.getLogOptionType());
     }
 
 
@@ -124,7 +138,11 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory
      */
     public static BybitApiClientFactory newInstance() {
-        return new BybitApiClientFactory(null, null);
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+    }
+
+    public static BybitApiClientFactory newInstance(long recvWindow) {
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, false, recvWindow, LogOption.SLF4J.getLogOptionType());
     }
 
     /**
@@ -134,7 +152,7 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(String baseUrl) {
-        return new BybitApiClientFactory(null, null, baseUrl);
+        return new BybitApiClientFactory(null, null, baseUrl, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
     }
 
     /**
@@ -144,155 +162,183 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(boolean debugMode) {
-        return new BybitApiClientFactory(null, null, debugMode);
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+    }
+
+    public static BybitApiClientFactory newInstance(boolean debugMode, String logOption) {
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, logOption);
     }
 
     /**
      * New instance without authentication and with optional base url and debug mode
      *
-     * @param baseUrl base url
+     * @param baseUrl   base url
      * @param debugMode debug mode
      * @return the Bybit api client factory.
      */
+    public static BybitApiClientFactory newInstance(String baseUrl, boolean debugMode, String logOption) {
+        return new BybitApiClientFactory(null, null, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, logOption);
+    }
+
     public static BybitApiClientFactory newInstance(String baseUrl, boolean debugMode) {
-        return new BybitApiClientFactory(null, null, baseUrl, debugMode);
+        return new BybitApiClientFactory(null, null, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
     }
 
     /**
      * Creates a new synchronous/blocking REST client to spot leverage token and spot margin endpoints.
      */
     public BybitApiSpotMarginRestClient newSpotMarginRestClient() {
-        return new BybitApiSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
 
     public BybitApiAsyncSpotMarginRestClient newSpotMarginAsyncRestClient() {
-        return new BybitApiAsyncSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAsyncSpotMarginRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client.
      */
     public BybitApiUserRestClient newUserRestClient() {
-        return new BybitApiUserRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiUserRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to User and upgrade endpoints.
      */
     public BybitApiAsyncUserRestClient newAsyncUserRestClient() {
-        return new BybitApiAsyncUserRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAsyncUserRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Market Data Endpoints
      */
     public BybitApiMarketRestClient newMarketDataRestClient() {
-        return new BybitApiMarketRestClientImpl(baseUrl, debugMode);
+        return new BybitApiMarketRestClientImpl(baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Market Data Endpoints
      */
     public BybitApiAsyncMarketDataRestClient newAsyncMarketDataRestClient() {
-        return new BybitApiMarketAsyncRestClientImpl(baseUrl, debugMode);
+        return new BybitApiMarketAsyncRestClientImpl(baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Institution and Broker Endpoints
      */
     public BybitApiLendingRestClient newLendingRestClient() {
-        return new BybitApiLendingRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiLendingRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to Institution Lending Endpoints
      */
     public BybitApiAsyncLendingRestClient newAsyncLendingRestClient() {
-        return new BybitApiAsyncLendingRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAsyncLendingRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to trading
      */
     public BybitApiTradeRestClient newTradeRestClient() {
-        return new BybitApiTradeRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiTradeRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to trading
      */
     public BybitApiAsyncTradeRestClient newAsyncTradeRestClient() {
-        return new BybitApiTradeAsyncRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiTradeAsyncRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to position data
      */
     public BybitApiPositionRestClient newPositionRestClient() {
-        return new BybitApiPositionRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiPositionRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to position data
      */
     public BybitApiAsyncPositionRestClient newAsyncPositionRestClient() {
-        return new BybitApiAsyncPositionRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAsyncPositionRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Account data
      */
     public BybitApiAccountRestClient newAccountRestClient() {
-        return new BybitApiAccountRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAccountRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Account data
      */
     public BybitApiAsyncAccountRestClient newAsyncAccountRestClient() {
-        return new BybitApiAsyncAccountRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAsyncAccountRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Asset data
      */
     public BybitApiAssetRestClient newAssetRestClient() {
-        return new BybitApiAssetRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAssetRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Asset data
      */
     public BybitApiAsyncAssetRestClient newAsyncAssetRestClient() {
-        return new BybitApiAsyncAssetRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAsyncAssetRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new synchronous/blocking REST client to Broker earning data
      */
     public BybitApiBrokerRestClient newBrokerRestClient() {
-        return new BybitApBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
      * Creates a new asynchronous/non-blocking client to Broker earning data
      */
     public BybitApiAsyncBrokerRestClient newAsyncBrokerRestClient() {
-        return new BybitApiAsyncBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new BybitApiAsyncBrokerRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
-     * Access to public and private websocket without message handler
+     * Access to public websocket
      */
     public WebsocketClient newWebsocketClient() {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, debugMode);
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, null);
     }
 
-    /**
-     * Access to public and private websocket with message handler
-     */
+    public WebsocketClient newWebsocketClient(int pingInterval) {
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, null);
+    }
+
+    public WebsocketClient newWebsocketClient(String maxAliveTime) {
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, maxAliveTime, debugMode, logOption, null);
+    }
+
     public WebsocketClient newWebsocketClient(WebsocketMessageHandler messageHandler) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, debugMode, messageHandler);
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, messageHandler);
+    }
+
+    public WebsocketClient newWebsocketClient(int pingInterval, WebsocketMessageHandler messageHandler) {
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, messageHandler);
+    }
+    public WebsocketClient newWebsocketClient(int pingInterval, String maxAliveTime) {
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, maxAliveTime, debugMode, logOption, null);
+    }
+
+    public WebsocketClient newWebsocketClient(String maxAliveTime, WebsocketMessageHandler messageHandler) {
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, maxAliveTime, debugMode, logOption, null);
+    }
+
+    public WebsocketClient newWebsocketClient(int pingInterval, String maxAliveTime, WebsocketMessageHandler messageHandler) {
+        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, maxAliveTime, debugMode, logOption, messageHandler);
     }
 }
