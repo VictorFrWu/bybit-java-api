@@ -2,7 +2,6 @@ package com.bybit.api.client.domain.asset;
 
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.asset.request.WithTransferSafeAmount;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

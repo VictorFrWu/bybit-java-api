@@ -11,8 +11,9 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.createServic
 public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
-    public BybitApiAsyncAccountRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
+
+    public BybitApiAsyncAccountRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     // Account Endpoints

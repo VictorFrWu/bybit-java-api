@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.bybit.api.client.constant.Util.generateTransferID;
 
@@ -30,26 +32,22 @@ public class WebsocketClientImpl implements WebsocketClient {
     private final String secret;
     private final String baseUrl;
     private final Boolean debugMode;
+    private final String logOption;
+    private final Integer pingInterval;
+    private final String maxAliveTime;
     private List<String> argNames;
     private String path;
 
-
-    public WebsocketClientImpl(String apikey, String secret, String baseUrl, Boolean debugMode) {
-        this.messageHandler = null;
-        this.apikey = apikey;
-        this.secret = secret;
-        this.baseUrl = baseUrl;
-        this.debugMode = debugMode;
-        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode);
-    }
-
-    public WebsocketClientImpl(String apikey, String secret, String baseUrl, Boolean debugMode, WebsocketMessageHandler messageHandler) {
+    public WebsocketClientImpl(String apikey, String secret, String baseUrl, Integer pingInterval, String maxAliveTime, Boolean debugMode, String logOption, WebsocketMessageHandler messageHandler) {
         this.messageHandler = messageHandler;
         this.apikey = apikey;
         this.secret = secret;
         this.baseUrl = baseUrl;
+        this.pingInterval = pingInterval;
         this.debugMode = debugMode;
-        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode);
+        this.logOption = logOption;
+        this.maxAliveTime = maxAliveTime;
+        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode, this.logOption);
     }
 
     private void setupPublicChannelStream(List<String> argNames, String path) {
@@ -87,7 +85,7 @@ public class WebsocketClientImpl implements WebsocketClient {
                     if (ws != null) { // check if the WebSocket is still valid
                         ws.send(PING_DATA);
                         LOGGER.info(PING_DATA);
-                        TimeUnit.SECONDS.sleep(10); // waits for 10 seconds before the next iteration
+                        TimeUnit.SECONDS.sleep(pingInterval); // waits for 10 seconds before the next iteration
                     } else {
                         break;
                     }
@@ -123,6 +121,28 @@ public class WebsocketClientImpl implements WebsocketClient {
                 LOGGER.error("Error during authentication: ", e);
             }
         });
+    }
+
+    @NotNull
+    private String getWssUrl() {
+        Pattern pattern = Pattern.compile("(\\d+)([sm])");
+        Matcher matcher = pattern.matcher(maxAliveTime);
+        String wssUrl;
+        if (matcher.matches()) {
+            int timeValue = Integer.parseInt(matcher.group(1));
+            String timeUnit = matcher.group(2);
+            boolean isTimeValid = isTimeValid(timeUnit, timeValue);
+
+            wssUrl = isTimeValid && requiresAuthentication(path) ? baseUrl + path + "?max_alive_time=" + maxAliveTime : baseUrl + path;
+        } else {
+            wssUrl = baseUrl + path;
+        }
+        return wssUrl;
+    }
+
+    private boolean isTimeValid(String timeUnit, int timeValue) {
+        return ("s".equals(timeUnit) && timeValue >= 30 && timeValue <= 600)
+                || ("m".equals(timeUnit) && timeValue >= 1 && timeValue <= 10);
     }
 
     @NotNull
@@ -192,7 +212,9 @@ public class WebsocketClientImpl implements WebsocketClient {
 
     @Override
     public void connect() {
-        webSocketHttpClientSingleton.createWebSocket(baseUrl + path, createWebSocketListener());
+        String wssUrl = getWssUrl();
+        LOGGER.info(wssUrl);
+        webSocketHttpClientSingleton.createWebSocket(wssUrl, createWebSocketListener());
     }
 
     @Override

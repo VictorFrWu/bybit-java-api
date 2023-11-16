@@ -1,7 +1,5 @@
 package com.bybit.api.client.config;
 
-import lombok.Getter;
-
 /**
  * Configuration used for Bybit operations.
  */
@@ -31,7 +29,6 @@ public class BybitApiConfig {
      */
     @Deprecated
     public static boolean useTestnet;
-    public static boolean useSlf4j = false;
 
     // V5
     public static final String V5_PUBLIC_SPOT = "/v5/public/spot";

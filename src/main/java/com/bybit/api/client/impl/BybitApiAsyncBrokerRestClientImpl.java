@@ -4,16 +4,13 @@ import com.bybit.api.client.restApi.BybitApiAsyncBrokerRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.broker.BrokerDataRequest;
-import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
 public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRestClient {
     private final BybitApiService bybitApiService;
-    private final BybitJsonConverter converter = new BybitJsonConverter();
-
-    public BybitApiAsyncBrokerRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
-        bybitApiService = createService(BybitApiService.class, baseUrl, debugMode);
+    public BybitApiAsyncBrokerRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     @Override

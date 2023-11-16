@@ -34,8 +34,7 @@ public class Slf4jLoggingTest {
     @Test
     public void testInterceptorLogsHeaders() {
         // Trigger the logging
-        BybitApiConfig.useSlf4j = true;
-        BybitApiClientFactory.newInstance(BybitApiConfig.TESTNET_DOMAIN, true)
+        BybitApiClientFactory.newInstance(BybitApiConfig.TESTNET_DOMAIN, true, "slf4j")
                 .newMarketDataRestClient().getServerTime();
 
         // Get captured log events

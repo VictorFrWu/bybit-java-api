@@ -5,15 +5,14 @@ import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.domain.market.request.MarketDataRequest;
-import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
 public class BybitApiMarketAsyncRestClientImpl implements BybitApiAsyncMarketDataRestClient {
     private final BybitApiService bybitApiService;
 
-    public BybitApiMarketAsyncRestClientImpl(String baseUrl, boolean debugMode) {
-        bybitApiService = createService(BybitApiService.class, baseUrl, debugMode);
+    public BybitApiMarketAsyncRestClientImpl(String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        bybitApiService = createService(BybitApiService.class, baseUrl, debugMode, recvWindow, logOption);
     }
     // Market Data endpoints
 

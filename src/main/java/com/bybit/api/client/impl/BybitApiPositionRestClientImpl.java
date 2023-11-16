@@ -12,8 +12,8 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
-    public BybitApiPositionRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode);
+    public BybitApiPositionRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
     }
 
     // Position endpoints

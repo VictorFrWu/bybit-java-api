@@ -53,8 +53,8 @@ public class BybitApiServiceGenerator {
             (Converter<ResponseBody, BybitApiError>) converterFactory.responseBodyConverter(
                     BybitApiError.class, new Annotation[0], null);
 
-    public static <S> S createService(Class<S> serviceClass, String baseUrl, boolean debugMode) {
-        return createService(serviceClass, null, null, baseUrl, debugMode);
+    public static <S> S createService(Class<S> serviceClass, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+        return createService(serviceClass, null, null, baseUrl, debugMode, recvWindow, logOption);
     }
 
     /**
@@ -65,17 +65,17 @@ public class BybitApiServiceGenerator {
      * @param secret       Bybit secret.
      * @return a new implementation of the API endpoints for the Bybit API service.
      */
-    public static <S> S createService(Class<S> serviceClass, String apiKey, String secret, String baseUrl, boolean debugMode) {
+    public static <S> S createService(Class<S> serviceClass, String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(converterFactory);
         OkHttpClient.Builder clientBuilder = sharedClient.newBuilder();
         if (!StringUtils.isEmpty(apiKey) && !StringUtils.isEmpty(secret)) {
-            AuthenticationInterceptor interceptor = new AuthenticationInterceptor(apiKey, secret);
+            AuthenticationInterceptor interceptor = new AuthenticationInterceptor(apiKey, secret, recvWindow);
             clientBuilder.addInterceptor(interceptor);
         }
         if (debugMode) {
-            HandleLoggingInterceptor(clientBuilder);
+            HandleLoggingInterceptor(clientBuilder, logOption);
         }
         retrofitBuilder.client(clientBuilder.build());
         Retrofit retrofit = retrofitBuilder.build();
