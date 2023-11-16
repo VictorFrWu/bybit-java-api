@@ -1342,15 +1342,15 @@ public interface BybitApiService {
      * @return Response Parameters
      * Parameter	Type	Comments
      * result	Object
-     * > list	array	Object
-     * >> category	string	Product type
-     * >> symbol	string	Symbol name
-     * >> orderId	string	Order ID
-     * >> orderLinkId	string	User customised order ID
+     *&gt;list	array	Object
+     *&gt;&gt; category	string	Product type
+     *&gt;&gt; symbol	string	Symbol name
+     *&gt;&gt; orderId	string	Order ID
+     *&gt;&gt; orderLinkId	string	User customised order ID
      * retExtInfo	Object
-     * > list	array	Object
-     * >> code	number	Success/error code
-     * >> msg	string	Success/error message
+     *&gt;list	array	Object
+     *&gt;&gt; code	number	Success/error code
+     *&gt;&gt; msg	string	Success/error message
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/order/amend-batch")
