@@ -211,7 +211,7 @@ client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSD
 ### Websocket private channel
 - Order Subscribe
 ```java
-var client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.STREAM_TESTNET_DOMAIN).newWebsocketClient(5, "60s", (message) -> System.out.println("Handle message :" + message));
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.STREAM_TESTNET_DOMAIN).newWebsocketClient(5, "60s", (message) -> System.out.println("Handle message :" + message));
 // Position
 // client.getOrderBookStream(List.of("position.linear"), BybitApiConfig.V5_PRIVATE);
 
