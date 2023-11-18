@@ -1,6 +1,6 @@
 package com.bybit.api.examples.http.async;
 
-import com.bybit.api.client.domain.account.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.AccountDataRequest;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.service.BybitApiClientFactory;
 

@@ -16,6 +16,7 @@
  */
 package com.bybit.api.client.domain.asset.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -23,6 +24,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssetDepositRequest {
     private String coin;
     private String chainType;

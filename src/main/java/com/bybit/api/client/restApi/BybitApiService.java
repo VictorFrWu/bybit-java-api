@@ -1,14 +1,10 @@
 package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.constant.BybitApiConstants;
-import com.bybit.api.client.domain.TriggerBy;
-import com.bybit.api.client.domain.account.request.ResetMMPRequest;
-import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
-import com.bybit.api.client.domain.account.request.SetMMPRequest;
-import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
+import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
-import com.bybit.api.client.domain.position.ConfirmNewRiskLimitRequest;
+import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest;
@@ -2677,11 +2673,8 @@ public interface BybitApiService {
      * No open order in the USDC Derivatives account
      * Cannot have TPSL order either
      * When the unifiedUpgradeProcess = PROCESS, it means that the system needs asynchronous verification processing, and the upgrade result cannot be returned in real time. You can check API Get Account Info after 3-5 minutes, check whether the upgrade is successful according to the "unifiedMarginStatus" field in the return.
-     *
      * During the account upgrade process, the data of Rest API/Websocket stream may be inaccurate due to the fact that the account-related asset data is in the processing state. It is recommended to query and use it after the upgrade is completed.
-     *
      * https://bybit-exchange.github.io/docs/v5/account/upgrade-unified-account
-     *
      * @return Response Parameters
      * Parameter	Type	Comments
      * unifiedUpdateStatus	string	Upgrade status. FAIL,PROCESS,SUCCESS
@@ -2695,9 +2688,7 @@ public interface BybitApiService {
     /**
      * Get Borrow History
      * Get interest records, sorted in reverse order of creation time.
-     *
      * https://bybit-exchange.github.io/docs/v5/account/borrow-history
-     *
      * @param currency	false	string	USDC,USDT,BTC,ETH
      * @param startTime	false	integer	The start timestamp (ms)
      * @param endTime	false	integer	The end time. timestamp (ms)
@@ -2728,9 +2719,7 @@ public interface BybitApiService {
     /**
      * Set Collateral Coin
      * You can decide whether the assets in the Unified account needs to be collateral coins.
-     *
      * https://bybit-exchange.github.io/docs/v5/account/set-collateral#http-request
-     *
      * @param setCollateralCoinRequest coin	true	string	Coin name
      *                                                          You can get collateral coin from here
      *                                                          USDT, USDC cannot be switched off
@@ -2743,11 +2732,27 @@ public interface BybitApiService {
     Call<Object> setAccountCollateralCoin(@Body SetCollateralCoinRequest setCollateralCoinRequest);
 
     /**
+     * Set Spot Hedging
+     * You can turn on/off Spot hedging feature in Portfolio margin for Unified account.
+     * INFO
+     * Only unified account is applicable
+     * Only portfolio margin mode is applicable
+     * Institutional lending account is not supported
+     * https://bybit-exchange.github.io/docs/v5/account/set-spot-hedge
+     * @param setSpotHedgingRequest setHedgingMode	true	string	ON, OFF
+     * @return Response Parameters
+     *          Parameter	Type	Comments
+     *          retCode	integer	Result code
+     *          retMsg	string	Result message
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/account/set-hedging-mode")
+    Call<Object> setAccountSpotHedging(@Body SetSpotHedgingRequest setSpotHedgingRequest);
+
+    /**
      * Get Collateral Info
      * Get the collateral information of the current unified margin account, including loan interest rate, loanable amount, collateral conversion rate, whether it can be mortgaged as margin, etc.
-     *
      * https://bybit-exchange.github.io/docs/v5/account/collateral-info
-     *
      * @param currency	false	string	Asset currency of all current collateral
      * @return Response Parameters
      * Parameter	Type	Comments

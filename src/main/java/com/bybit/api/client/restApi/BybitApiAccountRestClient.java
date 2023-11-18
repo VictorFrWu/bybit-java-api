@@ -1,7 +1,6 @@
 package com.bybit.api.client.restApi;
 
-import com.bybit.api.client.domain.account.AccountDataRequest;
-import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.account.request.AccountDataRequest;
 
 public interface BybitApiAccountRestClient {
     // Account endpoints
@@ -15,6 +14,7 @@ public interface BybitApiAccountRestClient {
     Object getAccountInfo();
     Object getTransactionLog(AccountDataRequest getTransactionLogRequest);
     Object setAccountMarginMode(AccountDataRequest request);
+    Object setAccountSpotHedging(AccountDataRequest request);
     Object modifyAccountMMP(AccountDataRequest setMMPRequest);
     Object resetAccountMMP(AccountDataRequest request);
     Object getAccountMMPState(AccountDataRequest request);

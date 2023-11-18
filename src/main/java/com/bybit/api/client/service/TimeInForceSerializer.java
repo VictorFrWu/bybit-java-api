@@ -8,6 +8,6 @@ import java.io.IOException;
 public class TimeInForceSerializer extends JsonSerializer<TimeInForce> {
     @Override
     public void serialize(TimeInForce value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeString(value.getDescription()[0]);
+        gen.writeString(value.getDescription());
     }
 }

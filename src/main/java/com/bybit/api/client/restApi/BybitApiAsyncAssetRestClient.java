@@ -1,6 +1,6 @@
 package com.bybit.api.client.restApi;
 
-import com.bybit.api.client.domain.asset.AssetDataRequest;
+import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 
 public interface BybitApiAsyncAssetRestClient {
     // Asset Endpoints

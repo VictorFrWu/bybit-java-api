@@ -1,6 +1,8 @@
-package com.bybit.api.client.domain.account;
+package com.bybit.api.client.domain.account.request;
 
 import com.bybit.api.client.domain.CategoryType;
+import com.bybit.api.client.domain.account.AccountType;
+import com.bybit.api.client.domain.account.SpotHedgingMode;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.preupgrade.TransactionType;
 import lombok.Builder;
@@ -31,4 +33,5 @@ public class AccountDataRequest {
     private String coins;
     private MarginMode setMarginMode;
     private String symbol;
+    private SpotHedgingMode setHedgingMode;
 }

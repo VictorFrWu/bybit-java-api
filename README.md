@@ -40,14 +40,14 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.1'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.2'
 ```
-Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.1)
+Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.2)
 
 ## Release-Notes
 ### HTTP Sync & Async Request
@@ -57,7 +57,8 @@ Furthermore build tool, please check [sonar type central repository](https://cen
 - Log Option Interceptor Parameter: Currently supports SLF4J and OkHttp3; planning to support customized messaging in the next version.
 - Trade API: For create/amend/cancel single & batch orders, now supports dedicated class, map, and JSON.
 - Asset API: Deposit and withdrawal operations will automatically generate a transfer ID.
-
+- Account API : Add new function Set Spot Hedging
+- Position API : Add new function Confirm New Risk Limi
 ### WebSocket
 - Ping Pong Interval Parameter: Added by default (20 seconds).
 - Max Alive Time Parameter: Only supports private channel, ranging from 30s to 600s (also supports minutes).

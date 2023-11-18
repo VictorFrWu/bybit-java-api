@@ -3,7 +3,7 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.restApi.BybitApiAsyncPositionRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;

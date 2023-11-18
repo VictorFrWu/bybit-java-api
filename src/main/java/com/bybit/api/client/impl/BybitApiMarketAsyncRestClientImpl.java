@@ -15,7 +15,6 @@ public class BybitApiMarketAsyncRestClientImpl implements BybitApiAsyncMarketDat
         bybitApiService = createService(BybitApiService.class, baseUrl, debugMode, recvWindow, logOption);
     }
     // Market Data endpoints
-
     @Override
     public void getServerTime(BybitApiCallback<Object> callback) {
         bybitApiService.getServerTime().enqueue(new BybitApiCallbackAdapter<>(callback));

@@ -1,6 +1,6 @@
 package com.bybit.api.client.restApi;
 
-import com.bybit.api.client.domain.account.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.AccountDataRequest;
 
 public interface BybitApiAsyncAccountRestClient {
     // Account endpoints
@@ -17,4 +17,5 @@ public interface BybitApiAsyncAccountRestClient {
     void modifyAccountMMP(AccountDataRequest setMMPRequest, BybitApiCallback<Object> callback);
     void resetAccountMMP(AccountDataRequest request, BybitApiCallback<Object> callback);
     void getAccountMMPState(AccountDataRequest request, BybitApiCallback<Object> callback);
+    void setAccountSpotHedging(AccountDataRequest request, BybitApiCallback<Object> callback);
 }

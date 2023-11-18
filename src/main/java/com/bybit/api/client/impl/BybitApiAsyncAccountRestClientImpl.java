@@ -3,7 +3,7 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.restApi.BybitApiAsyncAccountRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.account.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.AccountDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -109,5 +109,11 @@ public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountR
     @Override
     public void getAccountMMPState(AccountDataRequest request, BybitApiCallback<Object> callback) {
         bybitApiService.getAccountMMPState(request.getBaseCoin()).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void setAccountSpotHedging(AccountDataRequest request, BybitApiCallback<Object> callback) {
+        var setSpotHedging = converter.mapToSetSpotHedgingModeRequest(request);
+        bybitApiService.setAccountSpotHedging(setSpotHedging).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 }

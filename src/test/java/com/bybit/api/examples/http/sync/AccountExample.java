@@ -1,7 +1,7 @@
 package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.config.BybitApiConfig;
-import com.bybit.api.client.domain.account.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.AccountDataRequest;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.service.BybitApiClientFactory;
 

@@ -3,7 +3,7 @@ package com.bybit.api.examples.http.sync;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.position.MarginMode;
-import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class PositionDataExample {

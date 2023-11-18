@@ -1,6 +1,6 @@
 package com.bybit.api.client.restApi;
 
-import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 
 public interface BybitApiAsyncPositionRestClient {
     // Position endpoints
