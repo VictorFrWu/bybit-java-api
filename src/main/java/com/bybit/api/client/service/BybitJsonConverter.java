@@ -64,6 +64,7 @@ public class BybitJsonConverter {
                 .side(Side.valueOf(orderMap.get("side").toString().toUpperCase())) // Required
                 .orderType(currentOrderType)   // Required
                 .qty((String) orderMap.get("qty"))                                // Required
+                .price(orderMap.containsKey("price") ? orderMap.get("price").toString() : null)
                 .orderId((String) orderMap.getOrDefault("orderId", null))              // Amend Order ID. Either orderId or orderLinkId is required
                 .orderLinkId((String) orderMap.getOrDefault("orderLinkId", null))              // Amend Order ID. Either orderId or orderLinkId is required
                 .triggerDirection((Integer) orderMap.getOrDefault("triggerDirection", null)) // Optional
@@ -278,12 +279,13 @@ public class BybitJsonConverter {
                 .side(tradeOrderRequest.getSide().getTransactionSide())
                 .orderType(tradeOrderRequest.getOrderType().getOType())
                 .qty(tradeOrderRequest.getQty())
+                .price(tradeOrderRequest.getPrice())
                 .triggerDirection(tradeOrderRequest.getTriggerDirection()) // Optional
                 .orderFilter(tradeOrderRequest.getOrderFilter() == null ? null : tradeOrderRequest.getOrderFilter().getOrderFilterType())  // Optional
                 .triggerPrice(tradeOrderRequest.getTriggerPrice()) // Optional
                 .triggerBy(tradeOrderRequest.getTriggerBy() == null ? null : tradeOrderRequest.getTriggerBy().getTrigger()) // Optional
                 .orderIv(tradeOrderRequest.getOrderIv())        // Optional
-                .timeInForce(tradeOrderRequest.getTimeInForce() == null ? null : tradeOrderRequest.getTimeInForce().getDescription()[0]) // Optional and default value depends on order type
+                .timeInForce(tradeOrderRequest.getTimeInForce() == null ? null : tradeOrderRequest.getTimeInForce().getDescription()) // Optional and default value depends on order type
                 .positionIdx(tradeOrderRequest.getPositionIdx() == null ? null : tradeOrderRequest.getPositionIdx().getIndex()) // Optional
                 .orderLinkId(tradeOrderRequest.getOrderLinkId()) // Optional
                 .takeProfit(tradeOrderRequest.getTakeProfit())  // Optional

@@ -13,11 +13,11 @@ import java.util.Map;
 
 public class TradeAsyncExample {
     public static void main(String[] args) {
-        var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN, true).newAsyncTradeRestClient();
+        var client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN, true).newAsyncTradeRestClient();
 
         // Place an order
         var newOrderRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT")
-                .side(Side.BUY).orderType(TradeOrderType.MARKET).qty("10").timeInForce(TimeInForce.GOOD_TILL_CANCEL)
+                .side(Side.BUY).orderType(TradeOrderType.LIMIT).qty("10").price("0.6").timeInForce(TimeInForce.GOOD_TILL_CANCEL)
                 .positionIdx(PositionIdx.ONE_WAY_MODE).build();
         client.createOrder(newOrderRequest, System.out::println);
 
@@ -29,6 +29,7 @@ public class TradeAsyncExample {
                 "orderType", "Limit",
                 "orderIv", "0.1",
                 "qty", "0.1",
+                "orderLinkId", "victor-test-create-trade-01",
                 "price", "5"
         );
         client.createOrder(order, System.out::println);
