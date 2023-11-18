@@ -6,7 +6,7 @@
 
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
     <name>bybit-java-api</name>
     <url>https://github.com/wuhewuhe/bybit-java-api</url>
 

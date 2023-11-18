@@ -3,7 +3,7 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.restApi.BybitApiAsyncAssetRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.asset.AssetDataRequest;
+import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.AssetCancelWithdrawRequest;
 import com.bybit.api.client.domain.asset.request.SetAssetDepositAccountRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
@@ -82,16 +82,7 @@ public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestC
 
     @Override
     public void getAssetSingleCoinBalance(AssetDataRequest singleCoinBalanceRequest, BybitApiCallback<Object> callback) {
-        bybitApiService.getAssetSingleCoinBalance(
-                singleCoinBalanceRequest.getAccountType() == null ? null : singleCoinBalanceRequest.getAccountType().getAccountTypeValue(),
-                singleCoinBalanceRequest.getToAccountType() == null ? null : singleCoinBalanceRequest.getToAccountType().getAccountTypeValue(),
-                singleCoinBalanceRequest.getMemberId(),
-                singleCoinBalanceRequest.getToMemberId() == null ? null : singleCoinBalanceRequest.getToMemberId().toString(),
-                singleCoinBalanceRequest.getCoin(),
-                singleCoinBalanceRequest.getWithBonus() == null ? null : singleCoinBalanceRequest.getWithBonus().getValue(),
-                singleCoinBalanceRequest.getWithTransferSafeAmount() == null ? null : singleCoinBalanceRequest.getWithTransferSafeAmount().getValue(),
-                singleCoinBalanceRequest.getWithLtvTransferSafeAmount() == null ? null : singleCoinBalanceRequest.getWithLtvTransferSafeAmount().getValue()
-        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+        converter.getSingleCoinBalance(bybitApiService, singleCoinBalanceRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override

@@ -26,11 +26,7 @@
 
 package com.bybit.api.client.domain.position.request;
 
-import com.bybit.api.client.domain.CategoryType;
-import com.bybit.api.client.domain.TradeOrderType;
-import com.bybit.api.client.domain.TriggerBy;
-import com.bybit.api.client.domain.position.TpslMode;
-import com.bybit.api.client.domain.trade.PositionIdx;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +36,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TradingStopRequest {
     private String category;
     private  String symbol;

@@ -4,7 +4,7 @@ import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.constant.Util;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.asset.AssetDataRequest;
+import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class AssetAsyncExample {

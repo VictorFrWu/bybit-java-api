@@ -3,16 +3,16 @@ package com.bybit.api.client.service;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
-import com.bybit.api.client.domain.account.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.AccountDataRequest;
 import com.bybit.api.client.domain.account.request.SetCollateralCoinRequest;
 import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
-import com.bybit.api.client.domain.asset.AssetDataRequest;
+import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.institution.LendingDataRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
-import com.bybit.api.client.domain.position.ConfirmNewRiskLimitRequest;
-import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
@@ -30,9 +30,11 @@ import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
 import com.bybit.api.client.exception.BybitApiException;
+import com.bybit.api.client.restApi.BybitApiService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import retrofit2.Call;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -423,6 +425,9 @@ public class BybitJsonConverter {
                 .build();
     }
 
+    public SetSpotHedgingRequest mapToSetSpotHedgingModeRequest(AccountDataRequest setSpotHedging) {
+        return SetSpotHedgingRequest.builder().setHedgingMode(setSpotHedging.getSetHedgingMode() == null ? null : setSpotHedging.getSetHedgingMode().getSpotHedgingMode()).build();
+    }
     // Asset request
     public AssetInternalTransferRequest mapToAssetInternalTransferRequest(AssetDataRequest assetDataRequest) {
         return AssetInternalTransferRequest.builder()
@@ -468,6 +473,17 @@ public class BybitJsonConverter {
                 .build();
     }
 
+    public Call<Object> getSingleCoinBalance(BybitApiService bybitApiService, AssetDataRequest singleCoinBalanceRequest) {
+        return bybitApiService.getAssetSingleCoinBalance(
+                singleCoinBalanceRequest.getAccountType() == null ? null : singleCoinBalanceRequest.getAccountType().getAccountTypeValue(),
+                singleCoinBalanceRequest.getToAccountType() == null ? null : singleCoinBalanceRequest.getToAccountType().getAccountTypeValue(),
+                singleCoinBalanceRequest.getMemberId(),
+                singleCoinBalanceRequest.getToMemberId() == null ? null : singleCoinBalanceRequest.getToMemberId().toString(),
+                singleCoinBalanceRequest.getCoin(),
+                singleCoinBalanceRequest.getWithBonus() == null ? null : singleCoinBalanceRequest.getWithBonus().getValue(),
+                singleCoinBalanceRequest.getWithTransferSafeAmount() == null ? null : singleCoinBalanceRequest.getWithTransferSafeAmount().getValue(),
+                singleCoinBalanceRequest.getWithLtvTransferSafeAmount() == null ? null : singleCoinBalanceRequest.getWithLtvTransferSafeAmount().getValue());
+    }
     // User Requests
     public UserSubMemberRequest mapToCreateSubMemberRequest(UserDataRequest subUserRequest) {
         return UserSubMemberRequest.builder()

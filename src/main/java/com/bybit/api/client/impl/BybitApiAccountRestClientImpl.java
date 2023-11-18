@@ -2,7 +2,7 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.restApi.BybitApiAccountRestClient;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.account.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.AccountDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -93,6 +93,12 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
     public Object setAccountMarginMode(AccountDataRequest setMarginMode) {
         var request = converter.mapToSetMarginModeRequest(setMarginMode);
         return executeSync(bybitApiService.setAccountMarginMode(request));
+    }
+
+    @Override
+    public Object setAccountSpotHedging(AccountDataRequest setSpotHedging) {
+        var request = converter.mapToSetSpotHedgingModeRequest(setSpotHedging);
+        return executeSync(bybitApiService.setAccountSpotHedging(request));
     }
 
     @Override

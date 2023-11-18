@@ -1,7 +1,7 @@
 package com.bybit.api.domain.asset;
 
 import com.bybit.api.client.domain.account.AccountType;
-import com.bybit.api.client.domain.asset.AssetDataRequest;
+import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 import com.bybit.api.client.restApi.BybitApiAssetRestClient;
 import com.bybit.api.client.service.BybitApiClientFactory;
 import org.junit.Test;

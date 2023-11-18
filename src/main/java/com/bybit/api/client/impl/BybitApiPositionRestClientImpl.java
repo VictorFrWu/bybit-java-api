@@ -2,7 +2,7 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.restApi.BybitApiPositionRestClient;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.position.PositionDataRequest;
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -17,7 +17,6 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     }
 
     // Position endpoints
-
     @Override
     public Object getPositionInfo(PositionDataRequest positionListRequest) {
         return executeSync(bybitApiService.getPositionInfo(
