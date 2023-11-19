@@ -8,7 +8,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 import org.junit.Test;
 
 public class SpotHedgeTest {
-    BybitApiAccountRestClient client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN).newAccountRestClient();
+    BybitApiAccountRestClient client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newAccountRestClient();
     @Test
     public void Test_SpotHedgingMode()
     {
