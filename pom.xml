@@ -51,6 +51,8 @@
     </scm>
 
     <properties>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
         <com.squareup.retrofit2.version>2.7.2</com.squareup.retrofit2.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -184,7 +186,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Sonar Maven Central Package Management -->
+            <!-- Sonar Maven Central Package Management
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -252,6 +254,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>
