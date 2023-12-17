@@ -23,4 +23,9 @@ public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRes
                 brokerEarningRequest.getCursor()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
+
+    @Override
+    public void getBrokerAccountInfo(BybitApiCallback<Object> callback) {
+        bybitApiService.getBrokerAccountInfo().enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
 }

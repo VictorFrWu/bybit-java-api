@@ -1,7 +1,5 @@
 package com.bybit.api.client.service;
 
-import com.bybit.api.client.config.BybitApiConfig;
-import com.bybit.api.client.log.Slf4jLoggingInterceptor;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.exception.BybitApiError;
 import com.bybit.api.client.exception.BybitApiException;

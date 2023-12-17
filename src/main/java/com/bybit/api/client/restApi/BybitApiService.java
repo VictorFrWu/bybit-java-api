@@ -4,6 +4,7 @@ import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
+import com.bybit.api.client.domain.institution.insLending.UpdateInstitutionLoadUidRequest;
 import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
@@ -3766,6 +3767,25 @@ public interface BybitApiService {
     // Institution Endpoints
 
     /**
+     * Bind Or Unbind UID
+     * For the institutional loan product, you can bind new UIDs to the risk unit or unbind UID from the risk unit.
+     *
+     * INFO
+     * Risk unit designated UID cannot be unbound
+     * This endpoint can only be called by uids in the risk unit list
+     * The UID must be upgraded to UTA Pro if you try to bind it.
+     * https://bybit-exchange.github.io/docs/v5/otc/bind-uid
+     * @param updateInstitutionLoadUidRequest
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * uid	string	UID
+     * operate	string	0: bind, 1: unbind
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/ins-loan/association-uid")
+    Call<Object> updateInstitutionLoanUid(@Body UpdateInstitutionLoadUidRequest updateInstitutionLoadUidRequest);
+
+    /**
      * Get Product Info
      * TIP
      * This endpoint can be queried without api key and secret, then it returns public product data
@@ -4494,12 +4514,34 @@ public interface BybitApiService {
      * nextPageCursor	string	Refer to the cursor request parameter
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
-    @GET("/v5/broker/earning-record")
+    @GET("/v5/broker/earnings-info")
     Call<Object> getBrokerEarningData(@Query("bizType") String bizType,
                                       @Query("startTime") Long startTime,
                                       @Query("endTime") Long endTime,
                                       @Query("limit") Integer limit,
                                       @Query("cursor") String cursor);
+
+    /**
+     * Get Exchange Broker Account Info
+     * INFO
+     * Use exchange broker master account to query
+     * API rate limit: 10 req / sec
+     * https://bybit-exchange.github.io/docs/v5/broker/account-info
+     * @return Response Parameters
+     *          Parameter	Type	Comments
+     *          subAcctQty	string	The qty of subaccount has been created
+     *          maxSubAcctQty	string	The max limit of subaccount can be created
+     *          baseFeeRebateRate	Object	Rebate percentage of the base fee
+     *          &gt; spot	string	Rebate percentage of the base fee for spot, e.g., 10.00%
+     *          &gt; derivatives	string	Rebate percentage of the base fee for derivatives, e.g., 10.00%
+     *          markupFeeRebateRate	Object	Rebate percentage of the mark-up fee
+     *          &gt; spot	string	Rebate percentage of the mark-up fee for spot, e.g., 10.00%
+     *          &gt; derivatives	string	Rebate percentage of the mark-up fee for derivatives, e.g., 10.00%
+     *          ts	string	System timestamp (ms)
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/broker/account-info")
+    Call<Object> getBrokerAccountInfo();
 
     // C2C Endpoints
 

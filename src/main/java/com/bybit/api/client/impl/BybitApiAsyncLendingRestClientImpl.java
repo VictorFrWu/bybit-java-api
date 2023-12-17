@@ -49,6 +49,12 @@ public class BybitApiAsyncLendingRestClientImpl implements BybitApiAsyncLendingR
         bybitApiService.getInsLoanToValue().enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
+    @Override
+    public void updateInstitutionLoanUid(LendingDataRequest lendingDataRequest, BybitApiCallback<Object> callback) {
+        var updateInsUidRequest = converter.convertToUpdateInsUidRequest(lendingDataRequest);
+        bybitApiService.updateInstitutionLoanUid(updateInsUidRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
     // C2C Lending
     @Override
     public void getC2CLendingCoinInfo(LendingDataRequest lendingDataRequest, BybitApiCallback<Object> callback) {

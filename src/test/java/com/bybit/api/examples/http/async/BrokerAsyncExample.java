@@ -12,5 +12,8 @@ public class BrokerAsyncExample {
         // Get Broker Earning
         var brokerEarningRequest = BrokerDataRequest.builder().bizType(BusinessType.SPOT).build();
         client.getBrokerEarningData(brokerEarningRequest, System.out::println);
+
+        // Get Broker Earning
+        client.getBrokerAccountInfo(System.out::println);
     }
 }

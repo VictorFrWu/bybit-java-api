@@ -46,6 +46,12 @@ public class BybitApiLendingRestClientImpl implements BybitApiLendingRestClient 
         return executeSync(bybitApiService.getInsLoanToValue());
     }
 
+    @Override
+    public Object updateInstitutionLoanUid(LendingDataRequest lendingDataRequest) {
+        var updateInstitutionLoanUidRequest = converter.convertToUpdateInsUidRequest(lendingDataRequest);
+        return executeSync(bybitApiService.updateInstitutionLoanUid(updateInstitutionLoanUidRequest));
+    }
+
     // C2C Endpoints
     @Override
     public Object getC2CLendingCoinInfo(LendingDataRequest lendingDataRequest) {
