@@ -11,6 +11,7 @@ import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.*;
 import com.bybit.api.client.domain.institution.LendingDataRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
+import com.bybit.api.client.domain.institution.insLending.UpdateInstitutionLoadUidRequest;
 import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
 import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
@@ -185,6 +186,7 @@ public class BybitJsonConverter {
         String category = payload.containsKey("category") ? payload.get("category").toString() : null; // Required
         if (StringUtils.isEmpty(category)) throw new BybitApiException("Please set category for your order");
         var CategoryType = getCategoryTypeFromString(category);
+        @SuppressWarnings("unchecked") // Safe cast as we checked the contents
         List<Map<String, Object>> orderMaps = (List<Map<String, Object>>) payload.get("request");
         List<TradeOrderRequest> orders = new ArrayList<>();
         for (Map<String, Object> orderMap : orderMaps) {
@@ -347,6 +349,14 @@ public class BybitJsonConverter {
                 .build();
     }
 
+    public ConfirmNewRiskLimitRequest mapToConfirmNewRiskLimitRequest(PositionDataRequest positionDataRequest) {
+        return ConfirmNewRiskLimitRequest
+                .builder()
+                .category(positionDataRequest.getCategory() == null ? null : positionDataRequest.getCategory().getCategoryTypeId())
+                .symbol(positionDataRequest.getSymbol())
+                .build();
+    }
+
     public SetTpSlModeRequest mapToSetTpSlModeRequest(PositionDataRequest positionDataRequest) {
         return SetTpSlModeRequest.builder()
                 .category(positionDataRequest.getCategory().getCategoryTypeId())
@@ -428,6 +438,7 @@ public class BybitJsonConverter {
     public SetSpotHedgingRequest mapToSetSpotHedgingModeRequest(AccountDataRequest setSpotHedging) {
         return SetSpotHedgingRequest.builder().setHedgingMode(setSpotHedging.getSetHedgingMode() == null ? null : setSpotHedging.getSetHedgingMode().getSpotHedgingMode()).build();
     }
+
     // Asset request
     public AssetInternalTransferRequest mapToAssetInternalTransferRequest(AssetDataRequest assetDataRequest) {
         return AssetInternalTransferRequest.builder()
@@ -566,11 +577,12 @@ public class BybitJsonConverter {
                 .build();
     }
 
-    public ConfirmNewRiskLimitRequest mapToConfirmNewRiskLimitRequest(PositionDataRequest positionDataRequest) {
-        return ConfirmNewRiskLimitRequest
+    // Institution
+    public UpdateInstitutionLoadUidRequest convertToUpdateInsUidRequest(LendingDataRequest lendingDataRequest) {
+        return UpdateInstitutionLoadUidRequest
                 .builder()
-                .category(positionDataRequest.getCategory() == null ? null : positionDataRequest.getCategory().getCategoryTypeId())
-                .symbol(positionDataRequest.getSymbol())
+                .uid(lendingDataRequest.getUid())
+                .operate(lendingDataRequest.getOperate() == null ? null : lendingDataRequest.getOperate().getOperateType())
                 .build();
     }
 }

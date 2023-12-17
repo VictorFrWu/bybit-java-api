@@ -58,7 +58,7 @@ Furthermore build tool, please check [sonar type central repository](https://cen
 - Trade API: For create/amend/cancel single & batch orders, now supports dedicated class, map, and JSON.
 - Asset API: Deposit and withdrawal operations will automatically generate a transfer ID.
 - Account API : Add new function Set Spot Hedging
-- Position API : Add new function Confirm New Risk Limi
+- Position API : Add new function Confirm New Risk Limit
 ### WebSocket
 - Ping Pong Interval Parameter: Added by default (20 seconds).
 - Max Alive Time Parameter: Only supports private channel, ranging from 30s to 600s (also supports minutes).

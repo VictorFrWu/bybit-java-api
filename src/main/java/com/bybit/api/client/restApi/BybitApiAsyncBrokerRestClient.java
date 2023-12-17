@@ -4,5 +4,6 @@ import com.bybit.api.client.domain.broker.BrokerDataRequest;
 
 public interface BybitApiAsyncBrokerRestClient {
     // Broker endpoints
-    void getBrokerEarningData(BrokerDataRequest brokerEarningRequest, BybitApiCallback<Object> callback);
+    void getBrokerEarningData(BrokerDataRequest brokerDataRequest, BybitApiCallback<Object> callback);
+    void getBrokerAccountInfo(BybitApiCallback<Object> callback);
 }

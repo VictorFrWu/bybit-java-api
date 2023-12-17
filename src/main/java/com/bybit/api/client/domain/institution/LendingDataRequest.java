@@ -22,5 +22,7 @@ public class LendingDataRequest {
     private final LendingOrderType lendingOrderType;
     private final String quantity;
     private final String serialNo;
+    private final String uid;
+    private final OperateType operate;
 }
 

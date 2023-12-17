@@ -1,6 +1,7 @@
 package com.bybit.api.client.websocket;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.security.HmacSHA256Signer;
 import lombok.Getter;
@@ -25,6 +26,8 @@ public class WebsocketClientImpl implements WebsocketClient {
     private static final String THREAD_PRIVATE_PING = "thread-private-ping";
     private static final String PING_DATA = "{\"op\":\"ping\"}";
     private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketClientImpl.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     private final WebsocketMessageHandler messageHandler;
     private final WebSocketHttpClientSingleton webSocketHttpClientSingleton;
 
@@ -55,10 +58,19 @@ public class WebsocketClientImpl implements WebsocketClient {
         this.path = path;
     }
 
+    private void sendJsonMessage(WebSocket ws, Object messageObject, String messageType) {
+        try {
+            String json = objectMapper.writeValueAsString(messageObject);
+            ws.send(json);
+            LOGGER.info("Sent {}: {}", messageType, json);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Error serializing {} message: ", messageType, e);
+        }
+    }
+
     private void sendSubscribeMessage(WebSocket ws) {
         Map<String, Object> subscribeMsg = createSubscribeMessage();
-        ws.send(JSON.toJSONString(subscribeMsg));
-        LOGGER.info("Sent subscribe: " + JSON.toJSONString(subscribeMsg));
+        sendJsonMessage(ws, subscribeMsg, "Subscribe");
     }
 
     @NotNull
@@ -92,28 +104,31 @@ public class WebsocketClientImpl implements WebsocketClient {
                 }
             } catch (InterruptedException e) {
                 LOGGER.error("Ping thread was interrupted", e);
+                Thread.currentThread().interrupt();
             }
         });
     }
 
-    private String createAuthMessage() {
+    @NotNull
+    private Map<String, Object> createAuthMessage() {
         long expires = Instant.now().toEpochMilli() + 10000;
         String val = "GET/realtime" + expires;
         String signature = HmacSHA256Signer.auth(val, secret);
 
         var args = List.of(apikey, expires, signature);
-        var authMap = Map.of("req_id", generateTransferID(), "op", "auth", "args", args);
-        return JSON.toJSONString(authMap);
+        return Map.of("req_id", generateTransferID(), "op", "auth", "args", args);
+    }
+
+    private void sendAuthMessage(WebSocket ws) {
+        var authMessage = createAuthMessage();
+        sendJsonMessage(ws, authMessage, "Auth");
     }
 
     @NotNull
     private Thread createAuthThread(WebSocket ws, Runnable afterAuth) {
         return new Thread(() -> {
             try {
-                String authData = createAuthMessage();
-                ws.send(authData);
-                LOGGER.info("Sent Auth: " + authData);
-
+                sendAuthMessage(ws);
                 if (afterAuth != null) {
                     afterAuth.run();
                 }
@@ -141,8 +156,9 @@ public class WebsocketClientImpl implements WebsocketClient {
     }
 
     private boolean isTimeValid(String timeUnit, int timeValue) {
-        return ("s".equals(timeUnit) && timeValue >= 30 && timeValue <= 600)
-                || ("m".equals(timeUnit) && timeValue >= 1 && timeValue <= 10);
+        int minValue = "s".equals(timeUnit) ? 30 : 1;
+        int maxValue = "s".equals(timeUnit) ? 600 : 10;
+        return timeValue >= minValue && timeValue <= maxValue;
     }
 
     @NotNull
@@ -199,13 +215,13 @@ public class WebsocketClientImpl implements WebsocketClient {
         // If it requires authentication, authenticate first, then subscribe.
         if (requiresAuthentication(path)) {
             Thread authThread = createAuthThread(ws, () -> {
-                // After auth, send subscribe message.
+                // After auth, send a subscribed message.
                 sendSubscribeMessage(ws);
             });
             authThread.start();
             pingThread.setName(THREAD_PRIVATE_PING);
         } else {
-            // If no authentication is needed, just send the subscribe message.
+            // If no authentication is needed, just send the subscribed message.
             sendSubscribeMessage(ws);
         }
     }

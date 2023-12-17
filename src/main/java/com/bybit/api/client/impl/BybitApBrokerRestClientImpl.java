@@ -15,13 +15,18 @@ public class BybitApBrokerRestClientImpl implements BybitApiBrokerRestClient {
     }
     // Broker
     @Override
-    public Object getBrokerEarningData(BrokerDataRequest brokerEarningRequest) {
+    public Object getBrokerEarningData(BrokerDataRequest brokerDataRequest) {
         return executeSync(bybitApiService.getBrokerEarningData(
-                brokerEarningRequest.getBizType() == null ? null : brokerEarningRequest.getBizType().getType(),
-                brokerEarningRequest.getStartTime(),
-                brokerEarningRequest.getEndTime(),
-                brokerEarningRequest.getLimit(),
-                brokerEarningRequest.getCursor()
+                brokerDataRequest.getBizType() == null ? null : brokerDataRequest.getBizType().getType(),
+                brokerDataRequest.getStartTime(),
+                brokerDataRequest.getEndTime(),
+                brokerDataRequest.getLimit(),
+                brokerDataRequest.getCursor()
         ));
+    }
+
+    @Override
+    public Object getBrokerAccountInfo() {
+        return executeSync(bybitApiService.getBrokerAccountInfo());
     }
 }

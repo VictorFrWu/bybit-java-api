@@ -9,6 +9,8 @@ public interface BybitApiAsyncLendingRestClient {
     void getInsLoanOrders(LendingDataRequest institutionLoanOrdersRequest, BybitApiCallback<Object> callback);
     void getInsRepayOrders(LendingDataRequest institutionRepayOrdersRequest, BybitApiCallback<Object> callback);
     void getInsLoanToValue(BybitApiCallback<Object> callback);
+    void updateInstitutionLoanUid(LendingDataRequest lendingDataRequest, BybitApiCallback<Object> callback);
+
     // C2C Endpoints
     void getC2CLendingCoinInfo(LendingDataRequest lendingDataRequest, BybitApiCallback<Object> callback);
     void C2cLendingDepositFunds(LendingDataRequest lendingDataRequest, BybitApiCallback<Object> callback);
