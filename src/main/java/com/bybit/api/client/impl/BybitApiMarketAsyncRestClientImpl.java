@@ -142,8 +142,8 @@ public class BybitApiMarketAsyncRestClientImpl implements BybitApiAsyncMarketDat
     }
 
     @Override
-    public void getInsurance(String coin, BybitApiCallback<Object> callback) {
-        bybitApiService.getInsurance(coin).enqueue(new BybitApiCallbackAdapter<>(callback));
+    public void getInsurance(MarketDataRequest marketDataRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getInsurance(marketDataRequest.getCoin()).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
@@ -179,7 +179,7 @@ public class BybitApiMarketAsyncRestClientImpl implements BybitApiAsyncMarketDat
     }
 
     @Override
-    public void getAnnouncementInfo(AnnouncementInfoRequest announcementInfoRequest, BybitApiCallback<Object> callback) {
+    public void getAnnouncementInfo(MarketDataRequest announcementInfoRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getAnouncementInfo(
                 announcementInfoRequest.getLocale() == null ? null : announcementInfoRequest.getLocale().getLanguageSymbol(),
                 announcementInfoRequest.getType() == null ? null : announcementInfoRequest.getType().getAnnouncementType(),

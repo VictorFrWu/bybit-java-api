@@ -78,7 +78,8 @@ public class MarketDataEndpointsExample {
         System.out.println(historicalVolatilityResponse);
 
         // Get Insurance data
-        var insuranceData = client.getInsurance("BTC"); // BTC Insurance
+        var insuranceRequest = MarketDataRequest.builder().coin("BTC").build();
+        var insuranceData = client.getInsurance(insuranceRequest); // BTC Insurance
         System.out.println(insuranceData);
         var instanceAllData = client.getInsurance();
         System.out.println(instanceAllData);

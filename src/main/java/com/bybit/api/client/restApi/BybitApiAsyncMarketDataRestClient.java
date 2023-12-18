@@ -17,10 +17,10 @@ public interface BybitApiAsyncMarketDataRestClient {
     void getRecentTradeData(MarketDataRequest recentTradeRequest, BybitApiCallback<Object> callback);
     void getOpenInterest(MarketDataRequest openInterestRequest, BybitApiCallback<Object> callback);
     void getHistoricalVolatility(MarketDataRequest historicalVolatilityRequest, BybitApiCallback<Object> callback);
-    void getInsurance(String coin, BybitApiCallback<Object> callback);
+    void getInsurance(MarketDataRequest marketDataRequest, BybitApiCallback<Object> callback);
     void getInsurance(BybitApiCallback<Object> callback);
     void getRiskLimit(MarketDataRequest marketRiskLimitRequest, BybitApiCallback<Object> callback);
     void getDeliveryPrice(MarketDataRequest deliveryPriceRequest, BybitApiCallback<Object> callback);
     void getMarketAccountRatio(MarketDataRequest marketAccountRatioRequest, BybitApiCallback<Object> callback);
-    void getAnnouncementInfo(AnnouncementInfoRequest announcementInfoRequest, BybitApiCallback<Object> callback);
+    void getAnnouncementInfo(MarketDataRequest announcementInfoRequest, BybitApiCallback<Object> callback);
 }
