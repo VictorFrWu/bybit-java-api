@@ -1,7 +1,6 @@
 package com.bybit.api.examples.http.async;
 
 import com.bybit.api.client.domain.announcement.LanguageSymbol;
-import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.domain.market.request.MarketDataRequest;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
