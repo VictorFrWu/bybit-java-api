@@ -64,7 +64,8 @@ public class MarketDataEndpointsExampleAsync {
         client.getHistoricalVolatility(historicalVolatilityRequest, System.out::println);
 
         // Get Insurance data
-        client.getInsurance("BTC", System.out::println); // BTC Insurance
+        var insuranceRequest = MarketDataRequest.builder().coin("BTC").build();
+        client.getInsurance(insuranceRequest, System.out::println); // BTC Insurance
 
         // Get Risk Limit
         var riskMimitRequest = MarketDataRequest.builder().category(CategoryType.INVERSE).symbol("ADAUSD").build();

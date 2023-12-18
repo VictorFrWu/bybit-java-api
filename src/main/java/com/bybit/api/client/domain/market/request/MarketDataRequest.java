@@ -1,6 +1,9 @@
 package com.bybit.api.client.domain.market.request;
 
 import com.bybit.api.client.domain.CategoryType;
+import com.bybit.api.client.domain.announcement.AnnouncementTag;
+import com.bybit.api.client.domain.announcement.AnnouncementType;
+import com.bybit.api.client.domain.announcement.LanguageSymbol;
 import com.bybit.api.client.domain.market.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,4 +33,9 @@ public class MarketDataRequest {
     private Long end;
     private Integer limit;
     private String cursor;
+    private LanguageSymbol locale;
+    private AnnouncementType type;
+    private AnnouncementTag tag;
+    @Builder.Default
+    private int page = 1;
 }

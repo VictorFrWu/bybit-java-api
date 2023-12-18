@@ -19,7 +19,7 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
 
     // Market Data endpoints
     @Override
-    public Object getAnnouncementInfo(AnnouncementInfoRequest announcementInfoRequest) {
+    public Object getAnnouncementInfo(MarketDataRequest announcementInfoRequest) {
         return executeSync(bybitApiService.getAnouncementInfo(
                 announcementInfoRequest.getLocale() == null ? null : announcementInfoRequest.getLocale().getLanguageSymbol(),
                 announcementInfoRequest.getType() == null ? null : announcementInfoRequest.getType().getAnnouncementType(),
@@ -176,8 +176,8 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     }
 
     @Override
-    public Object getInsurance(String coin) {
-        return executeSync(bybitApiService.getInsurance(coin));
+    public Object getInsurance(MarketDataRequest marketDataRequest) {
+        return executeSync(bybitApiService.getInsurance(marketDataRequest.getCoin()));
     }
 
     @Override
