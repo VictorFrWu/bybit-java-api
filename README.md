@@ -40,40 +40,25 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.4</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.2'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.4'
 ```
-Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.2)
+Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.4)
 
 ## Release-Notes
 ### HTTP Sync & Async Request
-- Receive Window Parameter: Added by default (5 seconds).
-- Debug Mode Parameter: Added by default (false) to print request and response headers.
-- Base URL Setting: Allows setting to testnet or mainnet.
-- Log Option Interceptor Parameter: Currently supports SLF4J and OkHttp3; planning to support customized messaging in the next version.
-- Trade API: For create/amend/cancel single & batch orders, now supports dedicated class, map, and JSON.
-- Asset API: Deposit and withdrawal operations will automatically generate a transfer ID.
-- Account API : Add new function Set Spot Hedging
-- Position API : Add new function Confirm New Risk Limit
-### WebSocket
-- Ping Pong Interval Parameter: Added by default (20 seconds).
-- Max Alive Time Parameter: Only supports private channel, ranging from 30s to 600s (also supports minutes).
-- Log Option Interceptor for WebSocket: Currently supports SLF4J and OkHttp3; planning to support customized messaging in the next version.
+- Institutional Loan new endpoint Bind Or Unbind UID /v5/ins-loan/association-uid
 
 ### Improvements
-- Class Mapping for POST Requests: Each POST request will have a class mapped and converted to JSON for the request body.
-- Enhanced Unit Tests: Added more tests for serialization and deserialization of data.
-- Performance Tests for WebSocket: Added tests for maximum argument limits.
-- POST Request Handling: Parameters not supported in query string will be reset to the body.
-- Security Enhancements: Secure check for signed requests implemented.
+- Refactor websocket and reduce dependency have vulnerability
+- Improve serialise and deserialize performance from request to receive json result
+
 ### Change Log
-- CategoryType: Renamed from ProductType.
-- Deprecated useTestnet: This function is now deprecated.
-- Serialization Optimization: No reserialization of data before sending POST requests, using conversion instead.
+- Broker Earning change endpoint to /v5/broker/earnings-info
 
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
