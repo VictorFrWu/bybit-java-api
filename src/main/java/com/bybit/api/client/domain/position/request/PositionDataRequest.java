@@ -47,4 +47,6 @@ public class PositionDataRequest {
     private PositionMode positionMode; // Position mode. 0: Merged Single. 3: Both Sides
     private Integer limit;
     private String cursor;
+    private String blockTradeId;
+    private MovePositionStatus status;
 }

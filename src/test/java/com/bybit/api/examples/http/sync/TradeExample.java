@@ -1,6 +1,7 @@
 package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.config.BybitApiConfig;
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 import com.bybit.api.client.restApi.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.*;
@@ -42,5 +43,10 @@ public class TradeExample {
         var cancelOrderRequest = TradeOrderRequest.builder().category(CategoryType.SPOT).symbol("XRPUSDT").orderId("1523347543495541248").build();
         var canceledOrder = client.cancelOrder(cancelOrderRequest);
         System.out.println(canceledOrder);
+
+        // Get Trade History
+        var executionRequest = TradeOrderRequest.builder().category(CategoryType.SPOT).build();
+        var executionData = client.getTradeHistory(executionRequest);
+        System.out.println(executionData);
     }
 }

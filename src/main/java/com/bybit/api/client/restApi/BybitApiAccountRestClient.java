@@ -1,6 +1,7 @@
 package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.account.request.AccountDataRequest;
+import com.bybit.api.client.domain.account.request.BatchSetCollateralCoinRequest;
 
 public interface BybitApiAccountRestClient {
     // Account endpoints
@@ -8,6 +9,7 @@ public interface BybitApiAccountRestClient {
     Object upgradeAccountToUTA();
     Object getAccountBorrowHistory(AccountDataRequest borrowHistoryRequest);
     Object setAccountCollateralCoin(AccountDataRequest setCollateralCoinRequest);
+    Object batchSetAccountCollateralCoin(BatchSetCollateralCoinRequest batchSetCollateralCoinRequest);
     Object getAccountCollateralInfo(AccountDataRequest request);
     Object getAccountCoinGeeks(AccountDataRequest request);
     Object getAccountFreeRate(AccountDataRequest getFeeRateRequest);

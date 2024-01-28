@@ -3,6 +3,7 @@ package com.bybit.api.client.domain.trade.request;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
+import com.bybit.api.client.domain.position.ExecType;
 import com.bybit.api.client.domain.trade.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,4 +54,5 @@ public class TradeOrderRequest {
     private StopOrderType stopOrderType;
     private OrderStatus orderStatus;
     private Integer timeWindow; // only to Disconnect Cancel All options
+    private ExecType execType;
 }

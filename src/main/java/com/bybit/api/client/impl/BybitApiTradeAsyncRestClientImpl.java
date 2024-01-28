@@ -70,6 +70,22 @@ public class BybitApiTradeAsyncRestClientImpl implements BybitApiAsyncTradeRestC
     }
 
     @Override
+    public void getTradeHistory(TradeOrderRequest order, BybitApiCallback<Object> callback) {
+        bybitApiService.getTradeHistory(
+                order.getCategory().getCategoryTypeId(),
+                order.getSymbol(),
+                order.getOrderId(),
+                order.getOrderLinkId(),
+                order.getBaseCoin(),
+                order.getStartTime(),
+                order.getEndTime(),
+                order.getExecType() == null ? null : order.getExecType().getExecTypeId(),
+                order.getLimit(),
+                order.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
     public void createOrder(TradeOrderRequest order, BybitApiCallback<Object> callback) {
         var placeOrderRequest = converter.convertTradeToPlaceOrderRequest(order);
         bybitApiService.createOrder(placeOrderRequest).enqueue(new BybitApiCallbackAdapter<>(callback));

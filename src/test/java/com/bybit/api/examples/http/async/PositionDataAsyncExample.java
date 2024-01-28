@@ -18,10 +18,6 @@ public class PositionDataAsyncExample {
         var setLeverageRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").buyLeverage("5").sellLeverage("5").build();
         client.setPositionLeverage(setLeverageRequest, System.out::println);
 
-        // Get Execution History
-        var executionRequest = PositionDataRequest.builder().category(CategoryType.SPOT).build();
-        client.getExecutionList(executionRequest, System.out::println);
-
         // Get Close PnL History
         var closPnlRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).build();
        client.getClosePnlList(closPnlRequest, System.out::println);

@@ -2,6 +2,7 @@ package com.bybit.api.client.domain.account.request;
 
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
+import com.bybit.api.client.domain.account.CollateralSwitch;
 import com.bybit.api.client.domain.account.SpotHedgingMode;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.preupgrade.TransactionType;
@@ -25,7 +26,7 @@ public class AccountDataRequest {
     private Integer limit;
     private String cursor;
     private String coin;
-    private String collateralSwitch;
+    private CollateralSwitch collateralSwitch;
     private String window;
     private String frozenPeriod;
     private String qtyLimit;

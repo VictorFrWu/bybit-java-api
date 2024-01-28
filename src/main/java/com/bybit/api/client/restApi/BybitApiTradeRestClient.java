@@ -1,5 +1,6 @@
 package com.bybit.api.client.restApi;
 
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.domain.trade.request.BatchOrderRequest;
 import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
 
@@ -13,6 +14,7 @@ public interface BybitApiTradeRestClient {
     Object setDisconnectCancelAllTime(TradeOrderRequest setDcpRequest);
     Object getBorrowQuota(TradeOrderRequest borrowQuotaRequest);
     Object getOpenOrders(TradeOrderRequest order);
+    Object getTradeHistory(TradeOrderRequest order);
     Object createOrder(TradeOrderRequest order);
     Object createOrder(Map<String, Object> payload);
     Object createOrder(String json) throws IOException;

@@ -370,7 +370,7 @@ public class BybitJsonConverter {
                 .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
                 .coin(positionDataRequest.getBaseCoin())
-                .positionMode(positionDataRequest.getPositionMode().getValue())
+                .mode(positionDataRequest.getPositionMode().getValue())
                 .build();
     }
 
@@ -421,7 +421,7 @@ public class BybitJsonConverter {
     public SetCollateralCoinRequest mapToSetCollateralCoinRequest(AccountDataRequest accountDataRequest) {
         return SetCollateralCoinRequest.builder()
                 .coin(accountDataRequest.getCoin())
-                .collateralSwitch(accountDataRequest.getCollateralSwitch())
+                .collateralSwitch(accountDataRequest.getCollateralSwitch() == null ? null : accountDataRequest.getCollateralSwitch().getCollateralSwitchMode())
                 .build();
     }
 
