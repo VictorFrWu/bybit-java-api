@@ -1,5 +1,6 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.position.request.BatchMovePositionRequest;
 import com.bybit.api.client.restApi.BybitApiAsyncPositionRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
@@ -52,12 +53,14 @@ public class BybitApiAsyncPositionRestClientImpl implements BybitApiAsyncPositio
     }
 
     @Override
+    @Deprecated
     public void setTpslMode(PositionDataRequest positionDataRequest, BybitApiCallback<Object> callback) {
         var setTpSlModeRequest = converter.mapToSetTpSlModeRequest(positionDataRequest);
         bybitApiService.setTpslMode(setTpSlModeRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void setRiskLimit(PositionDataRequest positionDataRequest, BybitApiCallback<Object> callback) {
         var setRiskLimitRequest = converter.mapToSetRiskLimitRequest(positionDataRequest);
         bybitApiService.setRiskLimit(setRiskLimitRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
@@ -82,22 +85,6 @@ public class BybitApiAsyncPositionRestClientImpl implements BybitApiAsyncPositio
     }
 
     @Override
-    public void getExecutionList(PositionDataRequest executionHistoryRequest, BybitApiCallback<Object> callback) {
-        bybitApiService.getExecutionList(
-                executionHistoryRequest.getCategory().getCategoryTypeId(),
-                executionHistoryRequest.getSymbol(),
-                executionHistoryRequest.getOrderId(),
-                executionHistoryRequest.getOrderLinkId(),
-                executionHistoryRequest.getBaseCoin(),
-                executionHistoryRequest.getStartTime(),
-                executionHistoryRequest.getEndTime(),
-                executionHistoryRequest.getExecType() == null ? null : executionHistoryRequest.getExecType().getExecTypeId(),
-                executionHistoryRequest.getLimit(),
-                executionHistoryRequest.getCursor()
-        ).enqueue(new BybitApiCallbackAdapter<>(callback));
-    }
-
-    @Override
     public void getClosePnlList(PositionDataRequest closePnlHistoryRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getClosePnlList(
                 closePnlHistoryRequest.getCategory().getCategoryTypeId(),
@@ -107,6 +94,25 @@ public class BybitApiAsyncPositionRestClientImpl implements BybitApiAsyncPositio
                 closePnlHistoryRequest.getLimit(),
                 closePnlHistoryRequest.getCursor()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getMovePositionHistory(PositionDataRequest movePositionHistoryRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getMovePositionHistory(
+                movePositionHistoryRequest.getCategory().getCategoryTypeId(),
+                movePositionHistoryRequest.getSymbol(),
+                movePositionHistoryRequest.getStartTime(),
+                movePositionHistoryRequest.getEndTime(),
+                movePositionHistoryRequest.getStatus() == null ? null : movePositionHistoryRequest.getStatus().getMovePositionStatus(),
+                movePositionHistoryRequest.getBlockTradeId(),
+                movePositionHistoryRequest.getLimit(),
+                movePositionHistoryRequest.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void batchMovePositions(BatchMovePositionRequest batchMovePositionRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.batchMovePositions(batchMovePositionRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override

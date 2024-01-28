@@ -1,5 +1,6 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.account.request.BatchSetCollateralCoinRequest;
 import com.bybit.api.client.restApi.BybitApiAsyncAccountRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
@@ -45,6 +46,11 @@ public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountR
     public void setAccountCollateralCoin(AccountDataRequest setCollateralCoinRequest, BybitApiCallback<Object> callback) {
         var request = converter.mapToSetCollateralCoinRequest(setCollateralCoinRequest);
         bybitApiService.setAccountCollateralCoin(request).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void batchSetAccountCollateralCoin(BatchSetCollateralCoinRequest batchSetCollateralCoinRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.batchSetAccountCollateralCoin(batchSetCollateralCoinRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override

@@ -20,11 +20,6 @@ public class PositionDataExample {
         var setPositionLeverageResult = client.setPositionLeverage(setLeverageRequest);
         System.out.println(setPositionLeverageResult);
 
-        // Get Execution History
-        var executionRequest = PositionDataRequest.builder().category(CategoryType.SPOT).build();
-        var executionData = client.getExecutionList(executionRequest);
-        System.out.println(executionData);
-
         // Get Close PnL History
         var closPnlRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).build();
         var closePnLData = client.getClosePnlList(closPnlRequest);

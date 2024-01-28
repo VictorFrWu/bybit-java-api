@@ -1,5 +1,6 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.position.request.BatchMovePositionRequest;
 import com.bybit.api.client.restApi.BybitApiPositionRestClient;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.position.request.PositionDataRequest;
@@ -48,12 +49,14 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     }
 
     @Override
+    @Deprecated
     public Object setTpslMode(PositionDataRequest positionDataRequest) {
         var setTpSlModeRequest = converter.mapToSetTpSlModeRequest(positionDataRequest);
         return executeSync(bybitApiService.setTpslMode(setTpSlModeRequest));
     }
 
     @Override
+    @Deprecated
     public Object setRiskLimit(PositionDataRequest positionDataRequest) {
         var setRiskLimitRequest = converter.mapToSetRiskLimitRequest(positionDataRequest);
         return executeSync(bybitApiService.setRiskLimit(setRiskLimitRequest));
@@ -78,22 +81,6 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
     }
 
     @Override
-    public Object getExecutionList(PositionDataRequest executionHistoryRequest) {
-        return executeSync(bybitApiService.getExecutionList(
-                executionHistoryRequest.getCategory().getCategoryTypeId(),
-                executionHistoryRequest.getSymbol(),
-                executionHistoryRequest.getOrderId(),
-                executionHistoryRequest.getOrderLinkId(),
-                executionHistoryRequest.getBaseCoin(),
-                executionHistoryRequest.getStartTime(),
-                executionHistoryRequest.getEndTime(),
-                executionHistoryRequest.getExecType() == null ? null : executionHistoryRequest.getExecType().getExecTypeId(),
-                executionHistoryRequest.getLimit(),
-                executionHistoryRequest.getCursor()
-        ));
-    }
-
-    @Override
     public Object getClosePnlList(PositionDataRequest closePnlHistoryRequest) {
         return executeSync(bybitApiService.getClosePnlList(
                 closePnlHistoryRequest.getCategory().getCategoryTypeId(),
@@ -103,6 +90,25 @@ public class BybitApiPositionRestClientImpl implements BybitApiPositionRestClien
                 closePnlHistoryRequest.getLimit(),
                 closePnlHistoryRequest.getCursor()
         ));
+    }
+
+    @Override
+    public Object getMovePositionHistory(PositionDataRequest movePositionHistoryRequest) {
+        return executeSync(bybitApiService.getMovePositionHistory(
+                movePositionHistoryRequest.getCategory().getCategoryTypeId(),
+                movePositionHistoryRequest.getSymbol(),
+                movePositionHistoryRequest.getStartTime(),
+                movePositionHistoryRequest.getEndTime(),
+                movePositionHistoryRequest.getStatus() == null ? null : movePositionHistoryRequest.getStatus().getMovePositionStatus(),
+                movePositionHistoryRequest.getBlockTradeId(),
+                movePositionHistoryRequest.getLimit(),
+                movePositionHistoryRequest.getCursor()
+        ));
+    }
+
+    @Override
+    public Object batchMovePositions(BatchMovePositionRequest batchMovePositionRequest) {
+        return executeSync(bybitApiService.batchMovePositions(batchMovePositionRequest));
     }
 
     @Override

@@ -40,25 +40,26 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.4'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.5'
 ```
-Furthermore build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.4)
+Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.5)
 
 ## Release-Notes
 ### HTTP Sync & Async Request
-- Institutional Loan new endpoint Bind Or Unbind UID /v5/ins-loan/association-uid
+- Position new endpoints: Move Positions and Get Move Positions History
+- Account new endpoint: Batch Set Collateral Coin
 
 ### Improvements
-- Refactor websocket and reduce dependency have vulnerability
-- Improve serialise and deserialize performance from request to receive json result
+- Fix Switch Position Mode Issue
 
 ### Change Log
-- Broker Earning change endpoint to /v5/broker/earnings-info
+- Set Tp/SL and Set Risk Limit endpoints are deprecated
+- GetExecutionList move from PositionService to TradeService and rename to GetTradeHistory
 
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.

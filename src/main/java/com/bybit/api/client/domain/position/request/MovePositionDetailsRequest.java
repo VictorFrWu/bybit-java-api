@@ -11,9 +11,10 @@ import lombok.ToString;
 @ToString
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SwitchPositionModeRequest {
+public class MovePositionDetailsRequest {
     private String category;
     private String symbol;
-    private String coin;
-    private Integer mode;
+    private String price;
+    private String side;
+    private String qty;
 }

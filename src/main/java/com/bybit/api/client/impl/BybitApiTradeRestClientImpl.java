@@ -166,4 +166,20 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
                 order.getCursor()
         ));
     }
+
+    @Override
+    public Object getTradeHistory(TradeOrderRequest order) {
+        return executeSync(bybitApiService.getTradeHistory(
+                order.getCategory().getCategoryTypeId(),
+                order.getSymbol(),
+                order.getOrderId(),
+                order.getOrderLinkId(),
+                order.getBaseCoin(),
+                order.getStartTime(),
+                order.getEndTime(),
+                order.getExecType() == null ? null : order.getExecType().getExecTypeId(),
+                order.getLimit(),
+                order.getCursor()
+        ));
+    }
 }

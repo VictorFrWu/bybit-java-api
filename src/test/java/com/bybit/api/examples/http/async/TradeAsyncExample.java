@@ -1,6 +1,7 @@
 package com.bybit.api.examples.http.async;
 
 import com.bybit.api.client.config.BybitApiConfig;
+import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.restApi.BybitApiAsyncTradeRestClient;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
@@ -37,5 +38,9 @@ public class TradeAsyncExample {
         // Cancel All order
         var cancelAllOrdersRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).settleCoin("USDT").build();
         client.cancelAllOrder(cancelAllOrdersRequest, System.out::println);
+
+        // Get Trade History
+        var executionRequest = TradeOrderRequest.builder().category(CategoryType.SPOT).build();
+        client.getTradeHistory(executionRequest, System.out::println);
     }
 }

@@ -6,10 +6,10 @@ import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.service.BybitApiClientFactory;
 public class WebsocketPublicChannelExamples {
     public static void main(String[] args) {
-        var client = BybitApiClientFactory.newInstance().newWebsocketClient();
+        var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_MAINNET_DOMAIN).newWebsocketClient();
 
         // Subscribe Orderbook more than one args
-        client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+        client.getPublicChannelStream(List.of("orderbook.-1.BTCUSDT"), BybitApiConfig.V5_PUBLIC_SPOT);
 
         // Orderbook
         // client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);

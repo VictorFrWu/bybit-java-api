@@ -6,14 +6,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SwitchPositionModeRequest {
-    private String category;
-    private String symbol;
-    private String coin;
-    private Integer mode;
+public class BatchMovePositionRequest {
+    private String fromUid;
+    private String toUid;
+    private List<MovePositionDetailsRequest> list;
 }
