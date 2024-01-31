@@ -55,4 +55,5 @@ public class TradeOrderRequest {
     private OrderStatus orderStatus;
     private Integer timeWindow; // only to Disconnect Cancel All options
     private ExecType execType;
+    private String marketUnit;
 }

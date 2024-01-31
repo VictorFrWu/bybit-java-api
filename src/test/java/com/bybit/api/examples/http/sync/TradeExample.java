@@ -1,9 +1,8 @@
 package com.bybit.api.examples.http.sync;
 
 import com.bybit.api.client.config.BybitApiConfig;
-import com.bybit.api.client.domain.position.request.PositionDataRequest;
+import com.bybit.api.client.domain.position.ExecType;
 import com.bybit.api.client.domain.trade.request.TradeOrderRequest;
-import com.bybit.api.client.restApi.BybitApiTradeRestClient;
 import com.bybit.api.client.domain.*;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.service.BybitApiClientFactory;
@@ -18,8 +17,7 @@ public class TradeExample {
 
         // Getting a list of history order between 2 years
         var orderHistory = TradeOrderRequest.builder().category(CategoryType.LINEAR).limit(10).build();
-        var allOrders = client.getHistoryOrderResult(orderHistory);
-        System.out.println(allOrders);
+        System.out.println(client.getOrderHistory(orderHistory));
 
         // Get all real time orders
         var openOrderRequest = TradeOrderRequest.builder().category(CategoryType.SPOT).build();
@@ -45,8 +43,15 @@ public class TradeExample {
         System.out.println(canceledOrder);
 
         // Get Trade History
-        var executionRequest = TradeOrderRequest.builder().category(CategoryType.SPOT).build();
-        var executionData = client.getTradeHistory(executionRequest);
-        System.out.println(executionData);
+        var tradeHistoryRequest = TradeOrderRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").execType(ExecType.Trade).limit(100).build();
+        System.out.println(client.getTradeHistory(tradeHistoryRequest));
+
+        // Set DCP Options
+        var setDcpOptionsRequest = TradeOrderRequest.builder().timeWindow(40).build();
+        System.out.println(client.setDisconnectCancelAllTime(setDcpOptionsRequest));
+
+        // Get Borrow Quota
+        var getBorrowQuotaRequest = TradeOrderRequest.builder().category(CategoryType.SPOT).symbol("BTCUSDT").side(Side.BUY).build();
+        System.out.println(client.getBorrowQuota(getBorrowQuotaRequest));
     }
 }

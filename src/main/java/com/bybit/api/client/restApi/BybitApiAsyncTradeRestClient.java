@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface BybitApiAsyncTradeRestClient {
     // Trade
-    void getHistoryOrderResult(TradeOrderRequest orderHistoryRequest, BybitApiCallback<Object> callback);
+    void getOrderHistory(TradeOrderRequest orderHistoryRequest, BybitApiCallback<Object> callback);
     void setDisconnectCancelAllTime(TradeOrderRequest tradeOrderRequest, BybitApiCallback<Object> callback);
     void getBorrowQuota(TradeOrderRequest borrowQuotaRequest, BybitApiCallback<Object> callback);
     void getOpenOrders(TradeOrderRequest order, BybitApiCallback<Object> callback);

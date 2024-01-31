@@ -36,5 +36,6 @@ public class PlaceOrderRequest {
     private String slLimitPrice;
     private String tpOrderType;
     private String slOrderType;
+    private String marketUnit;
 }
 

@@ -91,6 +91,7 @@ public class BybitJsonConverter {
                 .slLimitPrice((String) orderMap.getOrDefault("slLimitPrice", null)) // Optional
                 .tpOrderType(orderMap.containsKey("tpOrderType") ? TradeOrderType.valueOf(orderMap.get("tpOrderType").toString().toUpperCase()) : null)  // Optional, default to Market
                 .slOrderType(orderMap.containsKey("slOrderType") ? TradeOrderType.valueOf(orderMap.get("slOrderType").toString().toUpperCase()) : null)  // Optional, default to Market
+                .marketUnit((String)orderMap.getOrDefault("marketUnit", null))
                 .build();
     }
 
@@ -131,6 +132,7 @@ public class BybitJsonConverter {
                 .slLimitPrice(requestNode.has("slLimitPrice") ? requestNode.get("slLimitPrice").asText() : null)
                 .tpOrderType(requestNode.has("tpOrderType") ? TradeOrderType.valueOf(requestNode.get("tpOrderType").asText().toUpperCase()) : null)
                 .slOrderType(requestNode.has("slOrderType") ? TradeOrderType.valueOf(requestNode.get("slOrderType").asText().toUpperCase()) : null)
+                .marketUnit(requestNode.has("marketUnit") ? requestNode.get("marketUnit").asText() : null)
                 .build();
     }
 
@@ -305,6 +307,7 @@ public class BybitJsonConverter {
                 .slLimitPrice(tradeOrderRequest.getSlLimitPrice()) // Optional
                 .tpOrderType(tradeOrderRequest.getTpOrderType() == null ? null : tradeOrderRequest.getTpOrderType().getOType())  // Optional, default to Market
                 .slOrderType(tradeOrderRequest.getSlOrderType() == null ? null : tradeOrderRequest.getSlOrderType().getOType())  // Optional, default to Market
+                .marketUnit(tradeOrderRequest.getMarketUnit())
                 .build();
     }
 

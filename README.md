@@ -40,24 +40,26 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.1.5</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.1.5'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.3'
 ```
-Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.1.5)
+Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
 ## Release-Notes
 ### HTTP Sync & Async Request
 - Position new endpoints: Move Positions and Get Move Positions History
 - Account new endpoint: Batch Set Collateral Coin
+- TradeOrderRequest add a new parameter: marketUnit
 
 ### Improvements
 - Fix Switch Position Mode Issue
 
 ### Change Log
+- C:\Net\GithubProjects\open-api-sdk\bybit-java-api
 - Set Tp/SL and Set Risk Limit endpoints are deprecated
 - GetExecutionList move from PositionService to TradeService and rename to GetTradeHistory
 
