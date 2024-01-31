@@ -771,7 +771,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/order/history")
-    Call<Object> getHistoryOrderResult(@Query("category") String category,
+    Call<Object> getOrderHistory(@Query("category") String category,
                                        @Query("symbol") String symbol,
                                        @Query("baseCoin") String baseCoin,
                                        @Query("settleCoin") String settleCoin,

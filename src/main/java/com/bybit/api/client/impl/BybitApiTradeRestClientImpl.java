@@ -37,8 +37,8 @@ public class BybitApiTradeRestClientImpl implements BybitApiTradeRestClient {
     }
 
     @Override
-    public Object getHistoryOrderResult(TradeOrderRequest orderHistoryRequest) {
-        return executeSync(bybitApiService.getHistoryOrderResult(
+    public Object getOrderHistory(TradeOrderRequest orderHistoryRequest) {
+        return executeSync(bybitApiService.getOrderHistory(
                 orderHistoryRequest.getCategory().getCategoryTypeId(),
                 orderHistoryRequest.getSymbol(),
                 orderHistoryRequest.getBaseCoin(),

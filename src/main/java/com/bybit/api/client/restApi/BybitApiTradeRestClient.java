@@ -10,7 +10,7 @@ import java.util.Map;
 public interface BybitApiTradeRestClient {
 
     // Trade
-    Object getHistoryOrderResult(TradeOrderRequest orderHistoryRequest);
+    Object getOrderHistory(TradeOrderRequest orderHistoryRequest);
     Object setDisconnectCancelAllTime(TradeOrderRequest setDcpRequest);
     Object getBorrowQuota(TradeOrderRequest borrowQuotaRequest);
     Object getOpenOrders(TradeOrderRequest order);
