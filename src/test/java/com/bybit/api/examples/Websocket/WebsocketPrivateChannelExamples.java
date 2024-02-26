@@ -12,6 +12,6 @@ public class WebsocketPrivateChannelExamples {
         // client.getOrderBookStream(List.of("position.linear"), BybitApiConfig.V5_PRIVATE);
 
         // Order
-        client.getPrivateChannelStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
+        client.getPrivateChannelStream(List.of("execution"), BybitApiConfig.V5_PRIVATE);
     }
 }

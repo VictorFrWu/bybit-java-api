@@ -372,7 +372,7 @@ public class BybitJsonConverter {
         return SwitchPositionModeRequest.builder()
                 .category(positionDataRequest.getCategory().getCategoryTypeId())
                 .symbol(positionDataRequest.getSymbol())
-                .coin(positionDataRequest.getBaseCoin())
+                .coin(positionDataRequest.getCoin())
                 .mode(positionDataRequest.getPositionMode().getValue())
                 .build();
     }
