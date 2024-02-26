@@ -83,6 +83,7 @@ public class BybitApiSpotMarginRestClientImpl implements BybitApiSpotMarginRestC
     }
 
     // Spot Margin Normal
+    @Deprecated
     @Override
     public Object getNormalVipSpotMarginTradeData(SpotMarginDataRequest normalMarginDataRequest) {
         return executeSync(bybitApiService.getNormalVipSpotMarginTradeData(
@@ -91,44 +92,52 @@ public class BybitApiSpotMarginRestClientImpl implements BybitApiSpotMarginRestC
         );
     }
 
+    @Deprecated
     @Override
     public Object getNormalSpotMarginTradeCoinInfo(SpotMarginDataRequest normalMarginDataRequest) {
         return executeSync(bybitApiService.getNormalSpotMarginTradeCoinInfo(normalMarginDataRequest.getCoin()));
     }
 
+    @Deprecated
     @Override
     public Object getNormalSpotMarginTradeBorrowCoinInfo(SpotMarginDataRequest normalMarginDataRequest) {
         return executeSync(bybitApiService.getNormalSpotMarginTradeBorrowCoinInfo(normalMarginDataRequest.getCoin()));
     }
 
+    @Deprecated
     @Override
     public Object getNormalSpotMarginTradeInterestQuota(SpotMarginDataRequest spotMarginDataRequest) {
         return executeSync(bybitApiService.getNormalSpotMarginTradeInterestQuota(spotMarginDataRequest.getCoin()));
     }
 
+    @Deprecated
     @Override
     public Object getNormalSpotMarginTradeAccountInfo() {
         return executeSync(bybitApiService.getNormalSpotMarginTradeAccountInfo());
     }
 
+    @Deprecated
     @Override
     public Object setNormalSpotToggleMarginTrade(SpotMarginDataRequest spotMarginDataRequest) {
         int switchStatus = spotMarginDataRequest.getSwitchStatus() == null ? 0 : spotMarginDataRequest.getSwitchStatus().getValue();
         return executeSync(bybitApiService.setNormalSpotToggleMarginTrade(switchStatus));
     }
 
+    @Deprecated
     @Override
     public Object loanNormalSpotMarginTrade(SpotMarginDataRequest spotMarginDataRequest) {
         var spotMarginTradeBorrowRequest = converter.mapToSpotMarginBorrowRequest(spotMarginDataRequest);
         return executeSync(bybitApiService.loanNormalSpotMarginTrade(spotMarginTradeBorrowRequest));
     }
 
+    @Deprecated
     @Override
     public Object repayNormalSpotMarginTrade(SpotMarginDataRequest spotMarginDataRequest) {
         var spotMarginTradeRePayRequest = converter.mapToSpotMarginRepayRequest(spotMarginDataRequest);
         return executeSync(bybitApiService.repayNormalSpotMarginTrade(spotMarginTradeRePayRequest));
     }
 
+    @Deprecated
     @Override
     public Object getNormalSpotMarginTradeBorrowOrders(SpotMarginDataRequest spotMarginTradeBorrowOrdersRequest) {
         return executeSync(bybitApiService.getNormalMarginTradeBorrowOrders(
@@ -140,6 +149,7 @@ public class BybitApiSpotMarginRestClientImpl implements BybitApiSpotMarginRestC
         ));
     }
 
+    @Deprecated
     @Override
     public Object getNormalSpotMarginTradeRepayOrders(SpotMarginDataRequest spotMarginTradeRepayOrdersRequest) {
         return executeSync(bybitApiService.getNormalMarginTradeRepayOrders(

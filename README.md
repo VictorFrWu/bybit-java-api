@@ -40,29 +40,25 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.3'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.4'
 ```
 Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
 ## Release-Notes
-### HTTP Sync & Async Request
-- Position new endpoints: Move Positions and Get Move Positions History
-- Account new endpoint: Batch Set Collateral Coin
-- TradeOrderRequest add a new parameter: marketUnit
+### Websockets
+- Add WebSocketMessage handler class to all public and private channels
 
 ### Improvements
-- Fix Switch Position Mode Issue
+- public and private websocket channel set message handler
 
 ### Change Log
-- C:\Net\GithubProjects\open-api-sdk\bybit-java-api
-- Set Tp/SL and Set Risk Limit endpoints are deprecated
-- GetExecutionList move from PositionService to TradeService and rename to GetTradeHistory
-
+- Spot Margin Trade endpoints are decrypted for classical users 
+- 
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
 ### HttP Client Factory & Websocket Client
@@ -224,16 +220,42 @@ client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5
 client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 
-### Websocket private channel
-- Order Subscribe
+- Ticker Subscribe
 ```java
-var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.STREAM_TESTNET_DOMAIN).newWebsocketClient(5, "60s", (message) -> System.out.println("Handle message :" + message));
+var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_MAINNET_DOMAIN, true).newWebsocketClient();
+
+client.setMessageHandler(message -> {
+    var tickerData = (new ObjectMapper()).readValue(message, WebSocketTickerMessage.class);
+    // Process message data here
+    System.out.println("Websocket Message Data: " + tickerData.getData().toString());
+});
+
+// Ticker
+client.getPublicChannelStream(List.of("tickers.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
+```
+
+### Websocket private channel
+- Position Subscribe
+```java
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.STREAM_TESTNET_DOMAIN).newWebsocketClient();
+
 // Position
-// client.getOrderBookStream(List.of("position.linear"), BybitApiConfig.V5_PRIVATE);
+client.getPrivateChannelStream(List.of("position"), BybitApiConfig.V5_PRIVATE);
+```
+
+- Order Channel active Message Handler & Max Alive Time & Ping Interval 
+```java
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.STREAM_TESTNET_DOMAIN, true)
+        .newWebsocketClient(5, "60s", (message) -> {
+        var orderMessage = (new ObjectMapper()).readValue(message, WebSocketOrderMessage.class);
+        // Process message data here
+        System.out.println("Websocket Message Data: " + orderMessage.getData().toString());
+        });
 
 // Order
 client.getPrivateChannelStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
 ```
+
 ## Contact
 For support, join our Bybit API community on [Telegram](https://t.me/Bybitapi).
 

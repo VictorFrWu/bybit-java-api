@@ -49,4 +49,5 @@ public class PositionDataRequest {
     private String cursor;
     private String blockTradeId;
     private MovePositionStatus status;
+    private String coin;
 }

@@ -1,11 +1,12 @@
 package com.bybit.api.client.websocket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import okhttp3.WebSocket;
 
 import java.util.List;
 
 public interface WebsocketClient {
-    void onMessage(String msg);
+    void onMessage(String msg) throws JsonProcessingException;
     void onError(Throwable t);
     void onClose(int code, String reason);
     void onOpen(WebSocket ws);
@@ -44,6 +45,8 @@ public interface WebsocketClient {
      */
     void getPublicChannelStream(List<String> argNames, String path);
     void getPrivateChannelStream(List<String> argNames, String path);
+
+    void setMessageHandler(WebsocketMessageHandler websocketMessageHandler);
     /**
      * Trade
      * Subscribe to the recent trades stream.

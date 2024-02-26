@@ -28,7 +28,7 @@ public class WebsocketClientImpl implements WebsocketClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketClientImpl.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final WebsocketMessageHandler messageHandler;
+    private WebsocketMessageHandler messageHandler;
     private final WebSocketHttpClientSingleton webSocketHttpClientSingleton;
 
     private final String apikey;
@@ -176,7 +176,11 @@ public class WebsocketClientImpl implements WebsocketClient {
 
             @Override
             public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-                WebsocketClientImpl.this.onMessage(text);
+                try {
+                    WebsocketClientImpl.this.onMessage(text);
+                } catch (Exception e) {
+                    WebsocketClientImpl.this.onError(e);
+                }
             }
 
             @Override
@@ -186,8 +190,12 @@ public class WebsocketClientImpl implements WebsocketClient {
         };
     }
 
+    public void setMessageHandler(WebsocketMessageHandler handler) {
+        this.messageHandler = handler;
+    }
+
     @Override
-    public void onMessage(String msg) {
+    public void onMessage(String msg) throws JsonProcessingException {
         if (messageHandler != null) {
             messageHandler.handleMessage(msg);
         } else {

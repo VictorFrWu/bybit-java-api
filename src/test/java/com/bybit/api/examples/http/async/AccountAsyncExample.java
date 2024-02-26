@@ -2,6 +2,7 @@ package com.bybit.api.examples.http.async;
 
 import com.bybit.api.client.domain.account.request.AccountDataRequest;
 import com.bybit.api.client.domain.account.AccountType;
+import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.service.BybitApiClientFactory;
 
 public class AccountAsyncExample {
@@ -29,5 +30,9 @@ public class AccountAsyncExample {
         // Get Transaction Log
         var transactionLogRequest = AccountDataRequest.builder().build();
         client.getTransactionLog(transactionLogRequest, System.out::println);
+
+        // Set Account Margin Mode
+        var setAccountMarginModeRequest = AccountDataRequest.builder().setMarginMode(MarginMode.CROSS_MARGIN).build();
+        client.setAccountMarginMode(setAccountMarginModeRequest, System.out::println);
     }
 }
