@@ -4412,6 +4412,7 @@ public interface BybitApiService {
      * &gt; &gt; maxBorrowingAmount	string	Max borrow amount
      * &gt; vipLevel	string	Vip level
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/data")
     Call<Object> getNormalVipSpotMarginTradeData(@Query("vipLevel") String vipLevel,
@@ -4432,6 +4433,7 @@ public interface BybitApiService {
      * &gt; conversionRate	string	Convert ratio
      * &gt; liquidationOrder	integer	Liquidation order
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/pledge-token")
     Call<Object> getNormalSpotMarginTradeCoinInfo(@Query("coin") String coin);
@@ -4454,6 +4456,7 @@ public interface BybitApiService {
      * &gt; borrowingPrecision	integer	Accuracy of loan amount
      * &gt; repaymentPrecision	integer	Accuracy of repayment amount
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/borrow-token")
     Call<Object> getNormalSpotMarginTradeBorrowCoinInfo(@Query("coin") String coin);
@@ -4472,6 +4475,7 @@ public interface BybitApiService {
      * loanAbleAmount	string	The estimated amount can be loaned
      * maxLoanAmount	string	The fixed loanable amount per user on platform
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/loan-info")
     Call<Object> getNormalSpotMarginTradeInterestQuota(@Query("coin") String coin);
@@ -4502,6 +4506,7 @@ public interface BybitApiService {
      * 4: liquidated
      * switchStatus	integer	0: margin trade off, 1: margin trade on
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/account")
     Call<Object> getNormalSpotMarginTradeAccountInfo();
@@ -4519,6 +4524,7 @@ public interface BybitApiService {
      * Parameter	Type	Comments
      * switchStatus	integer	Margin trade status. 1: on, 0: off
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/switch")
     Call<Object> setNormalSpotToggleMarginTrade(@Body int switchStatus);
@@ -4535,6 +4541,7 @@ public interface BybitApiService {
      * Parameter	Type	Comments
      * transactId	string	Borrow transaction ID
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/loan")
     Call<Object> loanNormalSpotMarginTrade(@Body SpotMarginTradeBorrowRequest spotMarginTradeBorrowRequest);
@@ -4554,6 +4561,7 @@ public interface BybitApiService {
      * Parameter	Type	Comments
      * repayId	string	Repayment transaction ID
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-cross-margin-trade/repay")
     Call<Object> repayNormalSpotMarginTrade(@Body SpotMarginTradeRePayRequest spotMarginTradeRePayRequest);
@@ -4587,6 +4595,7 @@ public interface BybitApiService {
      * &gt; status	integer	Status 1：uncleared, 2：cleared
      * &gt; type	integer	Order Type 1: manual loan, 2: auto loan
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/orders")
     Call<Object> getNormalMarginTradeBorrowOrders(@Query("startTime") Long startTime,
@@ -4620,6 +4629,7 @@ public interface BybitApiService {
      * &gt; &gt; repaidSerialNumber	string	Repayment No. (Borrowing Order)
      * &gt; &gt; transactId	string	Borrowing transaction ID
      */
+    @Deprecated
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/spot-cross-margin-trade/repay-history")
     Call<Object> getNormalMarginTradeRepayOrders(@Query("startTime") Long startTime,

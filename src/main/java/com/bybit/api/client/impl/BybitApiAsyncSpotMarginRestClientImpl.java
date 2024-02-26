@@ -85,6 +85,7 @@ public class BybitApiAsyncSpotMarginRestClientImpl implements BybitApiAsyncSpotM
 
     // Spot Margin Normal
     @Override
+    @Deprecated
     public void getNormalVipSpotMarginTradeData(SpotMarginDataRequest normalMarginDataRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getNormalVipSpotMarginTradeData(
                 normalMarginDataRequest.getVipLevel() == null ? null : normalMarginDataRequest.getVipLevel().getLevel(),
@@ -92,45 +93,53 @@ public class BybitApiAsyncSpotMarginRestClientImpl implements BybitApiAsyncSpotM
                 .enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
+    @Deprecated
     @Override
     public void getNormalSpotMarginTradeCoinInfo(SpotMarginDataRequest normalMarginDataRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getNormalSpotMarginTradeCoinInfo(normalMarginDataRequest.getCoin()).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void getNormalSpotMarginTradeBorrowCoinInfo(SpotMarginDataRequest normalMarginDataRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getNormalSpotMarginTradeBorrowCoinInfo(normalMarginDataRequest.getCoin()).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void getNormalSpotMarginTradeInterestQuota(SpotMarginDataRequest spotMarginDataRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getNormalSpotMarginTradeInterestQuota(spotMarginDataRequest.getCoin()).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void getNormalSpotMarginTradeAccountInfo(BybitApiCallback<Object> callback) {
         bybitApiService.getNormalSpotMarginTradeAccountInfo().enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void setNormalSpotToggleMarginTrade(SpotMarginDataRequest spotMarginDataRequest, BybitApiCallback<Object> callback) {
         int switchStatus = spotMarginDataRequest.getSwitchStatus() == null ? 0 : spotMarginDataRequest.getSwitchStatus().getValue();
         bybitApiService.setNormalSpotToggleMarginTrade(switchStatus).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void loanNormalSpotMarginTrade(SpotMarginDataRequest spotMarginDataRequest, BybitApiCallback<Object> callback) {
         var spotMarginTradeBorrowRequest = converter.mapToSpotMarginBorrowRequest(spotMarginDataRequest);
         bybitApiService.loanNormalSpotMarginTrade(spotMarginTradeBorrowRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void repayNormalSpotMarginTrade(SpotMarginDataRequest spotMarginDataRequest, BybitApiCallback<Object> callback) {
         var spotMarginTradeRePayRequest = converter.mapToSpotMarginRepayRequest(spotMarginDataRequest);
         bybitApiService.repayNormalSpotMarginTrade(spotMarginTradeRePayRequest).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
+    @Deprecated
     public void getNormalSpotMarginTradeBorrowOrders(SpotMarginDataRequest spotMarginTradeBorrowOrdersRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getNormalMarginTradeBorrowOrders(
                 spotMarginTradeBorrowOrdersRequest.getStartTime(),
@@ -142,6 +151,7 @@ public class BybitApiAsyncSpotMarginRestClientImpl implements BybitApiAsyncSpotM
     }
 
     @Override
+    @Deprecated
     public void getNormalSpotMarginTradeRepayOrders(SpotMarginDataRequest spotMarginTradeRepayOrdersRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getNormalMarginTradeRepayOrders(
                 spotMarginTradeRepayOrdersRequest.getStartTime(),
