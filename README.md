@@ -40,7 +40,7 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.2.5-SNAPSHOT</version>
+    <version>1.2.5</version>
 </dependency>
 ```
 Gradle Example
