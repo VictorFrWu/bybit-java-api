@@ -14,7 +14,7 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
     private final BybitJsonConverter converter = new BybitJsonConverter();
 
     public BybitApiAccountRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "");
     }
     // Account endpoints
     @Override

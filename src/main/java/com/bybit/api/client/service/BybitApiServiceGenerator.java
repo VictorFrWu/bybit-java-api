@@ -36,8 +36,8 @@ public class BybitApiServiceGenerator {
 
     static {
         Dispatcher dispatcher = new Dispatcher();
-        dispatcher.setMaxRequestsPerHost(500);
-        dispatcher.setMaxRequests(500);
+        dispatcher.setMaxRequestsPerHost(1000);
+        dispatcher.setMaxRequests(1000);
         sharedClient = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .pingInterval(20, TimeUnit.SECONDS)
@@ -51,8 +51,12 @@ public class BybitApiServiceGenerator {
             (Converter<ResponseBody, BybitApiError>) converterFactory.responseBodyConverter(
                     BybitApiError.class, new Annotation[0], null);
 
+    public static <S> S createService(Class<S> serviceClass, String baseUrl, boolean debugMode, long recvWindow, String logOption, String referer) {
+        return createService(serviceClass, null, null, baseUrl, debugMode, recvWindow, logOption, referer);
+    }
+
     public static <S> S createService(Class<S> serviceClass, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
-        return createService(serviceClass, null, null, baseUrl, debugMode, recvWindow, logOption);
+        return createService(serviceClass, null, null, baseUrl, debugMode, recvWindow, logOption, "");
     }
 
     /**
@@ -63,13 +67,13 @@ public class BybitApiServiceGenerator {
      * @param secret       Bybit secret.
      * @return a new implementation of the API endpoints for the Bybit API service.
      */
-    public static <S> S createService(Class<S> serviceClass, String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+    public static <S> S createService(Class<S> serviceClass, String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, String referer) {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(converterFactory);
         OkHttpClient.Builder clientBuilder = sharedClient.newBuilder();
         if (!StringUtils.isEmpty(apiKey) && !StringUtils.isEmpty(secret)) {
-            AuthenticationInterceptor interceptor = new AuthenticationInterceptor(apiKey, secret, recvWindow);
+            AuthenticationInterceptor interceptor = new AuthenticationInterceptor(apiKey, secret, recvWindow, referer);
             clientBuilder.addInterceptor(interceptor);
         }
         if (debugMode) {

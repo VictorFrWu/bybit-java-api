@@ -1,5 +1,9 @@
-package com.bybit.api.client.websocket;
+package com.bybit.api.client.websocket.impl;
 
+import com.bybit.api.client.constant.BybitApiConstants;
+import com.bybit.api.client.websocket.callback.WebSocketMessageCallback;
+import com.bybit.api.client.websocket.httpclient.WebSocketStreamHttpClientSingleton;
+import com.bybit.api.client.websocket.httpclient.WebsocketStreamClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bybit.api.client.config.BybitApiConfig;
@@ -17,19 +21,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.bybit.api.client.constant.Util.generateTransferID;
+import static com.bybit.api.client.constant.Helper.generateTimestamp;
+import static com.bybit.api.client.constant.Helper.generateTransferID;
 
 @Getter
-public class WebsocketClientImpl implements WebsocketClient {
-    private static final String THREAD_PUBLIC_PING = "thread-public-ping";
+public class WebsocketStreamClientImpl implements WebsocketStreamClient {
+    private static final String THREAD_PING = "thread-public-ping";
     private static final String THREAD_PRIVATE_AUTH = "thread-private-auth";
-    private static final String THREAD_PRIVATE_PING = "thread-private-ping";
     private static final String PING_DATA = "{\"op\":\"ping\"}";
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketClientImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketStreamClientImpl.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private WebsocketMessageHandler messageHandler;
-    private final WebSocketHttpClientSingleton webSocketHttpClientSingleton;
+    private WebSocketMessageCallback webSocketMessageCallback;
+    private final WebSocketStreamHttpClientSingleton webSocketHttpClientSingleton;
+    private WebSocket webSocket;
 
     private final String apikey;
     private final String secret;
@@ -39,10 +44,11 @@ public class WebsocketClientImpl implements WebsocketClient {
     private final Integer pingInterval;
     private final String maxAliveTime;
     private List<String> argNames;
+    private Map<String,Object> params;
     private String path;
 
-    public WebsocketClientImpl(String apikey, String secret, String baseUrl, Integer pingInterval, String maxAliveTime, Boolean debugMode, String logOption, WebsocketMessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
+    public WebsocketStreamClientImpl(String apikey, String secret, String baseUrl, Integer pingInterval, String maxAliveTime, Boolean debugMode, String logOption, WebSocketMessageCallback webSocketMessageCallback) {
+        this.webSocketMessageCallback = webSocketMessageCallback;
         this.apikey = apikey;
         this.secret = secret;
         this.baseUrl = baseUrl;
@@ -50,11 +56,16 @@ public class WebsocketClientImpl implements WebsocketClient {
         this.debugMode = debugMode;
         this.logOption = logOption;
         this.maxAliveTime = maxAliveTime;
-        webSocketHttpClientSingleton = WebSocketHttpClientSingleton.createInstance(this.debugMode, this.logOption);
+        webSocketHttpClientSingleton = WebSocketStreamHttpClientSingleton.createInstance(this.debugMode, this.logOption);
     }
 
-    private void setupPublicChannelStream(List<String> argNames, String path) {
+    private void setupChannelStream(List<String> argNames, String path) {
         this.argNames = new ArrayList<>(argNames);
+        this.path = path;
+    }
+
+    private void setupChannelStream(Map<String,Object> params, String path) {
+        this.params = new HashMap<>(params);
         this.path = path;
     }
 
@@ -68,39 +79,63 @@ public class WebsocketClientImpl implements WebsocketClient {
         }
     }
 
-    private void sendSubscribeMessage(WebSocket ws) {
-        Map<String, Object> subscribeMsg = createSubscribeMessage();
-        sendJsonMessage(ws, subscribeMsg, "Subscribe");
+    private void sendSubscribeMessage(WebSocket ws, String messageType) {
+        Map<String, Object> subscribeMsg = createSubscribeMessage(messageType);
+        sendJsonMessage(ws, subscribeMsg, messageType);
     }
 
     @NotNull
-    private Map<String, Object> createSubscribeMessage() {
-        Map<String, Object> subscribeMsg = new LinkedHashMap<>();
-        subscribeMsg.put("op", "subscribe");
-        subscribeMsg.put("req_id", generateTransferID());
-        subscribeMsg.put("args", argNames);
-        return subscribeMsg;
+    private Map<String, Object> createSubscribeMessage(String messageType) {
+        Map<String, Object> wsPostMsg = new LinkedHashMap<>();
+        if (messageType.equals("Trade")) {
+            wsPostMsg.put("reqId", params.getOrDefault("reqId", generateTransferID()));
+            wsPostMsg.put("headers", constructWsAPIHeaders(params));
+            wsPostMsg.put("op", "order.create");
+            wsPostMsg.put("args", constructWsAPIArgs()); // Ensure this is structured correctly
+        } else {
+            wsPostMsg.put("req_id", generateTransferID());
+            wsPostMsg.put("op", "subscribe");
+            wsPostMsg.put("args", argNames); // Ensure argNames is correctly formatted for subscription messages
+        }
+        return wsPostMsg;
+    }
+
+    private List<Map<String, Object>> constructWsAPIArgs() {
+        // Remove specified keys
+        params.remove("X-BAPI-TIMESTAMP");
+        params.remove("reqId");
+        params.remove("X-BAPI-RECV-WINDOW");
+        params.remove("Referer");
+        return Collections.singletonList(params);
+    }
+
+    private Map<String, String> constructWsAPIHeaders(Map<String,Object> params) {
+        Map<String,String> headerMap = new HashMap<>();
+        headerMap.put(BybitApiConstants.TIMESTAMP_HEADER, String.valueOf(generateTimestamp()));
+        headerMap.put(BybitApiConstants.RECV_WINDOW_HEADER, params.getOrDefault(BybitApiConstants.RECV_WINDOW_HEADER, BybitApiConstants.DEFAULT_RECEIVING_WINDOW).toString());
+        // Check broker referral code
+        if(params.containsKey("Referer"))
+            headerMap.put("Referer", params.get("Referer").toString());
+        return headerMap;
     }
 
     private boolean requiresAuthentication(String path) {
-        return BybitApiConfig.V5_PRIVATE.equals(path) ||
+        return BybitApiConfig.V5_TRADE.equals(path) ||
+                BybitApiConfig.V5_PRIVATE.equals(path) ||
                 BybitApiConfig.V3_CONTRACT_PRIVATE.equals(path) ||
                 BybitApiConfig.V3_UNIFIED_PRIVATE.equals(path) ||
                 BybitApiConfig.V3_SPOT_PRIVATE.equals(path);
     }
 
     @NotNull
-    private Thread createPingThread(WebSocket ws) {
+    private Thread createPingThread() {
         return new Thread(() -> {
             try {
-                while (true) {
-                    if (ws != null) { // check if the WebSocket is still valid
-                        ws.send(PING_DATA);
+                // check if the WebSocket is still valid
+                while (this.webSocket != null) {
+                        webSocket.send(PING_DATA);
                         LOGGER.info(PING_DATA);
                         TimeUnit.SECONDS.sleep(pingInterval); // waits for 10 seconds before the next iteration
-                    } else {
-                        break;
-                    }
                 }
             } catch (InterruptedException e) {
                 LOGGER.error("Ping thread was interrupted", e);
@@ -113,7 +148,7 @@ public class WebsocketClientImpl implements WebsocketClient {
     private Map<String, Object> createAuthMessage() {
         long expires = Instant.now().toEpochMilli() + 10000;
         String val = "GET/realtime" + expires;
-        String signature = HmacSHA256Signer.auth(val, secret);
+        String signature = HmacSHA256Signer.getSignature(val, secret);
 
         var args = List.of(apikey, expires, signature);
         return Map.of("req_id", generateTransferID(), "op", "auth", "args", args);
@@ -166,38 +201,38 @@ public class WebsocketClientImpl implements WebsocketClient {
         return new WebSocketListener() {
             @Override
             public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-                WebsocketClientImpl.this.onClose(code, reason);
+                WebsocketStreamClientImpl.this.onClose(webSocket, code, reason);
             }
 
             @Override
             public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-                WebsocketClientImpl.this.onError(t);
+                WebsocketStreamClientImpl.this.onError(t);
             }
 
             @Override
             public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
                 try {
-                    WebsocketClientImpl.this.onMessage(text);
+                    WebsocketStreamClientImpl.this.onMessage(text);
                 } catch (Exception e) {
-                    WebsocketClientImpl.this.onError(e);
+                    WebsocketStreamClientImpl.this.onError(e);
                 }
             }
 
             @Override
             public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-                WebsocketClientImpl.this.onOpen(webSocket);
+                WebsocketStreamClientImpl.this.onOpen(webSocket);
             }
         };
     }
 
-    public void setMessageHandler(WebsocketMessageHandler handler) {
-        this.messageHandler = handler;
+    public void setMessageHandler(WebSocketMessageCallback webSocketMessageCallback) {
+        this.webSocketMessageCallback = webSocketMessageCallback;
     }
 
     @Override
     public void onMessage(String msg) throws JsonProcessingException {
-        if (messageHandler != null) {
-            messageHandler.handleMessage(msg);
+        if (webSocketMessageCallback != null) {
+            webSocketMessageCallback.onMessage(msg);
         } else {
             LOGGER.info(msg);
         }
@@ -209,47 +244,61 @@ public class WebsocketClientImpl implements WebsocketClient {
     }
 
     @Override
-    public void onClose(int code, String reason) {
-        LOGGER.warn("websocket connection is about to close: " + reason);
+    public void onClose(WebSocket ws, int code, String reason) {
+        LOGGER.info("WebSocket closed. Code: {}, Reason: {}", code, reason);
+        ws.close(code, reason);
+        this.webSocket = null;
     }
 
     @Override
     public void onOpen(WebSocket ws) {
-        // Start the ping thread immediately.
-        Thread pingThread = createPingThread(ws);
-        pingThread.setName(THREAD_PUBLIC_PING); // Default to public ping name
-        pingThread.start();
-
         // If it requires authentication, authenticate first, then subscribe.
         if (requiresAuthentication(path)) {
             Thread authThread = createAuthThread(ws, () -> {
-                // After auth, send a subscribed message.
-                sendSubscribeMessage(ws);
+                // After auth, trade api
+                if(path.equals(BybitApiConfig.V5_TRADE)){
+                    sendSubscribeMessage(ws, "Trade");
+                }
+                // After auth, send a subscribed message
+                else{
+                    sendSubscribeMessage(ws, "Subscribe");
+                }
             });
             authThread.start();
-            pingThread.setName(THREAD_PRIVATE_PING);
         } else {
             // If no authentication is needed, just send the subscribed message.
-            sendSubscribeMessage(ws);
+            sendSubscribeMessage(ws, "Subscribe");
         }
     }
 
     @Override
-    public void connect() {
+    public WebSocket connect() {
         String wssUrl = getWssUrl();
         LOGGER.info(wssUrl);
-        webSocketHttpClientSingleton.createWebSocket(wssUrl, createWebSocketListener());
+        this.webSocket = webSocketHttpClientSingleton.createWebSocket(wssUrl, createWebSocketListener());
+
+        // Start the ping thread immediately.
+        Thread pingThread = createPingThread();
+        pingThread.setName(THREAD_PING); // Default to public ping name
+        pingThread.start();
+        return this.webSocket;
     }
 
     @Override
-    public void getPublicChannelStream(List<String> argNames, String path) {
-        setupPublicChannelStream(argNames, path);
-        connect();
+    public WebSocket getPublicChannelStream(List<String> argNames, String path) {
+        setupChannelStream(argNames, path);
+        return connect();
     }
 
     @Override
-    public void getPrivateChannelStream(List<String> argNames, String path) {
-        setupPublicChannelStream(argNames, path);
-        connect();
+    public WebSocket getPrivateChannelStream(List<String> argNames, String path) {
+        setupChannelStream(argNames, path);
+        return connect();
+    }
+
+    @Override
+    public WebSocket getTradeChannelStream(Map<String,Object> params, String path) {
+        setupChannelStream(params, path);
+        return connect();
     }
 }

@@ -1,6 +1,6 @@
 package com.bybit.api.examples.http.sync;
 
-import com.bybit.api.client.constant.Util;
+import com.bybit.api.client.constant.Helper;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.request.AssetDataRequest;
@@ -51,7 +51,7 @@ public class AssetExample {
 
         // Create Internal Transfer
         var assetInternalTransferRequest = AssetDataRequest.builder()
-                .transferId(Util.generateTransferID())
+                .transferId(Helper.generateTransferID())
                 .coin("USDT")
                 .amount("100")
                 .fromAccountType(AccountType.UNIFIED)
@@ -62,7 +62,7 @@ public class AssetExample {
 
         // Create Universal Transfer
         var assetUniversalTransferRequest = AssetDataRequest.builder()
-                .transferId(Util.generateTransferID())
+                .transferId(Helper.generateTransferID())
                 .coin("USDT")
                 .amount("100")
                 .fromMemberId(1553904)
@@ -137,7 +137,7 @@ public class AssetExample {
                 .chain("ETH")
                 .address("0xSampleWalletAddress")
                 .amount("100")
-                .timestamp(Util.generateTimestamp())
+                .timestamp(Helper.generateTimestamp())
                 .build();
         var assetWithdraw = client.createAssetWithdraw(assetWithdrawRequest);
         System.out.println(assetWithdraw);

@@ -1,4 +1,4 @@
-package com.bybit.api.websocket;
+package com.bybit.api.websocket.stream;
 
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.domain.websocket_message.public_channel.WebsocketOrderbookMessage;

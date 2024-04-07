@@ -6,7 +6,7 @@
 
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.4</version>
     <name>bybit-java-api</name>
     <url>https://github.com/wuhewuhe/bybit-java-api</url>
 
@@ -144,6 +144,11 @@
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20230227</version>
         </dependency>
     </dependencies>
 

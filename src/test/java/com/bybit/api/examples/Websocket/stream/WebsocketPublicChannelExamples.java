@@ -1,4 +1,4 @@
-package com.bybit.api.examples.Websocket;
+package com.bybit.api.examples.Websocket.stream;
 
 import java.util.List;
 
@@ -6,12 +6,14 @@ import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.service.BybitApiClientFactory;
 public class WebsocketPublicChannelExamples {
     public static void main(String[] args) {
-        var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_MAINNET_DOMAIN, true).newWebsocketClient();
+        var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_MAINNET_DOMAIN, false).newWebsocketClient();
+        // Ticker
+        client.getPublicChannelStream(List.of("tickers.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 
-        client.setMessageHandler(message -> {
+/*        client.setMessageHandler(message -> {
             // Process message data here
             System.out.println("Websocket Message Data: " + message);
-        });
+        });*/
 
         // Subscribe Orderbook more than one args
         //client.getPublicChannelStream(List.of("orderbook.25.BTC-23FEB24-51000-P"), BybitApiConfig.V5_PUBLIC_OPTION);
@@ -21,8 +23,6 @@ public class WebsocketPublicChannelExamples {
         // Trade
         // client.getPublicChannelStream(List.of("publicTrade.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 
-        // Ticker
-        client.getPublicChannelStream(List.of("tickers.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 
         // Kline
         // client.getPublicChannelStream(List.of("kline.D.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);

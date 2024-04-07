@@ -39,8 +39,8 @@ public class PositionDataAsyncExample {
         client.confirmPositionRiskLimit(confirmNewRiskRequest, System.out::println);
 
         // Set Risk Limit
-        var setRiskLimitRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").riskId(4).build();
-        client.setRiskLimit(setRiskLimitRequest, System.out::println);
+/*        var setRiskLimitRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").riskId(4).build();
+        client.setRiskLimit(setRiskLimitRequest, System.out::println);*/
 
         // Set Trading Stop
         var setTradingStopRequest = PositionDataRequest.builder().category(CategoryType.LINEAR).symbol("XRPUSDT").takeProfit("0.6").stopLoss("0.2").tpTriggerBy(TriggerBy.MARK_PRICE).slTriggerBy(TriggerBy.LAST_PRICE)

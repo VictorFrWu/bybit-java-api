@@ -42,8 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.bybit.api.client.constant.Util.generateTransferID;
-import static com.bybit.api.client.constant.Util.listToString;
+import static com.bybit.api.client.constant.Helper.generateTransferID;
+import static com.bybit.api.client.constant.Helper.listToString;
 
 public class BybitJsonConverter {
     private final ObjectMapper mapper = new ObjectMapper();

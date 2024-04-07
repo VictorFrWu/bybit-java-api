@@ -40,25 +40,29 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5-SNAPSHOT</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.4'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.5'
 ```
 Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
 ## Release-Notes
 ### Websockets
-- Add WebSocketMessage handler class to all public and private channels
+- Add Websocket Trade API Place Order
+- Websocket Stream close
 
-### Improvements
-- public and private websocket channel set message handler
+### Rest API
+- Fix signature error with cursor parameters
+- Add Broker Referer code to Http Request header
+- Add Connection Keep-live to request header
+- Add User Agent Name to Request Header
 
 ### Change Log
-- Spot Margin Trade endpoints are decrypted for classical users 
-- 
+- Websocket API & Stream refactor not finished 
+
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
 ### HttP Client Factory & Websocket Client
@@ -70,6 +74,7 @@ private final String baseUrl;
 private final Boolean debugMode;
 private final String logOption;
 private final Long recvWindow;
+private final String referer;
 ```
 
 ### Http Async Examples
@@ -233,7 +238,11 @@ client.setMessageHandler(message -> {
 // Ticker
 client.getPublicChannelStream(List.of("tickers.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
-
+- Websocket Trade API
+```java
+var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.STREAM_TESTNET_DOMAIN, true).newWebsocketClient(20);
+client.getTradeChannelStream(Map.of("category", "spot","symbol", "XRPUSDT", "side", "Buy", "orderType", "Market", "qty", "10"), V5_TRADE);
+```
 ### Websocket private channel
 - Position Subscribe
 ```java

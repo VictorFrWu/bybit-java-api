@@ -1,17 +1,26 @@
 package com.bybit.api.client.security;
 
-import com.bybit.api.client.exception.BybitApiException;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import com.bybit.api.client.util.ParameterChecker;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Utility class to sign messages using HMAC-SHA256.
  */
-public class HmacSHA256Signer {
+public class HmacSHA256Signer implements SignatureGenerator {
+
+    private final String apiSecret;
+
+    public HmacSHA256Signer(String apiSecret) {
+        ParameterChecker.checkParameterType(apiSecret, String.class, "apiSecret");
+        this.apiSecret = apiSecret;
+    }
 
     /**
      * Sign the given message using the given secret.
@@ -23,24 +32,26 @@ public class HmacSHA256Signer {
      * @param recvWindow server receives window
      * @return a signed message
      */
-    public static String sign(String apiKey, String apiSecret, String payload, long timestamp, long recvWindow) {
-        if (apiKey == null || apiSecret == null) {
-            throw new BybitApiException("Authenticated endpoints require keys.");
-        }
-
-        String message = timestamp + apiKey + recvWindow + payload;
-        Mac sha256_HMAC;
+    public static String sign(String apiKey, String apiSecret, String payload, String timestamp, String recvWindow) {
         try {
-            sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKeySpec = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
+            String message = timestamp + apiKey + recvWindow + payload;
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256_HMAC.init(secretKeySpec);
-            return new String(Hex.encodeHex(sha256_HMAC.doFinal(message.getBytes())));
+            byte[] hash = sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8));
+            return Hex.encodeHexString(hash);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String auth(String data, String apiSecret) {
+
+    public String auth(String data) {
+        return getSignatureString(data, apiSecret);
+    }
+
+    @NotNull
+    private static String getSignatureString(String data, String apiSecret) {
         byte[] hmacSha256;
         try {
             SecretKeySpec secretKeySpec = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
@@ -51,5 +62,9 @@ public class HmacSHA256Signer {
             throw new RuntimeException("Failed to calculate hmac-sha256", e);
         }
         return Hex.encodeHexString(hmacSha256);
+    }
+
+    public static String getSignature(String data, String secret) {
+        return getSignatureString(data, secret);
     }
 }
