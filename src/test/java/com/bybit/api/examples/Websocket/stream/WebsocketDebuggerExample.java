@@ -1,4 +1,4 @@
-package com.bybit.api.examples.Websocket;
+package com.bybit.api.examples.Websocket.stream;
 
 import com.bybit.api.client.config.BybitApiConfig;
 import com.bybit.api.client.service.BybitApiClientFactory;

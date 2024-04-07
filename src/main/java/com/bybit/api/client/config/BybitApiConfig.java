@@ -37,6 +37,7 @@ public class BybitApiConfig {
     public static final String V5_PUBLIC_OPTION = "/v5/public/option";
     public static final String V3_PUBLIC_OPTION = "/option/usdc/public/v3";
     public static final String V5_PRIVATE = "/v5/private";
+    public static final String V5_TRADE = "/v5/trade";
 
     // V3
     public static final String V3_CONTRACT_PRIVATE = "/contract/private/v3";

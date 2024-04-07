@@ -1,24 +1,25 @@
-package com.bybit.api.client.websocket;
+package com.bybit.api.client.websocket.httpclient;
 
 import lombok.Getter;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 import static com.bybit.api.client.log.Slf4jLoggingInterceptor.HandleLoggingInterceptor;
 
 @Getter
-public final class WebSocketHttpClientSingleton {
+public final class WebSocketStreamHttpClientSingleton {
     private final boolean debugMode;
     private final String logOption;
 
-    private WebSocketHttpClientSingleton(boolean debugMode, String logOption) {
+    private WebSocketStreamHttpClientSingleton(boolean debugMode, String logOption) {
         this.debugMode = debugMode;
         this.logOption = logOption;
     }
 
-    public static WebSocketHttpClientSingleton createInstance(boolean debugMode, String logOption) {
-        return new WebSocketHttpClientSingleton(debugMode, logOption);
+    public static WebSocketStreamHttpClientSingleton createInstance(boolean debugMode, String logOption) {
+        return new WebSocketStreamHttpClientSingleton(debugMode, logOption);
     }
 
     public OkHttpClient createOkHttpClient(boolean debugMode, String logOption) {
@@ -29,9 +30,9 @@ public final class WebSocketHttpClientSingleton {
         return clientBuilder.build();
     }
 
-    public void createWebSocket(String url, WebSocketListener listener) {
+    public WebSocket createWebSocket(String url, WebSocketListener listener) {
         Request request = new Request.Builder().url(url).build();
         OkHttpClient okHttpClient = createOkHttpClient(debugMode, logOption);
-        okHttpClient.newWebSocket(request, listener);
+        return okHttpClient.newWebSocket(request, listener);
     }
 }

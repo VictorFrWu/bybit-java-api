@@ -10,7 +10,7 @@ import static com.bybit.api.client.service.BybitApiServiceGenerator.createServic
 public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRestClient {
     private final BybitApiService bybitApiService;
     public BybitApiAsyncBrokerRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
-        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "");
     }
 
     @Override

@@ -4,9 +4,9 @@ package com.bybit.api.client.service;
 import com.bybit.api.client.impl.*;
 import com.bybit.api.client.log.LogOption;
 import com.bybit.api.client.restApi.*;
-import com.bybit.api.client.websocket.WebsocketClient;
-import com.bybit.api.client.websocket.WebsocketClientImpl;
-import com.bybit.api.client.websocket.WebsocketMessageHandler;
+import com.bybit.api.client.websocket.httpclient.WebsocketStreamClient;
+import com.bybit.api.client.websocket.impl.WebsocketStreamClientImpl;
+import com.bybit.api.client.websocket.callback.WebSocketMessageCallback;
 
 import static com.bybit.api.client.config.BybitApiConfig.MAINNET_DOMAIN;
 import static com.bybit.api.client.constant.BybitApiConstants.*;
@@ -47,6 +47,11 @@ public class BybitApiClientFactory {
     private final Long recvWindow;
 
     /**
+     * broker referer code
+     */
+    private final String referer;
+
+    /**
      * Instantiates a new Bybit api client factory.
      *
      * @param apiKey    api key
@@ -54,13 +59,14 @@ public class BybitApiClientFactory {
      * @param baseUrl   base url
      * @param debugMode debugMode
      */
-    private BybitApiClientFactory(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
+    private BybitApiClientFactory(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption, String referer) {
         this.apiKey = apiKey;
         this.secret = secret;
         this.baseUrl = baseUrl;
         this.debugMode = debugMode;
         this.recvWindow = recvWindow;
         this.logOption = logOption;
+        this.referer = referer;
     }
 
     /**
@@ -71,7 +77,7 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory
      */
     public static BybitApiClientFactory newInstance(String apiKey, String secret) {
-        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
     }
 
 
@@ -84,11 +90,20 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl) {
-        return new BybitApiClientFactory(apiKey, secret, baseUrl, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
     }
 
+    /**
+     *
+     * New instance of Api Mainnet Client with receive windows
+     *
+     * @param apiKey
+     * @param secret
+     * @param recvWindow
+     * @return
+     */
     public static BybitApiClientFactory newInstance(String apiKey, String secret, long recvWindow) {
-        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, false, recvWindow, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, false, recvWindow, LogOption.SLF4J.getLogOptionType(), "");
     }
 
     /**
@@ -100,35 +115,68 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode) {
-        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
-    }
-
-    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, String logOption) {
-        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, logOption);
-    }
-
-    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, long recvWindow) {
-        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, recvWindow, LogOption.SLF4J.getLogOptionType());
-    }
-
-    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, long recvWindow, String logOption) {
-        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, recvWindow, logOption);
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
     }
 
     /**
-     * New instance of Api Client without debug mode and set URL
+     * New instance of Api Mainnet Client with broker referer code
      *
-     * @param apiKey  the API key
-     * @param secret  the Secret
-     * @param baseUrl base url
-     * @return the Bybit api client factory
+     * @param apiKey    the API key
+     * @param secret    the Secret
+     * @param referer Broker referer code
+     * @return the Bybit api client factory.
      */
-    public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl, boolean debugMode) {
-        return new BybitApiClientFactory(apiKey, secret, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl, String referer) {
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), referer);
     }
 
+    /**
+     * New instance of Api Mainnet Client with debug mode and log option
+     *
+     * @param apiKey
+     * @param secret
+     * @param debugMode
+     * @param logOption
+     * @return
+     */
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, String logOption) {
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, logOption, "");
+    }
+
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, long recvWindow) {
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, recvWindow, LogOption.SLF4J.getLogOptionType(), "");
+    }
+
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, boolean debugMode, long recvWindow, String logOption) {
+        return new BybitApiClientFactory(apiKey, secret, MAINNET_DOMAIN, debugMode, recvWindow, logOption,  "");
+    }
+
+    /**
+     *
+     * new instance set url with debug mode
+     *
+     * @param apiKey
+     * @param secret
+     * @param baseUrl
+     * @param debugMode
+     * @return
+     */
+    public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl, boolean debugMode) {
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
+    }
+
+    /**
+     *
+     * new instance with base url and receive windows
+     *
+     * @param apiKey
+     * @param secret
+     * @param baseUrl
+     * @param recvWindow
+     * @return
+     */
     public static BybitApiClientFactory newInstance(String apiKey, String secret, String baseUrl, long recvWindow) {
-        return new BybitApiClientFactory(apiKey, secret, baseUrl, false, recvWindow, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(apiKey, secret, baseUrl, false, recvWindow, LogOption.SLF4J.getLogOptionType(), "");
     }
 
 
@@ -138,11 +186,11 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory
      */
     public static BybitApiClientFactory newInstance() {
-        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
     }
 
     public static BybitApiClientFactory newInstance(long recvWindow) {
-        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, false, recvWindow, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, false, recvWindow, LogOption.SLF4J.getLogOptionType(), "");
     }
 
     /**
@@ -152,7 +200,7 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(String baseUrl) {
-        return new BybitApiClientFactory(null, null, baseUrl, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(null, null, baseUrl, false, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
     }
 
     /**
@@ -162,11 +210,11 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(boolean debugMode) {
-        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
     }
 
     public static BybitApiClientFactory newInstance(boolean debugMode, String logOption) {
-        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, logOption);
+        return new BybitApiClientFactory(null, null, MAINNET_DOMAIN, debugMode, DEFAULT_RECEIVING_WINDOW, logOption, "");
     }
 
     /**
@@ -177,11 +225,11 @@ public class BybitApiClientFactory {
      * @return the Bybit api client factory.
      */
     public static BybitApiClientFactory newInstance(String baseUrl, boolean debugMode, String logOption) {
-        return new BybitApiClientFactory(null, null, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, logOption);
+        return new BybitApiClientFactory(null, null, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, logOption, "");
     }
 
     public static BybitApiClientFactory newInstance(String baseUrl, boolean debugMode) {
-        return new BybitApiClientFactory(null, null, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType());
+        return new BybitApiClientFactory(null, null, baseUrl, debugMode, DEFAULT_RECEIVING_WINDOW, LogOption.SLF4J.getLogOptionType(), "");
     }
 
     /**
@@ -242,14 +290,14 @@ public class BybitApiClientFactory {
      * Creates a new synchronous/blocking REST client to trading
      */
     public BybitApiTradeRestClient newTradeRestClient() {
-        return new BybitApiTradeRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiTradeRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer);
     }
 
     /**
      * Creates a new asynchronous/non-blocking REST client to trading
      */
     public BybitApiAsyncTradeRestClient newAsyncTradeRestClient() {
-        return new BybitApiTradeAsyncRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+        return new BybitApiTradeAsyncRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption, referer);
     }
 
     /**
@@ -311,34 +359,34 @@ public class BybitApiClientFactory {
     /**
      * Access to public websocket
      */
-    public WebsocketClient newWebsocketClient() {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, null);
+    public WebsocketStreamClient newWebsocketClient() {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, System.out::println);
     }
 
-    public WebsocketClient newWebsocketClient(int pingInterval) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, null);
+    public WebsocketStreamClient newWebsocketClient(int pingInterval) {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, pingInterval, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, System.out::println);
     }
 
-    public WebsocketClient newWebsocketClient(String maxAliveTime) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, maxAliveTime, debugMode, logOption, null);
+    public WebsocketStreamClient newWebsocketClient(String maxAliveTime) {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, maxAliveTime, debugMode, logOption, System.out::println);
     }
 
-    public WebsocketClient newWebsocketClient(WebsocketMessageHandler messageHandler) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, messageHandler);
+    public WebsocketStreamClient newWebsocketClient(WebSocketMessageCallback messageHandler) {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, messageHandler);
     }
 
-    public WebsocketClient newWebsocketClient(int pingInterval, WebsocketMessageHandler messageHandler) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, messageHandler);
+    public WebsocketStreamClient newWebsocketClient(int pingInterval, WebSocketMessageCallback messageHandler) {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, pingInterval, DEFAULT_MAX_ALIVE_TIME, debugMode, logOption, messageHandler);
     }
-    public WebsocketClient newWebsocketClient(int pingInterval, String maxAliveTime) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, maxAliveTime, debugMode, logOption, null);
-    }
-
-    public WebsocketClient newWebsocketClient(String maxAliveTime, WebsocketMessageHandler messageHandler) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, maxAliveTime, debugMode, logOption, null);
+    public WebsocketStreamClient newWebsocketClient(int pingInterval, String maxAliveTime) {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, pingInterval, maxAliveTime, debugMode, logOption, System.out::println);
     }
 
-    public WebsocketClient newWebsocketClient(int pingInterval, String maxAliveTime, WebsocketMessageHandler messageHandler) {
-        return new WebsocketClientImpl(apiKey, secret, baseUrl, pingInterval, maxAliveTime, debugMode, logOption, messageHandler);
+    public WebsocketStreamClient newWebsocketClient(String maxAliveTime, WebSocketMessageCallback messageHandler) {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, DEFAULT_PING_INTERVAL, maxAliveTime, debugMode, logOption, System.out::println);
+    }
+
+    public WebsocketStreamClient newWebsocketClient(int pingInterval, String maxAliveTime, WebSocketMessageCallback messageHandler) {
+        return new WebsocketStreamClientImpl(apiKey, secret, baseUrl, pingInterval, maxAliveTime, debugMode, logOption, messageHandler);
     }
 }

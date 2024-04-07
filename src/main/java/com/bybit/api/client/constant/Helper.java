@@ -5,17 +5,17 @@ import java.util.List;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Utility class
  */
-public final class Util {
+public final class Helper {
 
     public static long generateTimestamp() {
         return Instant.now().toEpochMilli();
     }
 
-    private Util() {
+    private Helper() {
 
     }
 

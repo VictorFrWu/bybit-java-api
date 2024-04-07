@@ -33,6 +33,22 @@ public class BybitApiConstants {
      * HTTP Header to be used for receiving window.
      */
     public static final String RECV_WINDOW_HEADER = "X-BAPI-RECV-WINDOW";
+
+    /**
+     * HTTP Header to be used for User Agent.
+     */
+    public static final String USER_AGENT_HEADER = "User-Agent";
+
+    /**
+     * HTTP Header to be used for Connection.
+     */
+    public static final String CONNECTION_HEADER = "User-Agent";
+
+    /**
+     * HTTP Header to be used for Broker Referral Code.
+     */
+    public static final String BROKER_HEADER = "Referer";
+
     /**
      * Default receiving window.
      */
@@ -60,4 +76,19 @@ public class BybitApiConstants {
      *  - Example ToStringStyle.JSON_STYLE
      */
     public static ToStringStyle TO_STRING_BUILDER_STYLE = ToStringStyle.SHORT_PREFIX_STYLE;
+
+    /**
+     * Agent Name
+     */
+    public static String AGENT_NAME = "bybit.java.api";
+
+    /**
+     * Current version 1.2.5
+     */
+    public static String VERSION = "1.2.5";
+
+    /**
+     * Keep live connection http 1.1
+     */
+    public static String KEEP_ALIVE = "keep-alive";
 }

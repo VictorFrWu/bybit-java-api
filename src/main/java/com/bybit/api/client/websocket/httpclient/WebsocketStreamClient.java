@@ -1,16 +1,18 @@
-package com.bybit.api.client.websocket;
+package com.bybit.api.client.websocket.httpclient;
 
+import com.bybit.api.client.websocket.callback.WebSocketMessageCallback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import okhttp3.WebSocket;
 
 import java.util.List;
+import java.util.Map;
 
-public interface WebsocketClient {
+public interface WebsocketStreamClient {
     void onMessage(String msg) throws JsonProcessingException;
     void onError(Throwable t);
-    void onClose(int code, String reason);
+    void onClose(WebSocket ws, int code, String reason);
     void onOpen(WebSocket ws);
-    void connect();
+    WebSocket connect();
 
     /**
      * Orderbook
@@ -43,10 +45,13 @@ public interface WebsocketClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/orderbook
 
      */
-    void getPublicChannelStream(List<String> argNames, String path);
-    void getPrivateChannelStream(List<String> argNames, String path);
+    WebSocket getPublicChannelStream(List<String> argNames, String path);
+    WebSocket getPrivateChannelStream(List<String> argNames, String path);
 
-    void setMessageHandler(WebsocketMessageHandler websocketMessageHandler);
+    WebSocket getTradeChannelStream(Map<String,Object> params, String path);
+
+    void setMessageHandler(WebSocketMessageCallback webSocketMessageCallback);
+
     /**
      * Trade
      * Subscribe to the recent trades stream.
