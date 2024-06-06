@@ -6,7 +6,6 @@ import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.broker.BrokerDataRequest;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
-import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
 public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRestClient {
     private final BybitApiService bybitApiService;

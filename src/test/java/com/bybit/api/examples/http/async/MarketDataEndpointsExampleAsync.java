@@ -19,7 +19,7 @@ public class MarketDataEndpointsExampleAsync {
                 .symbol("BTCUSDT")
                 .build();
         client.getRecentTradeData(request, System.out::println);
-        /*
+
         var marketKLineRequest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
         // Weekly Marketklin for a symbol
         client.getMarketLinesData(marketKLineRequest, System.out::println);
@@ -90,6 +90,6 @@ public class MarketDataEndpointsExampleAsync {
                 .limit(10)
                 .build();
         client.getMarketAccountRatio(marketAccountRatioRequest, System.out::println);
-        */
+
     }
 }

@@ -25,7 +25,6 @@ public class MarketDataEndpointsExample {
         System.out.println(recentTradeResponse);
         System.out.println(recentTradeResponse2);
 
-/*
         var marketKLineRequest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
         // Weekly market Kline
         var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
@@ -113,6 +112,5 @@ public class MarketDataEndpointsExample {
                 .build();
         var accountRatio = client.getMarketAccountRatio(marketAccountRatioRequest);
         System.out.println(accountRatio);
-        */
     }
 }

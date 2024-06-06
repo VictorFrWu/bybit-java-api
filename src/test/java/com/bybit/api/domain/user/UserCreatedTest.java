@@ -13,11 +13,11 @@ public class UserCreatedTest {
     BybitApiUserRestClient client = BybitApiClientFactory.newInstance("xxxxx", "xxxxx", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
 
     @Test
-    public void Test_GetUserInfo() throws InterruptedException {
+    public void Test_GetUserInfo(){
         System.out.println(client.getCurrentAPIKeyInfo());
     }
     @Test
-    public void Test_CreateMember() throws InterruptedException {
+    public void Test_CreateMember() {
         var subUserRequest = UserDataRequest.builder().username("Test0606202423")
                 .password("Password123")
                 .memberType(MemberType.NORMAL_SUB_ACCOUNT)
@@ -30,7 +30,7 @@ public class UserCreatedTest {
     }
 
     @Test
-    public void Test_CreateSubApiKey() throws InterruptedException {
+    public void Test_CreateSubApiKey() {
         Map<String, List<String>> permissionMap = Map.of(
                 "ContractTrade", List.of("Order", "Position"),
                 "Spot", List.of("SpotTrade"),
