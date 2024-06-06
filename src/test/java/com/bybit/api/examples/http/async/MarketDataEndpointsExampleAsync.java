@@ -11,6 +11,15 @@ public class MarketDataEndpointsExampleAsync {
     public static void main(String[] args) {
         var client = BybitApiClientFactory.newInstance().newAsyncMarketDataRestClient();
 
+        // Get Recent Trade Data
+        var recentTrade = MarketDataRequest.builder().category(CategoryType.OPTION).symbol("ETH-30JUN23-2050-C").build();
+        var request = MarketDataRequest.builder()
+                .category(CategoryType.LINEAR)
+                .limit(1)
+                .symbol("BTCUSDT")
+                .build();
+        client.getRecentTradeData(request, System.out::println);
+
         var marketKLineRequest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
         // Weekly Marketklin for a symbol
         client.getMarketLinesData(marketKLineRequest, System.out::println);
@@ -55,10 +64,6 @@ public class MarketDataEndpointsExampleAsync {
         var openInterest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.FIVE_MINUTES).build();
         client.getOpenInterest(openInterest, System.out::println);
 
-        // Get Recent Trade Data
-        var recentTrade = MarketDataRequest.builder().category(CategoryType.OPTION).symbol("ETH-30JUN23-2050-C").build();
-        client.getRecentTradeData(recentTrade, System.out::println);
-
         // Get Historical Volatility
         var historicalVolatilityRequest = MarketDataRequest.builder().category(CategoryType.OPTION).optionPeriod(7).build();
         client.getHistoricalVolatility(historicalVolatilityRequest, System.out::println);
@@ -85,5 +90,6 @@ public class MarketDataEndpointsExampleAsync {
                 .limit(10)
                 .build();
         client.getMarketAccountRatio(marketAccountRatioRequest, System.out::println);
+
     }
 }

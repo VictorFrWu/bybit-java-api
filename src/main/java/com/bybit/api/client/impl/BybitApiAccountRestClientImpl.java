@@ -81,7 +81,9 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
 
     @Override
     public Object getTransactionLog(AccountDataRequest getTransactionLogRequest) {
-        return executeSync(bybitApiService.getTransactionLog(
+        boolean isUta = getTransactionLogRequest.getIsUta() == null || getTransactionLogRequest.getIsUta().isUta();
+        if(isUta)
+            return executeSync(bybitApiService.getUtaTransactionLog(
                 getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
                 getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getCategoryTypeId(),
                 getTransactionLogRequest.getCurrency(),
@@ -92,6 +94,18 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
                 getTransactionLogRequest.getLimit(),
                 getTransactionLogRequest.getCursor()
         ));
+        else
+            return executeSync(bybitApiService.getClassicalTransactionLog(
+                    getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
+                    getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getCategoryTypeId(),
+                    getTransactionLogRequest.getCurrency(),
+                    getTransactionLogRequest.getBaseCoin(),
+                    getTransactionLogRequest.getTransactionType() == null ? null : getTransactionLogRequest.getTransactionType().getTransactionTypeId(),
+                    getTransactionLogRequest.getStartTime(),
+                    getTransactionLogRequest.getEndTime(),
+                    getTransactionLogRequest.getLimit(),
+                    getTransactionLogRequest.getCursor()
+            ));
     }
 
 
@@ -122,5 +136,10 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
     @Override
     public Object getAccountMMPState(AccountDataRequest request) {
         return executeSync(bybitApiService.getAccountMMPState(request.getBaseCoin()));
+    }
+
+    @Override
+    public Object getAccountSMPGroup() {
+        return executeSync(bybitApiService.getAccountSMPGroupId());
     }
 }

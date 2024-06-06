@@ -40,28 +40,34 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.5'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.6'
 ```
 Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
 ## Release-Notes
 ### Websockets
-- Add Websocket Trade API Place Order
-- Websocket Stream close
+- Websocket Trade API headers change to header
 
 ### Rest API
-- Fix signature error with cursor parameters
-- Add Broker Referer code to Http Request header
-- Add Connection Keep-live to request header
-- Add User Agent Name to Request Header
+- Fix create user uta and switch
+- Fix get recent trade
+- Add Broker get all sub uids deposits records
+- Add get smp group id
+- Add transaction log to classical user
 
 ### Change Log
-- Websocket API & Stream refactor not finished 
+- decrypted functions:
+getC2CLendingCoinInfo
+getC2cLendingDepositFunds
+getC2cLendingRedeemFunds
+getC2cLendingRedeemCancel
+getC2cOrdersRecords
+getC2CLendingAccountInfo
 
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
@@ -217,25 +223,17 @@ private final String maxAliveTime; // Only valid for private channel, timeunit i
 - Order book Subscribe
 ```java
 var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_TESTNET_DOMAIN, true, "okhttp3").newWebsocketClient(20);
-
-// Orderbook
 client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
-
-// Subscribe Orderbook more than one args
 client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 
 - Ticker Subscribe
 ```java
 var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_MAINNET_DOMAIN, true).newWebsocketClient();
-
 client.setMessageHandler(message -> {
     var tickerData = (new ObjectMapper()).readValue(message, WebSocketTickerMessage.class);
-    // Process message data here
     System.out.println("Websocket Message Data: " + tickerData.getData().toString());
 });
-
-// Ticker
 client.getPublicChannelStream(List.of("tickers.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 - Websocket Trade API
@@ -247,8 +245,6 @@ client.getTradeChannelStream(Map.of("category", "spot","symbol", "XRPUSDT", "sid
 - Position Subscribe
 ```java
 var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.STREAM_TESTNET_DOMAIN).newWebsocketClient();
-
-// Position
 client.getPrivateChannelStream(List.of("position"), BybitApiConfig.V5_PRIVATE);
 ```
 

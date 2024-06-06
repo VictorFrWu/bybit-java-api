@@ -29,4 +29,16 @@ public class BybitApBrokerRestClientImpl implements BybitApiBrokerRestClient {
     public Object getBrokerAccountInfo() {
         return executeSync(bybitApiService.getBrokerAccountInfo());
     }
+
+    @Override
+    public Object getSubAccountsDeposits(BrokerDataRequest brokerDataRequest) {
+        return executeSync(bybitApiService.getBrokerSubDeposits(
+                brokerDataRequest.getSubMemberId(),
+                brokerDataRequest.getCoin(),
+                brokerDataRequest.getStartTime(),
+                brokerDataRequest.getEndTime(),
+                brokerDataRequest.getLimit(),
+                brokerDataRequest.getCursor()
+        ));
+    }
 }

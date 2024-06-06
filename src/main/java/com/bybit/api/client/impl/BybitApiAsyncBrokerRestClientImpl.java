@@ -28,4 +28,16 @@ public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRes
     public void getBrokerAccountInfo(BybitApiCallback<Object> callback) {
         bybitApiService.getBrokerAccountInfo().enqueue(new BybitApiCallbackAdapter<>(callback));
     }
+
+    @Override
+    public void getSubAccountsDeposits(BrokerDataRequest brokerDataRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getBrokerSubDeposits(
+                brokerDataRequest.getSubMemberId(),
+                brokerDataRequest.getCoin(),
+                brokerDataRequest.getStartTime(),
+                brokerDataRequest.getEndTime(),
+                brokerDataRequest.getLimit(),
+                brokerDataRequest.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
 }

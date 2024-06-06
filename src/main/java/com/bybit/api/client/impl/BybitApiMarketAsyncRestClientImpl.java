@@ -3,7 +3,6 @@ package com.bybit.api.client.impl;
 import com.bybit.api.client.restApi.BybitApiAsyncMarketDataRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.announcement.request.AnnouncementInfoRequest;
 import com.bybit.api.client.domain.market.request.MarketDataRequest;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -110,9 +109,9 @@ public class BybitApiMarketAsyncRestClientImpl implements BybitApiAsyncMarketDat
     public void getRecentTradeData(MarketDataRequest recentTradeRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getRecentTradeData(
                 recentTradeRequest.getCategory().getCategoryTypeId(),
+                recentTradeRequest.getSymbol(),
                 recentTradeRequest.getBaseCoin(),
                 recentTradeRequest.getOptionType() == null ? null : recentTradeRequest.getOptionType().getOpType(),
-                recentTradeRequest.getSymbol(),
                 recentTradeRequest.getLimit()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }

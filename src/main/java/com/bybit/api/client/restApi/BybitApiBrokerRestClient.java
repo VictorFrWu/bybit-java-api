@@ -6,4 +6,5 @@ public interface BybitApiBrokerRestClient {
     // Broker endpoints
     Object getBrokerEarningData(BrokerDataRequest brokerDataRequest);
     Object getBrokerAccountInfo();
+    Object getSubAccountsDeposits(BrokerDataRequest brokerDataRequest);
 }

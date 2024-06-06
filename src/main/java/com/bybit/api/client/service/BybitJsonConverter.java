@@ -505,7 +505,7 @@ public class BybitJsonConverter {
                 .password(subUserRequest.getPassword())
                 .memberType(subUserRequest.getMemberType() == null ? MemberType.NORMAL_SUB_ACCOUNT.getValue() : subUserRequest.getMemberType().getValue())
                 .switchOption(subUserRequest.getSwitchOption() == null ? SwitchOption.TURN_OFF.getValue() : subUserRequest.getSwitchOption().getValue())
-                .isUta(subUserRequest.getIsUta() == null ? IsUta.CLASSIC_ACCOUNT.isValue() : subUserRequest.getIsUta().isValue())
+                .isUta(subUserRequest.getIsUta() == null ? IsUta.UTA_ACCOUNT.isUta() : subUserRequest.getIsUta().isUta())
                 .note(subUserRequest.getNote())
                 .build();
     }

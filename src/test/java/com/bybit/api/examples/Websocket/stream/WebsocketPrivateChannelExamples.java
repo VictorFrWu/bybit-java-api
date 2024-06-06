@@ -12,6 +12,9 @@ public class WebsocketPrivateChannelExamples {
         // client.getPrivateChannelStream(List.of("position"), BybitApiConfig.V5_PRIVATE);
 
         // Order
-        client.getPrivateChannelStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
+        var webSocket = client.getPrivateChannelStream(List.of("order"), BybitApiConfig.V5_PRIVATE);
+
+        // Close websocket
+        client.onClose(webSocket, 1000, "close normal");
     }
 }

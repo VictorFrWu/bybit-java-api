@@ -3028,7 +3028,65 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/transaction-log")
-    Call<Object> getTransactionLog(@Query("accountType") String accountType,
+    Call<Object> getUtaTransactionLog(@Query("accountType") String accountType,
+                                   @Query("category") String category,
+                                   @Query("currency") String currency,
+                                   @Query("baseCoin") String baseCoin,
+                                   @Query("type") String type,
+                                   @Query("startTime") Long startTime,
+                                   @Query("endTime") Long endTime,
+                                   @Query("limit") Integer limit,
+                                   @Query("cursor") String cursor);
+
+    /**
+     * Get Transaction Log
+     * Query transaction logs in Unified account.
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/account/transaction-log
+     *
+     * @param accountType false	string	Account Type. UNIFIED
+     * @param category    false	string	Product type. spot,linear,option
+     * @param currency    false	string	Currency
+     * @param baseCoin    false	string	BaseCoin. e.g., BTC of BTCPERP
+     * @param type        false	string	Types of transaction logs
+     * @param startTime   false	integer	The start timestamp (ms)
+     * @param endTime     false	integer	The end timestamp (ms)
+     * @param limit       false	integer	Limit for data size per page. [1, 50]. Default: 20
+     * @param cursor      false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array	Object
+     * &gt; id	string	Unique id
+     * &gt; symbol	string	Symbol name
+     * &gt; category	string	Product type
+     * &gt; side	string	Side. Buy,Sell,None
+     * &gt; transactionTime	string	Transaction timestamp (ms)
+     * &gt; type	string	Type
+     * &gt; qty	string	Quantity. It is the quantity for each trade entry and it does not have direction
+     * &gt; size	string	Size. The rest position size after the trade is executed, and it has direction, i.e., short with "-"
+     * &gt; currency	string	USDC USDT BTC ETH
+     * &gt; tradePrice	string	Trade price
+     * &gt; funding	string	Funding fee
+     * Positive value means receiving funding fee
+     * Negative value means deducting funding fee
+     * &gt; fee	string	Trading fee
+     * Positive fee value means expense
+     * Negative fee value means rebates
+     * &gt; cashFlow	string	Cash flow, e.g., (1) close the position, and unRPL converts to RPL, (2) 8-hour session settlement for USDC Perp and Futures, (3) transfer in or transfer out. This does not include trading fee, funding fee
+     * &gt; change	string	Change = cashFlow + funding - fee
+     * &gt; cashBalance	string	Cash balance. This is the wallet balance after a cash change
+     * &gt; feeRate	string
+     * When type=TRADE, then it is trading fee rate
+     * When type=SETTLEMENT, it means funding fee rate. For side=Buy, feeRate=market fee rate; For side=Sell, feeRate= - market fee rate
+     * &gt; bonusChange	string	The change of bonus
+     * &gt; tradeId	string	Trade ID
+     * &gt; orderId	string	Order ID
+     * &gt; orderLinkId	string	User customised order ID
+     * nextPageCursor	string	Refer to the cursor request parameter
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/account/contract-transaction-log")
+    Call<Object> getClassicalTransactionLog(@Query("accountType") String accountType,
                                    @Query("category") String category,
                                    @Query("currency") String currency,
                                    @Query("baseCoin") String baseCoin,
@@ -3130,6 +3188,22 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/account/mmp-state")
     Call<Object> getAccountMMPState(@Query("baseCoin") String baseCoin);
+
+    /**
+     * Get SMP Group ID
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/account/smp-group
+     * Get SMP Group ID
+     * Query the SMP group ID of self match prevention
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * result	array	Object
+     * &gt; smpGroup	integer	Smp group ID. If the UID has no group, it is 0 by default
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/account/smp-group")
+    Call<Object> getAccountSMPGroupId();
 
     // Asset Endpoints
 
@@ -4674,6 +4748,50 @@ public interface BybitApiService {
                                       @Query("cursor") String cursor);
 
     /**
+     * Get Sub Account Deposit Records
+     * Exchange broker can query subaccount's deposit records by main UID's API key without specifying uid.
+     * API rate limit: 300 req / min
+     * TIP
+     * endTime - startTime should be less than 30 days. Queries for the last 30 days worth of records by default.
+     * HTTP Request
+     * GET /v5/broker/asset/query-sub-member-deposit-record
+     *
+     * @param subMemberId   false	Sub UID
+     * @param coin false String Coin, uppercase only
+     * @param startTime   false	integer	The start  timestamp(ms)
+     * @param endTime   false	integer	The end timestamp(ms)
+     * @param limit     false	integer	Limit for data size per page. [1, 50]. Default: 50
+     * @param cursor    false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * rows	array	Object
+     * &gt; subMemberId	string	Sub account user ID
+     * &gt; coin	string	Coin
+     * &gt; chain	string	Chain
+     * &gt; amount	string	Amount
+     * &gt; txID	string	Transaction ID
+     * &gt; status	integer	Deposit status
+     * &gt; toAddress	string	Deposit target address
+     * &gt; tag	string	Tag of deposit target address
+     * &gt; depositFee	string	Deposit fee
+     * &gt; successAt	string	Last updated time
+     * &gt; confirmations	string	Number of confirmation blocks
+     * &gt; txIndex	string	Transaction sequence number
+     * &gt; blockHash	string	Hash number on the chain
+     * &gt; batchReleaseLimit	string	The deposit limit for this coin in this chain. "-1" means no limit
+     * &gt; depositType	string	The deposit type. 0: normal deposit, 10: the deposit reaches daily deposit limit, 20: abnormal deposit
+     * nextPageCursor	string	Refer to the cursor request parameter
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/broker/asset/query-sub-member-deposit-record")
+    Call<Object> getBrokerSubDeposits(@Query("subMemberId") String subMemberId,
+                                      @Query("coin") String coin,
+                                      @Query("startTime") Long startTime,
+                                      @Query("endTime") Long endTime,
+                                      @Query("limit") Integer limit,
+                                      @Query("cursor") String cursor);
+
+    /**
      * Get Exchange Broker Account Info
      * INFO
      * Use exchange broker master account to query
@@ -4720,6 +4838,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/info")
+    @Deprecated
     Call<Object> getC2CLendingCoinInfo(@Query("coin") String coin);
 
     /**
@@ -4747,6 +4866,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/lending/purchase")
+    @Deprecated
     Call<Object> C2cLendingDepositFunds(@Body ClientLendingFundsRequest depositFundRequest);
 
     /**
@@ -4772,6 +4892,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/lending/redeem")
+    @Deprecated
     Call<Object> C2cLendingRedeemFunds(@Body ClientLendingFundsRequest depositFundRequest);
 
     /**
@@ -4791,6 +4912,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/lending/redeem-cancel")
+    @Deprecated
     Call<Object> C2cLendingRedeemCancel(@Body ClientLendingFundsRequest depositFundRequest);
 
     /**
@@ -4818,6 +4940,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/history-order")
+    @Deprecated
     Call<Object> getC2cOrdersRecords(@Query("coin") String coin,
                                      @Query("orderId") String orderId,
                                      @Query("startTime") Long startTime,
@@ -4841,6 +4964,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/lending/account")
+    @Deprecated
     Call<Object> getC2CLendingAccountInfo(@Query("coin") String coin);
 
     // Announcement
