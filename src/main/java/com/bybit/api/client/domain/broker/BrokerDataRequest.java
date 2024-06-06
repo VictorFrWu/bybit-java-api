@@ -11,6 +11,8 @@ import lombok.ToString;
 @ToString
 public class BrokerDataRequest {
     private final BusinessType bizType;
+    private final String subMemberId;
+    private final String coin;
     private final Long startTime;
     private final Long endTime;
     private final Integer limit;

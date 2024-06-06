@@ -6,6 +6,7 @@ import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.broker.BrokerDataRequest;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
+import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
 public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRestClient {
     private final BybitApiService bybitApiService;
@@ -27,5 +28,17 @@ public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRes
     @Override
     public void getBrokerAccountInfo(BybitApiCallback<Object> callback) {
         bybitApiService.getBrokerAccountInfo().enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getSubAccountsDeposits(BrokerDataRequest brokerDataRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getBrokerSubDeposits(
+                brokerDataRequest.getSubMemberId(),
+                brokerDataRequest.getCoin(),
+                brokerDataRequest.getStartTime(),
+                brokerDataRequest.getEndTime(),
+                brokerDataRequest.getLimit(),
+                brokerDataRequest.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 }

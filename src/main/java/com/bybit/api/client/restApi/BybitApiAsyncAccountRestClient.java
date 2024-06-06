@@ -19,5 +19,6 @@ public interface BybitApiAsyncAccountRestClient {
     void modifyAccountMMP(AccountDataRequest setMMPRequest, BybitApiCallback<Object> callback);
     void resetAccountMMP(AccountDataRequest request, BybitApiCallback<Object> callback);
     void getAccountMMPState(AccountDataRequest request, BybitApiCallback<Object> callback);
+    void getAccountSMPGroup(BybitApiCallback<Object> callback);
     void setAccountSpotHedging(AccountDataRequest request, BybitApiCallback<Object> callback);
 }

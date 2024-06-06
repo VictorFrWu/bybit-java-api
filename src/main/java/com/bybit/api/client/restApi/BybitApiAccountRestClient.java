@@ -20,4 +20,5 @@ public interface BybitApiAccountRestClient {
     Object modifyAccountMMP(AccountDataRequest setMMPRequest);
     Object resetAccountMMP(AccountDataRequest request);
     Object getAccountMMPState(AccountDataRequest request);
+    Object getAccountSMPGroup();
 }

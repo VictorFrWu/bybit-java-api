@@ -7,9 +7,9 @@ public enum IsUta {
     UTA_ACCOUNT(true),
     CLASSIC_ACCOUNT(false);
 
-    private final boolean value;
+    private final boolean uta;
 
-    IsUta(boolean value) {
-        this.value = value;
+    IsUta(boolean uta) {
+        this.uta = uta;
     }
 }

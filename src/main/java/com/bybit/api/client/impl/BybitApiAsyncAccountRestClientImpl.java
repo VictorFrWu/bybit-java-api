@@ -81,7 +81,9 @@ public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountR
 
     @Override
     public void getTransactionLog(AccountDataRequest getTransactionLogRequest, BybitApiCallback<Object> callback) {
-        bybitApiService.getTransactionLog(
+        boolean isUta = getTransactionLogRequest.getIsUta() == null || getTransactionLogRequest.getIsUta().isUta();
+        if(isUta)
+        bybitApiService.getUtaTransactionLog(
                 getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
                 getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getCategoryTypeId(),
                 getTransactionLogRequest.getCurrency(),
@@ -92,6 +94,18 @@ public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountR
                 getTransactionLogRequest.getLimit(),
                 getTransactionLogRequest.getCursor()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
+        else
+            bybitApiService.getClassicalTransactionLog(
+                    getTransactionLogRequest.getAccountType() == null ? null : getTransactionLogRequest.getAccountType().getAccountTypeValue(),
+                    getTransactionLogRequest.getCategory() == null ? null : getTransactionLogRequest.getCategory().getCategoryTypeId(),
+                    getTransactionLogRequest.getCurrency(),
+                    getTransactionLogRequest.getBaseCoin(),
+                    getTransactionLogRequest.getTransactionType() == null ? null : getTransactionLogRequest.getTransactionType().getTransactionTypeId(),
+                    getTransactionLogRequest.getStartTime(),
+                    getTransactionLogRequest.getEndTime(),
+                    getTransactionLogRequest.getLimit(),
+                    getTransactionLogRequest.getCursor()
+            ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
@@ -115,6 +129,11 @@ public class BybitApiAsyncAccountRestClientImpl implements BybitApiAsyncAccountR
     @Override
     public void getAccountMMPState(AccountDataRequest request, BybitApiCallback<Object> callback) {
         bybitApiService.getAccountMMPState(request.getBaseCoin()).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getAccountSMPGroup(BybitApiCallback<Object> callback) {
+        bybitApiService.getAccountSMPGroupId().enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override

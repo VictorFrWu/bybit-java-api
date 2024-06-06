@@ -13,7 +13,7 @@ public class WebsockeCloseStreamlExamples {
         // Ticker
         WebSocket webSocket = client.getPublicChannelStream(List.of("tickers.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 
-        // close ws st
+        // close websocket
         client.onClose(webSocket, 1000, "close normal");
 
 /*        client.setMessageHandler(message -> {

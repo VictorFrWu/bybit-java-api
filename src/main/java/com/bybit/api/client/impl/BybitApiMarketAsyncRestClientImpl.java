@@ -110,9 +110,9 @@ public class BybitApiMarketAsyncRestClientImpl implements BybitApiAsyncMarketDat
     public void getRecentTradeData(MarketDataRequest recentTradeRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getRecentTradeData(
                 recentTradeRequest.getCategory().getCategoryTypeId(),
+                recentTradeRequest.getSymbol(),
                 recentTradeRequest.getBaseCoin(),
                 recentTradeRequest.getOptionType() == null ? null : recentTradeRequest.getOptionType().getOpType(),
-                recentTradeRequest.getSymbol(),
                 recentTradeRequest.getLimit()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }

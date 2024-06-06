@@ -45,12 +45,36 @@ public interface WebsocketStreamClient {
      * https://bybit-exchange.github.io/docs/v5/websocket/public/orderbook
 
      */
+
+    /**
+     * Subscribe public channel
+     * @param argNames args
+     * @param path path
+     * @return
+     */
     WebSocket getPublicChannelStream(List<String> argNames, String path);
+
+    /**
+     * Subscribe private channel
+     * @param argNames agrs
+     * @param path path
+     * @return
+     */
     WebSocket getPrivateChannelStream(List<String> argNames, String path);
 
+    /**
+     * Websocket Api Message
+     * @param params params
+     * @param path path
+     * @return
+     */
     WebSocket getTradeChannelStream(Map<String,Object> params, String path);
 
     void setMessageHandler(WebSocketMessageCallback webSocketMessageCallback);
+
+    void sendSubscribeMessage(WebSocket ws, Map<String,Object> params);
+
+    void sendSubscribeMessage(WebSocket ws, List<String> args);
 
     /**
      * Trade

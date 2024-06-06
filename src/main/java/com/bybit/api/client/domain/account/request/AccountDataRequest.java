@@ -6,6 +6,7 @@ import com.bybit.api.client.domain.account.CollateralSwitch;
 import com.bybit.api.client.domain.account.SpotHedgingMode;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.preupgrade.TransactionType;
+import com.bybit.api.client.domain.user.IsUta;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,4 +36,5 @@ public class AccountDataRequest {
     private MarginMode setMarginMode;
     private String symbol;
     private SpotHedgingMode setHedgingMode;
+    private IsUta isUta;
 }

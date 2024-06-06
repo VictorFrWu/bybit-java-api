@@ -13,6 +13,19 @@ public class MarketDataEndpointsExample {
     public static void main(String[] args) {
         var client = BybitApiClientFactory.newInstance(BybitApiConfig.TESTNET_DOMAIN,true).newMarketDataRestClient();
 
+        // Get Recent Trade Data
+        var recentTrade = MarketDataRequest.builder().category(CategoryType.OPTION).symbol("ETH-30JUN23-2050-C").build();
+        var request = MarketDataRequest.builder()
+                .category(CategoryType.LINEAR)
+                .symbol("BTCUSDT")
+                .limit(1)
+                .build();
+        var recentTradeResponse = client.getRecentTradeData(request);
+        var recentTradeResponse2 = client.getRecentTradeData(recentTrade);
+        System.out.println(recentTradeResponse);
+        System.out.println(recentTradeResponse2);
+
+/*
         var marketKLineRequest = MarketDataRequest.builder().category(CategoryType.LINEAR).symbol("BTCUSDT").marketInterval(MarketInterval.WEEKLY).build();
         // Weekly market Kline
         var marketKlineResult = client.getMarketLinesData(marketKLineRequest);
@@ -67,11 +80,6 @@ public class MarketDataEndpointsExample {
         var openInterestResponse = client.getOpenInterest(openInterest);
         System.out.println(openInterestResponse);
 
-        // Get Recent Trade Data
-        var recentTrade = MarketDataRequest.builder().category(CategoryType.OPTION).symbol("ETH-30JUN23-2050-C").build();
-        var recentTradeResponse = client.getRecentTradeData(recentTrade);
-        System.out.println(recentTradeResponse);
-
         // Get Historical Volatility
         var historicalVolatilityRequest = MarketDataRequest.builder().category(CategoryType.OPTION).optionPeriod(7).build();
         var historicalVolatilityResponse = client.getHistoricalVolatility(historicalVolatilityRequest);
@@ -105,5 +113,6 @@ public class MarketDataEndpointsExample {
                 .build();
         var accountRatio = client.getMarketAccountRatio(marketAccountRatioRequest);
         System.out.println(accountRatio);
+        */
     }
 }

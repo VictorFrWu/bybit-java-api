@@ -137,9 +137,9 @@ public class BybitApiMarketRestClientImpl implements BybitApiMarketRestClient {
     public Object getRecentTradeData(MarketDataRequest recentTradeRequest) {
         return executeSync(bybitApiService.getRecentTradeData(
                 recentTradeRequest.getCategory().getCategoryTypeId(),
+                recentTradeRequest.getSymbol(),
                 recentTradeRequest.getBaseCoin(),
                 recentTradeRequest.getOptionType() == null ? null : recentTradeRequest.getOptionType().getOpType(),
-                recentTradeRequest.getSymbol(),
                 recentTradeRequest.getLimit()
         ));
     }

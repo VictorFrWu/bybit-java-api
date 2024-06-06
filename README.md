@@ -40,12 +40,12 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6-SNAPSHOT</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.5'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.6-SNAPSHOT'
 ```
 Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
@@ -217,25 +217,17 @@ private final String maxAliveTime; // Only valid for private channel, timeunit i
 - Order book Subscribe
 ```java
 var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_TESTNET_DOMAIN, true, "okhttp3").newWebsocketClient(20);
-
-// Orderbook
 client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
-
-// Subscribe Orderbook more than one args
 client.getPublicChannelStream(List.of("orderbook.50.BTCUSDT","orderbook.1.ETHUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 
 - Ticker Subscribe
 ```java
 var client = BybitApiClientFactory.newInstance(BybitApiConfig.STREAM_MAINNET_DOMAIN, true).newWebsocketClient();
-
 client.setMessageHandler(message -> {
     var tickerData = (new ObjectMapper()).readValue(message, WebSocketTickerMessage.class);
-    // Process message data here
     System.out.println("Websocket Message Data: " + tickerData.getData().toString());
 });
-
-// Ticker
 client.getPublicChannelStream(List.of("tickers.BTCUSDT"), BybitApiConfig.V5_PUBLIC_LINEAR);
 ```
 - Websocket Trade API
@@ -247,8 +239,6 @@ client.getTradeChannelStream(Map.of("category", "spot","symbol", "XRPUSDT", "sid
 - Position Subscribe
 ```java
 var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.STREAM_TESTNET_DOMAIN).newWebsocketClient();
-
-// Position
 client.getPrivateChannelStream(List.of("position"), BybitApiConfig.V5_PRIVATE);
 ```
 

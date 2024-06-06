@@ -26,7 +26,7 @@ import static com.bybit.api.client.constant.Helper.generateTransferID;
 
 @Getter
 public class WebsocketStreamClientImpl implements WebsocketStreamClient {
-    private static final String THREAD_PING = "thread-public-ping";
+    private static final String THREAD_PING = "thread-ping";
     private static final String THREAD_PRIVATE_AUTH = "thread-private-auth";
     private static final String PING_DATA = "{\"op\":\"ping\"}";
     private static final Logger LOGGER = LoggerFactory.getLogger(WebsocketStreamClientImpl.class);
@@ -35,6 +35,8 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
     private WebSocketMessageCallback webSocketMessageCallback;
     private final WebSocketStreamHttpClientSingleton webSocketHttpClientSingleton;
     private WebSocket webSocket;
+    private boolean isAuthenticated = false;
+    private final List<Map<String, Object>> messageQueue = new ArrayList<>(); // Queue to hold messages before authentication
 
     private final String apikey;
     private final String secret;
@@ -79,33 +81,53 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
         }
     }
 
-    private void sendSubscribeMessage(WebSocket ws, String messageType) {
-        Map<String, Object> subscribeMsg = createSubscribeMessage(messageType);
+    public void sendSubscribeMessage(WebSocket ws, Map<String,Object> params) {
+        if (!isAuthenticated) {
+            // If not authenticated, queue the message
+            LOGGER.info("Queueing message until authentication is complete.");
+            synchronized (messageQueue) {
+                messageQueue.add(params);
+            }
+            return;
+        }
+        // Proceed to send the message if already authenticated
+        String messageType = "Trade";
+        Map<String, Object> subscribeMsg = createApiMessage(params);
+        sendJsonMessage(ws, subscribeMsg, messageType);
+    }
+
+    public void sendSubscribeMessage(WebSocket ws, List<String> args) {
+        String messageType = "Subscribe";
+        Map<String, Object> subscribeMsg = createSubscribeMessage(args);
         sendJsonMessage(ws, subscribeMsg, messageType);
     }
 
     @NotNull
-    private Map<String, Object> createSubscribeMessage(String messageType) {
+    private Map<String, Object> createSubscribeMessage(List<String> args) {
         Map<String, Object> wsPostMsg = new LinkedHashMap<>();
-        if (messageType.equals("Trade")) {
-            wsPostMsg.put("reqId", params.getOrDefault("reqId", generateTransferID()));
-            wsPostMsg.put("headers", constructWsAPIHeaders(params));
-            wsPostMsg.put("op", "order.create");
-            wsPostMsg.put("args", constructWsAPIArgs()); // Ensure this is structured correctly
-        } else {
             wsPostMsg.put("req_id", generateTransferID());
             wsPostMsg.put("op", "subscribe");
-            wsPostMsg.put("args", argNames); // Ensure argNames is correctly formatted for subscription messages
-        }
+            wsPostMsg.put("args", args); // Ensure argNames is correctly formatted for subscription messages
         return wsPostMsg;
     }
 
-    private List<Map<String, Object>> constructWsAPIArgs() {
+    @NotNull
+    private Map<String, Object> createApiMessage(Map<String, Object> params) {
+        Map<String, Object> wsPostMsg = new LinkedHashMap<>();
+        wsPostMsg.put("reqId", params.getOrDefault("reqId", generateTransferID()));
+        wsPostMsg.put("header", constructWsAPIHeaders(params));
+        wsPostMsg.put("op", "order.create");
+        wsPostMsg.put("args", constructWsAPIArgs(params)); // Ensure this is structured correctly
+        return wsPostMsg;
+    }
+
+    private List<Map<String, Object>> constructWsAPIArgs(Map<String,Object> originalParams) {
+        Map<String,Object> params = new HashMap<>(originalParams); // Create a mutable copy
         // Remove specified keys
-        params.remove("X-BAPI-TIMESTAMP");
+        params.remove(BybitApiConstants.TIMESTAMP_HEADER);
         params.remove("reqId");
-        params.remove("X-BAPI-RECV-WINDOW");
-        params.remove("Referer");
+        params.remove(BybitApiConstants.RECV_WINDOW_HEADER);
+        params.remove(BybitApiConstants.BROKER_HEADER);
         return Collections.singletonList(params);
     }
 
@@ -114,8 +136,8 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
         headerMap.put(BybitApiConstants.TIMESTAMP_HEADER, String.valueOf(generateTimestamp()));
         headerMap.put(BybitApiConstants.RECV_WINDOW_HEADER, params.getOrDefault(BybitApiConstants.RECV_WINDOW_HEADER, BybitApiConstants.DEFAULT_RECEIVING_WINDOW).toString());
         // Check broker referral code
-        if(params.containsKey("Referer"))
-            headerMap.put("Referer", params.get("Referer").toString());
+        if(params.containsKey(BybitApiConstants.BROKER_HEADER))
+            headerMap.put(BybitApiConstants.BROKER_HEADER, params.get(BybitApiConstants.BROKER_HEADER).toString());
         return headerMap;
     }
 
@@ -229,8 +251,28 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
         this.webSocketMessageCallback = webSocketMessageCallback;
     }
 
+    private void flushMessageQueue() {
+        synchronized (messageQueue) {
+            for (Map<String, Object> params : messageQueue) {
+                sendSubscribeMessage(webSocket, params);
+            }
+            messageQueue.clear(); // Clear the queue after sending all messages
+        }
+    }
+
     @Override
     public void onMessage(String msg) throws JsonProcessingException {
+        if (requiresAuthentication(path) && msg.contains("\"op\":\"auth\"")) {
+            // Check if authentication was successful
+            isAuthenticated = msg.contains("\"retCode\":0");
+            if (isAuthenticated) {
+                LOGGER.info("Authentication successful.");
+                flushMessageQueue(); // Send queued messages after successful authentication
+            } else {
+                LOGGER.error("Authentication failed.");
+            }
+        }
+        
         if (webSocketMessageCallback != null) {
             webSocketMessageCallback.onMessage(msg);
         } else {
@@ -257,17 +299,17 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
             Thread authThread = createAuthThread(ws, () -> {
                 // After auth, trade api
                 if(path.equals(BybitApiConfig.V5_TRADE)){
-                    sendSubscribeMessage(ws, "Trade");
+                    sendSubscribeMessage(ws, params);
                 }
                 // After auth, send a subscribed message
                 else{
-                    sendSubscribeMessage(ws, "Subscribe");
+                    sendSubscribeMessage(ws, argNames);
                 }
             });
             authThread.start();
         } else {
             // If no authentication is needed, just send the subscribed message.
-            sendSubscribeMessage(ws, "Subscribe");
+            sendSubscribeMessage(ws, argNames);
         }
     }
 
