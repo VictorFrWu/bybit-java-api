@@ -18,6 +18,14 @@ public class BybitApiConfig {
      */
     public static final String STREAM_TESTNET_DOMAIN = "wss://stream-testnet.bybit.com";
     /**
+     * Demo Trading Network URL.
+     */
+    public static final String DEMO_TRADING_DOMAIN = "https://api-demo.bybit.com";
+    /**
+     * Demo Trading websocket url
+     */
+    public static final String DEMO_TRADING_STREAM_DOMAIN = "wss://stream-demo.bybit.com";
+    /**
      * Mainnet websocket url
      */
     public static final String STREAM_MAINNET_DOMAIN = "wss://stream.bybit.com";
@@ -39,9 +47,13 @@ public class BybitApiConfig {
     public static final String V5_PRIVATE = "/v5/private";
     public static final String V5_TRADE = "/v5/trade";
 
-    // V3
+    // V3 endpoint offline from end of August 2024
+    @Deprecated
     public static final String V3_CONTRACT_PRIVATE = "/contract/private/v3";
+    @Deprecated
     public static final String V3_UNIFIED_PRIVATE = "/unified/private/v3";
+    @Deprecated
     public static final String V3_CONTRACT_USDT_PUBLIC = "/contract/usdt/public/v3";
+    @Deprecated
     public static final String V3_SPOT_PRIVATE = "/spot/private/v3";
 }

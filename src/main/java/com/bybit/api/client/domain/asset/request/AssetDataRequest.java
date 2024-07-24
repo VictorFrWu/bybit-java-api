@@ -45,4 +45,12 @@ public class AssetDataRequest {
     private String fromCoin;
     private String toCoin;
     private String chainType;
+    private Integer side; //0: fromCoin list, the balance is given if you have it; 1: toCoin list (coin to buy) when side=1 and coin field is filled, it returns toCoin list based on coin field
+    private String quoteTxId;
+    private Integer index;
+    private String fromCoinType;
+    private String toCoinType;
+    private String requestCoin;
+    private String requestAmount;
+    private String requestId;
 }

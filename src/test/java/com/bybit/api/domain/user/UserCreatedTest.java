@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserCreatedTest {
-    BybitApiUserRestClient client = BybitApiClientFactory.newInstance("xxxxx", "xxxxx", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
+    BybitApiUserRestClient client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
 
     @Test
     public void Test_GetUserInfo(){
@@ -18,7 +18,7 @@ public class UserCreatedTest {
     }
     @Test
     public void Test_CreateMember() {
-        var subUserRequest = UserDataRequest.builder().username("Test0606202423")
+        var subUserRequest = UserDataRequest.builder().username("Test070620242")
                 .password("Password123")
                 .memberType(MemberType.NORMAL_SUB_ACCOUNT)
                 .note("Some note 2")
@@ -43,11 +43,11 @@ public class UserCreatedTest {
                 "NFT", List.of("NFTQueryProductList")
         );
         UserPermissionsMap permissions = UserPermissionsMap.builder().permissionMap(permissionMap).build();
-        var subApiKeyRequest = UserDataRequest.builder().subuid(101470940)
+        var subApiKeyRequest = UserDataRequest.builder().subuid(101472011)
                 .readOnlyStatus(ReadOnlyStatus.READ_AND_WRITE)
                 .userPermissionsMap(permissions)
                 .ips(List.of("*"))
-                .note("Some note")
+                .note("note test 0608")
                 .build();
         var subUser = client.createSubAPI(subApiKeyRequest);
         System.out.println(subUser);

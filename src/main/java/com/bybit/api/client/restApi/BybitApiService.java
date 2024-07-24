@@ -3979,6 +3979,198 @@ public interface BybitApiService {
     @POST("/v5/asset/withdraw/create")
     Call<Object> createAssetWithdraw(@Body AssetWithdrawRequest assetWithdrawRequest);
 
+    // Asset Convert Endpoints
+
+    /**
+     * Get Convert Coin List
+     * You can query the coin list of convert from (to).
+     *
+     * HTTP Request
+     * GET /v5/asset/exchange/query-coin-list
+     * https://bybit-exchange.github.io/docs/v5/asset/convert/convert-coin-list
+     * @param coin  false	string	Coin, uppercase only
+     * Convert from coin (coin to sell)
+     * when side=0, coin field is ignored
+     * @param side    false	integer	0: fromCoin list, the balance is given if you have it; 1: toCoin list (coin to buy)
+     *   when side=1 and coin field is filled, it returns toCoin list based on coin field
+     * @param accountType true	string	Wallet type
+     *      * eb_convert_funding
+     *      * eb_convert_uta
+     *      * eb_convert_spot
+     *      * eb_convert_contract
+     *      * eb_convert_inverse
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * coins	array<object>	Coin spec
+     * &gt; coin	string	Coin
+     * &gt; fullName	string	Full coin name
+     * &gt; icon	string	Coin icon url
+     * &gt; iconNight	string	Coin icon url (dark mode)
+     * &gt; accuracyLength	integer	Coin precision
+     * &gt; coinType	string	crypto
+     * &gt; balance	string	Coin balance
+     * Only when side=0, it checks balance, otherwise, it is ""
+     * &gt; uBalance	string	Coin balance in USDT worth value
+     * &gt; singleFromMinLimit	string	The minimum amount of fromCoin per transaction
+     * &gt; singleFromMaxLimit	string	The maximum amount of fromCoin per transaction
+     * &gt; disableFrom	boolean	true: the coin is disabled to be fromCoin, false: the coin is allowed to be fromCoin
+     * &gt; disableTo	boolean	true: the coin is disabled to be toCoin, false: the coin is allowed to be toCoin
+     * &gt; timePeriod	integer	Reserved field, ignored for now
+     * &gt; singleToMinLimit	string	Reserved field, ignored for now
+     * &gt; singleToMaxLimit	string	Reserved field, ignored for now
+     * &gt; dailyFromMinLimit	string	Reserved field, ignored for now
+     * &gt; dailyFromMaxLimit	string	Reserved field, ignored for now
+     * &gt; dailyToMinLimit	string	Reserved field, ignored for now
+     * &gt; dailyToMaxLimit	string	Reserved field, ignored for now
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/asset/exchange/query-coin-list")
+    Call<Object> getConvertCoinList(
+            @Query("coin") String coin,
+            @Query("side") Integer side,
+            @Query("accountType") String accountType);
+
+    /**
+     * Get Convert Status
+     * You can query the exchange result by sending quoteTxId. Make sure you input correct account type and quoteTxId, otherwise you cannot find it.
+     *
+     * HTTP Request
+     * GET /v5/asset/exchange/convert-result-query
+     * https://bybit-exchange.github.io/docs/v5/asset/convert/get-convert-result
+     * @param quoteTxId	false	string	Quote tx ID
+     * @param accountType	true	string	Wallet type
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * result	object
+     * &gt; accountType	string	Wallet type
+     * &gt; exchangeTxId	string	Exchange tx ID, same as quote tx ID
+     * &gt; userId	string	User ID
+     * &gt; fromCoin	string	From coin
+     * &gt; fromCoinType	string	From coin type. crypto
+     * &gt; toCoin	string	To coin
+     * &gt; toCoinType	string	To coin type. crypto
+     * &gt; fromAmount	string	From coin amount (amount to sell)
+     * &gt; toAmount	string	To coin amount (amount to buy according to exchange rate)
+     * &gt; exchangeStatus	string	Exchange status
+     * init
+     * processing
+     * success
+     * failure
+     * &gt; extInfo	object	Reserved field, ignored for now
+     * &gt; convertRate	string	Exchange rate
+     * &gt; createdAt	string	Quote created time
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/asset/exchange/convert-result-query")
+    Call<Object> getConvertCoinStatus(
+            @Query("quoteTxId") String quoteTxId,
+            @Query("accountType") String accountType);
+
+    /**
+     * Get Convert history
+     * Those confirmed quotes no matter status are showns by this API.
+     *
+     * INFO
+     * Only display the conversion history created through open API.
+     *
+     * HTTP Request
+     * GET /v5/asset/exchange/query-convert-history
+     * https://bybit-exchange.github.io/docs/v5/asset/convert/get-convert-history
+     * @param accountType	false	string	Wallet type
+     *  Supports passing multiple types, separated by comma e.g., eb_convert_funding,eb_convert_uta
+     *  Return all wallet types data if not passed
+     * @param index    false	integer	Page number
+     * started from 1
+     * 1st page by default
+     * @param limit    false	integer	Page size
+     * 20 records by default
+     * up to 100 records, return 100 when exceeds 100
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	array<object>	Array of quotes
+     * &gt; accountType	string	Wallet type
+     * &gt; exchangeTxId	string	Exchange tx ID, same as quote tx ID
+     * &gt; userId	string	User ID
+     * &gt; fromCoin	string	From coin
+     * &gt; fromCoinType	string	From coin type. crypto
+     * &gt; toCoin	string	To coin
+     * &gt; toCoinType	string	To coin type. crypto
+     * &gt; fromAmount	string	From coin amount (amount to sell)
+     * &gt; toAmount	string	To coin amount (amount to buy according to exchange rate)
+     * &gt; exchangeStatus	string	Exchange status
+     * init
+     * processing
+     * success
+     * failure
+     * &gt; extInfo	object	Reserved field, ignored for now
+     * &gt; convertRate	string	Exchange rate
+     * &gt; createdAt	string	Quote created time
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/asset/exchange/query-convert-history")
+    Call<Object> getConvertCoinHistory(
+            @Query("accountType") String accountType,
+            @Query("index") Integer index,
+            @Query("limit") Integer limit);
+
+    /**
+     * Request a Quote
+     * HTTP Request
+     * POST /v5/asset/exchange/quote-apply
+     * https://bybit-exchange.github.io/docs/v5/asset/convert/apply-quote
+     * Request Parameters
+     * Parameter	Required	Type	Comments
+     * fromCoin	true	string	Convert from coin (coin to sell)
+     * toCoin	true	string	Convert to coin (coin to buy)
+     * fromCoinType	false	string	crypto
+     * toCoinType	false	string	crypto
+     * requestCoin	true	string	Request coin, same as fromCoin
+     * In the future, we may support requestCoin=toCoin
+     * requestAmount	true	string	request coin amount (the amount you want to sell)
+     * accountType	true	string	Wallet type
+     * requestId	false	string	Customised request ID
+     * a maximum length of 36
+     * Generally it is useless, but it is convenient to track the quote request internally if you fill this field
+     * @param assetQuoteRequest
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * quoteTxId	string	Quote transaction ID. It is system generated, and it is used to confirm quote and query the result of transaction
+     * exchangeRate	string	Exchange rate
+     * fromCoin	string	From coin
+     * fromCoinType	string	From coin type. crypto
+     * toCoin	string	To coin
+     * toCoinType	string	To coin type. crypto
+     * fromAmount	string	From coin amount (amount to sell)
+     * toAmount	string	To coin amount (amount to buy according to exchange rate)
+     * expiredTime	string	The expiry time for this quote (15 seconds)
+     * requestId	string	Customised request ID
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/exchange/quote-apply")
+    Call<Object> requestQuote(@Body AssetQuoteRequest assetQuoteRequest);
+
+    /**
+     * Confirm a Quote
+     * INFO
+     * The exchange is async, please check the final status by calling query result API.
+     * Make sure you confirm the quote before the quote is expired.
+     * HTTP Request
+     * POST /v5/asset/exchange/convert-execute
+     * https://bybit-exchange.github.io/docs/v5/asset/convert/confirm-quote
+     * @param quoteTxId	true	string	The quote tx ID from Request a Quote
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * quoteTxId	string	Quote transaction ID
+     * exchangeStatus	string	Exchange status
+     * init
+     * processing
+     * success
+     * failure
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/exchange/convert-execute")
+    Call<Object> confirmQuote(@Body String quoteTxId);
+    
     // Institution Endpoints
 
     /**
