@@ -11,7 +11,7 @@ import com.bybit.api.client.service.BybitJsonConverter;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
 /**
- * Implementation of Bybit's REST API using Retrofit with asynchronous/non-blocking method calls.
+ * Implementation of Bybit REST API using Retrofit with asynchronous/non-blocking method calls.
  */
 public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestClient {
 
@@ -228,6 +228,43 @@ public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestC
     public void createAssetWithdraw(AssetDataRequest assetWithdrawRequest, BybitApiCallback<Object> callback) {
         var request = converter.mapToAssetWithdrawRequest(assetWithdrawRequest);
         bybitApiService.createAssetWithdraw(request).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void requestQuote(AssetDataRequest assetQuoteRequest, BybitApiCallback<Object> callback) {
+        var request = converter.mapToAssetQuoteRequest(assetQuoteRequest);
+        bybitApiService.requestQuote(request).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void confirmQuote(String quoteTxId, BybitApiCallback<Object> callback) {
+        bybitApiService.confirmQuote(quoteTxId).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getConvertCoinList(AssetDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getConvertCoinList(
+                request.getCoin(),
+                request.getSide(),
+                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getConvertCoinStatus(AssetDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getConvertCoinStatus(
+                request.getQuoteTxId(),
+                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getConvertCoinHistory(AssetDataRequest request, BybitApiCallback<Object> callback) {
+        bybitApiService.getConvertCoinHistory(
+                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue(),
+                request.getIndex(),
+                request.getLimit()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
 }

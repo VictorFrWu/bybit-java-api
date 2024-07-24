@@ -1,6 +1,7 @@
 package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.asset.request.AssetDataRequest;
+import com.bybit.api.client.domain.asset.request.AssetQuoteRequest;
 
 public interface BybitApiAsyncAssetRestClient {
     // Asset Endpoints
@@ -28,4 +29,10 @@ public interface BybitApiAsyncAssetRestClient {
     void getAssetWithdrawalRecords(AssetDataRequest assetWithdrawRecordsRequest, BybitApiCallback<Object> callback);
     void cancelAssetWithdraw(AssetDataRequest request, BybitApiCallback<Object> callback);
     void createAssetWithdraw(AssetDataRequest assetWithdrawRequest, BybitApiCallback<Object> callback);
+    // convert coin endpoints
+    void requestQuote(AssetDataRequest assetQuoteRequest,BybitApiCallback<Object> callback);
+    void confirmQuote(String quoteTxId, BybitApiCallback<Object> callback);
+    void getConvertCoinList(AssetDataRequest request, BybitApiCallback<Object> callback);
+    void getConvertCoinStatus(AssetDataRequest request, BybitApiCallback<Object> callback);
+    void getConvertCoinHistory(AssetDataRequest request, BybitApiCallback<Object> callback);
 }

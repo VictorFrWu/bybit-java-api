@@ -1,5 +1,6 @@
 package com.bybit.api.client.impl;
 
+import com.bybit.api.client.domain.asset.request.AssetQuoteRequest;
 import com.bybit.api.client.restApi.BybitApiAssetRestClient;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.asset.request.AssetDataRequest;
@@ -224,5 +225,40 @@ public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
     public Object createAssetWithdraw(AssetDataRequest assetWithdrawRequest) {
         var request = converter.mapToAssetWithdrawRequest(assetWithdrawRequest);
         return executeSync(bybitApiService.createAssetWithdraw(request));
+    }
+
+    @Override
+    public Object requestQuote(AssetDataRequest assetQuoteRequest) {
+        var request = converter.mapToAssetQuoteRequest(assetQuoteRequest);
+        return executeSync(bybitApiService.requestQuote(request));
+    }
+
+    @Override
+    public Object confirmQuote(String quoteTxId) {
+        return executeSync(bybitApiService.confirmQuote(quoteTxId));
+    }
+
+    @Override
+    public Object getConvertCoinList(AssetDataRequest request) {
+        return executeSync(bybitApiService.getConvertCoinList(
+                request.getCoin(),
+                request.getSide(),
+                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue()));
+    }
+
+    @Override
+    public Object getConvertCoinStatus(AssetDataRequest request) {
+        return executeSync(bybitApiService.getConvertCoinStatus(
+                request.getQuoteTxId(),
+                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue()));
+    }
+
+    @Override
+    public Object getConvertCoinHistory(AssetDataRequest request) {
+        return executeSync(bybitApiService.getConvertCoinHistory(
+                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue(),
+                request.getIndex(),
+                request.getLimit()
+                ));
     }
 }

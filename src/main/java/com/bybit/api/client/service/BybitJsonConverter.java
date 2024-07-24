@@ -91,7 +91,7 @@ public class BybitJsonConverter {
                 .slLimitPrice((String) orderMap.getOrDefault("slLimitPrice", null)) // Optional
                 .tpOrderType(orderMap.containsKey("tpOrderType") ? TradeOrderType.valueOf(orderMap.get("tpOrderType").toString().toUpperCase()) : null)  // Optional, default to Market
                 .slOrderType(orderMap.containsKey("slOrderType") ? TradeOrderType.valueOf(orderMap.get("slOrderType").toString().toUpperCase()) : null)  // Optional, default to Market
-                .marketUnit((String)orderMap.getOrDefault("marketUnit", null))
+                .marketUnit((String) orderMap.getOrDefault("marketUnit", null))
                 .build();
     }
 
@@ -498,6 +498,7 @@ public class BybitJsonConverter {
                 singleCoinBalanceRequest.getWithTransferSafeAmount() == null ? null : singleCoinBalanceRequest.getWithTransferSafeAmount().getValue(),
                 singleCoinBalanceRequest.getWithLtvTransferSafeAmount() == null ? null : singleCoinBalanceRequest.getWithLtvTransferSafeAmount().getValue());
     }
+
     // User Requests
     public UserSubMemberRequest mapToCreateSubMemberRequest(UserDataRequest subUserRequest) {
         return UserSubMemberRequest.builder()
@@ -513,7 +514,7 @@ public class BybitJsonConverter {
     public CreateApiKeyRequest mapToCreateSubApiRequest(UserDataRequest subUserRequest) {
         return CreateApiKeyRequest.builder()
                 .subuid(subUserRequest.getSubuid())
-                .note(subUserRequest.getPassword())
+                .note(subUserRequest.getNote())
                 .readOnly(subUserRequest.getReadOnlyStatus() == null ? null : subUserRequest.getReadOnlyStatus().getValue())
                 .ips(subUserRequest.getIps() == null ? null : listToString(subUserRequest.getIps()))
                 .permissions(subUserRequest.getUserPermissionsMap() == null ? null : subUserRequest.getUserPermissionsMap().getPermissionMap())
@@ -586,6 +587,20 @@ public class BybitJsonConverter {
                 .builder()
                 .uid(lendingDataRequest.getUid())
                 .operate(lendingDataRequest.getOperate() == null ? null : lendingDataRequest.getOperate().getOperateType())
+                .build();
+    }
+
+    // Asset Convert Requests
+    public AssetQuoteRequest mapToAssetQuoteRequest(AssetDataRequest assetQuoteRequest) {
+        return AssetQuoteRequest.builder()
+                .fromCoin(assetQuoteRequest.getFromCoin())
+                .toCoin(assetQuoteRequest.getToCoin())
+                .fromCoinType(assetQuoteRequest.getFromCoinType())
+                .toCoinType(assetQuoteRequest.getToCoinType())
+                .requestCoin(assetQuoteRequest.getRequestCoin())
+                .requestAmount(assetQuoteRequest.getRequestAmount())
+                .accountType(assetQuoteRequest.getAccountType() == null ? null : assetQuoteRequest.getAccountType().getAccountTypeValue())
+                .requestId(assetQuoteRequest.getRequestId())
                 .build();
     }
 }
