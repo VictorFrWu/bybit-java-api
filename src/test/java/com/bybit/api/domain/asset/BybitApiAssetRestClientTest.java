@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 import com.bybit.api.client.impl.BybitApiAssetRestClientImpl;
-import com.bybit.api.client.restApi.BybitApiAssetRestClient;
 import com.bybit.api.client.restApi.BybitApiService;
 import org.junit.Before;
 import org.junit.Test;

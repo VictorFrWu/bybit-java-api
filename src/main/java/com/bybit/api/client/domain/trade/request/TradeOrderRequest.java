@@ -5,6 +5,7 @@ import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.domain.position.ExecType;
 import com.bybit.api.client.domain.trade.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TradeOrderRequest {
     private CategoryType category;  // always Required
     private String symbol;

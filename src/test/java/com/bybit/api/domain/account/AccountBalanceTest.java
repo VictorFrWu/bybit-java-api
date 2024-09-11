@@ -9,7 +9,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 import org.junit.Test;
 
 public class AccountBalanceTest {
-    BybitApiAccountRestClient client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN).newAccountRestClient();
+    BybitApiAccountRestClient client = BybitApiClientFactory.newInstance("d08Wh6P037IXAvcrL2", "gLfd1BLGU9oq6YoRZRlwXkIQRYB4n5KvXDvv", BybitApiConfig.TESTNET_DOMAIN).newAccountRestClient();
 
     @Test
     public void Test_GetAccountBalance() {

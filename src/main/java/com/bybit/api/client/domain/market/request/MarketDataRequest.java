@@ -5,6 +5,7 @@ import com.bybit.api.client.domain.announcement.AnnouncementTag;
 import com.bybit.api.client.domain.announcement.AnnouncementType;
 import com.bybit.api.client.domain.announcement.LanguageSymbol;
 import com.bybit.api.client.domain.market.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MarketDataRequest {
     private CategoryType category; // always required
     private String coin;

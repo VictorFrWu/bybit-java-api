@@ -20,7 +20,7 @@ public class BybitApiAccountRestClientImpl implements BybitApiAccountRestClient 
     @Override
     public Object getWalletBalance(AccountDataRequest walletBalanceRequest) {
         return executeSync(bybitApiService.getWalletBalance(
-                walletBalanceRequest.getAccountType().getAccountTypeValue(),
+                walletBalanceRequest.getAccountType() == null ? null : walletBalanceRequest.getAccountType().getAccountTypeValue(),
                 walletBalanceRequest.getCoins()
         ));
     }

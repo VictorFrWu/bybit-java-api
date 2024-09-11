@@ -7,7 +7,7 @@ public class C2CExample {
     public static void main(String[] args) {
         var client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET").newLendingRestClient();
 
-        // Get Lending Coin
+/*        // Get Lending Coin
         var lendingCoinRequest = LendingDataRequest.builder().build();
         var lendingCoinInfo = client.getC2CLendingCoinInfo(lendingCoinRequest);
         System.out.println(lendingCoinInfo);
@@ -29,6 +29,6 @@ public class C2CExample {
         // Get Lending Account
         var lendingAccountRequest = LendingDataRequest.builder().coin("USDT").build();
         var lendingAccount = client.getC2CLendingAccountInfo(lendingAccountRequest);
-        System.out.println(lendingAccount);
+        System.out.println(lendingAccount);*/
     }
 }

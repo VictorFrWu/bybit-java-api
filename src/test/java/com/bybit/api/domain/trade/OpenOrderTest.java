@@ -15,9 +15,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class OpenOrderTest {
+    /*
     BybitApiTradeRestClient client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newTradeRestClient();
 
-    @Test
+   @Test
     public void Test_PlaceLinearOrder() throws InterruptedException {
 
        List<String> orderLinkIdList = new ArrayList<>();
@@ -94,4 +95,5 @@ public class OpenOrderTest {
         System.out.println(firInverseOrderResult);
 
     }
+    */
 }

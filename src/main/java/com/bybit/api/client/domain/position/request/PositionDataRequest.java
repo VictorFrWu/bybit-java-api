@@ -5,6 +5,7 @@ import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
 import com.bybit.api.client.domain.position.*;
 import com.bybit.api.client.domain.trade.PositionIdx;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +13,9 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@Builder
 @ToString
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PositionDataRequest {
     private CategoryType category;
     private String symbol;
