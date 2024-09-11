@@ -50,9 +50,6 @@ implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.
 Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
 ## Release-Notes
-### Websockets
-- Websocket Trade API headers change to header
-
 ### Rest API
 - Fix spot margin toogle 
 - Fix spot margin set leverage
