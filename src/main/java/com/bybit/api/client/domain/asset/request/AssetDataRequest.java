@@ -56,6 +56,8 @@ public class AssetDataRequest {
     private String requestCoin;
     private String requestAmount;
     private String requestId;
+    private String paramType; // api broker
+    private String paramValue; // api broker
     private WithdrawBeneficiaryMap withdrawBeneficiaryMap;
     private Map<String, String> beneficiaryMap;
 }

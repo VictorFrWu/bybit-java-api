@@ -4,6 +4,10 @@ import com.bybit.api.client.restApi.BybitApiSpotMarginRestClient;
 import com.bybit.api.client.domain.spot.SpotMarginDataRequest;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.service.BybitJsonConverter;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
@@ -66,15 +70,17 @@ public class BybitApiSpotMarginRestClientImpl implements BybitApiSpotMarginRestC
     }
 
     @Override
-    public Object setUTASpotMarginTrade(SpotMarginDataRequest spotMarginDataRequest) {
-        String mode = spotMarginDataRequest.getSpotMarginMode() == null ? null : spotMarginDataRequest.getSpotMarginMode().getValue();
-        return executeSync(bybitApiService.setUTASpotMarginTrade(mode));
+    public Object setUTASpotMarginTrade(String mode) {
+        Map<String, String> map = new HashMap<>();
+        map.put("spotMarginMode", mode);
+        return executeSync(bybitApiService.setUTASpotMarginTrade(map));
     }
 
     @Override
-    public Object setUTASpotMarginTradeLeverage(SpotMarginDataRequest spotMarginDataRequest) {
-        String leverage = spotMarginDataRequest.getLeverage();
-        return executeSync(bybitApiService.setUTASpotMarginTradeLeverage(leverage));
+    public Object setUTASpotMarginTradeLeverage(String leverage) {
+        Map<String, String> map = new HashMap<>();
+        map.put("leverage", leverage);
+        return executeSync(bybitApiService.setUTASpotMarginTradeLeverage(map));
     }
 
     @Override

@@ -25,7 +25,7 @@ public class SpotMarginDataRequest {
     private final String qty;
     private final CompleteRepayment completeRepayment;
     private final String leverage;
-    private final SpotMarginMode spotMarginMode;
+    private final String spotMarginMode;
     private final SwitchStatus switchStatus;
     private final BorrowStatus borrowStatus;
 }

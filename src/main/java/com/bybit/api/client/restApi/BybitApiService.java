@@ -19,6 +19,8 @@ import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+import java.util.Map;
+
 /**
  * Bybit's REST API URL mappings and endpoint security configuration.
  */
@@ -4267,7 +4269,11 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/asset/exchange/convert-execute")
-    Call<Object> confirmQuote(@Body String quoteTxId);
+    Call<Object> confirmQuote(@Body Map<String, String> quoteTxId);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/asset/exchange/convert-execute")
+    Call<Object> confirmQuote(@Body ConfirmQuoteRequest confirmQuoteRequest);
     
     // Institution Endpoints
 
@@ -4712,7 +4718,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-margin-trade/switch-mode")
-    Call<Object> setUTASpotMarginTrade(@Body String spotMarginMode);
+    Call<Object> setUTASpotMarginTrade(@Body Map<String, String> spotMarginMode);
 
     /**
      * Set Leverage
@@ -4731,7 +4737,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/spot-margin-trade/set-leverage")
-    Call<Object> setUTASpotMarginTradeLeverage(@Body String leverage);
+    Call<Object> setUTASpotMarginTradeLeverage(@Body Map<String, String> leverage);
 
     /**
      * Get Status And Leverage

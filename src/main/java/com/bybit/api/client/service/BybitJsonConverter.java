@@ -615,7 +615,13 @@ public class BybitJsonConverter {
                 .requestCoin(assetQuoteRequest.getRequestCoin())
                 .requestAmount(assetQuoteRequest.getRequestAmount())
                 .accountType(assetQuoteRequest.getAccountType() == null ? null : assetQuoteRequest.getAccountType().getAccountTypeValue())
+                .paramType(assetQuoteRequest.getParamType())
+                .paramValue(assetQuoteRequest.getParamValue())
                 .requestId(assetQuoteRequest.getRequestId())
                 .build();
+    }
+
+    public ConfirmQuoteRequest mapToAssetConfirmQuoteRequest(AssetDataRequest assetQuoteRequest) {
+        return ConfirmQuoteRequest.builder().quoteTxId(assetQuoteRequest.getQuoteTxId()).build();
     }
 }

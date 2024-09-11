@@ -1,6 +1,5 @@
 package com.bybit.api.client.impl;
 
-import com.bybit.api.client.domain.asset.request.AssetQuoteRequest;
 import com.bybit.api.client.restApi.BybitApiAssetRestClient;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.asset.request.AssetDataRequest;
@@ -8,12 +7,19 @@ import com.bybit.api.client.domain.asset.request.AssetCancelWithdrawRequest;
 import com.bybit.api.client.domain.asset.request.SetAssetDepositAccountRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 import static com.bybit.api.client.service.BybitApiServiceGenerator.executeSync;
 
 public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
     private final BybitApiService bybitApiService;
     private final BybitJsonConverter converter = new BybitJsonConverter();
+
+    public BybitApiAssetRestClientImpl(BybitApiService bybitApiService){
+        this.bybitApiService = bybitApiService;
+    }
 
     public BybitApiAssetRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "");
@@ -235,7 +241,15 @@ public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
 
     @Override
     public Object confirmQuote(String quoteTxId) {
-        return executeSync(bybitApiService.confirmQuote(quoteTxId));
+        Map<String, String> map = new HashMap<>();
+        map.put("quoteTxId", quoteTxId);
+        return executeSync(bybitApiService.confirmQuote(map));
+    }
+
+    @Override
+    public Object confirmQuote(AssetDataRequest assetQuoteRequest) {
+        var request = converter.mapToAssetConfirmQuoteRequest(assetQuoteRequest);
+        return executeSync(bybitApiService.confirmQuote(request));
     }
 
     @Override
@@ -243,20 +257,20 @@ public class BybitApiAssetRestClientImpl implements BybitApiAssetRestClient {
         return executeSync(bybitApiService.getConvertCoinList(
                 request.getCoin(),
                 request.getSide(),
-                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue()));
+                request.getAccountType() == null ? null : request.getAccountType().getAccountTypeValue()));
     }
 
     @Override
     public Object getConvertCoinStatus(AssetDataRequest request) {
         return executeSync(bybitApiService.getConvertCoinStatus(
                 request.getQuoteTxId(),
-                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue()));
+                request.getAccountType() == null ? null : request.getAccountType().getAccountTypeValue()));
     }
 
     @Override
     public Object getConvertCoinHistory(AssetDataRequest request) {
         return executeSync(bybitApiService.getConvertCoinHistory(
-                request.getToAccountType() == null ? null : request.getToAccountType().getAccountTypeValue(),
+                request.getAccountType() == null ? null : request.getAccountType().getAccountTypeValue(),
                 request.getIndex(),
                 request.getLimit()
                 ));
