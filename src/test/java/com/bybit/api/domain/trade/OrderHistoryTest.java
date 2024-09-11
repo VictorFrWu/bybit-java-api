@@ -8,7 +8,7 @@ import com.bybit.api.client.service.BybitApiClientFactory;
 import org.junit.Test;
 
 public class OrderHistoryTest {
-    BybitApiTradeRestClient client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN).newTradeRestClient();
+    BybitApiTradeRestClient client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newTradeRestClient();
 
     @Test
     public void Test_PlaceLinearOrder(){

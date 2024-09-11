@@ -24,4 +24,8 @@ public interface BybitApiUserRestClient {
     Object getPreUpgradeTransaction(PreUpgradeDataRequest preUpgradeTransactionRequest);
     Object getPreUpgradeOptionDelivery(PreUpgradeDataRequest preUpgradeOptionDeliveryRequest);
     Object getPreUpgradeUsdcSettlement(PreUpgradeDataRequest preUpgradeUsdcSettlementRequest);
+
+    Object getSubUIDListUnlimited(UserDataRequest subUserRequest);
+    Object getSubUIDListUnlimited();
+    Object getSubAccAllAPIKeyInfo(UserDataRequest subUserRequest);
 }

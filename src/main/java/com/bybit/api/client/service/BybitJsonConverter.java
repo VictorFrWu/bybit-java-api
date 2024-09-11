@@ -1,5 +1,6 @@
 package com.bybit.api.client.service;
 
+import com.bybit.api.client.constant.Helper;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.TradeOrderType;
 import com.bybit.api.client.domain.TriggerBy;
@@ -26,7 +27,7 @@ import com.bybit.api.client.domain.user.IsUta;
 import com.bybit.api.client.domain.user.MemberType;
 import com.bybit.api.client.domain.user.SwitchOption;
 import com.bybit.api.client.domain.user.UserDataRequest;
-import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
+import com.bybit.api.client.domain.user.request.CreateSubApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
@@ -39,6 +40,7 @@ import retrofit2.Call;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -474,16 +476,23 @@ public class BybitJsonConverter {
     }
 
     public AssetWithdrawRequest mapToAssetWithdrawRequest(AssetDataRequest assetDataRequest) {
+        Map<String, String> beneficiary = Collections.emptyMap();
+        if (assetDataRequest.getWithdrawBeneficiaryMap() != null) {
+            beneficiary = assetDataRequest.getWithdrawBeneficiaryMap().getBeneficiaryMap();
+        } else if (assetDataRequest.getBeneficiaryMap() != null && !assetDataRequest.getBeneficiaryMap().isEmpty()) {
+            beneficiary = assetDataRequest.getBeneficiaryMap();
+        }
         return AssetWithdrawRequest.builder()
                 .coin(assetDataRequest.getCoin())
                 .chain(assetDataRequest.getChain())
                 .address(assetDataRequest.getAddress())
                 .tag(assetDataRequest.getTag())
                 .amount(assetDataRequest.getAmount())
-                .timestamp(assetDataRequest.getTimestamp())
+                .timestamp(assetDataRequest.getTimestamp() == null ? Helper.generateTimestamp() : assetDataRequest.getTimestamp())
                 .forceChain(assetDataRequest.getForceChain())
                 .accountType(assetDataRequest.getAccountType() != null ? assetDataRequest.getAccountType().name() : null)  // Assuming accountType is an enum and you want to store its name as String in AssetWithdrawRequest
                 .feeType(assetDataRequest.getFeeType() == null ? null : assetDataRequest.getFeeType().getValue())
+                .beneficiary(beneficiary)
                 .build();
     }
 
@@ -511,13 +520,19 @@ public class BybitJsonConverter {
                 .build();
     }
 
-    public CreateApiKeyRequest mapToCreateSubApiRequest(UserDataRequest subUserRequest) {
-        return CreateApiKeyRequest.builder()
+    public CreateSubApiKeyRequest mapToCreateSubApiRequest(UserDataRequest subUserRequest) {
+        Map<String, List<String>> permissions = Collections.emptyMap();
+        if (subUserRequest.getUserPermissionsMap() != null) {
+            permissions = subUserRequest.getUserPermissionsMap().getPermissionMap();
+        } else if (subUserRequest.getPermissionsMap() != null && !subUserRequest.getPermissionsMap().isEmpty()) {
+            permissions = subUserRequest.getPermissionsMap();
+        }
+        return CreateSubApiKeyRequest.builder()
                 .subuid(subUserRequest.getSubuid())
                 .note(subUserRequest.getNote())
                 .readOnly(subUserRequest.getReadOnlyStatus() == null ? null : subUserRequest.getReadOnlyStatus().getValue())
                 .ips(subUserRequest.getIps() == null ? null : listToString(subUserRequest.getIps()))
-                .permissions(subUserRequest.getUserPermissionsMap() == null ? null : subUserRequest.getUserPermissionsMap().getPermissionMap())
+                .permissions(permissions)
                 .build();
     }
 
