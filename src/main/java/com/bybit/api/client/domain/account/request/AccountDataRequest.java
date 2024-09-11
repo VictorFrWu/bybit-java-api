@@ -7,6 +7,7 @@ import com.bybit.api.client.domain.account.SpotHedgingMode;
 import com.bybit.api.client.domain.position.MarginMode;
 import com.bybit.api.client.domain.preupgrade.TransactionType;
 import com.bybit.api.client.domain.user.IsUta;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountDataRequest {
     private AccountType accountType;
     private CategoryType category;

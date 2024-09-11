@@ -1,6 +1,7 @@
 package com.bybit.api.client.domain.institution;
 
 import com.bybit.api.client.domain.broker.BusinessType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LendingDataRequest {
     private final String productId;
     private final String orderId;

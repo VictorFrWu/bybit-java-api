@@ -1520,7 +1520,7 @@ public interface BybitApiService {
      * Parameter	Type	Comments
      * result	array	Object
      * &gt; id	string	Unique ID. Internal use
-     * &gt; ips	array<string>	IP bound
+     * &gt; ips	array string	IP bound
      * &gt; apiKey	string	Api key
      * &gt; note	string	The remark
      * &gt; status	integer	1: permanent, 2: expired, 3: within the validity period, 4: expires soon (less than 7 days)
@@ -4101,7 +4101,7 @@ public interface BybitApiService {
      *      * eb_convert_inverse
      * @return Response Parameters
      * Parameter	Type	Comments
-     * coins	array<object>	Coin spec
+     * coins	array object	Coin spec
      * &gt; coin	string	Coin
      * &gt; fullName	string	Full coin name
      * &gt; icon	string	Coin icon url
@@ -4187,7 +4187,7 @@ public interface BybitApiService {
      * up to 100 records, return 100 when exceeds 100
      * @return Response Parameters
      * Parameter	Type	Comments
-     * list	array<object>	Array of quotes
+     * list	array object	Array of quotes
      * &gt; accountType	string	Wallet type
      * &gt; exchangeTxId	string	Exchange tx ID, same as quote tx ID
      * &gt; userId	string	User ID

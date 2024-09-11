@@ -16,7 +16,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class SpotMarginTradeTest {
-    BybitApiSpotMarginRestClient client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newSpotMarginRestClient();
+    BybitApiSpotMarginRestClient client = BybitApiClientFactory.newInstance("xx", "xxx", BybitApiConfig.TESTNET_DOMAIN).newSpotMarginRestClient();
 
     @Test
     public void Test_MovePositions()

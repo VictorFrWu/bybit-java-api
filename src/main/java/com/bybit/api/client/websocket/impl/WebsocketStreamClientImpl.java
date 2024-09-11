@@ -143,10 +143,10 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
 
     private boolean requiresAuthentication(String path) {
         return BybitApiConfig.V5_TRADE.equals(path) ||
-                BybitApiConfig.V5_PRIVATE.equals(path) ||
-                BybitApiConfig.V3_CONTRACT_PRIVATE.equals(path) ||
+                BybitApiConfig.V5_PRIVATE.equals(path);
+/*                BybitApiConfig.V3_CONTRACT_PRIVATE.equals(path) ||
                 BybitApiConfig.V3_UNIFIED_PRIVATE.equals(path) ||
-                BybitApiConfig.V3_SPOT_PRIVATE.equals(path);
+                BybitApiConfig.V3_SPOT_PRIVATE.equals(path);*/
     }
 
     @NotNull

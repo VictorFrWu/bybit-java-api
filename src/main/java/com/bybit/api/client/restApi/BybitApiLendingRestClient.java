@@ -13,10 +13,10 @@ public interface BybitApiLendingRestClient {
     Object getInsLoanToValue();
     Object updateInstitutionLoanUid(LendingDataRequest lendingDataRequest);
     // C2C Endpoints
-    Object getC2CLendingCoinInfo(LendingDataRequest lendingDataRequest);
+/*    Object getC2CLendingCoinInfo(LendingDataRequest lendingDataRequest);
     Object C2cLendingDepositFunds(LendingDataRequest lendingDataRequest);
     Object C2cLendingRedeemFunds(LendingDataRequest lendingDataRequest);
     Object C2cLendingRedeemCancel(LendingDataRequest lendingDataRequest);
     Object getC2cOrdersRecords(LendingDataRequest lendingDataRequest);
-    Object getC2CLendingAccountInfo(LendingDataRequest lendingDataRequest);
+    Object getC2CLendingAccountInfo(LendingDataRequest lendingDataRequest);*/
 }
