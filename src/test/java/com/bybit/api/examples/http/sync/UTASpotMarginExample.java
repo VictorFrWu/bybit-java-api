@@ -15,13 +15,11 @@ public class UTASpotMarginExample {
         System.out.println(utaMarginData);
 
         // Toggle Margin Trade
-        var toggleMarginTradeRequest = SpotMarginDataRequest.builder().switchStatus(SwitchStatus.ON).build();
-        var utaToggleMarginTradeResult = client.setUTASpotMarginTrade(toggleMarginTradeRequest);
+        var utaToggleMarginTradeResult = client.setUTASpotMarginTrade("0");
         System.out.println(utaToggleMarginTradeResult);
 
         // Set Leverage
-        var spotLeverageSetRequest = SpotMarginDataRequest.builder().leverage("2").build();
-        var utaLeverageResult = client.setUTASpotMarginTradeLeverage(spotLeverageSetRequest);
+        var utaLeverageResult = client.setUTASpotMarginTradeLeverage("2");
         System.out.println(utaLeverageResult);
 
         // Get Status And Leverage

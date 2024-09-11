@@ -31,6 +31,9 @@ public interface BybitApiAsyncAssetRestClient {
     // convert coin endpoints
     void requestQuote(AssetDataRequest assetQuoteRequest,BybitApiCallback<Object> callback);
     void confirmQuote(String quoteTxId, BybitApiCallback<Object> callback);
+
+    void confirmQuote(AssetDataRequest assetQuoteRequest, BybitApiCallback<Object> callback);
+
     void getConvertCoinList(AssetDataRequest request, BybitApiCallback<Object> callback);
     void getConvertCoinStatus(AssetDataRequest request, BybitApiCallback<Object> callback);
     void getConvertCoinHistory(AssetDataRequest request, BybitApiCallback<Object> callback);

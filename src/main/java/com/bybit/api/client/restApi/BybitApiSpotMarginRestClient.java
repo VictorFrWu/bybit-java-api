@@ -13,8 +13,8 @@ public interface BybitApiSpotMarginRestClient {
 
     // Spot Margin UTA
     Object getUtaVipSpotMarginTradeData(SpotMarginDataRequest spotMarginDataRequest);
-    Object setUTASpotMarginTrade(SpotMarginDataRequest spotMarginDataRequest);
-    Object setUTASpotMarginTradeLeverage(SpotMarginDataRequest spotMarginDataRequest);
+    Object setUTASpotMarginTrade(String mode);
+    Object setUTASpotMarginTradeLeverage(String leverage);
     Object getUTASpotMarginTradeLeverageState();
 
     // Spot Margin Normal

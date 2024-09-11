@@ -8,6 +8,9 @@ import com.bybit.api.client.domain.asset.request.AssetCancelWithdrawRequest;
 import com.bybit.api.client.domain.asset.request.SetAssetDepositAccountRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
 /**
@@ -238,7 +241,15 @@ public class BybitApiAsyncAssetRestClientImpl implements BybitApiAsyncAssetRestC
 
     @Override
     public void confirmQuote(String quoteTxId, BybitApiCallback<Object> callback) {
-        bybitApiService.confirmQuote(quoteTxId).enqueue(new BybitApiCallbackAdapter<>(callback));
+        Map<String, String> map = new HashMap<>();
+        map.put("quoteTxId", quoteTxId);
+        bybitApiService.confirmQuote(map).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void confirmQuote(AssetDataRequest assetQuoteRequest, BybitApiCallback<Object> callback) {
+        var request = converter.mapToAssetConfirmQuoteRequest(assetQuoteRequest);
+        bybitApiService.confirmQuote(request).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 
     @Override
