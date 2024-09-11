@@ -7,7 +7,7 @@ import com.bybit.api.client.restApi.BybitApiAssetRestClient;
 import com.bybit.api.client.service.BybitApiClientFactory;
 import org.junit.Test;
 public class ConvertCoinTest {
-    BybitApiClientFactory factory = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN);
+    BybitApiClientFactory factory = BybitApiClientFactory.newInstance("d08Wh6P037IXAvcrL2", "gLfd1BLGU9oq6YoRZRlwXkIQRYB4n5KvXDvv", BybitApiConfig.TESTNET_DOMAIN);
     BybitApiAssetRestClient client = factory.newAssetRestClient();
 
     @Test

@@ -1,5 +1,6 @@
 package com.bybit.api.client.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDataRequest {
     private String username;
     private String password;
@@ -28,4 +30,9 @@ public class UserDataRequest {
     private String apikey;
     private ReadOnlyStatus readOnlyStatus;
     private String uid;
+    private String subMemberId;
+    private Integer limit;
+    private String pageSize;
+    private String nextCursor;
+    private String cursor;
 }

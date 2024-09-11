@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserCreatedTest {
-    BybitApiUserRestClient client = BybitApiClientFactory.newInstance("8wYkmpLsMg10eNQyPm", "Ouxc34myDnXvei54XsBZgoQzfGxO4bkr2Zsj", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
+    BybitApiUserRestClient client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
 
     @Test
     public void Test_GetUserInfo(){

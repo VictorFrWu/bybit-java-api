@@ -27,4 +27,8 @@ public interface BybitApiAsyncUserRestClient {
     void deleteMasterApiKey(BybitApiCallback<Object> callback);
     void deleteSubApiKey(UserDataRequest userDataRequest, BybitApiCallback<Object> callback);
     void getAffiliateUserInfo(UserDataRequest userDataRequest, BybitApiCallback<Object> callback);
+
+    void getSubUIDListUnlimited(UserDataRequest subUserRequest, BybitApiCallback<Object> callback);
+    void getSubUIDListUnlimited(BybitApiCallback<Object> callback);
+    void getSubAccAllAPIKeyInfo(UserDataRequest subUserRequest, BybitApiCallback<Object> callback);
 }

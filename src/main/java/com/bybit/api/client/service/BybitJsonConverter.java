@@ -26,7 +26,7 @@ import com.bybit.api.client.domain.user.IsUta;
 import com.bybit.api.client.domain.user.MemberType;
 import com.bybit.api.client.domain.user.SwitchOption;
 import com.bybit.api.client.domain.user.UserDataRequest;
-import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
+import com.bybit.api.client.domain.user.request.CreateSubApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
@@ -511,8 +511,8 @@ public class BybitJsonConverter {
                 .build();
     }
 
-    public CreateApiKeyRequest mapToCreateSubApiRequest(UserDataRequest subUserRequest) {
-        return CreateApiKeyRequest.builder()
+    public CreateSubApiKeyRequest mapToCreateSubApiRequest(UserDataRequest subUserRequest) {
+        return CreateSubApiKeyRequest.builder()
                 .subuid(subUserRequest.getSubuid())
                 .note(subUserRequest.getNote())
                 .readOnly(subUserRequest.getReadOnlyStatus() == null ? null : subUserRequest.getReadOnlyStatus().getValue())

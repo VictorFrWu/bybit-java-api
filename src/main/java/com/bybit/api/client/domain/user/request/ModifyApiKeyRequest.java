@@ -1,6 +1,7 @@
 package com.bybit.api.client.domain.user.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,5 +18,6 @@ public class ModifyApiKeyRequest {
     private Integer readOnly;
     private String ips;
     private String apikey;
+    @JsonProperty("permissions")
     private Map<String, List<String>> permissionsMap;
 }

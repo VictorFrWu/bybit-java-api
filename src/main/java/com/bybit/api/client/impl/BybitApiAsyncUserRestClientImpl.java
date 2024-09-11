@@ -164,4 +164,27 @@ public class BybitApiAsyncUserRestClientImpl implements BybitApiAsyncUserRestCli
     public void getAffiliateUserInfo(UserDataRequest userDataRequest, BybitApiCallback<Object> callback) {
         bybitApiService.getAffiliateUserInfo(userDataRequest.getUid()).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
+
+    @Override
+    public void getSubUIDListUnlimited(UserDataRequest subUserRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getSubUIDListUnlimited(
+                subUserRequest.getPageSize(),
+                subUserRequest.getNextCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getSubUIDListUnlimited(BybitApiCallback<Object> callback) {
+        bybitApiService.getSubUIDListUnlimited().enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getSubAccAllAPIKeyInfo(UserDataRequest subUserRequest, BybitApiCallback<Object> callback) {
+        bybitApiService.getSubAccAllAPIKeyInfo(
+                subUserRequest.getSubMemberId(),
+                subUserRequest.getLimit(),
+                subUserRequest.getCursor()
+        ).enqueue(new BybitApiCallbackAdapter<>(callback));
+
+    }
 }

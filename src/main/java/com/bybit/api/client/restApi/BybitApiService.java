@@ -12,7 +12,7 @@ import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeBorrowRequest
 import com.bybit.api.client.domain.spot.marginTrade.SpotMarginTradeRePayRequest;
 import com.bybit.api.client.domain.trade.*;
 import com.bybit.api.client.domain.trade.request.*;
-import com.bybit.api.client.domain.user.request.CreateApiKeyRequest;
+import com.bybit.api.client.domain.user.request.CreateSubApiKeyRequest;
 import com.bybit.api.client.domain.user.request.FreezeSubUIDRquest;
 import com.bybit.api.client.domain.user.request.ModifyApiKeyRequest;
 import com.bybit.api.client.domain.user.request.UserSubMemberRequest;
@@ -1464,6 +1464,92 @@ public interface BybitApiService {
     Call<Object> getSubUIDList();
 
     /**
+     * Get Sub UID List (Unlimited)
+     * This API is applicable to the client who has over 10k sub accounts. Use master user's api key only.
+     *
+     * tip
+     * The API key must have one of the below permissions in order to call this endpoint..
+     *
+     * master API key: "Account Transfer", "Subaccount Transfer", "Withdrawal"
+     * https://bybit-exchange.github.io/docs/v5/user/page-subuid
+     * HTTP Request
+     * GET /v5/user/submembers
+     * @param pageSize false	string	Data size per page. Return up to 100 records per request
+     * @param nextCursor false	string	Cursor. Use the nextCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * subMembers	array	Object
+     * &gt; uid	string	Sub user Id
+     * &gt; username	string	Username
+     * &gt; memberType	integer	1: standard sub account, 6: custodial sub account
+     * &gt; status	integer	The status of the user account
+     * 1: normal
+     * 2: login banned
+     * 4: frozen
+     * &gt; accountMode	integer	The account mode of the user account
+     * 1: Classic Account
+     * 3: Unified Trading Account
+     * &gt; remark	string	The remark
+     * nextCursor	string	The next page cursor value. "0" means no more pages
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/user/submembers")
+    Call<Object> getSubUIDListUnlimited(@Query("pageSize") String pageSize,
+                                        @Query("nextCursor") String nextCursor);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/user/submembers")
+    Call<Object> getSubUIDListUnlimited();
+
+    /**
+     * Get Sub Account All API Keys
+     * Query all api keys information of a sub UID.
+     *
+     * tip
+     * Any permission can access this endpoint
+     * Only master account can call this endpoint
+     * HTTP Request
+     * GET /v5/user/sub-apikeys
+     * https://bybit-exchange.github.io/docs/v5/user/list-sub-apikeys
+     * @param subMemberId	true	string	Sub UID
+     * @param limit	false	integer	Limit for data size per page. [1, 20]. Default: 20
+     * @param cursor	false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * result	array	Object
+     * &gt; id	string	Unique ID. Internal use
+     * &gt; ips	array<string>	IP bound
+     * &gt; apiKey	string	Api key
+     * &gt; note	string	The remark
+     * &gt; status	integer	1: permanent, 2: expired, 3: within the validity period, 4: expires soon (less than 7 days)
+     * &gt; expiredAt	datetime	The expiry day of the api key. Only for those api key with no IP bound or the password has been changed
+     * &gt; createdAt	datetime	The create day of the api key
+     * &gt; type	integer	The type of api key. 1：personal, 2：connected to the third-party app
+     * &gt; permissions	Object	The types of permission
+     * &gt;&gt; ContractTrade	array	Permission of contract trade Order, Position
+     * &gt;&gt; Spot	array	Permission of spot SpotTrade
+     * &gt;&gt; Wallet	array	Permission of wallet AccountTransfer, SubMemberTransferList
+     * &gt;&gt; Options	array	Permission of USDC Contract. It supports trade option and USDC perpetual. OptionsTrade
+     * &gt;&gt; Derivatives	array	Unified account api key have this permission by default. DerivativesTrade
+     * &gt;&gt; CopyTrading	array	Always [], Master Trader uses "Contract" permission to start Copytrading
+     * &gt;&gt; BlockTrade	array	Permission of blocktrade. Not applicable to subaccount, always []
+     * &gt;&gt; Exchange	array	Permission of exchange ExchangeHistory
+     * &gt;&gt; NFT	array	Permission of NFT. Not applicable to sub account, always []
+     * &gt;&gt; Affiliate	array	Permission of Affiliate. Not applicable to sub account, always []
+     * &gt; secret	string	Always "******"
+     * &gt; readOnly	boolean	true, false
+     * &gt; deadlineDay	integer	The remaining valid days of api key. Only for those api key with no IP bound or the password has been changed
+     * &gt; flag	string	Api key type
+     * nextPageCursor	string	Refer to the cursor request parameter
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/user/sub-apikeys")
+    Call<Object> getSubAccAllAPIKeyInfo(
+            @Query("subMemberId") String subMemberId,
+            @Query("limit") Integer limit,
+            @Query("cursor") String cursor);
+
+    /**
      * Get UID Wallet Type
      * Get available wallet types for the master account or sub account
      * <p>
@@ -1583,7 +1669,7 @@ public interface BybitApiService {
      * <p>
      * https://bybit-exchange.github.io/docs/v5/user/create-subuid-apikey#http-request
      *
-     * @param createApiKeyRequest subuid	true	integer	Sub user Id
+     * @param createSubApiKeyRequest subuid	true	integer	Sub user Id
      *                            note	false	string	Set a remark
      *                            readOnly	true	integer	0：Read and Write. 1：Read only
      *                            ips	false	string	Set the IP bind. example: "192.168.0.1,192.168.0.2"note:
@@ -1620,7 +1706,7 @@ public interface BybitApiService {
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/user/create-sub-api")
-    Call<Object> createSubAPI(@Body CreateApiKeyRequest createApiKeyRequest);
+    Call<Object> createSubAPI(@Body CreateSubApiKeyRequest createSubApiKeyRequest);
 
     /**
      * Modify Master API Key
@@ -3954,9 +4040,13 @@ public interface BybitApiService {
      * <p>
      * https://bybit-exchange.github.io/docs/v5/asset/withdraw#http-request
      *
-     * @param assetWithdrawRequest coin	true	string	Coin
-     *                             chain	true	string	Chain
-     *                             address	true	string	Wallet address. Please note that the address is case sensitive, so use the exact same address added in address book
+     * @param assetWithdrawRequest coin	true	string	Coin, uppercase only
+     *                             chain	false	string	Chain
+     *                             forceChain=0 or 1: this field is required
+     *                             forceChain=2: this field can be null
+     *                             address	true	string
+     *                             forceChain=0 or 1: fill wallet address, and make sure you add address in the address book first. Please note that the address is case sensitive, so use the exact same address added in address book
+     *                             forceChain=2: fill Bybit UID, and it can only be another Bybit main account UID. Make sure you add UID in the address book first
      *                             tag	false	string	Tag
      *                             Required if tag exists in the wallet address list.
      *                             Note: please do not set a tag/memo in the address book if the chain does not support tag
@@ -3965,12 +4055,20 @@ public interface BybitApiService {
      *                             forceChain	false	integer	Whether or not to force an on-chain withdrawal
      *                             0(default): If the address is parsed out to be an internal address, then internal transfer
      *                             1: Force the withdrawal to occur on-chain
+     *                             2: Use UID to withdraw
      *                             accountType	false	string	Select the wallet to be withdrawn from
      *                             SPOT：spot wallet (default)
      *                             FUND：Funding wallet
      *                             feeType	false	integer	Handling fee option
      *                             0(default): input amount is the actual amount received, so you have to calculate handling fee manually
      *                             1: input amount is not the actual amount you received, the system will help to deduct the handling fee automatically
+     *                             requestId	false	string	Customised ID, globally unique, it is used for idempotent verification
+     *                             A combination of letters (case sensitive) and numbers, which can be pure letters or pure numbers and the length must be between 1 and 32 digits
+     *                             beneficiary	false	Object	Travel rule info, only required for kyc=KOR (korean) users
+     *                             &gt; vaspEntityId	true	string	Receiver exchange entity Id. Please call this endpoint to get this ID
+     *                             &gt; beneficiaryName	false	string	Receiver exchange user KYC name, like John Wilson or Wilson John
+     *                             Please refer to target exchange kyc name
+     *                             When vaspEntityId="others", this field can be null
      * @return Response Parameters
      * Parameter	Type	Comments
      * id	string	Withdrawal ID

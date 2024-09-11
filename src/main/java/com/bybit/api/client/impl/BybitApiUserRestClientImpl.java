@@ -35,6 +35,28 @@ public class BybitApiUserRestClientImpl implements BybitApiUserRestClient {
     }
 
     @Override
+    public Object getSubUIDListUnlimited(UserDataRequest subUserRequest) {
+        return executeSync(bybitApiService.getSubUIDListUnlimited(
+                subUserRequest.getPageSize(),
+                subUserRequest.getNextCursor()
+        ));
+    }
+
+    @Override
+    public Object getSubUIDListUnlimited() {
+        return executeSync(bybitApiService.getSubUIDListUnlimited());
+    }
+
+    @Override
+    public Object getSubAccAllAPIKeyInfo(UserDataRequest subUserRequest) {
+        return executeSync(bybitApiService.getSubAccAllAPIKeyInfo(
+                subUserRequest.getSubMemberId(),
+                subUserRequest.getLimit(),
+                subUserRequest.getCursor()
+        ));
+    }
+
+    @Override
     public Object createSubMember(UserDataRequest request) {
         UserSubMemberRequest subUserRequest = converter.mapToCreateSubMemberRequest(request);
         return executeSync(bybitApiService.createSubMember(subUserRequest));
