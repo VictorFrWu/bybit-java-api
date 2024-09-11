@@ -45,4 +45,5 @@ public class AssetWithdrawRequest {
     private Integer forceChain;
     private String accountType;
     private Integer feeType;
+    private Beneficiary beneficiary;
 }
