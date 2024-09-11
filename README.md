@@ -61,7 +61,7 @@ Furthermore, build tool, please check [sonar type central repository](https://ce
 - Add convert get status endpoint
 - Add convert get coin list quote endpoint
 - Add convert get history quote endpoint
-- 
+
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
 ### HttP Client Factory & Websocket Client
