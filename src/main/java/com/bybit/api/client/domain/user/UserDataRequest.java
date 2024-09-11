@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -22,6 +23,7 @@ public class UserDataRequest {
     private String note;
     private MasterUserPermissions masterUserPermissions;
     private SubUserPermissions subUserPermissions;
+    private Map<String, List<String>> permissionsMap;
     private UserPermissionsMap userPermissionsMap;
     private FrozenStatus frozenStatus;
     private Integer subuid;

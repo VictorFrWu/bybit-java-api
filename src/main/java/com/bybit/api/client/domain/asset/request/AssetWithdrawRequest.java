@@ -60,5 +60,5 @@ public class AssetWithdrawRequest {
     private Integer feeType;
     private String requestId; // not required
     @JsonProperty("beneficiary")
-    private Map<String, String> beneficiaryMap; // not required
+    private Map<String, String> beneficiary; // not required
 }

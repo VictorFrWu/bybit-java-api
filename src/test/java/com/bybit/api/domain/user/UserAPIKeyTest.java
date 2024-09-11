@@ -6,11 +6,8 @@ import com.bybit.api.client.restApi.BybitApiUserRestClient;
 import com.bybit.api.client.service.BybitApiClientFactory;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
-
-public class UserAPIKeyest {
-    BybitApiUserRestClient client = BybitApiClientFactory.newInstance("d08Wh6P037IXAvcrL2", "gLfd1BLGU9oq6YoRZRlwXkIQRYB4n5KvXDvv", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
+public class UserAPIKeyTest {
+    BybitApiUserRestClient client = BybitApiClientFactory.newInstance("YOUR_API_KEY", "YOUR_API_SECRET", BybitApiConfig.TESTNET_DOMAIN).newUserRestClient();
 
     @Test
     public void Test_GetSubUsersInfo(){
