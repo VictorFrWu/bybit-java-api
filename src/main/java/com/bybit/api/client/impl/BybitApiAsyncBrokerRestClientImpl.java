@@ -4,11 +4,13 @@ import com.bybit.api.client.restApi.BybitApiAsyncBrokerRestClient;
 import com.bybit.api.client.restApi.BybitApiCallback;
 import com.bybit.api.client.restApi.BybitApiService;
 import com.bybit.api.client.domain.broker.BrokerDataRequest;
+import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
 
 public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRestClient {
     private final BybitApiService bybitApiService;
+    private final BybitJsonConverter converter = new BybitJsonConverter();
     public BybitApiAsyncBrokerRestClientImpl(String apiKey, String secret, String baseUrl, boolean debugMode, long recvWindow, String logOption) {
         bybitApiService = createService(BybitApiService.class, apiKey, secret, baseUrl, debugMode, recvWindow, logOption, "");
     }
@@ -39,5 +41,23 @@ public class BybitApiAsyncBrokerRestClientImpl implements BybitApiAsyncBrokerRes
                 brokerDataRequest.getLimit(),
                 brokerDataRequest.getCursor()
         ).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getVoucherSpec(BrokerDataRequest voucherSpecRequest, BybitApiCallback<Object> callback) {
+        var request = converter.mapToBrokerVoucherSpecRequest(voucherSpecRequest);
+        bybitApiService.getVoucherSpec(request).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void issueVoucher(BrokerDataRequest issueVoucherRequest, BybitApiCallback<Object> callback) {
+        var request = converter.mapToBrokerIssueVoucherRequest(issueVoucherRequest);
+        bybitApiService.issueVoucher(request).enqueue(new BybitApiCallbackAdapter<>(callback));
+    }
+
+    @Override
+    public void getIssuedVoucher(BrokerDataRequest getIssuedVoucherRequest, BybitApiCallback<Object> callback) {
+        var request = converter.mapToBrokerGetIssuedVoucherRequest(getIssuedVoucherRequest);
+        bybitApiService.getIssuedVoucher(request).enqueue(new BybitApiCallbackAdapter<>(callback));
     }
 }
