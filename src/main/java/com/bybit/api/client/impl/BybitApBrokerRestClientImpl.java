@@ -2,7 +2,7 @@ package com.bybit.api.client.impl;
 
 import com.bybit.api.client.restApi.BybitApiBrokerRestClient;
 import com.bybit.api.client.restApi.BybitApiService;
-import com.bybit.api.client.domain.broker.BrokerDataRequest;
+import com.bybit.api.client.domain.broker.request.BrokerDataRequest;
 import com.bybit.api.client.service.BybitJsonConverter;
 
 import static com.bybit.api.client.service.BybitApiServiceGenerator.createService;
@@ -42,6 +42,11 @@ public class BybitApBrokerRestClientImpl implements BybitApiBrokerRestClient {
                 brokerDataRequest.getLimit(),
                 brokerDataRequest.getCursor()
         ));
+    }
+
+    @Override
+    public Object getSubAccountsDeposits() {
+        return executeSync(bybitApiService.getBrokerSubDeposits());
     }
 
     @Override

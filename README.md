@@ -40,27 +40,20 @@ Maven Example
 <dependency>
     <groupId>io.github.wuhewuhe</groupId>
     <artifactId>bybit-java-api</artifactId>
-    <version>1.2.6</version>
+    <version>1.2.8</version>
 </dependency>
 ```
 Gradle Example
 ```java
-implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.6'
+implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.2.8'
 ```
 Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
 ## Release-Notes
 ### Rest API
-- Fix spot margin toogle 
-- Fix spot margin set leverage
-- Add Broker to convert coin
-- Add get sub uids unlimited endpoint
-- Add get all sub uid api keys info endpoint
-- Add convert request quote endpoint
-- Add convert confirm quote endpoint
-- Add convert get status endpoint
-- Add convert get coin list quote endpoint
-- Add convert get history quote endpoint
+- Add Broker Reward Query Voucher Spec endpoint
+- Add Issue Voucher endpoint
+- Add Query Issued Voucher endpoint
 
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.
