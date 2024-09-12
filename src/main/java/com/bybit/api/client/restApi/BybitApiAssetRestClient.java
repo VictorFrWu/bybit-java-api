@@ -1,7 +1,6 @@
 package com.bybit.api.client.restApi;
 
 import com.bybit.api.client.domain.asset.request.AssetDataRequest;
-import com.bybit.api.client.domain.asset.request.AssetQuoteRequest;
 
 public interface BybitApiAssetRestClient {
     // Asset Endpoints
@@ -32,6 +31,7 @@ public interface BybitApiAssetRestClient {
     // convert coin endpoints
     Object requestQuote(AssetDataRequest assetQuoteRequest);
     Object confirmQuote(String quoteTxId);
+    Object confirmQuote(AssetDataRequest assetQuoteRequest);
     Object getConvertCoinList(AssetDataRequest request);
     Object getConvertCoinStatus(AssetDataRequest request);
     Object getConvertCoinHistory(AssetDataRequest request);

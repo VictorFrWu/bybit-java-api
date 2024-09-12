@@ -50,24 +50,17 @@ implementation group: 'io.github.wuhewuhe', name: 'bybit-java-api', version: '1.
 Furthermore, build tool, please check [sonar type central repository](https://central.sonatype.com/artifact/io.github.wuhewuhe/bybit-java-api/1.2.3)
 
 ## Release-Notes
-### Websockets
-- Websocket Trade API headers change to header
-
 ### Rest API
-- Fix create user uta and switch
-- Fix get recent trade
-- Add Broker get all sub uids deposits records
-- Add get smp group id
-- Add transaction log to classical user
-
-### Change Log
-- decrypted functions:
-getC2CLendingCoinInfo
-getC2cLendingDepositFunds
-getC2cLendingRedeemFunds
-getC2cLendingRedeemCancel
-getC2cOrdersRecords
-getC2CLendingAccountInfo
+- Fix spot margin toogle 
+- Fix spot margin set leverage
+- Add Broker to convert coin
+- Add get sub uids unlimited endpoint
+- Add get all sub uid api keys info endpoint
+- Add convert request quote endpoint
+- Add convert confirm quote endpoint
+- Add convert get status endpoint
+- Add convert get coin list quote endpoint
+- Add convert get history quote endpoint
 
 ## Usage
 Note: Replace placeholders (like YOUR_API_KEY, links, or other details) with the actual information. You can also customize this template to better fit the actual state and details of your Java API.

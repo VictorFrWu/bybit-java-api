@@ -53,7 +53,7 @@ public class BybitApiLendingRestClientImpl implements BybitApiLendingRestClient 
     }
 
     // C2C Endpoints
-    @Override
+    /*@Override
     public Object getC2CLendingCoinInfo(LendingDataRequest lendingDataRequest) {
         return executeSync(bybitApiService.getC2CLendingCoinInfo(lendingDataRequest.getCoin()));
     }
@@ -92,5 +92,5 @@ public class BybitApiLendingRestClientImpl implements BybitApiLendingRestClient 
     public Object getC2CLendingAccountInfo(LendingDataRequest lendingDataRequest) {
         String coin = lendingDataRequest.getCoin();
         return executeSync(bybitApiService.getC2CLendingAccountInfo(coin));
-    }
+    }*/
 }

@@ -20,4 +20,6 @@ public class AssetQuoteRequest {
     private String requestAmount;
     private String accountType;
     private String requestId;
+    private String paramType; // api broker
+    private String paramValue; // api broker
 }

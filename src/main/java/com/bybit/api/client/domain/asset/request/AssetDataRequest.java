@@ -3,10 +3,13 @@ package com.bybit.api.client.domain.asset.request;
 import com.bybit.api.client.domain.CategoryType;
 import com.bybit.api.client.domain.account.AccountType;
 import com.bybit.api.client.domain.asset.*;
+import com.bybit.api.client.domain.WithdrawBeneficiaryMap;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.Map;
 
 @Getter
 @Setter
@@ -53,4 +56,8 @@ public class AssetDataRequest {
     private String requestCoin;
     private String requestAmount;
     private String requestId;
+    private String paramType; // api broker
+    private String paramValue; // api broker
+    private WithdrawBeneficiaryMap withdrawBeneficiaryMap;
+    private Map<String, String> beneficiaryMap;
 }

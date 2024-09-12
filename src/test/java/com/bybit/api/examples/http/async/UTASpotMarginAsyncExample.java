@@ -13,12 +13,10 @@ public class UTASpotMarginAsyncExample {
         client.getUtaVipSpotMarginTradeData(utaMarginDataRequest, System.out::println);
 
         // Toggle Margin Trade
-        var toggleMarginTradeRequest = SpotMarginDataRequest.builder().switchStatus(SwitchStatus.ON).build();
-        client.setUTASpotMarginTrade(toggleMarginTradeRequest, System.out::println);
+        client.setUTASpotMarginTrade("0", System.out::println);
 
         // Set Leverage
-        var spotLeverageSetRequest = SpotMarginDataRequest.builder().leverage("2").build();
-        client.setUTASpotMarginTradeLeverage(spotLeverageSetRequest, System.out::println);
+        client.setUTASpotMarginTradeLeverage("2", System.out::println);
 
         // Set Status And Leverage
         client.getUTASpotMarginTradeLeverageState(System.out::println);

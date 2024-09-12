@@ -18,9 +18,9 @@ public interface BybitApiAsyncSpotMarginRestClient {
     // Spot Margin UTA
     void getUtaVipSpotMarginTradeData(SpotMarginDataRequest spotMarginDataRequest, BybitApiCallback<Object> callback);
 
-    void setUTASpotMarginTrade(SpotMarginDataRequest spotMarginDataRequest, BybitApiCallback<Object> callback);
+    void setUTASpotMarginTrade(String mode, BybitApiCallback<Object> callback);
 
-    void setUTASpotMarginTradeLeverage(SpotMarginDataRequest spotMarginDataRequest, BybitApiCallback<Object> callback);
+    void setUTASpotMarginTradeLeverage(String leverage, BybitApiCallback<Object> callback);
 
     void getUTASpotMarginTradeLeverageState(BybitApiCallback<Object> callback);
 

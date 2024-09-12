@@ -9,7 +9,13 @@ public enum AccountType {
     INVESTMENT("INVESTMENT"),
     OPTION("OPTION"),
     UNIFIED("UNIFIED"),
-    FUND("FUND");
+    FUND("FUND"),
+
+    // Convert
+    CONVERT_UTA("eb_convert_uta"),
+    CONVERT_SPOT("eb_convert_spot"),
+    CONVERT_contract("eb_convert_contract"),
+    CONVERT_FUNDING("eb_convert_funding");
 
     private final String accountTypeValue;
 
