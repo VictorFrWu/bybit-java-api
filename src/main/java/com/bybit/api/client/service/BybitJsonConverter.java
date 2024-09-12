@@ -10,11 +10,10 @@ import com.bybit.api.client.domain.account.request.SetMMPRequest;
 import com.bybit.api.client.domain.account.request.SetMarginModeRequest;
 import com.bybit.api.client.domain.asset.request.AssetDataRequest;
 import com.bybit.api.client.domain.asset.request.*;
-import com.bybit.api.client.domain.broker.BrokerDataRequest;
-import com.bybit.api.client.domain.broker.BrokerGetIssuedVoucherRequest;
-import com.bybit.api.client.domain.broker.BrokerIssueVoucherRequest;
-import com.bybit.api.client.domain.broker.BrokerVoucherSpecRequest;
-import com.bybit.api.client.domain.broker.WithUsedAmount;
+import com.bybit.api.client.domain.broker.request.BrokerDataRequest;
+import com.bybit.api.client.domain.broker.request.BrokerGetIssuedVoucherRequest;
+import com.bybit.api.client.domain.broker.request.BrokerIssueVoucherRequest;
+import com.bybit.api.client.domain.broker.request.BrokerVoucherSpecRequest;
 import com.bybit.api.client.domain.institution.LendingDataRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.institution.insLending.UpdateInstitutionLoadUidRequest;
@@ -628,6 +627,7 @@ public class BybitJsonConverter {
   
     public ConfirmQuoteRequest mapToAssetConfirmQuoteRequest(AssetDataRequest assetQuoteRequest) {
         return ConfirmQuoteRequest.builder().quoteTxId(assetQuoteRequest.getQuoteTxId()).build();
+    }
     
     // Broker Reward Convert Requests
     public BrokerVoucherSpecRequest mapToBrokerVoucherSpecRequest(BrokerDataRequest brokerDataRequest) {
@@ -651,7 +651,7 @@ public class BybitJsonConverter {
                 .accountId(brokerDataRequest.getAccountId())
                 .awardId(brokerDataRequest.getAwardId())
                 .specCode(brokerDataRequest.getSpecCode())
-                .withUsedAmount(brokerDataRequest.getWithUsedAmount() == null ? null : brokerDataRequest.getWithUsedAmount().getValue()) // FIXME: there is an issue here
+                .withUsedAmount(brokerDataRequest.getWithUsedAmount() == null ? null : brokerDataRequest.getWithUsedAmount().getValue())
                 .build();
     }
 }

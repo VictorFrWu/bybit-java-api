@@ -3,9 +3,9 @@ package com.bybit.api.client.restApi;
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.request.*;
-import com.bybit.api.client.domain.broker.BrokerGetIssuedVoucherRequest;
-import com.bybit.api.client.domain.broker.BrokerIssueVoucherRequest;
-import com.bybit.api.client.domain.broker.BrokerVoucherSpecRequest;
+import com.bybit.api.client.domain.broker.request.BrokerGetIssuedVoucherRequest;
+import com.bybit.api.client.domain.broker.request.BrokerIssueVoucherRequest;
+import com.bybit.api.client.domain.broker.request.BrokerVoucherSpecRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.institution.insLending.UpdateInstitutionLoadUidRequest;
 import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
@@ -5090,6 +5090,10 @@ public interface BybitApiService {
                                       @Query("limit") Integer limit,
                                       @Query("cursor") String cursor);
 
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/broker/asset/query-sub-member-deposit-record")
+    Call<Object> getBrokerSubDeposits();
+
     /**
      * Get Exchange Broker Account Info
      * INFO
@@ -5114,8 +5118,24 @@ public interface BybitApiService {
     Call<Object> getBrokerAccountInfo();
 
     /**
-     * Get Voucher Spec
+     * Query Voucher Spec
+     * HTTP Request
+     * POST /v5/broker/award/info
+     *
      * https://bybit-exchange.github.io/docs/v5/broker/reward/voucher
+     *
+     * @param voucherSpecRequest id	true	string	Voucher ID
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * id	string	Voucher ID
+     * coin	string	Coin
+     * amountUnit	string
+     * AWARD_AMOUNT_UNIT_USD
+     * AWARD_AMOUNT_UNIT_COIN
+     * productLine	string	Product line
+     * subProductLine	string	Sub product line
+     * totalAmount	Object	Total amount of voucher
+     * usedAmount	string	Used amount of voucher
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/broker/award/info")
@@ -5123,15 +5143,43 @@ public interface BybitApiService {
 
     /**
      * Issue Voucher
+     * HTTP Request
+     * POST /v5/broker/award/distribute-award
      * https://bybit-exchange.github.io/docs/v5/broker/reward/issue-voucher
+     * @param issueVoucherRequest   accountId	true	string	User ID
+     *                              awardId	true	string	Voucher ID
+     *                              specCode	true	string	Customised unique spec code, up to 8 characters
+     *                              amount	true	string	Issue amount
+     *                              Spot airdrop supports up to 16 decimals
+     *                              Other types supports up to 4 decimals
+     *                              brokerId	true	string	Broker ID
+     * @return None
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/broker/award/distribute-award")
     Call<Object> issueVoucher(@Body BrokerIssueVoucherRequest issueVoucherRequest);
 
     /**
-     * Get Issued Voucher
+     * Query Issued Voucher
+     * HTTP Request
+     * POST /v5/broker/award/distribution-record
      * https://bybit-exchange.github.io/docs/v5/broker/reward/get-issue-voucher
+     * @param getIssuedVoucherRequest accountId	true	string	User ID
+     *                                  awardId	true	string	Voucher ID
+     *                                  specCode	true	string	Customised unique spec code, up to 8 characters
+     *                                  withUsedAmount	false	boolean	Whether to return the amount used by the user
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * accountId	string	User ID
+     * awardId	string	Voucher ID
+     * specCode	string	Spec code
+     * amount	string	Amount of voucher
+     * isClaimed	boolean	true, false
+     * startAt	string	Claim start timestamp (sec)
+     * endAt	string	Claim end timestamp (sec)
+     * effectiveAt	string	Voucher effective timestamp (sec) after claimed
+     * ineffectiveAt	string	Voucher inactive timestamp (sec) after claimed
+     * usedAmount	string	Amount used by the user
      */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/broker/award/distribution-record")

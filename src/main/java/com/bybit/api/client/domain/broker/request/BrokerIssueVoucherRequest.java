@@ -1,4 +1,4 @@
-package com.bybit.api.client.domain.broker;
+package com.bybit.api.client.domain.broker.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
