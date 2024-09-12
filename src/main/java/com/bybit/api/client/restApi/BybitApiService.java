@@ -3,6 +3,9 @@ package com.bybit.api.client.restApi;
 import com.bybit.api.client.constant.BybitApiConstants;
 import com.bybit.api.client.domain.account.request.*;
 import com.bybit.api.client.domain.asset.request.*;
+import com.bybit.api.client.domain.broker.BrokerGetIssuedVoucherRequest;
+import com.bybit.api.client.domain.broker.BrokerIssueVoucherRequest;
+import com.bybit.api.client.domain.broker.BrokerVoucherSpecRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.institution.insLending.UpdateInstitutionLoadUidRequest;
 import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
@@ -5005,6 +5008,30 @@ public interface BybitApiService {
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/broker/account-info")
     Call<Object> getBrokerAccountInfo();
+
+    /**
+     * Get Voucher Spec
+     * https://bybit-exchange.github.io/docs/v5/broker/reward/voucher
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/broker/award/info")
+    Call<Object> getVoucherSpec(@Body BrokerVoucherSpecRequest voucherSpecRequest);
+
+    /**
+     * Issue Voucher
+     * https://bybit-exchange.github.io/docs/v5/broker/reward/issue-voucher
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/broker/award/distribute-award")
+    Call<Object> issueVoucher(@Body BrokerIssueVoucherRequest issueVoucherRequest);
+
+    /**
+     * Get Issued Voucher
+     * https://bybit-exchange.github.io/docs/v5/broker/reward/get-issue-voucher
+     */
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/broker/award/distribution-record")
+    Call<Object> getIssuedVoucher(@Body BrokerGetIssuedVoucherRequest getIssuedVoucherRequest);
 
     // C2C Endpoints
 
