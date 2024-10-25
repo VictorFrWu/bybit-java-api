@@ -357,6 +357,20 @@ public class BybitApiClientFactory {
     }
 
     /**
+     * Creates a new synchronous/blocking REST client to Crypto Loan data
+     */
+    public BybitApiLoanRestClient newCryptoLoanRestClient() {
+        return new BybitApiLoanRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+    }
+
+    /**
+     * Creates a new asynchronous/non-blocking client to Crypto Loan data
+     */
+    public BybitApiAsyncLoanRestClient newAsyncCryptoLoanRestClient() {
+        return new BybitApiAsyncLoanRestClientImpl(apiKey, secret, baseUrl, debugMode, recvWindow, logOption);
+    }
+
+    /**
      * Access to public websocket
      */
     public WebsocketStreamClient newWebsocketClient() {
