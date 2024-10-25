@@ -5428,6 +5428,22 @@ public interface BybitApiService {
             @Query("vipLevel") String vipLevel,
             @Query("currency") String currency);
 
+    /**
+     * Get Account Loan Collateral Coin Limit
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/acct-borrow-collateral
+     *
+     * @param loanCurrency  true     string	    Loan coin name
+     * @param collateralCurrency true string	Collateral coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * collateralCurrency	string	Collateral coin name
+     * loanCurrency	        string	Loan coin name
+     * maxCollateralAmount	string	Max. limit to mortgage
+     * maxLoanAmount	    string	Max. limit to borrow
+     * minCollateralAmount	string	Min. limit to mortgage
+     * minLoanAmount	    string	Min. limit to borrow
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/crypto-loan/borrowable-collateralisable-number")
     Call<Object> getAcctMortgageLoanLimit(
@@ -5435,18 +5451,84 @@ public interface BybitApiService {
             @Query("collateralCurrency") String collateralCurrency
     );
 
+    /**
+     * Borrow coin
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/borrow
+     *
+     * @param borrowRequest loanCurrency	true	string	Loan coin name
+     *                      loanAmount	false	string	Amount to borrow
+     *                      loanTerm	false	string	Loan term; flexible term; fixed term: 7, 14, 30, 90, 180 days
+     *                      collateralCurrency	true	string	Currency used to mortgage
+     *                      collateralAmount	false	string	Amount to mortgage
+     *
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * orderId	string	Loan order ID
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/crypto-loan/borrow")
     Call<Object> borrow(@Body CryptoLoanBorrowRequest borrowRequest);
 
+    /**
+     * Repay coin
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/repay
+     *
+     * @param repayRequest orderId	true	string	Loan order ID
+     *                     amount	true	string	Repay amount
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * repayId	    string	Repayment transaction ID
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/crypto-loan/repay")
     Call<Object> repay(@Body CryptoLoanRepayRequest repayRequest);
 
+    /**
+     * Adjust Collateral Amount
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/adjust-collateral
+     *
+     * @param adjustLtvRequest orderId	true	string	Loan order ID
+     *                          amount	true	string	Adjustment amount
+     *                      direction	true	string	0: add collateral; 1: reduce collateral
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * adjustId	    string	Collateral adjustment transaction ID
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @POST("/v5/crypto-loan/adjust-ltv")
     Call<Object> adjustCollateralAmount(@Body CryptoLoanAdjustLtvRequest adjustLtvRequest);
 
+    /**
+     * Get Unpaid Orders
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/unpaid-loan-order
+     *
+     * @param orderId   false	string	Loan order ID
+     * @param collateralCurrency false	string	Loan coin name
+     * @param loanCurrency false	string	Collateral coin name
+     * @param loanTermType false	string 1: fixed term, when query this type, loanTerm must be filled; 2: flexible term
+     * @param loanTerm      false	string	7, 14, 30, 90, 180 days, working when loanTermType=1
+     * @param limit         false	string	Limit for data size per page. [1, 100]. Default: 10
+     * @param cursor        false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	        array	Object
+     * &gt; collateralAmount	string	Collateral amount
+     * &gt; collateralCurrency	string	Collateral coin
+     * &gt; currentLTV	    string	Current LTV
+     * &gt; expirationTime	string	Loan maturity time, keeps "" for flexible loan
+     * &gt; hourlyInterestRate	string	Hourly interest rate
+     * &gt; loanCurrency	string	Loan coin
+     * &gt; loanTerm	    string	Loan term, 7, 14, 30, 90, 180 days, keep "" for flexible loan
+     * &gt; orderId	        string	Loan order ID
+     * &gt; residualInterest	string	Unpaid interest
+     * &gt; residualPenaltyInterest	string	Unpaid penalty interest
+     * &gt; totalDebt	    string	Unpaid principal
+     * nextPageCursor	    string	Refer to the cursor request parameter
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/crypto-loan/ongoing-orders")
     Call<Object> getUnpaidOrders(
@@ -5459,6 +5541,31 @@ public interface BybitApiService {
             @Query("cursor") String cursor
     );
 
+    /**
+     * Get Repayment Transaction
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/repay-transaction
+     *
+     * @param orderId false	string	Loan order ID
+     * @param repayId false	string	Repayment transaction ID
+     * @param loanCurrency false	string	Loan coin name
+     * @param limit     false	string	Limit for data size per page. [1, 100]. Default: 10
+     * @param cursor false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	        array	Object
+     * &gt; collateralCurrency	string	Collateral coin
+     * &gt; collateralReturn	string	Returned collateral amount by this repayment. No collateral returned if this transaction does not fully repay the debt
+     * &gt; loanCurrency	string	Loan coin
+     * &gt; loanTerm	    string	Loan term, 7, 14, 30, 90, 180 days, keep "" for flexible loan
+     * &gt; orderId	        string	Loan order ID
+     * &gt; repayAmount	    string	Repayment amount
+     * &gt; repayId	        string	Repayment transaction ID
+     * &gt; repayStatus	    integer	Repayment status, 1: success; 2: processing
+     * &gt; repayTime	    string	Repay timestamp
+     * &gt; repayType	    string	Repayment type, 1: repay by user; 2: repay by liquidation
+     * nextPageCursor	    string	Refer to the cursor request parameter
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/crypto-loan/repayment-history")
     Call<Object> getRepayTransactions(
@@ -5469,6 +5576,33 @@ public interface BybitApiService {
             @Query("cursor") String cursor
     );
 
+    /**
+     * Get Completed Loan Order History
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/comleted-loan-order
+     *
+     * @param orderId false	string	Loan order ID
+     * @param collateralCurrency false	string	Loan coin name
+     * @param loanCurrency false	string	Collateral coin name
+     * @param limit false	string	Limit for data size per page. [1, 100]. Default: 10
+     * @param cursor false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	        array	Object
+     * &gt; borrowTime	        string	The timestamp to borrow
+     * &gt; collateralCurrency	string	Collateral coin
+     * &gt; expirationTime	    string	Loan maturity time, keeps "" for flexible loan
+     * &gt; hourlyInterestRate	string	Hourly interest rate
+     * &gt; initialCollateralAmount	string	Initial amount to mortgage
+     * &gt; initialLoanAmount	string	Initial loan amount
+     * &gt; loanCurrency	    string	Loan coin
+     * &gt; loanTerm	    string	Loan term, 7, 14, 30, 90, 180 days, keep "" for flexible loan
+     * &gt; orderId	        string	Loan order ID
+     * &gt; repaidInterest	string	Total interest repaid
+     * &gt; repaidPenaltyInterest	string	Total penalty interest repaid
+     * &gt; status	        integer	Loan order status 1: fully repaid manually; 2: fully repaid by liquidation
+     * nextPageCursor	    string	Refer to the cursor request parameter
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/crypto-loan/borrow-history")
     Call<Object> getCompletedOrders(
@@ -5479,12 +5613,44 @@ public interface BybitApiService {
             @Query("cursor") String cursor
     );
 
+    /**
+     * Get Max. Allowed Reduction Collateral Amount
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/reduce-max-collateral-amt
+     *
+     * @param orderId true	string	Loan coin ID
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * maxCollateralAmount	string	Max. reduction collateral amount
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/crypto-loan/max-collateral-amount")
     Call<Object> getMaxReduceAmount(
             @Query("orderId") String orderId
     );
 
+    /**
+     * Get Loan LTV Adjustment History
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/ltv-adjust-history
+     *
+     * @param orderId   false	string	Loan order ID
+     * @param adjustId  false	string	Collateral adjustment transaction ID
+     * @param collateralCurrency false	string	Collateral coin name
+     * @param limit     false	string	Limit for data size per page. [1, 100]. Default: 10
+     * @param cursor    false	string	Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * list	        array	Object
+     * &gt; collateralCurrency	string	Collateral coin
+     * &gt; orderId	        string	Loan order ID
+     * &gt; adjustId	        string	Collateral adjustment transaction ID
+     * &gt; adjustTime	        string	Adjust timestamp
+     * &gt; preLTV	            string	LTV before the adjustment
+     * &gt; afterLTV	        string	LTV after the adjustment
+     * &gt; direction	        integer	The direction of adjustment, 0: add collateral; 1: reduce collateral
+     * nextPageCursor	    string	Refer to the cursor request parameter
+     */
     @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
     @GET("/v5/crypto-loan/adjustment-history")
     Call<Object> getLtvAdjustmentHistory(
