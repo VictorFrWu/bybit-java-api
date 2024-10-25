@@ -17,6 +17,10 @@ import com.bybit.api.client.domain.broker.request.BrokerVoucherSpecRequest;
 import com.bybit.api.client.domain.institution.LendingDataRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.institution.insLending.UpdateInstitutionLoadUidRequest;
+import com.bybit.api.client.domain.loan.request.CryptoLoanAdjustLtvRequest;
+import com.bybit.api.client.domain.loan.request.CryptoLoanBorrowRequest;
+import com.bybit.api.client.domain.loan.request.CryptoLoanDataRequest;
+import com.bybit.api.client.domain.loan.request.CryptoLoanRepayRequest;
 import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
 import com.bybit.api.client.domain.position.request.PositionDataRequest;
 import com.bybit.api.client.domain.position.request.*;
@@ -652,6 +656,32 @@ public class BybitJsonConverter {
                 .awardId(brokerDataRequest.getAwardId())
                 .specCode(brokerDataRequest.getSpecCode())
                 .withUsedAmount(brokerDataRequest.getWithUsedAmount() == null ? null : brokerDataRequest.getWithUsedAmount().getValue())
+                .build();
+    }
+
+    // Crypto Loan Requests
+    public CryptoLoanBorrowRequest mapToCryptoLoanBorrowRequest(CryptoLoanBorrowRequest dataRequest) {
+        return CryptoLoanBorrowRequest.builder()
+                .loanCurrency(dataRequest.getLoanCurrency())
+                .collateralCurrency(dataRequest.getCollateralCurrency())
+                .loanAmount(dataRequest.getLoanAmount())
+                .collateralAmount(dataRequest.getCollateralAmount())
+                .loanTerm(dataRequest.getLoanTerm() == null ? null : dataRequest.getLoanTerm())
+                .build();
+    }
+
+    public CryptoLoanRepayRequest mapToCryptoLoanRepayRequest(CryptoLoanRepayRequest dataRequest) {
+        return CryptoLoanRepayRequest.builder()
+                .orderId(dataRequest.getOrderId())
+                .amount(dataRequest.getAmount())
+                .build();
+    }
+
+    public CryptoLoanAdjustLtvRequest mapToCryptoLoanAdjustLtvRequest(CryptoLoanAdjustLtvRequest dataRequest) {
+        return CryptoLoanAdjustLtvRequest.builder()
+                .orderId(dataRequest.getOrderId())
+                .amount(dataRequest.getAmount())
+                .direction(dataRequest.getDirection())
                 .build();
     }
 }

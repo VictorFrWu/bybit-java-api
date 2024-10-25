@@ -8,6 +8,9 @@ import com.bybit.api.client.domain.broker.request.BrokerIssueVoucherRequest;
 import com.bybit.api.client.domain.broker.request.BrokerVoucherSpecRequest;
 import com.bybit.api.client.domain.institution.clientLending.ClientLendingFundsRequest;
 import com.bybit.api.client.domain.institution.insLending.UpdateInstitutionLoadUidRequest;
+import com.bybit.api.client.domain.loan.request.CryptoLoanAdjustLtvRequest;
+import com.bybit.api.client.domain.loan.request.CryptoLoanBorrowRequest;
+import com.bybit.api.client.domain.loan.request.CryptoLoanRepayRequest;
 import com.bybit.api.client.domain.position.request.ConfirmNewRiskLimitRequest;
 import com.bybit.api.client.domain.position.request.*;
 import com.bybit.api.client.domain.spot.leverageToken.SpotLeverageTokenRequest;
@@ -5372,4 +5375,123 @@ public interface BybitApiService {
             @Query("tag") String tag,
             @Query("page") Integer page,
             @Query("limit") Integer limit);
+
+    // Crypto Loan
+
+    /**
+     * Get Collateral Coins
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/collateral-coin
+     *
+     * @param vipLevel false string VIP level
+     * @param currency false string coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * vipCoinList  array   Object
+     * &gt; list    array   Object
+     * &gt;&gt; collateralAccuracy      integer Valid collateral coin precision
+     * &gt;&gt; initialLTV  string      The Initial LTV ratio determines the initial amount of coins that can be borrowed
+     * &gt;&gt; marginCallLTV   string  If the LTV ratio (Loan Amount/Collateral Amount) reaches the threshold,  you will be required to add more collateral to your loan
+     * &gt;&gt; liquidationLTV  string  If the LTV ratio (Loan Amount/Collateral Amount) reaches the threshold, Bybit will liquidate your collateral assets to repay your loan and interest in full
+     * &gt;&gt; maxLimit    string Collateral limit
+     * &gt; vipLevel    string  Vip level
+     */
+    @GET("/v5/crypto-loan/collateral-data")
+    Call<Object> getCollateralCoins(
+            @Query("vipLevel") String vipLevel,
+            @Query("currency") String currency);
+
+    /**
+     * Get Borrowable Coins
+     * <p>
+     * https://bybit-exchange.github.io/docs/v5/crypto-loan/loan-coin
+     *
+     * @param vipLevel false string VIP level
+     * @param currency false string coin name
+     * @return Response Parameters
+     * Parameter	Type	Comments
+     * vipCoinList  array   Object
+     * &gt; list    array   Object
+     * &gt;&gt; borrowingAccuracy   integer     Valid borrowable coin precision
+     * &gt;&gt; flexibleHourlyInterestRate  string      Flexible hourly floating interest rate
+     * &gt;&gt; hourlyInterestRate7D   string  Hourly interest rate for 7 days loan
+     * &gt;&gt; hourlyInterestRate14D   string  Hourly interest rate for 14 days loan
+     * &gt;&gt; hourlyInterestRate30D   string  Hourly interest rate for 30 days loan
+     * &gt;&gt; hourlyInterestRate90D   string  Hourly interest rate for 90 days loan
+     * &gt;&gt; hourlyInterestRate180D   string  Hourly interest rate for 180 days loan
+     * &gt;&gt; maxBorrowingAmount  string  Max. amount to borrow
+     * &gt;&gt; minBorrowingAmount    string Min. amount to borrow
+     * &gt; vipLevel    string  Vip level
+     */
+    @GET("/v5/crypto-loan/loanable-data")
+    Call<Object> getBorrowableCoins(
+            @Query("vipLevel") String vipLevel,
+            @Query("currency") String currency);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/crypto-loan/borrowable-collateralisable-number")
+    Call<Object> getAcctMortgageLoanLimit(
+            @Query("loanCurrency") String loanCurrency,
+            @Query("collateralCurrency") String collateralCurrency
+    );
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/crypto-loan/borrow")
+    Call<Object> borrow(@Body CryptoLoanBorrowRequest borrowRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/crypto-loan/repay")
+    Call<Object> repay(@Body CryptoLoanRepayRequest repayRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @POST("/v5/crypto-loan/adjust-ltv")
+    Call<Object> adjustCollateralAmount(@Body CryptoLoanAdjustLtvRequest adjustLtvRequest);
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/crypto-loan/ongoing-orders")
+    Call<Object> getUnpaidOrders(
+            @Query("orderId") String orderId,
+            @Query("collateralCurrency") String collateralCurrency,
+            @Query("loanCurrency") String loanCurrency,
+            @Query("loanTermType") String loanTermType,
+            @Query("loanTerm") String loanTerm,
+            @Query("limit") String limit,
+            @Query("cursor") String cursor
+    );
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/crypto-loan/repayment-history")
+    Call<Object> getRepayTransactions(
+            @Query("orderId") String orderId,
+            @Query("repayId") String repayId,
+            @Query("loanCurrency") String loanCurrency,
+            @Query("limit") String limit,
+            @Query("cursor") String cursor
+    );
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/crypto-loan/borrow-history")
+    Call<Object> getCompletedOrders(
+            @Query("orderId") String orderId,
+            @Query("collateralCurrency") String collateralCurrency,
+            @Query("loanCurrency") String loanCurrency,
+            @Query("limit") String limit,
+            @Query("cursor") String cursor
+    );
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/crypto-loan/max-collateral-amount")
+    Call<Object> getMaxReduceAmount(
+            @Query("orderId") String orderId
+    );
+
+    @Headers(BybitApiConstants.ENDPOINT_SECURITY_TYPE_SIGNED_HEADER)
+    @GET("/v5/crypto-loan/adjustment-history")
+    Call<Object> getLtvAdjustmentHistory(
+            @Query("orderId") String orderId,
+            @Query("adjustId") String adjustId,
+            @Query("collateralCurrency") String collateralCurrency,
+            @Query("limit") String limit,
+            @Query("cursor") String cursor
+    );
 }
