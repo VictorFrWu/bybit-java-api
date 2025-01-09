@@ -282,7 +282,7 @@ public class WebsocketStreamClientImpl implements WebsocketStreamClient {
 
     @Override
     public void onError(Throwable t) {
-        LOGGER.error(t.getMessage());
+        LOGGER.error("WebSocket error {} happened to stream {}", t, argNames);
     }
 
     @Override
